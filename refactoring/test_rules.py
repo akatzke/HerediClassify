@@ -1,17 +1,34 @@
 #!/usr/bin/env python3
-
 from rules import *
-
-def fail_pp3(data: pd.DataFrame) -> pd.DataFrame:
-
-
-def return_true_pp3(data: pd.DataFrame) -> pd.DataFrame:
+import pandas as pd
 
 
-def return_false_pp3(data: pd.DataFrame) -> pd.DataFrame:
+def fail_pp3() -> None:
+    path_test_data = "/home/katzkean/mhh-lw-o/Variant_Classification/Test_files/prediction_test_fail.csv"
+    test_data = pd.read_csv(path_test_data, index_col=False, header=0)
+    test_data = pd.Series(
+        test_data.iloc[
+            0,
+        ]
+    )
+    assert not get_pathogenicity_prediction(test_data)
 
-def return_edge_case_pp3(data: pd.DataFrame) -> pd.DataFrame:
 
-def __main__():
-    import_csv
-    fail_pp2
+def return_true_pp3() -> None:
+    path_test_data = "/home/katzkean/mhh-lw-o/Variant_Classification/Test_files/prediction_test_true.csv"
+    test_data = pd.read_csv(path_test_data, index_col=False, header=0)
+    test_data = pd.Series(
+        test_data.iloc[
+            0,
+        ]
+    assert get_pathogenicity_prediction(test_data)
+
+
+def return_false_pp3() -> None:
+    path_test_data = "/home/katzkean/mhh-lw-o/Variant_Classification/Test_files/prediction_test_false.csv"
+    test_data = pd.read_csv(path_test_data, index_col=False, header=0)
+    test_data = pd.Series(
+        test_data.iloc[
+            0,
+        ]
+    assert not get_pathogenicity_prediction(test_data)
