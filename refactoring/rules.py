@@ -35,6 +35,17 @@ class rule(ABC):
         pass
 
 @dataclass
+class Rule_result:
+    name:str
+    strength: STRENGTH_TYPE
+    comment: Optional[str]
+    status: Optional[bool]
+    function: Callable
+
+    def run(self, data: pd.Series):
+        self.strength, self.comment, self.status = self.function(data)
+
+@dataclass
 class rule2:
     name: str
     strength: STRENGTH_TYPE
