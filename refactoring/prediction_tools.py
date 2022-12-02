@@ -143,3 +143,19 @@ def aggregate_splicing_predictions(splicing_predictions) -> bool:
         return True
     else:
         return False
+
+
+def prepare_spliceai(str) -> dict:
+    split_list = str.split(
+        "|",
+    )
+    predictions = {"test": split_list}
+    return predictions
+
+
+def preapre_hbond(str) -> dict:
+    split_list = str.split(
+        "|",
+    )
+    predictions = {"test": split_list}
+    return predictions
