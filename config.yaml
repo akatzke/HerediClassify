@@ -1,0 +1,11 @@
+### Thresholds splicing and pathogenicity prediction tools ###
+prediction_tool_threshold:
+    revel_benign: 0.37
+    revel_pathogenic: 0.65
+    CADD: 20.0
+    pylop: 1.6
+    SpliceAI: 0.5
+    MaxEntScan: 0.3
+
+rules:
+    pp3: "assess_pp3"
