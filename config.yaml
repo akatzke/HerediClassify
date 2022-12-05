@@ -8,4 +8,24 @@ prediction_tool_threshold:
     MaxEntScan: 0.3
 
 rules:
+    pvs1: "assess_pvs1"
+    ps1: "assess_ps1"
+    pm1: "assess_pm1"
+    pm2: "assess_pm2"
+    pm4: "assess_pm4"
+    pm5: "assess_pm5"
     pp3: "assess_pp3"
+    ba1: "assess_ba1"
+    bs1: "assess_bs1"
+    bp3: "assess_bp3"
+    bp4: "assess_bp4"
+    bp7: "assess_bp7"
+
+#threshold_population_frequency:
+#    BRCA1:
+#    BRCA2:
+#    BARD1:
+#    CHEK2:
+#    ATM:
+#    RAD51C:
+#    RAD51D:

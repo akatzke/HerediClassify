@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-from refactoring.rules import Assess_bp4, Assess_bp7, Assess_pp3, Rule_result
+from refactoring.rules import assess_bp4, assess_bp7, assess_pp3, Rule_result
 
 
-function_name_to_function = {"pp3": Assess_pp3, "bp4": Assess_bp4, "bp7": Assess_bp7}
+function_name_to_function = {"pp3": assess_pp3, "bp4": assess_bp4, "bp7": assess_bp7}
 
 if name not in function_name_to_function:
     raise ValueError("This rule could not be found!")
@@ -14,7 +14,7 @@ my_rules = [
 ]
 
 for entry in my_rules:
-    globals()[entry["name"] + "_result"] = Rule_result(name=entry[name])
+    globals()[entry["name"] + "_result"] = Rule_result(name=entry[name], strength = )
 
 
 def process_rules(
