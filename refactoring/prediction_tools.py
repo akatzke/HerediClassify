@@ -4,6 +4,8 @@ from math import isnan
 from numpy import mean
 import pandas as pd
 
+from import_config import Prediction_tool_threshold
+
 
 def get_splicing_prediction(data: pd.Series) -> Tuple[bool, str]:
     """
@@ -14,53 +16,57 @@ def get_splicing_prediction(data: pd.Series) -> Tuple[bool, str]:
     return result
 
 
-def get_pathogenicity_prediction(data: pd.Series) -> bool:
+def get_pathogenicity_prediction(
+    data: pd.Series, threshold: Prediction_tool_threshold
+) -> bool:
     """
     Get results from all given pathogenicity prediction tools and summarize their results
     """
-    revel_result = parse_revel_pred(data)
-    cadd_result = parse_cadd_pred(data)
+    revel_result = parse_revel_pred(data, threshold.revel)
+    cadd_result = parse_cadd_pred(
+        data,
+    )
     pyhlop_result = parse_pyhlop_pred(data)
     result = aggregate_patho_predictions([revel_result, cadd_result, pyhlop_result])
     return result
 
 
-def parse_revel_pred(data: pd.Series, threshold) -> float:
+def parse_revel_pred(data: pd.Series, threshold: Prediction_tool_threshold) -> float:
     """
     Parse REVEL score from variant row
     and return its pathogenicity prediction
     """
     if isnan(data["REVEL"]):
         return -1
-    elif float(data["REVEL"]) <= 0.15:
+    elif float(data["REVEL"]) <= threshold.revel_benign:
         return 0
-    elif float(data["REVEL"]) >= 0.7:
+    elif float(data["REVEL"]) >= threshold.revel_pathogenic:
         return 1
     else:
         return 0.5
 
 
-def parse_pyhlop_pred(data: pd.Series, threshold) -> int:
+def parse_pyhlop_pred(data: pd.Series, threshold: Prediction_tool_threshold) -> int:
     """
     Examine if variant is conserved using the PhyloP score
     and the cutoff of 1.6
     """
     if isnan(data["phyloP"]):
         return -1
-    elif float(data["phyloP"]) > 1.6:
+    elif float(data["phyloP"]) > threshold.phylop:
         return 1
     else:
         return 0
 
 
-def parse_cadd_pred(data: pd.Series) -> int:
+def parse_cadd_pred(data: pd.Series, threshold: Prediction_tool_threshold) -> int:
     """
     Parse CADD score from variant row
     and return its pathogenicity prediction
     """
     if isnan(data["CADD"]):
         return -1
-    elif float(data["CADD"]) > 20.0:
+    elif float(data["CADD"]) > threshold.CADD:
         return 1
     else:
         return 0

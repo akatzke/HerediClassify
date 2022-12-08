@@ -1,55 +1,52 @@
 #!/usr/bin/env python3
 import yaml
-from typing import Literal
+from typing import Literal, Union, Optional
 from dataclasses import dataclass
 from dacite import from_dict
 
-STRENGTH_TYPE = Literal["supporting", "moderate", "strong", "very strong"]
+STRENGTH_TYPE = Literal[
+    "supporting", "moderate", "strong", "very strong", "stand_alone"
+]
 
-path_config = "/home/katzkean/variant_classification/config.yaml"
+RULE_TYPE = Literal["pathogenic", "benige", "VUS"]
 
-# def check_dictionary_for_function(rules):
+
+@dataclass
+class Prediction_tool_threshold:
+    revel_benign: Optional[float]
+    revel_pathogenic: Optional[float]
+    revel: Optional[float]
+    CADD: Optional[float]
+    pyhlop: Optional[float]
+    SpliceAI: Optional[float]
+    MaxEntScan: Optional[float]
+    Hbond: Optional[float]
+
+
+@dataclass
+class Allele_frequency_threshold:
+    BRCA1: Optional[float]
+    BRCA2: Optional[float]
+    BARD1: Optional[float]
+    BRIP1: Optional[float]
+    CDH1: Optional[float]
+    CHEK2: Optional[float]
+    ATM: Optional[float]
+    PALB2: Optional[float]
+    PTEN: Optional[float]
+    RAD51C: Optional[float]
+    RAD51D: Optional[float]
+    P53: Optional[float]
 
 
 @dataclass
 class Configuration:
-    prediction_tool_threshold: dict[str, dict]
-    rules: dict[str, dict]
-    # allele_frequency_threshold: dict[str, int]
-
-    def load_config(path_yaml: str):
-        with open(path_yaml) as config_file:
-            config = yaml.safe_load(config_file)
-        test = dacite.from_dict(config)
-        return test
+    prediction_tool_threshold: Prediction_tool_threshold
+    rules: dict[str, list[Union[str, int]]]
+    allele_frequency_threshold: Allele_frequency_threshold
 
 
-@dataclass
-class Prediction_too_threshold:
-    predictions: dict[str, int]
-
-
-@dataclass
-class Allele_frequency_thresholds:
-    thresholds: dict[str, int]
-
-
-@dataclass
-class rules_config:
-    rules: dict[str, str]
-
-
-@dataclass
-class A:
-    x: str
-
-
-def test_dacite():
-    @dataclass
-    class X:
-        i: str
-
-    test = {"i": "b"}
-
-    result = from_dict(X, test)
-    return result
+def load_config(path_config: str):
+    with open(path_config) as config_file:
+        config = yaml.safe_load(config_file)
+    return from_dict(Configuration, config)

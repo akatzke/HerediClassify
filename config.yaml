@@ -3,29 +3,61 @@ prediction_tool_threshold:
     revel_benign: 0.37
     revel_pathogenic: 0.65
     CADD: 20.0
-    pylop: 1.6
+    phylop: 1.6
     SpliceAI: 0.5
     MaxEntScan: 0.3
+    Hbond: 2.0
 
+### Rules and their strength ###
 rules:
-    pvs1: "assess_pvs1"
-    ps1: "assess_ps1"
-    pm1: "assess_pm1"
-    pm2: "assess_pm2"
-    pm4: "assess_pm4"
-    pm5: "assess_pm5"
-    pp3: "assess_pp3"
-    ba1: "assess_ba1"
-    bs1: "assess_bs1"
-    bp3: "assess_bp3"
-    bp4: "assess_bp4"
-    bp7: "assess_bp7"
+    pvs1:
+        - very strong
+        - pathogenic
+    ps1:
+        - strong
+        - pathogenic
+    pm1:
+        - moderate
+        - pathogenic
+    pm2:
+        - moderate
+        - pathogenic
+    pm4:
+        - moderate
+        - pathogenic
+    pm5:
+        - moderate
+        - pathogenic
+    pp3:
+        - supporting
+        - pathogenic
+    ba1:
+        - stand alone
+        - benign
+    bs1:
+        - strong
+        - benign
+    bp3:
+        - supporting
+        - benign
+    bp4:
+        - supporting
+        - benign
+    bp7:
+        - supporting
+        - benign
 
-#threshold_population_frequency:
-#    BRCA1:
-#    BRCA2:
-#    BARD1:
-#    CHEK2:
-#    ATM:
-#    RAD51C:
-#    RAD51D:
+### Allelee frequency threshold for each gene ###
+allele_frequency_threshold:
+    BRCA1: 0.1
+    BRCA2: 0.1
+    BARD1: 0.1
+    BRIP1: 0.1
+    CDH1: 0.1
+    CHEK2: 0.1
+    ATM: 0.1
+    PALB2: 0.1
+    PTEN: 0.1
+    RAD51C: 0.1
+    RAD51D: 0.1
+    P53: 0.1
