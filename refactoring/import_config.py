@@ -13,36 +13,36 @@ RULE_TYPE = Literal["pathogenic", "benige", "VUS"]
 
 @dataclass
 class Prediction_tool_threshold:
-    revel_benign: Optional[float]
-    revel_pathogenic: Optional[float]
-    revel: Optional[float]
-    CADD: Optional[float]
-    pyhlop: Optional[float]
-    SpliceAI: Optional[float]
-    MaxEntScan: Optional[float]
-    Hbond: Optional[float]
+    revel_benign: float
+    revel_pathogenic: float
+    revel: float
+    CADD: float
+    pyhlop: float
+    SpliceAI: float
+    MaxEntScan: float
+    Hbond: float
 
 
 @dataclass
 class Allele_frequency_threshold:
-    BRCA1: Optional[float]
-    BRCA2: Optional[float]
-    BARD1: Optional[float]
-    BRIP1: Optional[float]
-    CDH1: Optional[float]
-    CHEK2: Optional[float]
-    ATM: Optional[float]
-    PALB2: Optional[float]
-    PTEN: Optional[float]
-    RAD51C: Optional[float]
-    RAD51D: Optional[float]
-    P53: Optional[float]
+    BRCA1: float = 0.1
+    BRCA2: float = 0.1
+    BARD1: float = 0.1
+    BRIP1: float = 0.1
+    CDH1: float = 0.1
+    CHEK2: float = 0.1
+    ATM: float = 0.1
+    PALB2: float = 0.1
+    PTEN: float = 0.1
+    RAD51C: float = 0.1
+    RAD51D: float = 0.1
+    P53: float = 0.1
 
 
 @dataclass
 class Configuration:
     prediction_tool_threshold: Prediction_tool_threshold
-    rules: dict[str, list[Union[str, int]]]
+    rules: list[str]
     allele_frequency_threshold: Allele_frequency_threshold
 
 

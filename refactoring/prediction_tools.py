@@ -1,19 +1,30 @@
 #!/usr/bin/env python3
-from typing import Literal, Tuple, Union
+from typing import Tuple
 from math import isnan
 from numpy import mean
+from enum import Enum
 import pandas as pd
 
 from import_config import Prediction_tool_threshold
 
 
-def get_splicing_prediction(data: pd.Series) -> Tuple[bool, str]:
+class Prediction_result(Enum):
+    UNKNOWN = 0.5
+    PATHOGENIC = 1
+    BENIGN = 0
+
+
+def get_splicing_prediction(
+    data: pd.Series, threshold: Prediction_tool_threshold
+) -> Prediction_result:
     """
     Get results from all given splicing predicition tools and summarize their results
     """
-    result = True
-    comment = ""
-    return result
+    spliceai_result = parse_spliceai_pred(
+        data["SpliceAI"], Prediction_tool_threshold.SpliceAI
+    )
+    maxentscan = parse
+    return aggregate_splicing_predictions()
 
 
 def get_pathogenicity_prediction(
@@ -22,57 +33,41 @@ def get_pathogenicity_prediction(
     """
     Get results from all given pathogenicity prediction tools and summarize their results
     """
-    revel_result = parse_revel_pred(data, threshold.revel)
-    cadd_result = parse_cadd_pred(
-        data,
+    revel_result = assess_two_thresholds(
+        data["REVEL"], threshold.revel_benign, threshold.revel_pathogenic
     )
-    pyhlop_result = parse_pyhlop_pred(data)
+    cadd_result = assess_one_threshold(data["CADD"], threshold.CADD)
+    pyhlop_result = assess_one_threshold(data["phylop"], threshold.pyhlop)
     result = aggregate_patho_predictions([revel_result, cadd_result, pyhlop_result])
     return result
 
 
-def parse_revel_pred(data: pd.Series, threshold: Prediction_tool_threshold) -> float:
-    """
-    Parse REVEL score from variant row
-    and return its pathogenicity prediction
-    """
-    if isnan(data["REVEL"]):
-        return -1
-    elif float(data["REVEL"]) <= threshold.revel_benign:
-        return 0
-    elif float(data["REVEL"]) >= threshold.revel_pathogenic:
-        return 1
+def assess_two_thresholds(
+    data: float, threshold_benign: float, threshold_pathogenic: float
+) -> Prediction_result:
+    """ """
+    if data <= threshold_benign:
+        return Prediction_result.BENIGN
+    elif data >= threshold_pathogenic:
+        return Prediction_result.PATHOGENIC
     else:
-        return 0.5
+        return Prediction_result.UNKNOWN
 
 
-def parse_pyhlop_pred(data: pd.Series, threshold: Prediction_tool_threshold) -> int:
+def assess_one_threshold(data: float, threshold: float) -> Prediction_result:
     """
-    Examine if variant is conserved using the PhyloP score
-    and the cutoff of 1.6
+    Given one threshold, check if
     """
-    if isnan(data["phyloP"]):
-        return -1
-    elif float(data["phyloP"]) > threshold.phylop:
-        return 1
+    if data >= threshold:
+        return Prediction_result.PATHOGENIC
+    elif data < threshold:
+        return Prediction_result.BENIGN
     else:
-        return 0
+        warn()
+        return Prediction_result.UNKNOWN
 
 
-def parse_cadd_pred(data: pd.Series, threshold: Prediction_tool_threshold) -> int:
-    """
-    Parse CADD score from variant row
-    and return its pathogenicity prediction
-    """
-    if isnan(data["CADD"]):
-        return -1
-    elif float(data["CADD"]) > threshold.CADD:
-        return 1
-    else:
-        return 0
-
-
-def aggregate_patho_predictions(patho_predictions: list) -> str:
+def aggregate_patho_predictions(patho_predictions: list) -> Prediction_result:
     """
     Aggregate pathogenicity score from different predictors
     to assess total pathogenicity
@@ -84,11 +79,11 @@ def aggregate_patho_predictions(patho_predictions: list) -> str:
         if prediction > -1:
             no_negative_predictions.append(prediction)
     if len(no_negative_predictions) == 0:
-        return "unknown"
+        return Prediction_result.UNKNOWN
     elif mean(no_negative_predictions) >= 1:
-        return "pathogenic"
+        return Prediction_result.PATHOGENIC
     else:
-        return "benign"
+        return Prediction_result.BENIGN
 
 
 def parse_maxentscan_pred(data: pd.Series) -> int:
@@ -134,7 +129,7 @@ def parse_dbscsnv_pred(data: pd.Series) -> int:
     return impacting_splicing_scores
 
 
-def aggregate_splicing_predictions(splicing_predictions) -> bool:
+def aggregate_splicing_predictions(splicing_predictions) -> Prediction_result:
     """
     Aggregate splicing predictions to assess splicing impact
     Logic: all predictors, with score, should have a impacting score
@@ -146,20 +141,44 @@ def aggregate_splicing_predictions(splicing_predictions) -> bool:
         else:
             sum_impact = sum_impact - 1
     if sum_impact > 0:
-        return True
+        return Prediction_result.PATHOGENIC
+    elif sum_impact:
+        return Prediction_result.UNKNOWN
     else:
-        return False
+        return Prediction_result.BENIGN
 
 
-def prepare_spliceai(str) -> dict:
-    split_list = str.split(
-        "|",
-    )
-    predictions = {"test": split_list}
-    return predictions
+def aggregate_prediction_results(results: list[Prediction_result]) -> Prediction_result:
+    if all(result == Prediction_result.BENIGN for result in results):
+        return Prediction_result.BENIGN
+    elif all(result == Prediction_result.PATHOGENIC for result in results):
+        return Prediction_result.PATHOGENIC
+    else:
+        return Prediction_result.UNKNOWN
 
 
-def preapre_hbond(str) -> dict:
+def prepare_spliceai(
+    spliceai: str, threshold: Prediction_tool_threshold
+) -> Prediction_result:
+    result = []
+    single_scores = spliceai.split("|")[2:6]
+    for score in single_scores:
+        result.append(assess_one_threshold(float(score), threshold.SpliceAI))
+    if sum(result) == 0:
+        return Prediction_result.BENIGN
+    elif sum(result) == 1:
+        return Prediction_result.PATHOGENIC
+    elif sum(result) > 1:
+        warn(
+            "Two or more prediction from SpliceAI meet the threshold criterium. Please manually check."
+        )
+        return Prediction_result.UNKNOWN
+    else:
+        warn("Something went very wrong in SpliceAI evaluation")
+        return Prediction_result.UNKNOWN
+
+
+def prepare_hbond(str) -> dict:
     split_list = str.split(
         "|",
     )

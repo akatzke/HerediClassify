@@ -8,44 +8,20 @@ prediction_tool_threshold:
     MaxEntScan: 0.3
     Hbond: 2.0
 
-### Rules and their strength ###
+### Rules ###
 rules:
-    pvs1:
-        - very strong
-        - pathogenic
-    ps1:
-        - strong
-        - pathogenic
-    pm1:
-        - moderate
-        - pathogenic
-    pm2:
-        - moderate
-        - pathogenic
-    pm4:
-        - moderate
-        - pathogenic
-    pm5:
-        - moderate
-        - pathogenic
-    pp3:
-        - supporting
-        - pathogenic
-    ba1:
-        - stand alone
-        - benign
-    bs1:
-        - strong
-        - benign
-    bp3:
-        - supporting
-        - benign
-    bp4:
-        - supporting
-        - benign
-    bp7:
-        - supporting
-        - benign
+    - pvs1
+    - ps1
+    - pm1
+    - pm2
+    - pm4
+    - pm5
+    - pp3
+    - ba1
+    - bs1
+    - bp3
+    - bp4
+    - bp7
 
 ### Allelee frequency threshold for each gene ###
 allele_frequency_threshold:
