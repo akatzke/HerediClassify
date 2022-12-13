@@ -23,8 +23,8 @@ def get_splicing_prediction(
     spliceai_result = parse_spliceai_pred(
         data["SpliceAI"], Prediction_tool_threshold.SpliceAI
     )
-    maxentscan = parse
-    return aggregate_splicing_predictions()
+    maxentscan_result = parse_maxentscan_pred()
+    return aggregate_splicing_predictions(spliceai_result, maxentscan_result)
 
 
 def get_pathogenicity_prediction(
@@ -112,7 +112,7 @@ def parse_maxentscan_pred(data: pd.Series) -> int:
     return impacting_splicing_ratios
 
 
-def parse_dbscsnv_pred(data: pd.Series) -> int:
+def parse_dbscsnv_pred(data: pd.Series, threshold=float) -> int:
     """
     Parse dbscSNV splicing predictor column of current variant row
     """
@@ -157,9 +157,7 @@ def aggregate_prediction_results(results: list[Prediction_result]) -> Prediction
         return Prediction_result.UNKNOWN
 
 
-def prepare_spliceai(
-    spliceai: str, threshold: Prediction_tool_threshold
-) -> Prediction_result:
+def parse_spliceai_pred(spliceai: str, threshold: float) -> Prediction_result:
     result = []
     single_scores = spliceai.split("|")[2:6]
     for score in single_scores:
