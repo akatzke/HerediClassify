@@ -23,7 +23,9 @@ def get_splicing_prediction(
     spliceai_result = parse_spliceai_pred(
         data["SpliceAI"], Prediction_tool_threshold.SpliceAI
     )
-    maxentscan_result = parse_maxentscan_pred()
+    maxentscan_result = parse_maxentscan_pred(
+        data["MaxEntScan"], Prediction_tool_threshold.MaxEntScan
+    )
     return aggregate_splicing_predictions(spliceai_result, maxentscan_result)
 
 
@@ -86,15 +88,41 @@ def aggregate_patho_predictions(patho_predictions: list) -> Prediction_result:
         return Prediction_result.BENIGN
 
 
-def parse_maxentscan_pred(data: pd.Series) -> int:
+def parse_spliceai_pred(spliceai: str, threshold: float) -> Prediction_result:
+    result = []
+    single_scores = spliceai.split("|")[2:6]
+    for score in single_scores:
+        result.append(assess_one_threshold(float(score), threshold.SpliceAI))
+    if sum(result) == 0:
+        return Prediction_result.BENIGN
+    elif sum(result) == 1:
+        return Prediction_result.PATHOGENIC
+    elif sum(result) > 1:
+        warn(
+            "Two or more prediction from SpliceAI meet the threshold criterium. Please manually check."
+        )
+        return Prediction_result.UNKNOWN
+    else:
+        warn("Something went very wrong in SpliceAI evaluation")
+        return Prediction_result.UNKNOWN
+
+
+def parse_hbond_pred(str) -> dict:
+    split_list = str.split(
+        "|",
+    )
+    predictions = {"test": split_list}
+    return predictions
+
+
+def parse_maxentscan_pred(maxentscan: str, threshold: float) -> Prediction_result:
     """
     Parse MaxEntScan column for current variant row
     """
-    if data["MaxEntScan"] and ">" in str(data["MaxEntScan"]):
-        # if MaxEntScan not null and it is parse-able
-        # calculate MaxEntScan ratio
-        impacting_splicing_ratios, no_impacting_splicing_ratios = [], []
-        for ref_obs_scores in str(data["MaxEntScan"]).split(","):
+
+    if maxentscan and ">" in str(maxentscan):
+        result = []
+        for ref_obs_scores in str(maxentscan).split(","):
             ref_score, obs_score = ref_obs_scores.split(">")
             if ref_score.isdigit() and obs_score.isdigit():
                 ref_obs_ratio = abs(
@@ -102,31 +130,24 @@ def parse_maxentscan_pred(data: pd.Series) -> int:
                 )
             else:
                 ref_obs_ratio = -1.0
-            if ref_obs_ratio >= 0.15:
-                impacting_splicing_ratios.append(str(ref_obs_ratio))
+            if ref_obs_ratio >= threshold:
+                result.append(Prediction_result.PATHOGENIC)
             else:
-                no_impacting_splicing_ratios.append(str(ref_obs_ratio))
+                result.append(Prediction_result.BENIGN)
     else:
-        # no MaxEntScan score found
-        impacting_splicing_ratios = None
-    return impacting_splicing_ratios
-
-
-def parse_dbscsnv_pred(data: pd.Series, threshold=float) -> int:
-    """
-    Parse dbscSNV splicing predictor column of current variant row
-    """
-    impacting_splicing_scores = []
-    if data["dbscSNV"] and "/" in str(data["dbscSNV"]):
-        ada_score, rf_score = str(data["dbscSNV"]).split("/")
-        if ada_score.isdigit() and float(ada_score) > 0.6:
-            impacting_splicing_scores.append(float(ada_score))
-        if rf_score.isdigit() and float(rf_score) > 0.6:
-            impacting_splicing_scores.append(float(rf_score))
+        result = Prediction_result.UNKNOWN
+    if sum(result) == 0:
+        return Prediction_result.BENIGN
+    elif sum(result) == 1:
+        return Prediction_result.PATHOGENIC
+    elif sum(result) > 1:
+        warn(
+            "Two or more prediction from MaxEntScan meet the threshold criterium. Please manually check."
+        )
+        return Prediction_result.UNKNOWN
     else:
-        # no dbscSNV score found
-        impacting_splicing_scores = None
-    return impacting_splicing_scores
+        warn("Something went very wrong in MaxEntScan evaluation")
+        return Prediction_result.UNKNOWN
 
 
 def aggregate_splicing_predictions(splicing_predictions) -> Prediction_result:
@@ -157,28 +178,25 @@ def aggregate_prediction_results(results: list[Prediction_result]) -> Prediction
         return Prediction_result.UNKNOWN
 
 
-def parse_spliceai_pred(spliceai: str, threshold: float) -> Prediction_result:
+def parse_dbscsnv_pred(dbscsnv: str, threshold: float) -> Prediction_result:
+    """
+    Parse dbscSNV splicing predictor column of current variant row
+    """
     result = []
-    single_scores = spliceai.split("|")[2:6]
-    for score in single_scores:
-        result.append(assess_one_threshold(float(score), threshold.SpliceAI))
-    if sum(result) == 0:
-        return Prediction_result.BENIGN
-    elif sum(result) == 1:
-        return Prediction_result.PATHOGENIC
-    elif sum(result) > 1:
-        warn(
-            "Two or more prediction from SpliceAI meet the threshold criterium. Please manually check."
-        )
-        return Prediction_result.UNKNOWN
+    if dbscsnv and "/" in str(dbscsnv):
+        ada_score, rf_score = str(dbscsnv).split("/")
+        if ada_score.isdigit() and float(ada_score) > threshold:
+            result.append(Prediction_result.PATHOGENIC)
+        if rf_score.isdigit() and float(rf_score) > threshold:
+            result.append(Prediction_result.PATHOGENIC)
     else:
-        warn("Something went very wrong in SpliceAI evaluation")
-        return Prediction_result.UNKNOWN
-
-
-def prepare_hbond(str) -> dict:
-    split_list = str.split(
-        "|",
-    )
-    predictions = {"test": split_list}
-    return predictions
+        result.append(Prediction_result.UNKNOWN)
+    if not result:
+        return Prediction_result.BENIGN
+    elif len(result) == 1:
+        return result[0]
+    else:
+        if sum(result) == 2:
+            return Prediction_result.PATHOGENIC
+        elif sum(result) == 1:
+            return Prediction_result.UNKNOWN
