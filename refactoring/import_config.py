@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import yaml
-from typing import Literal, Union, Optional
+from typing import Literal, Optional
 from dataclasses import dataclass
 from dacite import from_dict
 
@@ -13,14 +13,14 @@ RULE_TYPE = Literal["pathogenic", "benige", "VUS"]
 
 @dataclass
 class Prediction_tool_threshold:
-    revel_benign: float
-    revel_pathogenic: float
-    revel: float
-    CADD: float
-    pyhlop: float
-    SpliceAI: float
-    MaxEntScan: float
-    Hbond: float
+    revel: Optional[float]
+    CADD: Optional[float]
+    phylop: Optional[float]
+    SpliceAI: Optional[float]
+    MaxEntScan: Optional[float]
+    Hbond: Optional[float]
+    revel_benign: Optional[float]
+    revel_pathogenic: Optional[float]
 
 
 @dataclass
