@@ -31,7 +31,7 @@ def get_splicing_prediction(
 
 def get_pathogenicity_prediction(
     data: pd.Series, threshold: Prediction_tool_threshold
-) -> bool:
+) -> Prediction_result:
     """
     Get results from all given pathogenicity prediction tools and summarize their results
     """

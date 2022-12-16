@@ -28,10 +28,11 @@ class Prediction_tool_threshold:
 
 
 @dataclass
-class threshold:
+class Threshold:
     threshold: float
     prediction_tool: str
     prediction_type: PREDICTION_TYPE
+    prediction_strength: STRENGTH_TYPE
     gene: Optional[GENE]
 
 
