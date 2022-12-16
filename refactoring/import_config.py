@@ -10,6 +10,10 @@ STRENGTH_TYPE = Literal[
 
 RULE_TYPE = Literal["pathogenic", "benige", "VUS"]
 
+PREDICTION_TYPE = Literal["splicing", "pathogenicity"]
+
+GENE = Literal["BRCA1", "BRCA2", "CHEK2", "BARD1"]
+
 
 @dataclass
 class Prediction_tool_threshold:
@@ -21,6 +25,14 @@ class Prediction_tool_threshold:
     SpliceAI: float
     MaxEntScan: float
     Hbond: float
+
+
+@dataclass
+class threshold:
+    threshold: float
+    prediction_tool: str
+    prediction_type: PREDICTION_TYPE
+    gene: Optional[GENE]
 
 
 @dataclass
