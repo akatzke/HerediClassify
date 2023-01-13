@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-from typing import Tuple
-from math import isnan
 from numpy import mean
 from enum import Enum
 import pandas as pd
@@ -20,12 +18,8 @@ def get_splicing_prediction(
     """
     Get results from all given splicing predicition tools and summarize their results
     """
-    spliceai_result = parse_spliceai_pred(
-        data["SpliceAI"], Prediction_tool_threshold.SpliceAI
-    )
-    maxentscan_result = parse_maxentscan_pred(
-        data["MaxEntScan"], Prediction_tool_threshold.MaxEntScan
-    )
+    spliceai_result = parse_spliceai_pred(data["SpliceAI"], threshold.SpliceAI)
+    maxentscan_result = parse_maxentscan_pred(data["MaxEntScan"], threshold.MaxEntScan)
     return aggregate_splicing_predictions(spliceai_result, maxentscan_result)
 
 
@@ -40,7 +34,7 @@ def get_pathogenicity_prediction(
     )
     cadd_result = assess_one_threshold(data["CADD"], threshold.CADD)
     pyhlop_result = assess_one_threshold(data["phylop"], threshold.pyhlop)
-    result = aggregate_patho_predictions([revel_result, cadd_result, pyhlop_result])
+    result = aggregate_predictions([revel_result, cadd_result, pyhlop_result])
     return result
 
 
@@ -67,106 +61,6 @@ def assess_one_threshold(data: float, threshold: float) -> Prediction_result:
     else:
         warn()
         return Prediction_result.UNKNOWN
-
-
-def aggregate_patho_predictions(patho_predictions: list) -> Prediction_result:
-    """
-    Aggregate pathogenicity score from different predictors
-    to assess total pathogenicity
-    Logic: average of all non negative pathogenicity scores,
-    if positive sum => Pathogenic, else => Benign
-    """
-    no_negative_predictions = []
-    for prediction in patho_predictions:
-        if prediction > -1:
-            no_negative_predictions.append(prediction)
-    if len(no_negative_predictions) == 0:
-        return Prediction_result.UNKNOWN
-    elif mean(no_negative_predictions) >= 1:
-        return Prediction_result.PATHOGENIC
-    else:
-        return Prediction_result.BENIGN
-
-
-def parse_spliceai_pred(spliceai: str, threshold: float) -> Prediction_result:
-    result = []
-    single_scores = spliceai.split("|")[2:6]
-    for score in single_scores:
-        result.append(assess_one_threshold(float(score), threshold.SpliceAI))
-    if sum(result) == 0:
-        return Prediction_result.BENIGN
-    elif sum(result) == 1:
-        return Prediction_result.PATHOGENIC
-    elif sum(result) > 1:
-        warn(
-            "Two or more prediction from SpliceAI meet the threshold criterium. Please manually check."
-        )
-        return Prediction_result.UNKNOWN
-    else:
-        warn("Something went very wrong in SpliceAI evaluation")
-        return Prediction_result.UNKNOWN
-
-
-def parse_hbond_pred(str) -> dict:
-    split_list = str.split(
-        "|",
-    )
-    predictions = {"test": split_list}
-    return predictions
-
-
-def parse_maxentscan_pred(maxentscan: str, threshold: float) -> Prediction_result:
-    """
-    Parse MaxEntScan column for current variant row
-    """
-
-    if maxentscan and ">" in str(maxentscan):
-        result = []
-        for ref_obs_scores in str(maxentscan).split(","):
-            ref_score, obs_score = ref_obs_scores.split(">")
-            if ref_score.isdigit() and obs_score.isdigit():
-                ref_obs_ratio = abs(
-                    float(obs_score) - float(ref_score) / float(ref_score)
-                )
-            else:
-                ref_obs_ratio = -1.0
-            if ref_obs_ratio >= threshold:
-                result.append(Prediction_result.PATHOGENIC)
-            else:
-                result.append(Prediction_result.BENIGN)
-    else:
-        result = Prediction_result.UNKNOWN
-    if sum(result) == 0:
-        return Prediction_result.BENIGN
-    elif sum(result) == 1:
-        return Prediction_result.PATHOGENIC
-    elif sum(result) > 1:
-        warn(
-            "Two or more prediction from MaxEntScan meet the threshold criterium. Please manually check."
-        )
-        return Prediction_result.UNKNOWN
-    else:
-        warn("Something went very wrong in MaxEntScan evaluation")
-        return Prediction_result.UNKNOWN
-
-
-def aggregate_splicing_predictions(splicing_predictions) -> Prediction_result:
-    """
-    Aggregate splicing predictions to assess splicing impact
-    Logic: all predictors, with score, should have a impacting score
-    """
-    sum_impact = 0
-    for predictor, impacting_splicing_scores in splicing_predictions.items():
-        if impacting_splicing_scores is not None and len(impacting_splicing_scores) > 0:
-            sum_impact = sum_impact + 1
-        else:
-            sum_impact = sum_impact - 1
-    if sum_impact > 0:
-        return Prediction_result.PATHOGENIC
-    elif sum_impact:
-        return Prediction_result.UNKNOWN
-    else:
-        return Prediction_result.BENIGN
 
 
 def aggregate_prediction_results(results: list[Prediction_result]) -> Prediction_result:
@@ -200,3 +94,22 @@ def parse_dbscsnv_pred(dbscsnv: str, threshold: float) -> Prediction_result:
             return Prediction_result.PATHOGENIC
         elif sum(result) == 1:
             return Prediction_result.UNKNOWN
+
+
+def parse_spliceai_pred(spliceai: str, threshold: float) -> Prediction_result:
+    result = []
+    single_scores = spliceai.split("|")[2:6]
+    for score in single_scores:
+        result.append(assess_one_threshold(float(score), threshold.SpliceAI))
+    if sum(result) == 0:
+        return Prediction_result.BENIGN
+    elif sum(result) == 1:
+        return Prediction_result.PATHOGENIC
+    elif sum(result) > 1:
+        warn(
+            "Two or more prediction from SpliceAI meet the threshold criterium. Please manually check."
+        )
+        return Prediction_result.UNKNOWN
+    else:
+        warn("Something went very wrong in SpliceAI evaluation")
+        return Prediction_result.UNKNOWN
