@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-from numpy import mean
 from enum import Enum
 import pandas as pd
+import warnings
 
 from import_config import Prediction_tool_threshold
 
@@ -12,30 +12,38 @@ class Prediction_result(Enum):
     BENIGN = 0
 
 
-def get_splicing_prediction(
-    data: pd.Series, threshold: Prediction_tool_threshold
-) -> Prediction_result:
-    """
-    Get results from all given splicing predicition tools and summarize their results
-    """
-    spliceai_result = parse_spliceai_pred(data["SpliceAI"], threshold.SpliceAI)
-    maxentscan_result = parse_maxentscan_pred(data["MaxEntScan"], threshold.MaxEntScan)
-    return aggregate_splicing_predictions(spliceai_result, maxentscan_result)
+def get_prediction(data: pd.Series, threshold: pd.Series, list_of_tools: list):
+    results = []
+    for tool in list_of_tools:
+        if len(list(filter(lambda x: tool in x, list(threshold.index)))) == 1:
+            results.append(
+                assess_one_threshold(data=data[tool], threshold=threshold[tool])
+            )
+        elif len(list(filter(lambda x: tool in x, list(threshold.index)))) == 2:
+            threshold_benign = get_threshold(threshold, tool, "benign")
+            threshold_pathogenic = get_threshold(threshold, tool, "pathogenic")
+            results.append(
+                assess_two_thresholds(
+                    data=data[tool],
+                    threshold_benign=threshold_benign,
+                    threshold_pathogenic=threshold_pathogenic,
+                )
+            )
+        elif len(list(filter(lambda x: tool in x, list(threshold.index)))) == 0:
+            warnings.warn(
+                f"No threshold was found for {tool}. {tool} is skipped for analysis"
+            )
+        else:
+            warnings.warn(
+                f"Too many thresholds were found for {tool}. Check data import."
+            )
+    return aggregate_prediction_results(results)
 
 
-def get_pathogenicity_prediction(
-    data: pd.Series, threshold: Prediction_tool_threshold
-) -> bool:
-    """
-    Get results from all given pathogenicity prediction tools and summarize their results
-    """
-    revel_result = assess_two_thresholds(
-        data["REVEL"], threshold.revel_benign, threshold.revel_pathogenic
-    )
-    cadd_result = assess_one_threshold(data["CADD"], threshold.CADD)
-    pyhlop_result = assess_one_threshold(data["phylop"], threshold.pyhlop)
-    result = aggregate_predictions([revel_result, cadd_result, pyhlop_result])
-    return result
+def get_threshold(thresholds: pd.Series, tool: str, type: str) -> int:
+    name_threshold = tool + "_" + type
+    print(name_threshold)
+    return thresholds[name_threshold]
 
 
 def assess_two_thresholds(
@@ -59,7 +67,7 @@ def assess_one_threshold(data: float, threshold: float) -> Prediction_result:
     elif data < threshold:
         return Prediction_result.BENIGN
     else:
-        warn()
+        warnings.warn("Threshold could not be compared to data")
         return Prediction_result.UNKNOWN
 
 

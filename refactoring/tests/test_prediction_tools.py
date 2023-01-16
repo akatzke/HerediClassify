@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 from prediction_tools import (
+    Prediction_result,
     assess_one_threshold,
     assess_two_thresholds,
-    Prediction_result,
     aggregate_prediction_results,
+    get_prediction,
+    get_threshold,
 )
+import pandas as pd
 
 ## Testing the basic function assessing whether or not the data meets the threshold
 
@@ -42,6 +45,9 @@ def test_two_thresholds_unknown() -> None:
     )
 
 
+## Testing the aggregation function
+
+
 def test_aggregate_predictions_benign() -> None:
     results = [Prediction_result.BENIGN, Prediction_result.BENIGN]
     assert aggregate_prediction_results(results) == Prediction_result.BENIGN
@@ -60,3 +66,18 @@ def test_aggregate_predictions_unknown() -> None:
         Prediction_result.BENIGN,
     ]
     assert aggregate_prediction_results(results) == Prediction_result.UNKNOWN
+
+
+## Testing the calling function
+
+
+def test_get_predictions() -> None:
+    thresholds = pd.Series(
+        {"CADD": 24.0, "revel_benign": 1.2, "revel_pathogenic": 2.5, "phylop": 2.1}
+    )
+    tools = ["CADD", "revel", "phylop"]
+    data = pd.Series({"CADD": 20.658, "revel": 2.6, "phylop": 1.8})
+    assert (
+        get_prediction(data=data, threshold=thresholds, list_of_tools=tools)
+        == Prediction_result.UNKNOWN
+    )
