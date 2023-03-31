@@ -27,7 +27,7 @@
 <gnomAD>
   <AF>0.25</AF>
   <AFR_AF>0.25</AFR_AF>
-  <AMR_AF>0.25</AMR_AF>
+  <AMR_AF>0.25</AMR_AF>/AMR_AF>
   <EAS_AF>0.25</EAS_AF>
   <NFE_AF>0.25</NFE_AF>
   <SAS_AF>0.25</SAS_AF>
@@ -44,6 +44,3 @@
 
 <Prior>0.5</Prior>
 
-<Reference_population>
-  <gnomAD_general>0.5<gnomAD_general>
-  <gnomAD_subpopulations>some_list<gnomAD_subpopulations>

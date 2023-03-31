@@ -1,0 +1,54 @@
+{
+
+    "HGVS" :[
+        {"cDNA" : "c.5891 : "Zink finger"}
+    ]
+}
+
+{
+    "splicing_prediction_tools": [
+        {"SpliceAI": 0.5},
+        {"MaxEntScan": 0.5},
+        {"HBondScore": 0.5}
+    ]
+}
+
+{
+    "pathogenicity_prediction_tools": [
+        {"REVEL" : 0.5},
+        {"pyhloP" : 0.5}
+    ]
+}
+
+{
+    "gnomAD": [
+        {"AF": 0.25},
+        {"AFR_AF": 0.25},
+        {"AMR_AF": 0.25},
+        {"EAS_AF": 0.25},
+        {"NFE_AF": 0.25},
+        {"SAS_AF": 0.25},
+    ]
+}
+
+{
+    "FLOSSIES": 0.25
+}
+
+{
+    "mRNA_analysis" : [
+        {"score": 0.25,
+        "comment": "Blub"}
+    ]
+}
+
+{
+    "functional_data": [
+        {"score": 0.25,
+        "comment": "Blub"}
+    ]
+}
+
+{
+    "prior": 0.25
+}
