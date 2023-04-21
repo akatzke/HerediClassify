@@ -1,0 +1,44 @@
+#+title: Mermaid
+
+* General information
+Code for visualising software design in mermaid
+* Variant classification overview
+#+begin_src mermaid
+flowchart LR
+    DB[(Database)] -->|Import| RD[Raw data]
+    C[Configuration] --> CI{Configuration import}
+    CL --> |Export| Output
+    subgraph Variant_classification_tool
+    RD -->DP{Data processing}
+    DP --> PD[Processed data]
+    CI --> PL[Data process list]
+    CI --> RL[Rule list]
+    PL --> DP
+    PD --> CL{Classification}
+    RL --> CL
+    end
+#+end_src
+* Configuration import
+#+begin_src
+flowchart LR
+    CF[Configuration file] -->I{import}
+    CS --> RE[Error]
+    FR --> DPL["Data processing
+    set"]
+    FR --> RL[Rule set]
+    subgraph Configuration_import
+    I --> C[Configuration]
+    C --> FR{find_rule_in_dict}
+    RD[Rule dictionary] -->FR
+    FR --> IS{insert_into_set}
+    IS --> CS{check_set}
+    end
+#+end_src
+* Prediction tools
+#+begin_src
+flowchart LR
+    RDO[Raw data] --> RDI[Raw data]
+    subgraph Variant_classification_tool
+    RDI -->PD{process_data}
+    end
+#+end_src
