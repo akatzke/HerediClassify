@@ -1,0 +1,49 @@
+{
+    "variant" : [
+        {"chr" : 22,
+         "pos" : 12596,
+         "gene":  "BRCA1",
+         "id" : "rs13265",
+         "ref" : "A",
+         "alt" : "T"}
+    ],
+    "HGVS" :[
+        {"cDNA" : "ENST000001:c.5891A>T",
+         "protein" : "NP_000001:p.Trp23Cys"}
+    ],
+    "variant_type" : "missense",
+    "transcripts" : ["ENST000001.1", "ENST000001.2"],
+    "protein_domain" : ["Zink finger", "Kinase"],
+    "splicing_prediction_tools": [
+        {"SpliceAI": 0.5},
+        {"MaxEntScan": 0.5},
+        {"HBondScore": 0.5}
+    ],
+    "pathogenicity_prediction_tools": [
+        {"REVEL" : 0.5},
+        {"pyhloP" : 0.5}
+    ],
+    "gnomAD": [
+        {"AF": 0.25},
+        {"AFR_AF": 0.25},
+        {"AMR_AF": 0.25},
+        {"EAS_AF": 0.25},
+        {"NFE_AF": 0.25},
+        {"SAS_AF": 0.25}
+    ],
+    "FLOSSIES": 0.25,
+    "mRNA_analysis" : [
+        {"performed": true,
+         "result": true,
+         "effect_strength": 0.217,
+         "comment" : "Something"}
+    ],
+    "functional_data": [
+        {"assay": "DNA-binding",
+         "performed": true,
+         "result": true,
+         "effect_strength": 0.217,
+         "comment" : "Something"}
+    ],
+    "prior": 0.25
+}

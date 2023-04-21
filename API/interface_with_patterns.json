@@ -1,4 +1,23 @@
 {
+    "variant" :{
+        "type": "object",
+        "properties" : {
+            "type": "array",
+            "items" : {
+                "type" : "object",
+                "properties" : {
+                    "chr" : {"type" : "number"},
+                    "position" : {"type" : "number"},
+                    "id" : {"type" : "string"},
+                    "ref" : {"type" : "string"},
+                    "alt" : {"type" : "string"},
+                }
+            }
+        }
+    }
+}
+
+{
     "HGVS" : {
         "type": "object",
         "properties" : {
@@ -112,7 +131,9 @@
             "items" : {
                 "type" : "object",
                 "properties" : {
-                    "score" : {"type" : "number"},
+                    "performed" : {"type" : "boolean"},
+                    "result" : {"type" : "boolean"},
+                    "effect_strength" : {"type" : "number"},
                     "comment" : {"type" : "string"}
                 }
             }
@@ -128,7 +149,10 @@
             "items" : {
                 "type" : "object",
                 "properties" : {
-                    "score" : {"type" : "number"},
+                    "assay" : {"type" : "type"},
+                    "performed" : {"type" : "boolean"},
+                    "result" : {"type" : "boolean"},
+                    "effect_strength" : {"type" : "number"},
                     "comment" : {"type" : "string"}
                 }
             }
