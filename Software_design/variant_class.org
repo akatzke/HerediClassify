@@ -1,0 +1,5 @@
+#+title: Variant_class
+
+* Defintion
+Planning of variant class
+This is a file where I plan what my variant class is going to look like

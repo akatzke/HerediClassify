@@ -3,23 +3,31 @@
 * General information
 Code for visualising software design in mermaid
 * Variant classification overview
-#+begin_src mermaid
+#+begin_src mermaid :file overview.png
 flowchart LR
     DB[(Database)] -->|Import| RD[Raw data]
-    C[Configuration] --> CI{Configuration import}
+    CR["Configuration
+   rules"] --> CIR{"Configuration import
+   rules"}
+    C["Configuration"] --> CI{"Configuration import"}
     CL --> |Export| Output
     subgraph Variant_classification_tool
     RD -->DP{Data processing}
     DP --> PD[Processed data]
-    CI --> PL[Data process list]
-    CI --> RL[Rule list]
+    CIR --> PL[Data process list]
+    CIR --> RL[Rule list]
     PL --> DP
     PD --> CL{Classification}
     RL --> CL
+    CI --> T[Thresholds]
+    T --> DP
     end
 #+end_src
+
+#+RESULTS:
+[[file:overview.png]]
 * Configuration import
-#+begin_src
+#+begin_src mermaid :file configuration_import_rules.png
 flowchart LR
     CF[Configuration file] -->I{import}
     CS --> RE[Error]
@@ -34,11 +42,104 @@ flowchart LR
     IS --> CS{check_set}
     end
 #+end_src
+
+#+RESULTS:
+[[file:configuration_import.png]]
 * Prediction tools
-#+begin_src
+** Prediction tools refactored
+#+begin_src mermaid :file predicition_tool.png
 flowchart LR
-    RDO[Raw data] --> RDI[Raw data]
-    subgraph Variant_classification_tool
-    RDI -->PD{process_data}
-    end
+   T[threshold] --> GP{get_prediction}
+   D[data] --> GP
+   TL[tool_list] --> GP
+   PT[prediction_type] --> GP
+   subgraph prediction_tools
+       GP --> 1T{assess_one_threshold}
+       GP --> 2T{assess_two_threshold}
+       GP --> APR["aggregate prediction
+       results"]
+       end
 #+end_src
+
+#+RESULTS:
+[[file:predicition_tool_refactored.png]]
+** GenOtoScope
+Decision on what prediction tool is to be used is based on variant type
+Exonic variants only get pathogenictiy scores and conservation
+Intronic and synonymous variants get
+#+begin_src mermaid :file prediction_tool_genotoscope.png
+flowchart LR
+   VT["variant type
+   exonic, intronic
+   or synonymous"] --> GP{get_prediction}
+   T[threshold] --> GP
+   APP -->ER["exonic result"]
+   VC --> ER
+   APP --> IR["intronic result"]
+   ASP -->IR
+   VC --> IR
+   APP --> SR["synonymous result"]
+   VC --> SR
+   ASP --> SR
+   subgraph assess_pp3_bp4
+       GP -->|exonic & intronic| VP{is_variant_pathogenic}
+       GP -->|exonic & intronic| VC{is_variant_conserved}
+       VP -->APP{aggregate_patho_prediction}
+       GP -->|intronic| PMP{"parse_maxentscan_pred"}
+       GP -->|intronic| PDP{"parse_dbscsnv_pred"}
+       PMP -->ASP{aggregate_splicing_prediction}
+       PDP -->ASP
+       end
+#+end_src
+
+#+RESULTS:
+[[file:prediction_tool_genotoscope.png]]
+* PM1
+Information needed: variant information, transcripts, critical region, hotspot, critical protein regions without bening variants
+Generally regions applicable to PMs for missense variants
+#+begin_src mermaid :file critical_region_refactored.png
+flowchart LR
+   D[data] --> CR{check_critical_region}
+   CR --> R[Result]
+  subgraph assess_critical_region
+      CR --> SCR{check_specific_critical_region}
+      CR --> GCR{check_general_critical_region}
+      end
+#+end_src
+
+#+RESULTS:
+[[file:critical_region_refactored.png]]
+
+Generally the files used for this annotation should at best contain genomic location
+In taht case the whole transcript issue can be disregarde
+Making the annotation a whole lot easier
+Outsource the difficutl task elsewhere
+#+begin_src mermaid :file annotate_critical_region.png
+flowchart LR
+   FL[file_location] --> ACR{annotated_critical_regions}
+   VD[variant_data] --> ACR
+   ACR --> AVD[annotated_variant_data]
+   subgraph annotate_critical_region
+       ACR --> IV{intersect_file_with_variant}
+       IV --> CS{check_strand}
+       end
+#+end_src
+
+#+RESULTS:
+[[file:annotate_critical_region.png]]
+* PVS1
+Information needed: sequence of variant
+Transcripts affected by variant
+#+begin_src mermaid :file pvs1.png
+flowchart LR
+
+#+end_src
+
+#+begin_src mermaid :file annotate_pvs1.png
+
+#+end_src
+* Annotate ClinVar
+#+begin_src mermaid :file
+
+#+end_src
+* Refactoring
