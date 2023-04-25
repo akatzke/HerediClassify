@@ -7,13 +7,16 @@
          "ref" : "A",
          "alt" : "T"}
     ],
-    "HGVS" :[
-        {"cDNA" : "ENST000001:c.5891A>T",
-         "protein" : "NP_000001:p.Trp23Cys"}
-    ],
     "variant_type" : "missense",
-    "transcripts" : ["ENST000001.1", "ENST000001.2"],
-    "protein_domain" : ["Zink finger", "Kinase"],
+    "variant_effect" : [
+        {"cDNA" : "ENST000001:c.5891A>T",
+         "protein" : "NP_000001:p.Trp23Cys",
+         "protein_domain" : "Zink finger"},
+        {"cDNA" : "ENST000002:c.5891A>T",
+         "protein" : "NP_000002:p.Trp23Cys",
+         "protein_domain" : "Zink finger"}
+    ],
+    "VUS_task_force_domain" : [true],
     "splicing_prediction_tools": [
         {"SpliceAI": 0.5},
         {"MaxEntScan": 0.5},
@@ -40,7 +43,10 @@
     ],
     "functional_data": [
         {"assay": "DNA-binding",
-         "performed": true,
+         "result": true,
+         "effect_strength": 0.217,
+         "comment" : "Something"},
+        {"assay": "Dimerisation",
          "result": true,
          "effect_strength": 0.217,
          "comment" : "Something"}
