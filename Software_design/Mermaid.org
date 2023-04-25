@@ -42,9 +42,6 @@ flowchart LR
     IS --> CS{check_set}
     end
 #+end_src
-
-#+RESULTS:
-[[file:configuration_import.png]]
 * Prediction tools
 ** Prediction tools refactored
 #+begin_src mermaid :file predicition_tool.png
@@ -134,11 +131,96 @@ Transcripts affected by variant
 flowchart LR
 
 #+end_src
-
-#+begin_src mermaid :file annotate_pvs1.png
-
+** Annotate for PVS1 and related
+1. Sequence per transcript
+2. Alternative start codons
+3. Prediction of NMD
+4. Assess exon skipping
+5. Truncated exon significance
+6. Protein length change
+7. Premature termination codon
+*** Assess_exon_skipping
+Only for intronic variants
+Needs part of the HGVS nomenclature
+Will have to figure out what part exactly
+Exon skipping automatically assumed when intron offset is 1 or 2
+#+begin_src mermaid :file assess_exon_skipping.png
+flowchart LR
+   TI[transcript_id] --> gprt{get_pyensembl_reference_transcript}
+   VP[variant_position] --> fae
+   HGVS[HGVS_nomenclature] --> IP{parse_variant_intron_pos}
+   subgraph check_if_exon_skipping_applies
+       IP --> CIP{check_intron_offset}
+       CIP --> |1 or 2| fae{find_affected_exon}
+       subgraph get_affected_exon
+           gprt --> rt[reference_transcript]
+            rt --> gpae{get_position_of_all_exons}
+           fae --> cae{characterise_affected_exons}
+           gpae --> fae
+           end
+       end
 #+end_src
+
+#+RESULTS:
+[[file:assess_exon_skipping.png]]
+
+*** Sequence
+#+begin_src mermaid :file reconstruct_variant_coding_sequence_coding_variant.png
+flowchart LR
+   VP[variant_position] --> GIO{get_intron_offset}
+   TI[transcript_id] --> RTS{pyensembl.transcript_coding_sequence}
+   VT[variant_type] --> GSC{get_start_codon}
+   subgraph reconstruct_variant_coding_sequence
+       GSC --> SaC[start_codon]
+       GSC --> SoC[stop_codon]
+       GIO --> IO[intron_offset]
+       VT --> rsvt{reconstruct_sequence_according_to_variant_type}
+       rsvt --> snp{reconstruct_sequence_snp}
+       rsvt --> delins{reconstruct_sequence_delins}
+       rsvt --> del{reconstruct_sequence_del}
+       rsvt --> ins{reconstruct_sequence_ins}
+       rsvt --> dup{reconstruct_sequence_dup}
+       RTS --> rsvt
+       end
+#+end_src
+
+#+begin_src mermaid :file reconstruct_variant_coding_sequence_intronic_variant.png
+flowchart LR
+   ti[transcript_id] --> rvs{reconstruct_variant_coding_sequence}
+   es[exons_skipped] --> rvs
+   tes[type_exons_skipped] --> rvs
+#+end_src
+
+#+RESULTS:
+[[file:reconstruct_variant_coding_sequence.png]]
+
+*** Protein length change
+*** Prediction NMD
+Gets transcript info and variant info
+*** Premature termination codon
+*** Alternative start codons
+Generate list of all known start_codons
+This information is extracted from the alternative transcripts
+Using the pyensemble.transcript structure
+#+begin_src mermaid :file alternative_start_codon.png
+flowchart LR
+   G[gene] --> GSC{get_start_codons}
+   GSC --> DTS[dictionary_transcript_and_start_codon]
+   subgraph get_alternative_start_codon
+       GSC --> |Get all transcripts| PGT{pyensemble.gene.transcripts}
+       GSC --> |Check if transcript is complete| PTC{pyensemble.transcript.complete}
+       GSC --> |Get transcript start codon position| SCP{pyensemble.transcript.start_codon_positions}
+       end
+#+end_src
+
+#+RESULTS:
+[[file:alternative_start_codon.png]]
+
 * Annotate ClinVar
+Three separate columns will have to be generated
+1. Same amino acid change in location
+2. Different amino acid change in same location
+3.
 #+begin_src mermaid :file
 
 #+end_src
