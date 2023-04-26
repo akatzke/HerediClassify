@@ -23,9 +23,6 @@ flowchart LR
     T --> DP
     end
 #+end_src
-
-#+RESULTS:
-[[file:overview.png]]
 * Configuration import
 #+begin_src mermaid :file configuration_import_rules.png
 flowchart LR
@@ -127,11 +124,10 @@ flowchart LR
 * PVS1
 Information needed: sequence of variant
 Transcripts affected by variant
-#+begin_src mermaid :file pvs1.png
-flowchart LR
-
-#+end_src
 ** Annotate for PVS1 and related
+Don't try and separate all the functions and refactor them here
+Instead to begin with simply move the whole bunch to the annotation portion
+Here it should be clearly defined though what input is needed for all of the separate functions
 1. Sequence per transcript
 2. Alternative start codons
 3. Prediction of NMD
@@ -165,36 +161,20 @@ flowchart LR
 [[file:assess_exon_skipping.png]]
 
 *** Sequence
-#+begin_src mermaid :file reconstruct_variant_coding_sequence_coding_variant.png
+This will for now return sequence, skipped exons and difference in protein_length
+#+begin_src mermaid :file reconstruct_variant_coding_sequence.png
 flowchart LR
-   VP[variant_position] --> GIO{get_intron_offset}
-   TI[transcript_id] --> RTS{pyensembl.transcript_coding_sequence}
-   VT[variant_type] --> GSC{get_start_codon}
-   subgraph reconstruct_variant_coding_sequence
-       GSC --> SaC[start_codon]
-       GSC --> SoC[stop_codon]
-       GIO --> IO[intron_offset]
-       VT --> rsvt{reconstruct_sequence_according_to_variant_type}
-       rsvt --> snp{reconstruct_sequence_snp}
-       rsvt --> delins{reconstruct_sequence_delins}
-       rsvt --> del{reconstruct_sequence_del}
-       rsvt --> ins{reconstruct_sequence_ins}
-       rsvt --> dup{reconstruct_sequence_dup}
-       RTS --> rsvt
-       end
+   ti[transcript_info] -> cvs{contrsuct_variant_coding_sequence}
+   vp[variant_position] -> cvs
+   cvs --> seq[sequence]
+   cvs --> pld[percent_length_difference]
+   csv --> es[exon_skipping]
+   csv --> nes[exons_skipped]
+   csv --> tes[types_exon_skipped]
 #+end_src
-
-#+begin_src mermaid :file reconstruct_variant_coding_sequence_intronic_variant.png
-flowchart LR
-   ti[transcript_id] --> rvs{reconstruct_variant_coding_sequence}
-   es[exons_skipped] --> rvs
-   tes[type_exons_skipped] --> rvs
-#+end_src
-
 #+RESULTS:
 [[file:reconstruct_variant_coding_sequence.png]]
 
-*** Protein length change
 *** Prediction NMD
 Gets transcript info and variant info
 *** Premature termination codon
@@ -215,7 +195,12 @@ flowchart LR
 
 #+RESULTS:
 [[file:alternative_start_codon.png]]
-
+*** TODO Think on how I want to handle data types
+Specifically the variant_info class and the dictionary used to transport variant information
+Those I do not really want to be using for my work
+Therefore, they'll have to be replaced and the code refactored in order for the code to work with the new data structures
+Though that should very much be a second though
+For the first implementation of the code there should be no thoughts on these data structures
 * Annotate ClinVar
 Three separate columns will have to be generated
 1. Same amino acid change in location
@@ -225,3 +210,30 @@ Three separate columns will have to be generated
 
 #+end_src
 * Refactoring
+* Transcripts_info
+This is a dataframe created by Daminaos in which he is saving the information generated on transcript level for the different variants
+- gene_name
+  Gene name
+  E.g. BRCA1
+- transcript_id
+  Transcript ID (shortened)
+  E.g. ENST00000380152
+- type_variant
+  Is type list
+  Most likely will only contain one item but can also contain multiple
+  E.g. [missense_variant]
+- exon
+  contains exon with 2 numbers
+  E.g. "exon11/27"
+  What does that mean?
+- var_coding
+  Contains a hgvs_parser object
+  This object describes the change to the variant that occurs
+- var_seq
+  Sequence of deletion or insertion as found in HGVS nomenclature
+  Check if that is true
+- var_protein
+  Contains change in protein sequence
+  E.g. "Lys1025Glu"
+** TODO There seems to be an error in the construction of var_seq in case of delins
+If I understand correctly del_seq has to always be empty
