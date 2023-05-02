@@ -1,0 +1,234 @@
+
+
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "variant": {
+      "type": "object",
+      "properties": {
+        "chr": {
+          "type": "integer"
+        },
+        "pos": {
+          "type": "integer"
+        },
+        "gene": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "alt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "chr",
+        "pos",
+        "gene",
+        "id",
+        "ref",
+        "alt"
+      ]
+    },
+    "variant_type": {
+      "type": "string"
+    },
+    "variant_effect": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "transcript": {
+              "type": "string",
+              "pattern" : "ENST[0-9]"
+            },
+            "hgvs_c": {
+              "type": "string",
+              "pattern" : "c\.[0-9]+.+"
+            },
+            "hgvs_p": {
+              "type": "string"
+              "pattern" : "c\.[0-9]+.+"
+            },
+            "consequence": {
+              "type": "string"
+            },
+            "exon": {
+              "type": "integer"
+            },
+            "protein_domain": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "transcript",
+            "hgvs_c",
+          ]
+        }
+      ]
+    },
+    "VUS_task_force_domain": {
+      "type": "boolean"
+    },
+    "splicing_prediction_tools": {
+      "type": "object",
+      "properties": {
+        "SpliceAI": {
+          "type": "number",
+          "minimum" : 0,
+          "maximum" : 1,
+        },
+        "MaxEntScan": {
+          "type": "number"
+          "minimum" : 0,
+          "maximum" : 1,
+        },
+        "HBondScore": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "SpliceAI",
+        "MaxEntScan",
+        "HBondScore"
+      ]
+    },
+    "pathogenicity_prediction_tools": {
+      "type": "object",
+      "properties": {
+        "REVEL": {
+          "type": "number",
+          "minimum" : 0,
+          "maximum" : 1,
+        },
+        "pyhloP": {
+          "type": "number",
+          "minimum" : -20,
+          "maximum" : 30,
+        }
+      },
+      "required": [
+        "REVEL",
+        "pyhloP"
+      ]
+    },
+    "gnomAD": {
+      "type": "object",
+      "properties": {
+        "AF": {
+          "type": "number"
+        },
+        "popmax": {
+          "type": "string"
+        },
+        "popmax AF": {
+          "type": "number",
+          "minimum" : 0,
+          "maximum" : 1,
+        }
+      },
+      "required": [
+        "AF",
+        "popmax",
+        "popmax AF"
+      ]
+    },
+    "FLOSSIES": {
+      "type": "object",
+      "properties": {
+        "AFR": {
+          "type": "integer"
+        },
+        "EUR": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "AFR",
+        "EUR"
+      ]
+    },
+    "mRNA_analysis": {
+      "type": "object",
+      "properties": {
+        "performed": {
+          "type": "boolean"
+        },
+        "result": {
+          "type": "boolean"
+        },
+        "effect_strength": {
+          "type": "number"
+        },
+        "affected_region": {
+          "type": "string",
+          "pattern" : "c\.[0-9]+.+"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "performed",
+        "result",
+        "effect_strength",
+        "affected_region",
+        "comment"
+      ]
+    },
+    "functional_data": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "assay": {
+              "type": "string"
+            },
+            "result": {
+              "type": "boolean"
+            },
+            "effect_strength": {
+              "type": "number"
+            },
+            "comment": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "assay",
+            "result",
+            "effect_strength",
+            "comment"
+          ]
+        }
+      ]
+    },
+    "prior": {
+      "type": "number"
+    },
+    "cooccurrence_in_trans": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "variant",
+    "variant_type",
+    "variant_effect",
+    "VUS_task_force_domain",
+    "splicing_prediction_tools",
+    "pathogenicity_prediction_tools",
+    "gnomAD",
+    "FLOSSIES",
+    "mRNA_analysis",
+    "functional_data",
+    "prior",
+    "cooccurrence_in_trans"
+  ]
+}
