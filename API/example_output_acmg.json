@@ -1,143 +1,116 @@
 {
     "classification": "pathogenic",
-    "PVS1" : [
+    "comment" : "This is a test",
+    "PVS1" :
         {"status" : true,
          "strength" : "very_strong",
-         "comment" : "This is a test"}
-    ],
-    "PS1" : [
+         "comment" : "This is a test"},
+    "PS1" :
         {"status" : true,
          "strength" : "strong",
-         "comment" : "This is a test"}
-    ],
-    "PS2" : [
+         "comment" : "This is a test"},
+    "PS2" :
         {"status" : true,
          "strength" : "strong",
-         "comment" : "This is a test"}
-    ],
-    "PS3" : [
+         "comment" : "This is a test"},
+    "PS3" :
         {"status" : true,
          "strength" : "strong",
-         "comment" : "This is a test"}
-    ],
-    "PS4" : [
+         "comment" : "This is a test"},
+    "PS4" :
         {"status" : true,
          "strength" : "strong",
-         "comment" : "This is a test"}
-    ],
-    "PM1" : [
+         "comment" : "This is a test"},
+    "PM1" :
         {"status" : true,
          "strength" : "moderate",
-         "comment" : "This is a test"}
-    ],
-    "PM2" : [
+         "comment" : "This is a test"},
+    "PM2" :
         {"status" : true,
          "strength" : "moderate",
-         "comment" : "This is a test"}
-    ],
-    "PM3" : [
+         "comment" : "This is a test"},
+    "PM3" :
         {"status" : true,
          "strength" : "moderate",
-         "comment" : "This is a test"}
-    ],
-    "PM4" : [
+         "comment" : "This is a test"},
+    "PM4" :
         {"status" : true,
          "strength" : "moderate",
-         "comment" : "This is a test"}
-    ],
-    "PM5" : [
+         "comment" : "This is a test"},
+    "PM5" :
         {"status" : true,
          "strength" : "moderate",
-         "comment" : "This is a test"}
-    ],
-    "PM6" : [
+         "comment" : "This is a test"},
+    "PM6" :
         {"status" : true,
          "strength" : "moderate",
-         "comment" : "This is a test"}
-    ],
-    "PP1" : [
+         "comment" : "This is a test"},
+    "PP1" :
         {"status" : true,
          "strength" : "supporting",
-         "comment" : "This is a test"}
-    ],
-    "PP2" : [
+         "comment" : "This is a test"},
+    "PP2" :
         {"status" : true,
          "strength" : "supporting",
-         "comment" : "This is a test"}
-    ],
-    "PP3" : [
+         "comment" : "This is a test"},
+    "PP3" :
         {"status" : true,
          "strength" : "supporting",
-         "comment" : "This is a test"}
-    ],
-    "PP4" : [
+         "comment" : "This is a test"},
+    "PP4" :
         {"status" : true,
          "strength" : "supporting",
-         "comment" : "This is a test"}
-    ],
-    "PP5" : [
+         "comment" : "This is a test"},
+    "PP5" :
         {"status" : true,
          "strength" : "supporting",
-         "comment" : "This is a test"}
-    ],
-    "BP1" : [
+         "comment" : "This is a test"},
+    "BP1" :
         {"status" : true,
          "strength" : "supporting",
-         "comment" : "This is a test"}
-    ],
-    "BP2" : [
+         "comment" : "This is a test"},
+    "BP2" :
         {"status" : true,
          "strength" : "supporting",
-         "comment" : "This is a test"}
-    ],
-    "BP3" : [
+         "comment" : "This is a test"},
+    "BP3" :
         {"status" : true,
          "strength" : "supporting",
-         "comment" : "This is a test"}
-    ],
-    "BP4" : [
+         "comment" : "This is a test"},
+    "BP4" :
         {"status" : true,
          "strength" : "supporting",
-         "comment" : "This is a test"}
-    ],
-    "BP5" : [
+         "comment" : "This is a test"},
+    "BP5" :
         {"status" : true,
          "strength" : "supporting",
-         "comment" : "This is a test"}
-    ],
-    "BP6" : [
+         "comment" : "This is a test"},
+    "BP6" :
         {"status" : true,
          "strength" : "supporting",
-         "comment" : "This is a test"}
-    ],
-    "BP7" : [
+         "comment" : "This is a test"},
+    "BP7" :
         {"status" : true,
          "strength" : "supporting",
-         "comment" : "This is a test"}
-    ],
-    "BS1" : [
+         "comment" : "This is a test"},
+    "BS1" :
         {"status" : true,
          "strength" : "strong",
-         "comment" : "This is a test"}
-    ],
-    "BS2" : [
+         "comment" : "This is a test"},
+    "BS2" :
         {"status" : true,
          "strength" : "strong",
-         "comment" : "This is a test"}
-    ],
-    "BS3" : [
+         "comment" : "This is a test"},
+    "BS3" :
         {"status" : true,
          "strength" : "strong",
-         "comment" : "This is a test"}
-    ],
-    "BS4" : [
+         "comment" : "This is a test"},
+    "BS4" :
         {"status" : true,
          "strength" : "strong",
-         "comment" : "This is a test"}
-    ],
-    "BA1" : [
+         "comment" : "This is a test"},
+    "BA1" :
         {"status" : true,
          "strength" : "stand alone",
          "comment" : "This is a test"}
-    ],
 }

@@ -1,0 +1,576 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "classification": {
+      "type": "string"
+    },
+    "comment": {
+      "type": "string"
+    },
+    "PVS1": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PS1": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PS2": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PS3": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PS4": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PM1": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PM2": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PM3": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PM4": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PM5": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PM6": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PP1": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PP2": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PP3": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PP4": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PP5": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BP1": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BP2": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BP3": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BP4": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BP5": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BP6": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BP7": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BS1": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BS2": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BS3": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BS4": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BA1": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "strength",
+        "comment"
+      ]
+    }
+  },
+  "required": [
+    "classification",
+    "comment",
+    "PVS1",
+    "PS1",
+    "PS2",
+    "PS3",
+    "PS4",
+    "PM1",
+    "PM2",
+    "PM3",
+    "PM4",
+    "PM5",
+    "PM6",
+    "PP1",
+    "PP2",
+    "PP3",
+    "PP4",
+    "PP5",
+    "BP1",
+    "BP2",
+    "BP3",
+    "BP4",
+    "BP5",
+    "BP6",
+    "BP7",
+    "BS1",
+    "BS2",
+    "BS3",
+    "BS4",
+    "BA1"
+  ]
+}
