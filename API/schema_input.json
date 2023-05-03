@@ -1,39 +1,24 @@
-
-
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
-    "variant": {
-      "type": "object",
-      "properties": {
-        "chr": {
-          "type": "integer"
-        },
-        "pos": {
-          "type": "integer"
-        },
-        "gene": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "ref": {
-          "type": "string"
-        },
-        "alt": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "chr",
-        "pos",
-        "gene",
-        "id",
-        "ref",
-        "alt"
-      ]
+    "chr": {
+      "type": "string",
+    },
+    "pos": {
+      "type": "integer"
+    },
+    "gene": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "ref": {
+      "type": "string"
+    },
+    "alt": {
+      "type": "string"
     },
     "variant_type": {
       "type": "string"
@@ -46,15 +31,15 @@
           "properties": {
             "transcript": {
               "type": "string",
-              "pattern" : "ENST[0-9]"
+              "pattern" : "ENST[0-9]{5,15}"
             },
             "hgvs_c": {
               "type": "string",
-              "pattern" : "c\.[0-9]+.+"
+              "pattern" : "[cC]\\.\\S+"
             },
             "hgvs_p": {
-              "type": "string"
-              "pattern" : "c\.[0-9]+.+"
+              "type": ["string", "null"],
+              "pattern" : "[pP]\\.\\S+"
             },
             "consequence": {
               "type": "string"
@@ -63,12 +48,16 @@
               "type": "integer"
             },
             "protein_domain": {
-              "type": "string"
+              "type" : ["string", "null"]
             }
           },
           "required": [
             "transcript",
             "hgvs_c",
+            "hgvs_p",
+            "consequence",
+            "exon",
+            "protein_domain"
           ]
         }
       ]
@@ -76,18 +65,18 @@
     "VUS_task_force_domain": {
       "type": "boolean"
     },
-    "splicing_prediction_tools": {
+    "spli {
       "type": "object",
       "properties": {
         "SpliceAI": {
           "type": "number",
           "minimum" : 0,
-          "maximum" : 1,
+          "maximum" : 1
         },
         "MaxEntScan": {
-          "type": "number"
+          "type": "number",
           "minimum" : 0,
-          "maximum" : 1,
+          "maximum" : 1
         },
         "HBondScore": {
           "type": "number"
@@ -105,12 +94,12 @@
         "REVEL": {
           "type": "number",
           "minimum" : 0,
-          "maximum" : 1,
+          "maximum" : 1
         },
         "pyhloP": {
           "type": "number",
           "minimum" : -20,
-          "maximum" : 30,
+          "maximum" : 30
         }
       },
       "required": [
@@ -122,31 +111,34 @@
       "type": "object",
       "properties": {
         "AF": {
-          "type": "number"
+          "type": "number",
+          "minimum" : 0,
+          "maximum" : 1
         },
         "popmax": {
-          "type": "string"
+          "type": "string",
+          "pattern" : "[A-Z]{3}"
         },
         "popmax AF": {
           "type": "number",
           "minimum" : 0,
-          "maximum" : 1,
+          "maximum" : 1
         }
       },
       "required": [
-        "AF",
-        "popmax",
-        "popmax AF"
+        "AF"
       ]
     },
     "FLOSSIES": {
       "type": "object",
       "properties": {
         "AFR": {
-          "type": "integer"
+          "type": "integer",
+          "minimum" : 0
         },
         "EUR": {
-          "type": "integer"
+          "type": "integer",
+          "minimum" : 0
         }
       },
       "required": [
@@ -167,19 +159,14 @@
           "type": "number"
         },
         "affected_region": {
-          "type": "string",
-          "pattern" : "c\.[0-9]+.+"
+          "type": "string"
         },
         "comment": {
           "type": "string"
         }
       },
       "required": [
-        "performed",
-        "result",
-        "effect_strength",
-        "affected_region",
-        "comment"
+        "performed"
       ]
     },
     "functional_data": {
@@ -207,18 +194,23 @@
             "effect_strength",
             "comment"
           ]
-        }
+        },
       ]
     },
     "prior": {
       "type": "number"
     },
-    "cooccurrence_in_trans": {
+    "co-occurrence_in_trans": {
       "type": "boolean"
     }
   },
   "required": [
-    "variant",
+    "chr",
+    "pos",
+    "gene",
+    "id",
+    "ref",
+    "alt",
     "variant_type",
     "variant_effect",
     "VUS_task_force_domain",
@@ -227,8 +219,7 @@
     "gnomAD",
     "FLOSSIES",
     "mRNA_analysis",
-    "functional_data",
     "prior",
-    "cooccurrence_in_trans"
+    "co-occurrence_in_trans"
   ]
 }
