@@ -56,7 +56,7 @@ flowchart LR
 #+end_src
 
 #+RESULTS:
-[[file:predicition_tool_refactored.png]]
+[[file:predicition_tool.png]]
 ** GenOtoScope
 Decision on what prediction tool is to be used is based on variant type
 Exonic variants only get pathogenictiy scores and conservation
@@ -94,10 +94,12 @@ Generally regions applicable to PMs for missense variants
 #+begin_src mermaid :file critical_region_refactored.png
 flowchart LR
    D[data] --> CR{check_critical_region}
+   GR[general_regions] --> CR
+   SR[gene/disease_specific_regions] --> CR
    CR --> R[Result]
   subgraph assess_critical_region
-      CR --> SCR{check_specific_critical_region}
       CR --> GCR{check_general_critical_region}
+      CR --> SCR{check_specific_critical_region}
       end
 #+end_src
 
@@ -105,9 +107,9 @@ flowchart LR
 [[file:critical_region_refactored.png]]
 
 Generally the files used for this annotation should at best contain genomic location
-In taht case the whole transcript issue can be disregarde
+In that case the whole transcript issue can be disregarded
 Making the annotation a whole lot easier
-Outsource the difficutl task elsewhere
+Outsource the difficult task elsewhere
 #+begin_src mermaid :file annotate_critical_region.png
 flowchart LR
    FL[file_location] --> ACR{annotated_critical_regions}
@@ -135,48 +137,43 @@ Here it should be clearly defined though what input is needed for all of the sep
 5. Truncated exon significance
 6. Protein length change
 7. Premature termination codon
-*** Assess_exon_skipping
-Only for intronic variants
-Needs part of the HGVS nomenclature
-Will have to figure out what part exactly
-Exon skipping automatically assumed when intron offset is 1 or 2
-#+begin_src mermaid :file assess_exon_skipping.png
-flowchart LR
-   TI[transcript_id] --> gprt{get_pyensembl_reference_transcript}
-   VP[variant_position] --> fae
-   HGVS[HGVS_nomenclature] --> IP{parse_variant_intron_pos}
-   subgraph check_if_exon_skipping_applies
-       IP --> CIP{check_intron_offset}
-       CIP --> |1 or 2| fae{find_affected_exon}
-       subgraph get_affected_exon
-           gprt --> rt[reference_transcript]
-            rt --> gpae{get_position_of_all_exons}
-           fae --> cae{characterise_affected_exons}
-           gpae --> fae
-           end
-       end
-#+end_src
-
-#+RESULTS:
-[[file:assess_exon_skipping.png]]
-
 *** Sequence
 This will for now return sequence, skipped exons and difference in protein_length
 #+begin_src mermaid :file reconstruct_variant_coding_sequence.png
 flowchart LR
-   ti[transcript_info] -> cvs{contrsuct_variant_coding_sequence}
-   vp[variant_position] -> cvs
+   ti[transcript_info] --> cvs{contrsuct_variant_coding_sequence}
+   vp[variant_position] --> cvs
    cvs --> seq[sequence]
    cvs --> pld[percent_length_difference]
-   csv --> es[exon_skipping]
-   csv --> nes[exons_skipped]
-   csv --> tes[types_exon_skipped]
+   cvs --> es[exon_skipping]
+   cvs --> nes[exons_affected_in_transcript]
+   cvs --> tvs[transcript_variant_start]
+   cvs --> tve[transcript_variant_end]
+   cvs --> tes[types_exon_skipped]
 #+end_src
 #+RESULTS:
 [[file:reconstruct_variant_coding_sequence.png]]
 
 *** Prediction NMD
 Gets transcript info and variant info
+Variant info only needed for logging
+#+begin_src mermaid :file assess_NMD.png
+flowchart LR
+   es[exon_skipping] --> nmd{assess_NMD}
+   nes[exons_affected_in_transcript] --> nmd
+   tvs[transcript_variant_start] --> nmd
+   tve[transcript_variant_end] --> nmd
+   tes[types_exon_skipped] --> nmd
+   vs[variant_sequence] --> nmd
+   nmd --> nmds[NMD_status]
+#+end_src
+
+#+RESULTS:
+[[file:assess_NMD.png]]
+**** Note
+Transcript_variant_start and transcript_variant_end are describing the position of the variant in the exon
+This is either created by assess_exon_skipping function in case an exon is being skipped otherwise the variable is created by kj
+I find it difficult that the exons that the variant is skipping is described by the same variable as the variable that described which exon is affected by a variant when no exon is being skipped
 *** Premature termination codon
 *** Alternative start codons
 Generate list of all known start_codons
