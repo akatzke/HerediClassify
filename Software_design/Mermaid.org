@@ -126,7 +126,6 @@ flowchart LR
 * PVS1
 Information needed: sequence of variant
 Transcripts affected by variant
-** Annotate for PVS1 and related
 Don't try and separate all the functions and refactor them here
 Instead to begin with simply move the whole bunch to the annotation portion
 Here it should be clearly defined though what input is needed for all of the separate functions
@@ -137,24 +136,44 @@ Here it should be clearly defined though what input is needed for all of the sep
 5. Truncated exon significance
 6. Protein length change
 7. Premature termination codon
-*** Sequence
+** Get position in transcript
+#+begin_src mermaid :file get_variant_position_in_transcirpt.png
+flowchart LR
+   ti[transcript_info] --> gvp{get_variant_position_in_transcirpt}
+   gvp --> exon_skipping
+   gvp --> types_exon_skipped
+   gvp --> exon_affected
+   gvp --> variant_transcript_start
+   gvp --> variant_transcript_stop
+   rt[reference_transcript] --> gvp
+   vp[variant_position] --> gvp
+   subgraph get_variant_position_in_transcirpt
+       gvp --> |if splice variant| gio{get_intron_offset}
+       gvp --> |if not splice variant| fe{find_exon_by_var_pos}
+       gio --> io[intron_offset]
+       io --> aes{assess_exon_skipping}
+       end
+#+end_src
+
+#+RESULTS:
+[[file:get_variant_position_in_transcirpt.png]]
+
+** Sequence
 This will for now return sequence, skipped exons and difference in protein_length
 #+begin_src mermaid :file reconstruct_variant_coding_sequence.png
 flowchart LR
-   ti[transcript_info] --> cvs{contrsuct_variant_coding_sequence}
-   vp[variant_position] --> cvs
-   cvs --> seq[sequence]
-   cvs --> pld[percent_length_difference]
-   cvs --> es[exon_skipping]
-   cvs --> nes[exons_affected_in_transcript]
-   cvs --> tvs[transcript_variant_start]
-   cvs --> tve[transcript_variant_end]
-   cvs --> tes[types_exon_skipped]
+   transcript_info --> cvs{contrsuct_variant_coding_sequence}
+   cvs --> sequence
+   exon_skipping --> cvs
+   exons_affected_in_transcript --> cvs
+   transcript_variant_start --> cvs
+   transcript_variant_stop --> cvs
+   types_exon_skipped --> cvs
 #+end_src
 #+RESULTS:
 [[file:reconstruct_variant_coding_sequence.png]]
 
-*** Prediction NMD
+** Prediction NMD
 Gets transcript info and variant info
 Variant info only needed for logging
 #+begin_src mermaid :file assess_NMD.png
@@ -166,16 +185,22 @@ flowchart LR
    tes[types_exon_skipped] --> nmd
    vs[variant_sequence] --> nmd
    nmd --> nmds[NMD_status]
+   nmd --> {search_stop_codon}
 #+end_src
 
 #+RESULTS:
 [[file:assess_NMD.png]]
-**** Note
+*** Note
 Transcript_variant_start and transcript_variant_end are describing the position of the variant in the exon
-This is either created by assess_exon_skipping function in case an exon is being skipped otherwise the variable is created by kj
+This is either created by assess_exon_skipping function in case an exon is being skipped otherwise the variable is created from the find_exon_by_var_pos function
+The former is used in construct_variant_seque
 I find it difficult that the exons that the variant is skipping is described by the same variable as the variable that described which exon is affected by a variant when no exon is being skipped
-*** Premature termination codon
-*** Alternative start codons
+** Premature termination codon
+#+begin_src mermaid  :file get_premature_termination_codon.png
+flowchart LR
+   sequence --> cpl{calculate_protein_length}
+#+end_src
+** Alternative start codons
 Generate list of all known start_codons
 This information is extracted from the alternative transcripts
 Using the pyensemble.transcript structure
@@ -189,10 +214,7 @@ flowchart LR
        GSC --> |Get transcript start codon position| SCP{pyensemble.transcript.start_codon_positions}
        end
 #+end_src
-
-#+RESULTS:
-[[file:alternative_start_codon.png]]
-*** TODO Think on how I want to handle data types
+** TODO Think on how I want to handle data types
 Specifically the variant_info class and the dictionary used to transport variant information
 Those I do not really want to be using for my work
 Therefore, they'll have to be replaced and the code refactored in order for the code to work with the new data structures
