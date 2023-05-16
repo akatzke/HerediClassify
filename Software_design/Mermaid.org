@@ -6,39 +6,51 @@ Code for visualising software design in mermaid
 #+begin_src mermaid :file overview.png
 flowchart LR
     DB[(Database)] -->|Import| RD[Raw data]
+    C["Configuration"] --> CI{"Configuration import"}
     CR["Configuration
    rules"] --> CIR{"Configuration import
    rules"}
-    C["Configuration"] --> CI{"Configuration import"}
     CL --> |Export| Output
     subgraph Variant_classification_tool
-    RD -->DP{Data processing}
-    DP --> PD[Processed data]
-    CIR --> PL[Data process list]
-    CIR --> RL[Rule list]
-    PL --> DP
-    PD --> CL{Classification}
-    RL --> CL
-    CI --> T[Thresholds]
-    T --> DP
+        CI --> T[Thresholds]
+        RD -->DP{Data processing}
+        DP --> PD[Processed data]
+        CIR --> PL[Data process list]
+        CIR --> RL[Rule list]
+        PL --> DP
+        PD --> CL{Classification}
+        RL --> CL
+        T --> DP
     end
 #+end_src
+
+#+RESULTS:
+[[file:overview.png]]
+
 * Configuration import
 #+begin_src mermaid :file configuration_import_rules.png
 flowchart LR
-    CF[Configuration file] -->I{import}
+    CF[Configuration rules] -->I{import}
     CS --> RE[Error]
     FR --> DPL["Data processing
     set"]
     FR --> RL[Rule set]
     subgraph Configuration_import
-    I --> C[Configuration]
-    C --> FR{find_rule_in_dict}
-    RD[Rule dictionary] -->FR
-    FR --> IS{insert_into_set}
-    IS --> CS{check_set}
-    end
+        I --> C[Configuration]
+        C --> FR{find_rule_in_dict}
+        RD[Rule dictionary] -->FR
+        FR --> IS{insert_into_set}
+        IS --> CS{check_set}
+        end
 #+end_src
+
+#+RESULTS:
+[[file:configuration_import_rules.png]]
+** Note
+For the data processing the variant is important too
+So for certain variant types some annotations are not necessary
+E.g. the coding sequence reconstruction is only necessary for a subset of variants and very processing intensive
+At this point in some manner the variant_type should be checked as well?
 * Prediction tools
 ** Prediction tools refactored
 #+begin_src mermaid :file predicition_tool.png
@@ -137,12 +149,13 @@ Here it should be clearly defined though what input is needed for all of the sep
 6. Protein length change
 7. Premature termination codon
 ** Get position in transcript
+The function  ~get_intron_offset~ is called ~parse_variant_intron_pos~ RefineLossofFunction
 #+begin_src mermaid :file get_variant_position_in_transcirpt.png
 flowchart LR
    ti[transcript_info] --> gvp{get_variant_position_in_transcirpt}
    gvp --> exon_skipping
+   gvp --> exon_affected_in_transcript
    gvp --> types_exon_skipped
-   gvp --> exon_affected
    gvp --> variant_transcript_start
    gvp --> variant_transcript_stop
    rt[reference_transcript] --> gvp
@@ -152,24 +165,50 @@ flowchart LR
        gvp --> |if not splice variant| fe{find_exon_by_var_pos}
        gio --> io[intron_offset]
        io --> aes{assess_exon_skipping}
+       aes --> fe
        end
 #+end_src
 
 #+RESULTS:
 [[file:get_variant_position_in_transcirpt.png]]
 
+*** Assess exon skipping
+#+begin_src mermaid :file assess_exon_skipping.png
+flowchart LR
+   aes --> exon_skipping
+   aes -->  exons_affected_in_transcript
+   aes --> transcript_variant_start
+   aes --> transcript_variant_stop
+   aes --> types_exon_skipped
+   intron_offset --> aes{assess_exon_skipping}
+   variant_type --> aes
+   transcript_exon --> aes
+   var_hgvs --> aes
+   genomic_start --> aes
+   genomic_stop --> aes
+#+end_src
+
+#+RESULTS:
+[[file:assess_exon_skipping.png]]
+
 ** Sequence
 This will for now return sequence, skipped exons and difference in protein_length
 #+begin_src mermaid :file reconstruct_variant_coding_sequence.png
 flowchart LR
-   transcript_info --> cvs{contrsuct_variant_coding_sequence}
-   cvs --> sequence
+   cvs --> variant_sequence
+   cvs --> diff_len
+   var_genomic_start --> cvs{contrsuct_variant_coding_sequence}
+   var_genomic_stop --> cvs
+   var_type --> cvs
+   var_hgvs --> cvs
+   var_transcript_id --> cvs
    exon_skipping --> cvs
    exons_affected_in_transcript --> cvs
+   types_exon_skipped --> cvs
    transcript_variant_start --> cvs
    transcript_variant_stop --> cvs
-   types_exon_skipped --> cvs
 #+end_src
+
 #+RESULTS:
 [[file:reconstruct_variant_coding_sequence.png]]
 
@@ -178,14 +217,20 @@ Gets transcript info and variant info
 Variant info only needed for logging
 #+begin_src mermaid :file assess_NMD.png
 flowchart LR
-   es[exon_skipping] --> nmd{assess_NMD}
-   nes[exons_affected_in_transcript] --> nmd
-   tvs[transcript_variant_start] --> nmd
-   tve[transcript_variant_end] --> nmd
-   tes[types_exon_skipped] --> nmd
-   vs[variant_sequence] --> nmd
-   nmd --> nmds[NMD_status]
-   nmd --> {search_stop_codon}
+   nmd --> NMD_status
+   faep --> NMD_affected_exons
+   exon_skipping --> nmd{assess_NMD}
+   exons_affected_in_transcript --> nmd
+   types_exon_skipped --> nmd
+   transcript_variant_start --> nmd
+   transcript_variant_stop --> nmd
+   variant_sequence --> nmd
+   diff_len --> nmd
+   var_type --> nmd
+   subgraph assess_NMD
+       nmd --> ssc{search_stop_codon}
+       nmd --> faep{find_affected_exons_pos}
+       end
 #+end_src
 
 #+RESULTS:
@@ -195,24 +240,60 @@ Transcript_variant_start and transcript_variant_end are describing the position 
 This is either created by assess_exon_skipping function in case an exon is being skipped otherwise the variable is created from the find_exon_by_var_pos function
 The former is used in construct_variant_seque
 I find it difficult that the exons that the variant is skipping is described by the same variable as the variable that described which exon is affected by a variant when no exon is being skipped
-** Premature termination codon
-#+begin_src mermaid  :file get_premature_termination_codon.png
+** Refine PVS1 for start lost
+#+begin_src mermaid :file refine_start_lost.png
 flowchart LR
-   sequence --> cpl{calculate_protein_length}
+   esc --> pvs1_start_lost_status
+   esc --> pvs1_start_lost_strength
+   exist_alternative_start_codon --> esc{evaluate_start_codon}
+   pathogenic_variant_between_start_loss_and_start_alternative --> esc
 #+end_src
-** Alternative start codons
-Generate list of all known start_codons
-This information is extracted from the alternative transcripts
-Using the pyensemble.transcript structure
-#+begin_src mermaid :file alternative_start_codon.png
+
+#+RESULTS:
+[[file:refine_start_lost.png]]
+
+** Find alternative start codon
+** Find pathogenic variants between original start codon and new start codon
+** Refine PVS1 for splice site
+#+begin_src mermaid :file refine_splice_site.png
 flowchart LR
-   G[gene] --> GSC{get_start_codons}
-   GSC --> DTS[dictionary_transcript_and_start_codon]
-   subgraph get_alternative_start_codon
-       GSC --> |Get all transcripts| PGT{pyensemble.gene.transcripts}
-       GSC --> |Check if transcript is complete| PTC{pyensemble.transcript.complete}
-       GSC --> |Get transcript start codon position| SCP{pyensemble.transcript.start_codon_positions}
-       end
+   rss --> pvs1_splice_site_status
+   rss --> pvs1_splice_site_strength
+   var_type --> rss{refine_splice_site}
+   var_hgvs --> rss
+   exon_skipping --> rss
+   types_exon_skipped --> rss
+   preservation_of_reading_frame --> rss
+   NMD_status --> rss
+   transcript_affected_by_NMD_disease_relevant --> rss
+   truncated_exon_relevant --> rss
+   prot_len_diff --> rss
+#+end_src
+
+#+RESULTS:
+[[file:refine_splice_site.png]]
+*** Note
+In the original code the function ~evaluate_skipping_start_codon_exon~
+This is not part of the general recommendations for PVS1
+The output from that function is not returned
+** Refine PVS1 for nonsense and frameshift
+#+begin_src mermaid : :file refine_nonsense_frameshift.png
+flowchart LR
+   rnf{refine_nonsense_frameshift} --> pvs1_nonsense_frameshift_status
+   rnf --> pvs1_nonsense_frameshift_strength
+   NMD_status --> rnf
+   transcript_affected_by_NMD_disease_relevant --> rss
+   truncated_exon_relevant --> rss
+   prot_len_diff --> rss
+#+end_src
+** Aggregate subrules
+#+begin_src mermaid :file aggregate_subrules.png
+   cr --> pvs1_strength
+   cr --> pvs1_status
+   cr --> csft{is_any_subrule_true}
+   csft --> {get_highest_strength}
+   rule_status --> cr
+   rule_strengths --> cr
 #+end_src
 ** TODO Think on how I want to handle data types
 Specifically the variant_info class and the dictionary used to transport variant information
@@ -228,7 +309,6 @@ Three separate columns will have to be generated
 #+begin_src mermaid :file
 
 #+end_src
-* Refactoring
 * Transcripts_info
 This is a dataframe created by Daminaos in which he is saving the information generated on transcript level for the different variants
 - gene_name
