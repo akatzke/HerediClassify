@@ -100,10 +100,21 @@ flowchart LR
 
 #+RESULTS:
 [[file:prediction_tool_genotoscope.png]]
+* Allele frequency rules
+#+begin_src mermaid :file allele_frequency_rules.png
+flowchart LR
+   thresholds --> aaf
+   inheritance_modes --> aaf{assess_allele_frequency_rule}
+   subgraph compare_frequency_to_threshold
+   pop_max --> cft
+   threshold --> cft{compare_frequency_to_threshold}
+   cft --> frequency_status
+   end
+#+end_src
 * PM1
 Information needed: variant information, transcripts, critical region, hotspot, critical protein regions without bening variants
 Generally regions applicable to PMs for missense variants
-#+begin_src mermaid :file critical_region_refactored.png
+#+begin_src mermaid :file pm1_critical_region_refactored.png
 flowchart LR
    D[data] --> CR{check_critical_region}
    GR[general_regions] --> CR
@@ -116,13 +127,13 @@ flowchart LR
 #+end_src
 
 #+RESULTS:
-[[file:critical_region_refactored.png]]
+[[file:pm1_critical_region_refactored.png]]
 
 Generally the files used for this annotation should at best contain genomic location
 In that case the whole transcript issue can be disregarded
 Making the annotation a whole lot easier
 Outsource the difficult task elsewhere
-#+begin_src mermaid :file annotate_critical_region.png
+#+begin_src mermaid :file pm1_annotate_critical_region.png
 flowchart LR
    FL[file_location] --> ACR{annotated_critical_regions}
    VD[variant_data] --> ACR
@@ -134,7 +145,7 @@ flowchart LR
 #+end_src
 
 #+RESULTS:
-[[file:annotate_critical_region.png]]
+[[file:pm1_annotate_critical_region.png]]
 * PVS1
 Information needed: sequence of variant
 Transcripts affected by variant
@@ -150,16 +161,21 @@ Here it should be clearly defined though what input is needed for all of the sep
 7. Premature termination codon
 ** Get position in transcript
 The function  ~get_intron_offset~ is called ~parse_variant_intron_pos~ RefineLossofFunction
-#+begin_src mermaid :file get_variant_position_in_transcirpt.png
+Information previously stored in ~variant_info~ object and ~transcript_info~ dictionary
+I'd like to remove it, as I fell like it obstructs the clear picture of the flow of information in the tools
+#+begin_src mermaid :file pvs1_get_variant_position_in_transcirpt.png
 flowchart LR
-   ti[transcript_info] --> gvp{get_variant_position_in_transcirpt}
-   gvp --> exon_skipping
+   gvp{get_variant_position_in_transcirpt} --> exon_skipping
    gvp --> exon_affected_in_transcript
    gvp --> types_exon_skipped
    gvp --> variant_transcript_start
    gvp --> variant_transcript_stop
    rt[reference_transcript] --> gvp
-   vp[variant_position] --> gvp
+   var_genomic_start --> gvp
+   var_genomic_stop --> gvp
+   var_hgvs --> gvp
+   var_type --> gvp
+   var_exon --> gvp
    subgraph get_variant_position_in_transcirpt
        gvp --> |if splice variant| gio{get_intron_offset}
        gvp --> |if not splice variant| fe{find_exon_by_var_pos}
@@ -170,7 +186,7 @@ flowchart LR
 #+end_src
 
 #+RESULTS:
-[[file:get_variant_position_in_transcirpt.png]]
+[[file:pvs1_get_variant_position_in_transcirpt.png]]
 
 *** Assess exon skipping
 #+begin_src mermaid :file assess_exon_skipping.png
@@ -193,7 +209,7 @@ flowchart LR
 
 ** Sequence
 This will for now return sequence, skipped exons and difference in protein_length
-#+begin_src mermaid :file reconstruct_variant_coding_sequence.png
+#+begin_src mermaid :file pvs1_reconstruct_variant_coding_sequence.png
 flowchart LR
    cvs --> variant_sequence
    cvs --> diff_len
@@ -205,17 +221,17 @@ flowchart LR
    exon_skipping --> cvs
    exons_affected_in_transcript --> cvs
    types_exon_skipped --> cvs
-   transcript_variant_start --> cvs
-   transcript_variant_stop --> cvs
+   variant_transcript_start --> cvs
+   variant_transcript_stop --> cvs
 #+end_src
 
 #+RESULTS:
-[[file:reconstruct_variant_coding_sequence.png]]
+[[file:pvs1_reconstruct_variant_coding_sequence.png]]
 
 ** Prediction NMD
 Gets transcript info and variant info
 Variant info only needed for logging
-#+begin_src mermaid :file assess_NMD.png
+#+begin_src mermaid :file pvs1_assess_NMD.png
 flowchart LR
    nmd --> NMD_status
    faep --> NMD_affected_exons
@@ -234,28 +250,52 @@ flowchart LR
 #+end_src
 
 #+RESULTS:
-[[file:assess_NMD.png]]
+[[file:pvs1_assess_NMD.png]]
 *** Note
 Transcript_variant_start and transcript_variant_end are describing the position of the variant in the exon
 This is either created by assess_exon_skipping function in case an exon is being skipped otherwise the variable is created from the find_exon_by_var_pos function
 The former is used in construct_variant_seque
 I find it difficult that the exons that the variant is skipping is described by the same variable as the variable that described which exon is affected by a variant when no exon is being skipped
 ** Refine PVS1 for start lost
-#+begin_src mermaid :file refine_start_lost.png
+#+begin_src mermaid :file pvs1_refine_start_lost.png
 flowchart LR
    esc --> pvs1_start_lost_status
    esc --> pvs1_start_lost_strength
-   exist_alternative_start_codon --> esc{evaluate_start_codon}
-   pathogenic_variant_between_start_loss_and_start_alternative --> esc
+   alternative_start_codon_status --> esc{evaluate_start_codon}
+   pathogenic_variant_between_start_and_start_alternative --> esc
 #+end_src
 
 #+RESULTS:
-[[file:refine_start_lost.png]]
+[[file:pvs1_refine_start_lost.png]]
 
 ** Find alternative start codon
+#+begin_src mermaid :file pvs1_exists_alternative_start_codon.png
+flowchart LR
+   fasc{exists_alternative_start_codon} --> alternative_start_codon_status
+   ref_transcript --> fasc
+#+end_src
+
+#+RESULTS:
+[[file:pvs1_exists_alternative_start_codon.png]]
+
 ** Find pathogenic variants between original start codon and new start codon
+#+begin_src mermaid :file pvs1_find_pathogenic_variant_between_start_and_alternative_start.png
+flowchart LR
+   csci --> fpv{find_pathogenic_variant_in_range}
+   variant_sequence --> fas{find_alternative_start_codon}
+   var_genomic_start --> fpv
+   var_genomic_stop --> fpv
+   var_chr --> fpv
+   ref_transcript --> fpv
+   fas --> csci[closest_start_codon_index]
+   fpv --> pathogenic_variant_between_start_and_start_alternative
+#+end_src
+
+#+RESULTS:
+[[file:pvs1_find_pathogenic_variant_between_start_and_alternative_start.png]]
+
 ** Refine PVS1 for splice site
-#+begin_src mermaid :file refine_splice_site.png
+#+begin_src mermaid :file pvs1_refine_splice_site.png
 flowchart LR
    rss --> pvs1_splice_site_status
    rss --> pvs1_splice_site_strength
@@ -263,29 +303,87 @@ flowchart LR
    var_hgvs --> rss
    exon_skipping --> rss
    types_exon_skipped --> rss
-   preservation_of_reading_frame --> rss
+   reading_frame_status --> rss
    NMD_status --> rss
    transcript_affected_by_NMD_disease_relevant --> rss
    truncated_exon_relevant --> rss
-   prot_len_diff --> rss
+   prot_len_diff_percentage --> rss
 #+end_src
 
 #+RESULTS:
-[[file:refine_splice_site.png]]
+[[file:pvs1_refine_splice_site.png]]
+
 *** Note
 In the original code the function ~evaluate_skipping_start_codon_exon~
 This is not part of the general recommendations for PVS1
 The output from that function is not returned
+** Assess reading frame
+#+begin_src mermaid :file pvs1_assess_reading_frame.png
+flowchart LR
+   diff_len --> arfp{assess_reading_frame_preservation}
+   arfp --> reading_frame_status
+#+end_src
+
+#+RESULTS:
+[[file:pvs1_assess_reading_frame.png]]
+
 ** Refine PVS1 for nonsense and frameshift
-#+begin_src mermaid : :file refine_nonsense_frameshift.png
+#+begin_src mermaid : :file pvs1_refine_nonsense_frameshift.png
 flowchart LR
    rnf{refine_nonsense_frameshift} --> pvs1_nonsense_frameshift_status
    rnf --> pvs1_nonsense_frameshift_strength
    NMD_status --> rnf
-   transcript_affected_by_NMD_disease_relevant --> rss
-   truncated_exon_relevant --> rss
-   prot_len_diff --> rss
+   transcript_affected_by_NMD_disease_relevant --> rnf
+   truncated_exon_relevant --> rnf
+   prot_len_diff_percentage --> rnf
 #+end_src
+
+#+RESULTS:
+[[file:pvs1_refine_nonsense_frameshift.png]]
+
+** Transcript relevance
+exons_disease_relevant_transcripts is from literature
+Research how Damianos created that
+Look into alternatives to creating that
+E.g. all transcripts of HBOC genes that produced functional proteins
+#+begin_src mermaid :file pvs1_assess_relevance_of_transcript.png
+flowchart LR
+   art --> transcript_affected_by_NMD_disease_relevant
+   var_chr --> art
+   NMD_affected_exons --> art{assess_transcript_relevance}
+   exons_disease_relevant_transcripts --> art
+#+end_src
+
+#+RESULTS:
+[[file:pvs1_assess_relevance_of_transcript.png]]
+
+Wouldn't so
+** Exon relevance
+#+begin_src mermaid :file pvs1_assess_relevance_of_exon.png
+flowchart LR
+   aer --> truncated_exon_relevant
+   var_chr --> aer
+   ref_transcript --> aer
+   NMD_affected_exons --> aer{assess_truncated_exon_relevance}
+   prot_domains --> aer
+   critical_protein_regions --> aer
+   exons_disease_relevant_transcripts --> aer
+#+end_src
+
+#+RESULTS:
+[[file:pvs1_assess_relevance_of_exon.png]]
+
+** Protein length difference
+#+begin_src mermaid :file pvs1_get_protein_len_difference.png
+flowchart LR
+   cpl --> prot_len_diff_percent
+   variant_sequence --> cpl{calculate_protein_length}
+   reference_transcript --> cpl
+#+end_src
+
+#+RESULTS:
+[[file:pvs1_get_protein_len_difference.png]]
+
 ** Aggregate subrules
 #+begin_src mermaid :file aggregate_subrules.png
    cr --> pvs1_strength
@@ -305,9 +403,100 @@ For the first implementation of the code there should be no thoughts on these da
 Three separate columns will have to be generated
 1. Same amino acid change in location
 2. Different amino acid change in same location
-3.
-#+begin_src mermaid :file
+** Assess PS1
+#+begin_src mermaid :file Clinvar_assess_ps1.png
+flowchart LR
+   codon_genomic_pos --> aps
+   codon_seq_ref --> aps
+   prot_start --> aps
+   amino_ref --> aps
+   amino_obs --> aps
+   clinvar_entries_per_transcript --> aps{assess_ps1}
+   aps -->
+#+end_src
 
+#+RESULTS:
+[[file:Clinvar_assess_ps1.png]]
+
+** Assess PM5
+#+begin_src mermaid :file Clinvar_assess_pm5.png
+flowchart LR
+   codon_genomic_pos --> apm
+   prot_start --> apm
+   var_genomic_start --> apm
+   codon_seq_ref -> apm
+   clinvar_entries_per_transcript --> apm{assess_pm5}
+#+end_src
+
+#+RESULTS:
+[[file:Clinvar_assess_pm5.png]]
+
+** Variant codon information
+Creates the below described transcript_var_codon_info object
+#+begin_src mermaid :file Clinvar_transcript_var_codon_information.png
+flowchart LR
+   var_genomic_start --> ct
+   var_obs_base --> ct
+   var_transcript_id --> ct
+   var_hgvs --> ct{create_transcript_var_codon_info}
+   ct --> var_start
+   ct --> codon_genomic_pos
+   ct --> codon_coding_pos
+   ct --> codon_intersect_intron_at
+   ct --> var_strand
+   ct --> codon_seq_ref
+   ct --> codon_seq_obs
+   ct --> prot_start
+   ct --> amino_ref
+   ct --> amino_obs
+#+end_src
+
+#+RESULTS:
+[[file:Clinvar_transcript_var_codon_information.png]]
+
+** Information class ~transcripts_var_codon_info~
+- var_start
+  cDNA location of variants
+  Start location in case multiple bases are affected
+  E.g. 1
+- genomic_pos
+  List of all positions of the codon
+  Position in genomic DNA
+  E.g. [123,124,125]
+- coding_pos
+  List of all positions of the codon
+  Position in cDNA
+  E.g. [1,2,3]
+- intersect_intron_at
+  Checks which part of the codon intersects with an intron
+- strand
+  Strand transcript is located on
+  "+" or "-"
+- seq_ref
+  Sequence of reference codon
+  E.g. "ATC"
+- seq_obs
+  Sequence of observed codon
+  E.g. "AAC"
+- prot_start
+  Position of change amino acid in protein
+  E.g. "112"
+- amino_ref
+  Reference amino acid in 3 and 1 letter code
+  E.g. ["A", "Ala"]
+- amino_obs
+  Observed amino acid in 3 and 1 letter code
+  E.g.["W", "Trp"]
+** Create ClinVar
+#+begin_src mermaid :file Clinvar_create_clinvar.png
+flowchart LR
+   var_chr --> cc
+   var_transcript_id --> cc
+   ref_transcript --> cc
+   codon_genomic_pos --> cc
+   codon_intersect_intron_at --> cc
+   minimum_number_stars --> cc{create_clinvar}
+   cc --> clinvar_entries_per_transcript
 #+end_src
 * Transcripts_info
 This is a dataframe created by Daminaos in which he is saving the information generated on transcript level for the different variants
