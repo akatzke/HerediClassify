@@ -65,6 +65,9 @@ flowchart LR
        GP --> APR["aggregate prediction
        results"]
        end
+    GP --> is_rule_applicable
+    GP --> rule_comment
+    GP --> rule_strength
 #+end_src
 
 #+RESULTS:
@@ -101,16 +104,23 @@ flowchart LR
 #+RESULTS:
 [[file:prediction_tool_genotoscope.png]]
 * Allele frequency rules
+Handling which threshold is to be used, is handled in a completely different part of the code
+So the function for each of the allele_frequency_rules only know where to look for the corresponding thresholds (e.g. BA1 uses BA1_threshold, etc)
+I'll not account initially for different modes of inheritance as Damianos did
+I can still add that later
 #+begin_src mermaid :file allele_frequency_rules.png
 flowchart LR
-   thresholds --> aaf
-   inheritance_modes --> aaf{assess_allele_frequency_rule}
-   subgraph compare_frequency_to_threshold
-   pop_max --> cft
-   threshold --> cft{compare_frequency_to_threshold}
-   cft --> frequency_status
+   popmax --> aaf{assess_allele_frequency_rule}
+   subgraph assess-soasdfj
+   cft{compare_frequency_to_threshold} --> ft[frequency_status]
+   aaf -->|threshold & popmax| cft
+   ft --> aaf
    end
+   aaf --> is_rule_applicable
+   aaf --> rule_comment
+   aaf --> rule_strength
 #+end_src
+
 * PM1
 Information needed: variant information, transcripts, critical region, hotspot, critical protein regions without bening variants
 Generally regions applicable to PMs for missense variants
@@ -119,7 +129,9 @@ flowchart LR
    D[data] --> CR{check_critical_region}
    GR[general_regions] --> CR
    SR[gene/disease_specific_regions] --> CR
-   CR --> R[Result]
+   CR --> is_rule_applicable
+   CR --> rule_comment
+   CR --> rule_strength
   subgraph assess_critical_region
       CR --> GCR{check_general_critical_region}
       CR --> SCR{check_specific_critical_region}
@@ -146,6 +158,58 @@ flowchart LR
 
 #+RESULTS:
 [[file:pm1_annotate_critical_region.png]]
+* PM4
+#+begin_src mermaid :file assess_pm4_inframe.png
+flowchart LR
+   prot_len_diff_percent --> pi
+   in_repetitive_region --> pi{assess_pm4_inframe}
+   pi --> is_rule_applicable
+   pi --> rule_strength
+#+end_src
+
+#+begin_src mermaid :file assess_pm4_stop_loss.png
+flowchart LR
+   is_stop_codon_in_3UTR --> sl
+   prot_len_diff_percent --> sl{assess_pm4_stop_loss}
+   sl --> is_rule_applicable
+   sl --> rule_strength
+#+end_src
+
+** In repetitive region
+#+begin_src mermaid :file check_repetitive_region.png
+flowchart LR
+   var_chr --> crr
+   var_genomic_start --> crr
+   var_genomic_stop --> crr
+   var_gene_name --> crr
+   repetitive_regions --> crr{check_repetitive_region}
+   crr --> is_repetitive_region
+#+end_src
+
+#+RESULTS:
+[[file:check_repetitive_region.png]]
+** Protein length difference lost stop codon
+#+begin_src mermaid :file protein_len_difference_stop_codon_lost.png
+flowchart LR
+   is_stop_codon_in_3UTR --> ptl
+   ref_transcript --> ptl{get_protein_len_difference_stop_codon_lost}
+   ptl --> prot_len_diff_percent
+#+end_src
+
+#+RESULTS:
+[[file:protein_len_difference_stop_codon_lost.png]]
+* BP3
+#+begin_src mermaid :file assess_bp3.png
+flowchart LR
+   prot_len_diff_percent --> pi
+   in_repetitive_region --> pi{assess_bp3}
+   pi --> is_rule_applicable
+   pi --> rule_strength
+#+end_src
+
+#+RESULTS:
+[[file:assess_bp3.png]]
+
 * PVS1
 Information needed: sequence of variant
 Transcripts affected by variant
@@ -233,7 +297,7 @@ Gets transcript info and variant info
 Variant info only needed for logging
 #+begin_src mermaid :file pvs1_assess_NMD.png
 flowchart LR
-   nmd --> NMD_status
+   nmd --> is_NMD
    faep --> NMD_affected_exons
    exon_skipping --> nmd{assess_NMD}
    exons_affected_in_transcript --> nmd
@@ -259,9 +323,9 @@ I find it difficult that the exons that the variant is skipping is described by 
 ** Refine PVS1 for start lost
 #+begin_src mermaid :file pvs1_refine_start_lost.png
 flowchart LR
-   esc --> pvs1_start_lost_status
+   esc --> is_pvs1_start_lost
    esc --> pvs1_start_lost_strength
-   alternative_start_codon_status --> esc{evaluate_start_codon}
+   is_alternative_start_codon --> esc{evaluate_start_codon}
    pathogenic_variant_between_start_and_start_alternative --> esc
 #+end_src
 
@@ -271,7 +335,7 @@ flowchart LR
 ** Find alternative start codon
 #+begin_src mermaid :file pvs1_exists_alternative_start_codon.png
 flowchart LR
-   fasc{exists_alternative_start_codon} --> alternative_start_codon_status
+   fasc{exists_alternative_start_codon} --> is_alternative_start_codon
    ref_transcript --> fasc
 #+end_src
 
@@ -297,14 +361,14 @@ flowchart LR
 ** Refine PVS1 for splice site
 #+begin_src mermaid :file pvs1_refine_splice_site.png
 flowchart LR
-   rss --> pvs1_splice_site_status
+   rss --> is_pvs1_splice_site
    rss --> pvs1_splice_site_strength
    var_type --> rss{refine_splice_site}
    var_hgvs --> rss
    exon_skipping --> rss
    types_exon_skipped --> rss
-   reading_frame_status --> rss
-   NMD_status --> rss
+   is_reading_frame --> rss
+   is_NMD --> rss
    transcript_affected_by_NMD_disease_relevant --> rss
    truncated_exon_relevant --> rss
    prot_len_diff_percentage --> rss
@@ -321,7 +385,7 @@ The output from that function is not returned
 #+begin_src mermaid :file pvs1_assess_reading_frame.png
 flowchart LR
    diff_len --> arfp{assess_reading_frame_preservation}
-   arfp --> reading_frame_status
+   arfp --> is_reading_frame
 #+end_src
 
 #+RESULTS:
@@ -330,9 +394,9 @@ flowchart LR
 ** Refine PVS1 for nonsense and frameshift
 #+begin_src mermaid : :file pvs1_refine_nonsense_frameshift.png
 flowchart LR
-   rnf{refine_nonsense_frameshift} --> pvs1_nonsense_frameshift_status
+   rnf{refine_nonsense_frameshift} --> is_pvs1_nonsense_frameshift
    rnf --> pvs1_nonsense_frameshift_strength
-   NMD_status --> rnf
+   is_NMD --> rnf
    transcript_affected_by_NMD_disease_relevant --> rnf
    truncated_exon_relevant --> rnf
    prot_len_diff_percentage --> rnf
@@ -384,15 +448,20 @@ flowchart LR
 #+RESULTS:
 [[file:pvs1_get_protein_len_difference.png]]
 
-** Aggregate subrules
-#+begin_src mermaid :file aggregate_subrules.png
-   cr --> pvs1_strength
-   cr --> pvs1_status
-   cr --> csft{is_any_subrule_true}
-   csft --> {get_highest_strength}
-   rule_status --> cr
-   rule_strengths --> cr
+** Combine PVS1 refinement results
+#+begin_src mermaid :file combine_pvs1_refinement_results.png
+flowchart LR
+   is_pvs1_nonsense_frameshift --> cp
+   pvs1_nonsense_frameshift_strength --> cp
+   is_pvs1_splice_site --> cp
+   pvs1_splice_site_strength --> cp
+   is_pvs1_start_lost --> cp
+   pvs1_start_lost_strength --> cp{integrate_rules}
+   cp --> is_rule_applicable
+   cp --> rule_comment
+   cp --> rule_strength
 #+end_src
+
 ** TODO Think on how I want to handle data types
 Specifically the variant_info class and the dictionary used to transport variant information
 Those I do not really want to be using for my work
