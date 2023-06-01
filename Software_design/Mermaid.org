@@ -481,7 +481,9 @@ flowchart LR
    amino_ref --> aps
    amino_obs --> aps
    clinvar_entries_per_transcript --> aps{assess_ps1}
-   aps -->
+   aps --> is_rule_applicable
+   aps --> rule_strength
+   aps --> rule_comment
 #+end_src
 
 #+RESULTS:
@@ -495,6 +497,9 @@ flowchart LR
    var_genomic_start --> apm
    codon_seq_ref -> apm
    clinvar_entries_per_transcript --> apm{assess_pm5}
+   apm --> is_rule_applicable
+   apm --> rule_strength
+   apm --> rule_comment
 #+end_src
 
 #+RESULTS:
@@ -567,6 +572,36 @@ flowchart LR
    minimum_number_stars --> cc{create_clinvar}
    cc --> clinvar_entries_per_transcript
 #+end_src
+* AssignACMG
+#+begin_src mermaid :file assig_acmg.png
+flowchart LR
+   is_rule_applicable --> aa
+   rules_strength --> aa{assign_acmg}
+   ca --> classification
+   ca --> classification_comment
+   subgraph assign_acmg
+       aa --> ci{check_incopatible_rule_combinations}
+       aa --> srs{summarise_rules_by_strength}
+       srs --> rbs[rules_by_strength]
+       rbs --> ca{classify_acmg}
+       end
+#+end_src
+
+#+RESULTS:
+[[file:assig_acmg.png]]
+* Calculate pathogenicity probability
+#+begin_src mermaid :file calculate_pathogenicity_probability.png
+flowchart LR
+   rules_by_strength --> cp
+   odds_pathogenicity_very_strong --> cp
+   pathogenicity_prior --> cp
+   scaling_factor --> cp{calculate_pathogenicity_probability}
+   cp --> posterior_pathogenicity_probability
+#+end_src
+
+#+RESULTS:
+[[file:calculate_pathogenicity_probability.png]]
+
 * Transcripts_info
 This is a dataframe created by Daminaos in which he is saving the information generated on transcript level for the different variants
 - gene_name
