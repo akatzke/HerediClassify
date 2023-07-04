@@ -5,22 +5,25 @@ Code for visualising software design in mermaid
 * Variant classification overview
 #+begin_src mermaid :file overview.png
 flowchart LR
-    DB[(Database)] -->|Import| RD[Raw data]
-    C["Configuration"] --> CI{"Configuration import"}
+    DB[(Database)] --> DI{"Data import"}
+    GC["General configuration"] --> CI{"General configuration import"}
     CR["Configuration
    rules"] --> CIR{"Configuration import
    rules"}
-    CL --> |Export| Output
+    EX --> Output
     subgraph Variant_classification_tool
         CI --> T[Thresholds]
+        DI --> RD[Raw data]
         RD -->DP{Data processing}
         DP --> PD[Processed data]
-        CIR --> PL[Data process list]
+        CIR --> PL[Data processing list]
         CIR --> RL[Rule list]
         PL --> DP
-        PD --> CL{Classification}
         RL --> CL
-        T --> DP
+        T --> CL
+        PD --> CL{Classification}
+        CL --> C[Classification]
+        C --> EX{Export}
     end
 #+end_src
 
