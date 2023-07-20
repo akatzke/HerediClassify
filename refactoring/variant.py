@@ -73,7 +73,7 @@ class ClinVar:
 class Variant:
     variant_info: VariantInfo
     transcript_info: List[TranscriptInfo]
-    prediction_tools: List[PredictionTools]
+    prediction_tools: dict
     gnomad: PopulationDatabases
     flossies: PopulationDatabases
     affected_region: AffectedRegion
