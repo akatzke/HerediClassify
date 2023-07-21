@@ -9,6 +9,7 @@ class TranscriptInfo:
     transcript_id: str
     var_type: str
     exon: int
+    intron: int
     var_hgvs: hgvs_parser
     var_start: int
     var_stop: int
@@ -17,8 +18,8 @@ class TranscriptInfo:
     diff_len_percent: float
     diff_len_protein_percent: float
     len_change_in_repetitive_region: bool
-    exon_skipping: bool
-    exons_affected: List[int]
+    are_exons_skipped: bool
+    exons_skipped: List[int]
     types_exon_skipped: List[str]
     is_NMD: bool
     NMD_affected_exons: List[int]
