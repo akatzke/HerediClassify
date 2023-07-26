@@ -14,7 +14,7 @@ from refactoring.variant import TranscriptInfo, VariantInfo
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.assess_NMD")
 
 
-def assess_NMD(transcript: TranscriptInfo, variant: VariantInfo):
+def assess_NMD(transcript: TranscriptInfo, variant: VariantInfo) -> tuple:
     """
     Examine if "non sense mediated mRNA decay" (NMD) will occur for current variant
     Following Tayoun et al. and Zhiyuan et al.  NMD is not predicted to occur if:

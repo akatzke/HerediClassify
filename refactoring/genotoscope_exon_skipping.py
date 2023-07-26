@@ -3,15 +3,16 @@
 import logging
 
 import pyensembl
-from variant import VariantInfo, TranscriptInfo
 import hgvs.parser
 import hgvs.posedit
+
+from variant import VariantInfo, TranscriptInfo
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.exon_skipping")
 hgvs_parser = hgvs.parser.Parser()
 
 
-def assess_exon_skipping(transcript: TranscriptInfo, variant: VariantInfo) -> None:
+def assess_exon_skipping(transcript: TranscriptInfo, variant: VariantInfo) -> tuple:
     """
     Assess if exon will be skipped
     By examining if the affected intron position in on the splice sites: +/- 1,2
@@ -28,18 +29,19 @@ def assess_exon_skipping(transcript: TranscriptInfo, variant: VariantInfo) -> No
     logger.debug("Assess exon skipping for splice acceptor variant")
     logger.debug(f"intron offsets: {intron_offsets}")
 
+    are_exons_skipped = False
     for intron_offset in intron_offsets:
         if intron_offset in [1, 2]:
             # variant is disrupting donor/acceptor splicesome site
             # predict that exon will be skipped
-            transcript.are_exons_skipped = True
-    logger.debug("is_exon_skipped: {is_exon_skipped}")
+            are_exons_skipped = True
+    logger.debug(f"is_exon_skipped: {are_exons_skipped}")
 
-    if transcript.are_exons_skipped:
-        logger.debug("exon is skipped, call find_skipped_exon()")
+    if are_exons_skipped:
+        logger.debug("exon is skipped, call find_exon_by_var_pos()")
         # if exon is skipped find its start and end
-        transcript.exons_skipped = find_skipped_exon(
-            transcript, directions2exon, variant
+        exons_skipped, var_exon_start, var_exon_end = find_exon_by_var_pos(
+            ref_transcript, transcript, variant, is_genomic=True
         )
         ### ### ### ###
         # Examine if skipped exon is coding
@@ -59,17 +61,17 @@ def assess_exon_skipping(transcript: TranscriptInfo, variant: VariantInfo) -> No
         )
 
         # The first position of the skipped_exon list is the first exon that is found that overlaps the variant
-        if transcript.exons_skipped[0] >= start_codon_exon_idx + 1:
+        if exons_skipped[0] >= start_codon_exon_idx + 1:
             ### ### ### ###
             # skipped exon is coding
             # find start and end position of skipped coding exons
             ### ### ### ###
-            transcript.coding_exon_skipped = True
+            coding_exon_skipped = True
             # get as start and end the skipped exon positions
             # AL# List of lists of ints containing the start and end position of the exon
             exon_offsets = get_transcript_exon_offsets(ref_transcript, False)
             try:
-                assert len(transcript.exons_skipped) == 1
+                assert len(exons_skipped) == 1
             except AssertionError:
                 logger.error(
                     f"Currently intron variant case is implemented only affecting one exon\n=> variant position: {variant.to_string()}",
@@ -85,71 +87,49 @@ def assess_exon_skipping(transcript: TranscriptInfo, variant: VariantInfo) -> No
                 f"len of first exons up to start codon: {len_first_exons_up_start_codon}"
             )
             # AL# Get start and end position of skipped exon
-            skipped_exon_offsets = exon_offsets[transcript.exons_skipped[0] - 1]
+            skipped_exon_offsets = exon_offsets[exons_skipped[0] - 1]
             # AL# Exon start position - distance between exon start and start codon location
-            transcript.skipped_exon_start = (
+            skipped_exon_start = (
                 skipped_exon_offsets[0] - len_first_exons_up_start_codon
             )
 
-            if transcript.skipped_exon_start <= 1:
+            if skipped_exon_start <= 1:
                 # if exon start is before the start codon position,
                 # make the variant start position equal to 1
                 skipped_exon_start = 1
-                transcript.start_codon_exon_skipped = True
-            transcript.skipped_exon_end = (
-                skipped_exon_offsets[1] - len_first_exons_up_start_codon
-            )
+                start_codon_exon_skipped = True
+            skipped_exon_end = skipped_exon_offsets[1] - len_first_exons_up_start_codon
             logger.debug(
-                f"skipped exon start: {transcript.skipped_exon_start}, end:{transcript.skipped_exon_end}"
+                f"skipped exon start: {skipped_exon_start}, end:{skipped_exon_end}"
             )
 
             ### ### ###
             # examine if the last exon that was skipped,
             # contained the stop codon
             ### ### ###
-            if (
-                transcript.are_exons_skipped
-                and transcript.exons_skipped[0] == stop_codon_exon_idx + 1
-            ):
+            if are_exons_skipped and exons_skipped[0] == stop_codon_exon_idx + 1:
                 logger.debug("Search for termination codon on the skipped exon")
                 # create skipped coding sequence with in-frame start
-                inframe_start = (transcript.skipped_exon_start - 1) % 3
+                inframe_start = (skipped_exon_start - 1) % 3
                 skipped_inframe_seq = ref_transcript.coding_sequence[
-                    transcript.skipped_exon_start
-                    - 1
-                    + inframe_start : transcript.skipped_exon_end
+                    skipped_exon_start - 1 + inframe_start : skipped_exon_end
                 ]
                 logger.debug(f"skipped inframe coding seq: {skipped_inframe_seq}")
                 if search_termination_codon(extract_codons(skipped_inframe_seq), False):
                     # for stop codon exon skipping, normalize exon end to stop codon position
-                    transcript.stop_codon_exon_skipped = True
-                    transcript.skipped_exon_end = len(
-                        str(ref_transcript.coding_sequence)
-                    )
+                    stop_codon_exon_skipped = True
+                    skipped_exon_end = len(str(ref_transcript.coding_sequence))
     else:
         logger.debug("Exon is not skipped")
-
-
-def find_skipped_exon(
-    transcript: TranscriptInfo, direction2exon: list[int], variant: VariantInfo
-) -> list[int]:
-    if transcript.exon and transcript.intron:
-        logger.debug(
-            "Transcript info contains both exon and intron. Affected exon is predicted to be skipped."
-        )
-        return [transcript.exon]
-    elif transcript.exon:
-        return [transcript.exon]
-    elif transcript.intron:
-        return [transcript.intron + direction2exon[0]]
-    else:
-        try:
-            assert transcript.exon or transcript.intron
-        except AssertionError:
-            logger.error(
-                f"Variant does not contain exon or intron index in VEP column\n => variant position: {variant.to_string()}",
-                exc_info=True,
-            )
+    return (
+        exons_skipped,
+        are_exons_skipped,
+        var_exon_start,
+        var_exon_end,
+        start_codon_exon_skipped,
+        stop_codon_exon_skipped,
+        coding_exon_skipped,
+    )
 
 
 def search_termination_codon(
@@ -430,3 +410,222 @@ def parse_variant_intron_pos(var_coding: hgvs.posedit.PosEdit):
             exc_info=True,
         )
     return split_symbols, intron_offsets, directions2exon
+
+
+def find_exon_by_var_pos(
+    ref_transcript: pyensembl.transcript.Transcript,
+    transcript: TranscriptInfo,
+    variant: VariantInfo,
+    is_genomic: bool,
+):
+    """
+    Find variant exon index by variant coding position, exon index is 1-based
+    Returns
+    -------
+    list of int
+        indices of exons overlapping with variant (1-based)
+    int
+        variant start position as offset in first overlapping exon
+    int
+        variant end position as offset in last overlapping exon
+    """
+
+    logger.debug("Find exon indices containing the variant")
+    if not (transcript.exon or transcript.intron):
+        logger.debug("Exon information is not found in VEP => use VEP spliced offset")
+        is_genomic = False
+
+    exon_positions = get_transcript_exon_offsets(ref_transcript, is_genomic)
+
+    overlap_exon_indices = []
+    var_start_offset, var_end_offset = (
+        0,
+        0,
+    )  # save the variant start and end offset in the overlapping exon regions
+    var_coding = transcript.var_hgvs
+    ### ### ###
+    # get the strand direction
+    ### ### ###
+    if is_transcript_in_positive_strand(ref_transcript):
+        strand_direction = +1
+    else:
+        strand_direction = -1
+    if is_genomic:
+        if not is_transcript_type_splice_acceptor_donor(transcript.var_type):
+            ### ### ###
+            # Exonic variant
+            ### ### ###
+            logger.debug("Exonic variant type")
+            var_start = variant.genomic_start
+            var_end = variant.genomic_end
+        else:
+            logger.debug(
+                "Intron variant type => update as variant pos the starting position of skipped exon"
+            )
+            split_symbols, intron_offsets, directions2exon = parse_variant_intron_pos(
+                var_coding
+            )
+
+            ### ### ###
+            # Intronic variant
+            # Parse affected exon index by VEP (1-based)
+            # add splice site direction to affected exon index
+            # (currently modeled that) intron variant can disrupt at most one exon, so equal variant end with its start position
+            ### ### ###
+
+            if transcript.exon and transcript.intron:
+                logger.debug(
+                    "Transcript info contains both exon and intron offset => use intron offset"
+                )
+                exon_idx = transcript.intron - 1
+            elif transcript.exon:
+                exon_idx = transcript.exon - 1
+            elif transcript.intron:
+                exon_idx = transcript.intron - 1
+            else:
+                try:
+                    assert transcript.exon or transcript.intron
+                except AssertionError:
+                    logger.error(
+                        f"Variant does not contain exon or intron index in VEP column\n => variant position: {variant.to_string()}",
+                        exc_info=True,
+                    )
+            if exon_idx + directions2exon[0] >= 0:
+                skipped_exon = exon_positions[exon_idx + directions2exon[0]]
+            else:
+                logger.debug("Skipping first exon")
+                skipped_exon = exon_positions[0]
+            var_start = skipped_exon[0]
+            var_end = var_start
+            logger.debug(
+                f"Updated variant start:{var_start}, end: {var_end} on exon idx: {exon_idx + directions2exon[0]}"
+            )
+    else:
+        # use cDNA offset for both frameshift and nonsense mutation
+        var_start = int(var_coding.pos.start.base)
+        var_end = int(var_coding.pos.end.base)
+        if var_start < 0:
+            var_start = 0
+        if var_end < 0:
+            if transcript.diff_len > 0:
+                var_end = var_start + transcript.diff_len
+            else:
+                # deletion case
+                var_end = var_start
+
+        # VEP positions include only the coding sequence of the transcript,
+        # so you need to add the length of the sequence of the first exons up to start codon (ATG)
+        len_first_exons_up_start_codon = ref_transcript.start_codon_spliced_offsets[0]
+        var_start = var_start + len_first_exons_up_start_codon
+        var_end = var_end + len_first_exons_up_start_codon
+
+    ### ### ###
+    # find variant position into exon intervals
+    ### ### ###
+    for exon_idx, exon_interval in enumerate(exon_positions):
+        if is_genomic:
+            normalized_exon_interval = range(
+                exon_interval[0],
+                exon_interval[1] + 2 * strand_direction,
+                strand_direction,
+            )
+        else:
+            normalized_exon_interval = range(exon_interval[0], exon_interval[1] + 1)
+        logger.debug(f"Exon interval: {normalized_exon_interval}")
+        if var_start in normalized_exon_interval:
+            overlap_exon_indices.append(exon_idx + 1)
+            break
+    logger.debug(
+        f"Search var_start: {var_start} found in exon(s): {overlap_exon_indices}"
+    )
+
+    ### ### ###
+    # find variant start and end offset in exons
+    ### ### ###
+    if len(overlap_exon_indices) == 1:  # variant included in only one exon
+        if is_transcript_type_splice_acceptor_donor(transcript.var_type):
+            # exon-skipping, get as offset the total range of skipped exon
+            var_start_offset = 0
+            # negative strand transcripts contain higher start position than end position
+            var_end_offset = abs(
+                exon_positions[overlap_exon_indices[0] - 1][1]
+                - exon_positions[overlap_exon_indices[0] - 1][0]
+            )
+        else:
+            if is_genomic:
+                if strand_direction == 1:
+                    # for positive strand, compute distance from exon lower position (start)
+                    var_start_offset = (
+                        var_start - exon_positions[overlap_exon_indices[0] - 1][0]
+                    )
+                    var_end_offset = (
+                        var_end - exon_positions[overlap_exon_indices[0] - 1][0]
+                    )
+                else:
+                    # for negative strand, compute distance from exon higher position (end)
+                    var_start_offset = (
+                        exon_positions[overlap_exon_indices[0] - 1][0] - var_end
+                    )
+                    var_end_offset = (
+                        exon_positions[overlap_exon_indices[0] - 1][0] - var_start
+                    )
+            else:
+                var_start_offset = (
+                    var_start - exon_positions[overlap_exon_indices[0] - 1][0]
+                )
+                var_end_offset = (
+                    var_end - exon_positions[overlap_exon_indices[0] - 1][0]
+                )
+    else:
+        try:
+            assert len(overlap_exon_indices) > 0
+        except AssertionError:
+            logger.error(
+                f"Overlapping exon indices should be more than 0\n=> variant position: {variant.to_string()}",
+                exc_info=True,
+            )
+        ### ### ###
+        # variant included in more than one exons,
+        # so start is in the first exon, end is in the last exon
+        ### ### ###
+        if is_genomic:
+            if strand_direction == 1:
+                var_start_offset = (
+                    var_start - exon_positions[overlap_exon_indices[0] - 1][0]
+                )
+                var_end_offset = (
+                    var_end
+                    - exon_positions[
+                        overlap_exon_indices[len(overlap_exon_indices)] - 1
+                    ][0]
+                )
+            else:
+                # for negative strand, use the highest value (exon start) to compute the offset for the start and exon position of the variant
+                var_start_offset = (
+                    exon_positions[overlap_exon_indices[0] - 1][0] - var_end
+                )
+                var_end_offset = (
+                    exon_positions[overlap_exon_indices[len(overlap_exon_indices)] - 1][
+                        0
+                    ]
+                    - var_start
+                )
+        else:
+            var_start_offset = (
+                var_start - exon_positions[overlap_exon_indices[0] - 1][0]
+            )
+            var_end_offset = (
+                var_end
+                - exon_positions[overlap_exon_indices[len(overlap_exon_indices)] - 1][0]
+            )
+    try:
+        assert var_start_offset >= 0 and var_end_offset >= 0
+    except AssertionError:
+        logger.error(
+            f"Variant start and end offset should be higher than 0\n=> variant position: {variant.to_string()}",
+            exc_info=True,
+        )
+        logger.debug(
+            f"Overlap exon indices: {overlap_exon_indices}, var start offset: {var_start_offset}, var end offset: {var_end_offset}"
+        )
+    return overlap_exon_indices, var_start_offset, var_end_offset
