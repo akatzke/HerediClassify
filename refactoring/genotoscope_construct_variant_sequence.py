@@ -6,18 +6,25 @@ import pyensembl
 from genotoscope_exon_skipping import (
     is_transcript_type_splice_acceptor_donor,
 )
-
 from genotoscope_assess_NMD import is_genomic_pos_in_coding_exon
-from refactoring.variant import TranscriptInfo, VariantInfo
+from variant import TranscriptInfo, VariantInfo
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.construct_variant_coding_seq")
 
 
-def construct_variant_coding_seq(
-    transcript: TranscriptInfo, variant: VariantInfo
+def construct_variant_coding_seq_intronic_variant(
+    transcript: TranscriptInfo,
+    variant: VariantInfo,
+    ref_transcript: pyensembl.transcript.Transcript,
+    var_start: int,
+    var_end: int,
+    are_exons_skipped: bool,
+    start_codon_exon_skipped: bool,
+    stop_codon_exon_skipped: bool,
+    coding_exon_skipped: bool,
 ) -> tuple:
     """
-    Add variant to coding sequence to get observed coding sequence
+    Construct coding sequence for intronic variant
     following hgvs recommendations: http://varnomen.hgvs.org/recommendations/general/
 
     Then return variant-integrated coding sequence in the forward strand
@@ -30,359 +37,33 @@ def construct_variant_coding_seq(
     int
         diff_len
     """
-
-    ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
-        transcript.transcript_id
-    )
-
-    logger.debug(
-        f"Add variant to coding sequence to create observed coding sequence of transcript id: {transcript.transcript_id}"
-    )
-    var_edit = str(transcript.var_hgvs.edit)
-
-    # find start end of variant positions
-    if not is_transcript_type_splice_acceptor_donor(transcript.var_type):
-        logger.debug("Exonic variant")
-        # subtract from variant cDNA position the length of the prime 5' end,
-        # to get position in only coding parts of exons
-        if int(transcript.var_hgvs.pos.start.base) >= 1:
-            var_start = int(transcript.var_hgvs.pos.start.base)
-        else:
-            var_start = 1
-        if int(transcript.var_hgvs.pos.end.base) >= 1:
-            var_end = int(transcript.var_hgvs.pos.end.base)
-        else:
-            var_end = 1
-    else:
-        logger.debug("Intronic variant")
-        # find if variant results to exon skipping
-        var_start = transcript.skipped_exon_start
-        var_end = transcript.skipped_exon_end
-        try:
-            assert transcript.are_exons_skipped is True
-        except AssertionError:
-            logger.error(
-                f"Creating variant observed coding sequence, implemented for exon skipping case only\n=> variant position: {variant.to_string()}",
-                exc_info=True,
-            )
-        logger.debug(f"Exon(s) in list: {transcript.exons_skipped} are skipped")
-        logger.debug(
-            f"variant skips start codon: {transcript.start_codon_exon_skipped}, stop codon: {transcript.stop_codon_exon_skipped}, skips coding exon: {transcript.coding_exon_skipped}"
-        )
-        logger.debug(f"Skipped exon offset start: {var_start}, end: {var_end}")
-    # load the coding sequence to introduce the variant
+    logger.debug("Constructing coding sequence for intronic variant")
     ref_coding_seq = str(ref_transcript.coding_sequence)
     logger.debug(f"Coding seq: {ref_coding_seq}, len={len(ref_coding_seq)}")
-    vep_coordinates_used = True
-
-    ### ### ### ###
-    # integrate variant into coding sequence, per variant type
-    ### ### ### ###
     var_coding_seq = ""
-    if is_transcript_type_splice_acceptor_donor(transcript.var_type):
-        # to delete skipped exon sequence
-        # use the calculated ensembl coding offsets
-        vep_coordinates_used = False
-        if transcript.start_codon_exon_skipped and transcript.stop_codon_exon_skipped:
-            ### ### ### ###
-            # variant skips both exon containing both start and stop codon
-            ### ### ### ###
-            var_coding_seq = ""
-        elif transcript.coding_exon_skipped:
-            ### ### ### ###
-            # Simulate coding exon skipping
-            # by deletion of coding exon sequence
-            ### ### ### ###
-            if transcript.are_exons_skipped:
-                # exon is skipped => delete exon from coding sequence
-                logger.debug("Delete the skipped exon from the coding sequence")
-                if var_start >= 1:
-                    var_coding_seq = (
-                        ref_coding_seq[0 : var_start - 1]
-                        + ref_coding_seq[var_end : len(ref_coding_seq)]
-                    )
-                    logger.debug(
-                        f"Deleting sequence: {ref_coding_seq[var_start -1 : var_end]}"
-                    )
-                else:
-                    try:
-                        assert var_start >= 1
-                    except AssertionError:
-                        logger.error(
-                            f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
-                            exc_info=True,
-                        )
-
-                # calculate deletion length and assert its result
-                del_length = var_end - var_start + 1
-                logger.debug(
-                    f"len(coding)={len(ref_coding_seq)}, len(var_coding)={len(var_coding_seq)}, del_length={del_length}"
-                )
-                try:
-                    assert len(ref_coding_seq) - len(var_coding_seq) == del_length
-                except AssertionError:
-                    logger.error(
-                        f"For deletion should hold: len(reference coding) - len(variant coding) = len(deletion)\n=> variant position: {variant.to_string}",
-                        exc_info=True,
-                    )
-            diff_len = -1 * del_length
-        else:
-            var_coding_seq = ref_coding_seq
-    else:
+    diff_len = 0
+    if start_codon_exon_skipped and stop_codon_exon_skipped:
         ### ### ### ###
-        # construct observed coding sequence for variant in exonic regions
+        # variant skips both exon containing both start and stop codon
         ### ### ### ###
-        if ">" in var_edit[0:3]:
-            logger.debug("Add SNP to coding sequence")
-            # get directionally corrected reference and observed bases for SNP
-            [ref_seq, obs_seq] = var_edit.split(">")
-            if var_start > 1:
-                var_coding_seq = (
-                    ref_coding_seq[0 : var_start - 1]
-                    + obs_seq.lower()
-                    + ref_coding_seq[var_start : len(ref_coding_seq)]
-                )
-            elif var_start == 1:
-                var_coding_seq = (
-                    obs_seq.lower() + ref_coding_seq[var_start : len(ref_coding_seq)]
-                )
-            else:
-                try:
-                    assert var_start >= 0
-                except AssertionError:
-                    logger.error(
-                        f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
-                        exc_info=True,
-                    )
-            try:
-                assert len(ref_coding_seq) == len(var_coding_seq)
-            except AssertionError:
-                logger.error(
-                    f"For SNP the sum of length of coding exons should not change\n=> variant position: {variant.to_string()}",
-                    exc_info=True,
-                )
-            diff_len = 0
-        elif "delins" in var_edit[0:6]:
-            ### ### ###
-            # delins variant edits add a deletion and then an insertion
-            ### ### ###
-            logger.debug("Add deletion and then insertion to coding sequence")
-
-            ### ### ###
-            # introduce the deletion
-            ### ### ###
-            logger.debug(f"Deleting: {ref_coding_seq[var_start -1 :var_end]}")
-            logger.debug(f"Region being delete is: {var_start} - {var_end}")
+        var_coding_seq = ""
+        diff_len = len(ref_coding_seq)
+    elif coding_exon_skipped:
+        ### ### ### ###
+        # Simulate coding exon skipping
+        # by deletion of coding exon sequence
+        ### ### ### ###
+        if are_exons_skipped:
+            # exon is skipped => delete exon from coding sequence
+            logger.debug("Delete the skipped exon from the coding sequence")
             if var_start >= 1:
                 var_coding_seq = (
                     ref_coding_seq[0 : var_start - 1]
                     + ref_coding_seq[var_end : len(ref_coding_seq)]
                 )
-            elif var_start == 0:
-                var_coding_seq = ref_coding_seq[var_end : len(ref_coding_seq)]
-            else:
-                try:
-                    assert var_start >= 0
-                except AssertionError:
-                    logger.error(
-                        f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
-                        exc_info=True,
-                    )
-
-            # assert deletion by resulted sequence length
-            del_length = var_end - var_start + 1
-            try:
                 logger.debug(
-                    f"var_coding_seq: {var_coding_seq}, len: {len(var_coding_seq)}"
+                    f"Deleting sequence: {ref_coding_seq[var_start -1 : var_end]}"
                 )
-                assert len(ref_coding_seq) - len(var_coding_seq) == del_length
-            except AssertionError:
-                logger.error(
-                    f"For deletion should hold: len(reference coding) - len(variant coding) = len(deletion)\n variant position: {variant.to_string()}",
-                    exc_info=True,
-                )
-            ### ### ###
-            # introduce the insertion
-            ### ### ###
-            obs_seq = var_edit.split("delins")[1]
-            try:
-                assert len(obs_seq) >= 1
-            except AssertionError:
-                logger.error(
-                    f"Supplied VEP does not contain insertion sequence\n=> variant position: {variant.to_string()}",
-                    exc_info=True,
-                )
-            logger.debug(f"Insert sequence: {obs_seq}")
-            if var_start >= 1:
-                var_coding_seq_ins = (
-                    var_coding_seq[0 : var_start - 1]
-                    + obs_seq.lower()
-                    + var_coding_seq[var_start - 1 : len(ref_coding_seq)]
-                )
-            else:
-                try:
-                    assert var_start >= 1
-                except AssertionError:
-                    logger.error(
-                        f"Supplied coding region position should be >= 1\n=> variant position: {variant.to_string()}",
-                        exc_info=True,
-                    )
-
-            # assert insertion operation by resulted length
-            ins_length = len(obs_seq)
-            try:
-                assert len(var_coding_seq_ins) - len(var_coding_seq) == ins_length
-            except AssertionError:
-                logger.error(
-                    f"For insertion should hold: len(var_coding) - len(var_coding with deletion) = len(insertion)\n=> variant position: {variant.to_string()}",
-                    exc_info=True,
-                )
-            var_coding_seq = var_coding_seq_ins
-            # assert the length difference for both operations
-            diff_len = ins_length - del_length
-            try:
-                logger.debug(
-                    f"var_coding_seq: {var_coding_seq}, len: {len(var_coding_seq)}"
-                )
-                assert len(var_coding_seq) - len(ref_coding_seq) == diff_len
-            except AssertionError:
-                logger.error(
-                    f"For insertion after deletion should hold: len(variant coding) - len(reference coding) = -len(deletion) + len(insertion)\n variant position: {variant.to_string()}",
-                    exc_info=True,
-                )
-        elif "del" in var_edit[0:3]:
-            # deletion will be from the start up to end position
-            logger.debug("Add deletion to coding sequence")
-            if not is_transcript_type_splice_acceptor_donor(transcript.var_type):
-                # assert deleted coding sequence to equal the reference coding sequence
-                # include case at which the variant start before or ends after the coding sequence
-                if (
-                    int(transcript.var_hgvs.pos.start.base) > 0
-                    and int(transcript.var_hgvs.pos.end.base) > 0
-                ):
-                    if not (
-                        is_genomic_pos_in_coding_exon(
-                            ref_transcript, variant.genomic_start
-                        )
-                        and is_genomic_pos_in_coding_exon(
-                            ref_transcript, variant.genomic_end
-                        )
-                    ):
-                        # variant start or ends outside an coding exonic range
-                        logger.debug(
-                            "Variant start or end not in a coding exonic range"
-                        )
-                        logger.debug(f"var start: {var_start}, end: {var_end}")
-                        affected_coding_length = var_end - var_start + 1
-                        logger.debug(
-                            f"Length of variant sequence that affects coding exonic sequence: {affected_coding_length}"
-                        )
-                    else:
-                        # variant starts and ends inside coding exonic range
-                        affected_coding_length = -1
-            ### ### ###
-            # perform deletion
-            ### ### ###
-            if var_start >= 1:
-                var_coding_seq = (
-                    ref_coding_seq[0 : var_start - 1]
-                    + ref_coding_seq[var_end : len(ref_coding_seq)]
-                )
-            else:
-                try:
-                    assert var_start >= 0
-                except AssertionError:
-                    logger.error(
-                        f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
-                        exc_info=True,
-                    )
-            del_length = var_end - var_start + 1
-            try:
-                logger.debug(
-                    f"var_coding_seq: {var_coding_seq}, len: {len(var_coding_seq)}"
-                )
-                assert len(ref_coding_seq) - len(var_coding_seq) == del_length
-            except AssertionError:
-                logger.error(
-                    f"For deletion should hold: len(reference coding) - len(variant coding) = len(deletion)\n variant position: {variant.to_string()}",
-                    exc_info=True,
-                )
-            diff_len = -1 * del_length
-        elif "ins" in var_edit[0:3]:
-            # for insertion annotation: start & end are the flanking regions
-            # the insertion will be placed between the flanking regions
-            logger.debug("Add insertion to coding sequence")
-            if not (
-                is_genomic_pos_in_coding_exon(ref_transcript, variant.genomic_start)
-                and is_genomic_pos_in_coding_exon(ref_transcript, variant.genomic_end)
-            ):
-                # variant start or ends outside an coding exonic range
-                logger.debug("Variant start or end not in a coding exonic range")
-                affected_coding_length = var_end - var_start + 1
-                logger.debug(
-                    f"Length of variant sequence that affects coding exonic sequence: {affected_coding_length}"
-                )
-            else:
-                # variant inside coding exonic range
-                affected_coding_length = -1
-
-            ### ### ###
-            # calculate sequence to be inserted
-            ### ### ###
-            obs_seq = var_edit.split("ins")[1]
-            if len(obs_seq) > 0:
-                # VEP contains insertion sequence
-                if "_" in obs_seq:
-                    # insertion sequence is described by coding coordinates
-                    logger.info(
-                        f"Insertion sequence is described by coding coordinates \n=> variant pos: {variant.to_string}"
-                    )
-                    [ins_source_start, ins_source_end] = obs_seq.split("_")
-                    obs_seq = ref_coding_seq[
-                        int(ins_source_start) - 1 : int(ins_source_end.strip())
-                    ]
-                if not affected_coding_length == -1:
-                    obs_seq = obs_seq[-affected_coding_length:]
-            else:
-                try:
-                    assert 1 == 0
-                except AssertionError:
-                    logger.error(
-                        f"vep does not contain insertion sequence\n=> variant position: {variant.to_string}",
-                        exc_info=True,
-                    )
-            logger.debug(f"Insert the sequence: {obs_seq}")
-            ### ### ###
-            # perform insertion
-            ### ### ###
-            if var_start >= 1:
-                if var_start == var_end:
-                    # start equal ends so the rest part, after the insertion, should start on end position
-                    if vep_coordinates_used:
-                        var_coding_seq = (
-                            ref_coding_seq[0:var_start]
-                            + obs_seq.lower()
-                            + ref_coding_seq[var_end : len(ref_coding_seq)]
-                        )
-                    else:
-                        var_coding_seq = (
-                            ref_coding_seq[0:var_start]
-                            + obs_seq.lower()
-                            + ref_coding_seq[var_end : len(ref_coding_seq)]
-                        )
-                else:
-                    if vep_coordinates_used:
-                        var_coding_seq = (
-                            ref_coding_seq[0:var_start]
-                            + obs_seq.lower()
-                            + ref_coding_seq[var_end - 1 : len(ref_coding_seq)]
-                        )
-                    else:
-                        var_coding_seq = (
-                            ref_coding_seq[0:var_start]
-                            + obs_seq.lower()
-                            + ref_coding_seq[var_end - 1 : len(ref_coding_seq)]
-                        )
             else:
                 try:
                     assert var_start >= 1
@@ -391,123 +72,24 @@ def construct_variant_coding_seq(
                         f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
                         exc_info=True,
                     )
-            ins_length = len(obs_seq)
-            try:
-                assert len(var_coding_seq) - len(ref_coding_seq) == ins_length
-            except AssertionError:
-                logger.error(
-                    f"For insertion should hold: len(var_coding) - len(reference_coding) = len(insertion)\n=> variant position: {variant.to_string()}",
-                    exc_info=True,
-                )
-            diff_len = +1 * ins_length
 
-        elif "dup" in var_edit[0:3]:
-            ### ### ###
-            # for duplication annotation: start & end are the duplication region
-            # the duplication will be placed right-after the end position
-            ### ### ###
-            logger.debug("Add duplication to coding sequence")
-            if not (
-                is_genomic_pos_in_coding_exon(ref_transcript, variant.genomic_start)
-                and is_genomic_pos_in_coding_exon(ref_transcript, variant.genomic_end)
-            ):
-                ### ### ###
-                # variant starts or ends in intronic region
-                ### ### ###
-                logger.debug("Variant start or end not in a coding exonic range")
-                logger.debug(f"var start: {var_start}, end: {var_end}")
-                affected_coding_length = var_end - var_start + 1
-                logger.debug(
-                    f"Length of variant sequence that affects coding exonic sequence: {affected_coding_length}"
-                )
-            else:
-                ### ### ###
-                # variant inside coding exonic range
-                ### ### ###
-                affected_coding_length = -1
-
-            ### ### ###
-            # calculate sequence to be duplicated
-            ### ### ###
-            obs_seq = (
-                ("c." + str(transcript.var_hgvs))
-                .split("c.")[1]
-                .split(str(transcript.var_hgvs))[1]
+            # calculate deletion length and assert its result
+            del_length = var_end - var_start + 1
+            logger.debug(
+                f"len(coding)={len(ref_coding_seq)}, len(var_coding)={len(var_coding_seq)}, del_length={del_length}"
             )
-            if len(obs_seq) > 0:
-                if affected_coding_length == -1:
-                    # all duplication inside coding exon
-                    obs_seq = transcript["var_coding_seq"][0]
-                else:
-                    obs_seq = transcript["var_coding_seq"][0][-affected_coding_length:]
-            else:
-                if var_start == var_end:
-                    obs_seq = ref_coding_seq[var_start - 1]
-                else:
-                    obs_seq = ref_coding_seq[var_start - 1 : var_end]
-            logger.debug(f"Duplicate the sequence: {obs_seq}")
-
-            ### ### ###
-            # perform duplication
-            ### ### ###
-            if var_start == var_end:
-                # duplication of one nucleotide
-                logger.debug("Duplication of one nucleotide")
-                if var_start >= 1:
-                    var_coding_seq = (
-                        ref_coding_seq[0:var_start]
-                        + obs_seq.lower()
-                        + ref_coding_seq[var_start : len(ref_coding_seq)]
-                    )
-                else:
-                    try:
-                        assert var_start >= 0
-                    except AssertionError:
-                        logger.error(
-                            f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
-                            exc_info=True,
-                        )
-            else:
-                # duplication of multiple nucleotides
-                logger.debug("Duplication of multiple nucleotides")
-                if var_start >= 1:
-                    if vep_coordinates_used:
-                        var_coding_seq = (
-                            ref_coding_seq[0:var_end]
-                            + obs_seq.lower()
-                            + ref_coding_seq[var_end : len(ref_coding_seq)]
-                        )
-                    else:
-                        var_coding_seq = (
-                            ref_coding_seq[0 : var_end + 1]
-                            + obs_seq.lower()
-                            + ref_coding_seq[var_end + 1 : len(ref_coding_seq)]
-                        )
-                else:
-                    try:
-                        assert var_start >= 1
-                    except AssertionError:
-                        logger.error(
-                            f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
-                            exc_info=True,
-                        )
-            dupl_length = len(obs_seq)
             try:
-                assert len(var_coding_seq) - len(ref_coding_seq) == dupl_length
+                assert len(ref_coding_seq) - len(var_coding_seq) == del_length
             except AssertionError:
                 logger.error(
-                    f"For duplication should hold: len(var_coding) - len(reference_coding) = len(duplication)\n variant position: {variant.to_string()}",
+                    f"For deletion should hold: len(reference coding) - len(variant coding) = len(deletion)\n=> variant position: {variant.to_string}",
                     exc_info=True,
                 )
-                diff_len = +1 * dupl_length
+        diff_len = -1 * del_length
+    else:
+        var_coding_seq = ref_coding_seq
 
-    ### ### ### ###
-    # after creating coding sequence with variant,
-    # check that indeed is different from the reference
-    ### ### ### ###
-    if transcript.coding_exon_skipped or not is_transcript_type_splice_acceptor_donor(
-        transcript.var_type
-    ):
+    if coding_exon_skipped:
         try:
             assert ref_coding_seq.upper() != var_coding_seq.upper()
         except AssertionError:
@@ -522,16 +104,16 @@ def construct_variant_coding_seq(
             var_start,
             var_end,
             var_edit,
-            transcript.are_exons_skipped,
+            are_exons_skipped,
         )
 
         ### ### ### ### ### ###
         # assert constructed variant coding sequence
         # contains start (if edit not start_lost) and stop codon
         ### ### ### ### ### ###
-        if transcript.start_codon_exon_skipped and transcript.stop_codon_exon_skipped:
+        if start_codon_exon_skipped and stop_codon_exon_skipped:
             pass
-        elif transcript.start_codon_exon_skipped:
+        elif start_codon_exon_skipped:
             try:
                 assert var_coding_seq[-3:] in ["TAG", "TAA", "TGA"]
             except AssertionError:
@@ -539,7 +121,7 @@ def construct_variant_coding_seq(
                     f"Constructed observed coding sequence should contain stop codon\n=> variant position: {variant.to_string()}",
                     exc_info=True,
                 )
-        elif transcript.stop_codon_exon_skipped:
+        elif stop_codon_exon_skipped:
             if ref_coding_seq[0:3] == "ATG":
                 try:
                     assert var_coding_seq[0:3] == "ATG"
@@ -548,88 +130,509 @@ def construct_variant_coding_seq(
                         f"Constructed observed coding sequence should contain start codon\n=> variant position: {variant.to_string()}"
                     )
         else:
-            ### ### ###
-            # variant does not skip exon => prepare range of variant start stop
-            # to assert for existence of start and stop codons
-            ### ### ###
-            if var_start == var_end:
-                var_positions = range(var_start, var_start + 1)
-            else:
-                var_positions = range(var_start, var_end)
-
-            if not (
-                "start_lost" in transcript.var_type
-                or "start_retained" in variant.var_type
-            ):
-                start_positions = set(range(1, 4))
-                if (
-                    not start_positions.intersection(var_positions)
-                    and ref_coding_seq[0:3] == "ATG"
-                ):
-                    # if variant does not change positions on the start of the coding sequence
-                    # and ensembl record for transcript starts by ATG
-                    # assert that the observed coding sequence starts with ATG
-                    try:
-                        assert var_coding_seq[0:3] == "ATG"
-                    except AssertionError:
-                        logger.error(
-                            f"Constructed observed coding sequence should contain start codon\n=> variant position: {variant.to_string()}",
-                            exc_info=True,
-                        )
-
-                if not (
-                    "stop_retained_variant" in transcript.var_type
-                    or "stop_lost" in transcript.var_type
-                ):
-                    stop_positions = set(
-                        range(len(ref_coding_seq) + 1 - 3, len(ref_coding_seq) + 1)
-                    )
-                    if not stop_positions.intersection(var_positions):
-                        # if variant does not change positions in the end of the coding sequence
-                        # assert that the observed coding sequence finishes with "TAG", "TAA" or "TGA"
-                        try:
-                            assert var_coding_seq[-3:] in ["TAG", "TAA", "TGA"]
-                        except AssertionError:
-                            logger.error(
-                                f"Constructed observed coding sequence should contain stop codon\n=> variant position: {variant.to_string()}",
-                                exc_info=True,
-                            )
-
-    return var_coding_seq.upper(), diff_len
+            check_if_start_stop_codon_exists_in_var_sequence(
+                transcript, variant, var_start, var_end, ref_coding_seq, var_coding_seq
+            )
+    return var_coding_seq, diff_len
 
 
-def print_ref_observed_seq(
-    ref_coding_seq,
-    var_coding_seq,
-    transcript,
-    var_start,
-    var_end,
-    var_edit,
-    is_exon_skipped,
-):
+def construct_variant_coding_seq_exonic_variant(
+    transcript: TranscriptInfo,
+    variant: VariantInfo,
+    ref_transcript: pyensembl.transcript.Transcript,
+) -> tuple:
     """
-    Print reference and observed coding sequence
+    Construct coding sequence for exonic variant
+    following hgvs recommendations: http://varnomen.hgvs.org/recommendations/general/
 
-    Parameters
-    ----------
-    ref_coding_seq : str
-        reference coding sequence
-    var_coding_seq : str
-        observed coding sequence
-    transcript : dict of str: str
-        variant-affected transcript GSvar information
-    var_start : int
-        variant start position (in coding sequence)
-    var_end : int
-        variant end position (in coding sequence)
-    var_edit : str
-        variant edit information
-    is_exon_skipped : bool
-        variant causes an exon to be skipped (True), otherwise (False)
+    Then return variant-integrated coding sequence in the forward strand
+    r the reverse complement, based on the transcript directionality
 
     Returns
     -------
-    None
+    str
+        variant coding sequence
+    int
+        diff_len
+    """
+    logger.debug("Constructing coding sequence for intronic variant")
+    ref_coding_seq = str(ref_transcript.coding_sequence)
+    logger.debug(f"Coding seq: {ref_coding_seq}, len={len(ref_coding_seq)}")
+    vep_coordinates_used = True
+    var_coding_seq = ""
+    diff_len = 0
+    var_edit = str(transcript.var_hgvs.edit)
+    logger.debug("Constructing variant start and stop position")
+    if int(transcript.var_hgvs.pos.start.base) >= 1:
+        var_start = int(transcript.var_hgvs.pos.start.base)
+    else:
+        var_start = 1
+    if int(transcript.var_hgvs.pos.end.base) >= 1:
+        var_end = int(transcript.var_hgvs.pos.end.base)
+    else:
+        var_end = 1
+
+    ### ### ### ###
+    # construct observed coding sequence for variant in exonic regions
+    ### ### ### ###
+    if ">" in var_edit[0:3]:
+        logger.debug("Add SNP to coding sequence")
+        # get directionally corrected reference and observed bases for SNP
+        [ref_seq, obs_seq] = var_edit.split(">")
+        if var_start > 1:
+            var_coding_seq = (
+                ref_coding_seq[0 : var_start - 1]
+                + obs_seq.lower()
+                + ref_coding_seq[var_start : len(ref_coding_seq)]
+            )
+        elif var_start == 1:
+            var_coding_seq = (
+                obs_seq.lower() + ref_coding_seq[var_start : len(ref_coding_seq)]
+            )
+        else:
+            try:
+                assert var_start >= 0
+            except AssertionError:
+                logger.error(
+                    f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
+                    exc_info=True,
+                )
+        try:
+            assert len(ref_coding_seq) == len(var_coding_seq)
+        except AssertionError:
+            logger.error(
+                f"For SNP the sum of length of coding exons should not change\n=> variant position: {variant.to_string()}",
+                exc_info=True,
+            )
+        diff_len = 0
+    elif "delins" in var_edit[0:6]:
+        ### ### ###
+        # delins variant edits add a deletion and then an insertion
+        ### ### ###
+        logger.debug("Add deletion and then insertion to coding sequence")
+
+        ### ### ###
+        # introduce the deletion
+        ### ### ###
+        logger.debug(f"Deleting: {ref_coding_seq[var_start -1 :var_end]}")
+        logger.debug(f"Region being delete is: {var_start} - {var_end}")
+        if var_start >= 1:
+            var_coding_seq = (
+                ref_coding_seq[0 : var_start - 1]
+                + ref_coding_seq[var_end : len(ref_coding_seq)]
+            )
+        elif var_start == 0:
+            var_coding_seq = ref_coding_seq[var_end : len(ref_coding_seq)]
+        else:
+            try:
+                assert var_start >= 0
+            except AssertionError:
+                logger.error(
+                    f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
+                    exc_info=True,
+                )
+
+        # assert deletion by resulted sequence length
+        del_length = var_end - var_start + 1
+        try:
+            logger.debug(
+                f"var_coding_seq: {var_coding_seq}, len: {len(var_coding_seq)}"
+            )
+            assert len(ref_coding_seq) - len(var_coding_seq) == del_length
+        except AssertionError:
+            logger.error(
+                f"For deletion should hold: len(reference coding) - len(variant coding) = len(deletion)\n variant position: {variant.to_string()}",
+                exc_info=True,
+            )
+        ### ### ###
+        # introduce the insertion
+        ### ### ###
+        obs_seq = var_edit.split("delins")[1]
+        try:
+            assert len(obs_seq) >= 1
+        except AssertionError:
+            logger.error(
+                f"Supplied VEP does not contain insertion sequence\n=> variant position: {variant.to_string()}",
+                exc_info=True,
+            )
+        logger.debug(f"Insert sequence: {obs_seq}")
+        if var_start >= 1:
+            var_coding_seq_ins = (
+                var_coding_seq[0 : var_start - 1]
+                + obs_seq.lower()
+                + var_coding_seq[var_start - 1 : len(ref_coding_seq)]
+            )
+        else:
+            try:
+                assert var_start >= 1
+            except AssertionError:
+                logger.error(
+                    f"Supplied coding region position should be >= 1\n=> variant position: {variant.to_string()}",
+                    exc_info=True,
+                )
+
+        # assert insertion operation by resulted length
+        ins_length = len(obs_seq)
+        try:
+            assert len(var_coding_seq_ins) - len(var_coding_seq) == ins_length
+        except AssertionError:
+            logger.error(
+                f"For insertion should hold: len(var_coding) - len(var_coding with deletion) = len(insertion)\n=> variant position: {variant.to_string()}",
+                exc_info=True,
+            )
+        var_coding_seq = var_coding_seq_ins
+        # assert the length difference for both operations
+        diff_len = ins_length - del_length
+        try:
+            logger.debug(
+                f"var_coding_seq: {var_coding_seq}, len: {len(var_coding_seq)}"
+            )
+            assert len(var_coding_seq) - len(ref_coding_seq) == diff_len
+        except AssertionError:
+            logger.error(
+                f"For insertion after deletion should hold: len(variant coding) - len(reference coding) = -len(deletion) + len(insertion)\n variant position: {variant.to_string()}",
+                exc_info=True,
+            )
+    elif "del" in var_edit[0:3]:
+        # deletion will be from the start up to end position
+        logger.debug("Add deletion to coding sequence")
+        if not is_transcript_type_splice_acceptor_donor(transcript.var_type):
+            # assert deleted coding sequence to equal the reference coding sequence
+            # include case at which the variant start before or ends after the coding sequence
+            if (
+                int(transcript.var_hgvs.pos.start.base) > 0
+                and int(transcript.var_hgvs.pos.end.base) > 0
+            ):
+                if not (
+                    is_genomic_pos_in_coding_exon(ref_transcript, variant.genomic_start)
+                    and is_genomic_pos_in_coding_exon(
+                        ref_transcript, variant.genomic_end
+                    )
+                ):
+                    # variant start or ends outside an coding exonic range
+                    logger.debug("Variant start or end not in a coding exonic range")
+                    logger.debug(f"var start: {var_start}, end: {var_end}")
+                    affected_coding_length = var_end - var_start + 1
+                    logger.debug(
+                        f"Length of variant sequence that affects coding exonic sequence: {affected_coding_length}"
+                    )
+                else:
+                    # variant starts and ends inside coding exonic range
+                    affected_coding_length = -1
+        ### ### ###
+        # perform deletion
+        ### ### ###
+        if var_start >= 1:
+            var_coding_seq = (
+                ref_coding_seq[0 : var_start - 1]
+                + ref_coding_seq[var_end : len(ref_coding_seq)]
+            )
+        else:
+            try:
+                assert var_start >= 0
+            except AssertionError:
+                logger.error(
+                    f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
+                    exc_info=True,
+                )
+        del_length = var_end - var_start + 1
+        try:
+            logger.debug(
+                f"var_coding_seq: {var_coding_seq}, len: {len(var_coding_seq)}"
+            )
+            assert len(ref_coding_seq) - len(var_coding_seq) == del_length
+        except AssertionError:
+            logger.error(
+                f"For deletion should hold: len(reference coding) - len(variant coding) = len(deletion)\n variant position: {variant.to_string()}",
+                exc_info=True,
+            )
+        diff_len = -1 * del_length
+    elif "ins" in var_edit[0:3]:
+        # for insertion annotation: start & end are the flanking regions
+        # the insertion will be placed between the flanking regions
+        logger.debug("Add insertion to coding sequence")
+        if not (
+            is_genomic_pos_in_coding_exon(ref_transcript, variant.genomic_start)
+            and is_genomic_pos_in_coding_exon(ref_transcript, variant.genomic_end)
+        ):
+            # variant start or ends outside an coding exonic range
+            logger.debug("Variant start or end not in a coding exonic range")
+            affected_coding_length = var_end - var_start + 1
+            logger.debug(
+                f"Length of variant sequence that affects coding exonic sequence: {affected_coding_length}"
+            )
+        else:
+            # variant inside coding exonic range
+            affected_coding_length = -1
+
+        ### ### ###
+        # calculate sequence to be inserted
+        ### ### ###
+        obs_seq = var_edit.split("ins")[1]
+        if len(obs_seq) > 0:
+            # VEP contains insertion sequence
+            if "_" in obs_seq:
+                # insertion sequence is described by coding coordinates
+                logger.info(
+                    f"Insertion sequence is described by coding coordinates \n=> variant pos: {variant.to_string}"
+                )
+                [ins_source_start, ins_source_end] = obs_seq.split("_")
+                obs_seq = ref_coding_seq[
+                    int(ins_source_start) - 1 : int(ins_source_end.strip())
+                ]
+            if not affected_coding_length == -1:
+                obs_seq = obs_seq[-affected_coding_length:]
+        else:
+            try:
+                assert 1 == 0
+            except AssertionError:
+                logger.error(
+                    f"vep does not contain insertion sequence\n=> variant position: {variant.to_string}",
+                    exc_info=True,
+                )
+        logger.debug(f"Insert the sequence: {obs_seq}")
+        ### ### ###
+        # perform insertion
+        ### ### ###
+        if var_start >= 1:
+            if var_start == var_end:
+                # start equal ends so the rest part, after the insertion, should start on end position
+                if vep_coordinates_used:
+                    var_coding_seq = (
+                        ref_coding_seq[0:var_start]
+                        + obs_seq.lower()
+                        + ref_coding_seq[var_end : len(ref_coding_seq)]
+                    )
+                else:
+                    var_coding_seq = (
+                        ref_coding_seq[0:var_start]
+                        + obs_seq.lower()
+                        + ref_coding_seq[var_end : len(ref_coding_seq)]
+                    )
+            else:
+                if vep_coordinates_used:
+                    var_coding_seq = (
+                        ref_coding_seq[0:var_start]
+                        + obs_seq.lower()
+                        + ref_coding_seq[var_end - 1 : len(ref_coding_seq)]
+                    )
+                else:
+                    var_coding_seq = (
+                        ref_coding_seq[0:var_start]
+                        + obs_seq.lower()
+                        + ref_coding_seq[var_end - 1 : len(ref_coding_seq)]
+                    )
+        else:
+            try:
+                assert var_start >= 1
+            except AssertionError:
+                logger.error(
+                    f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
+                    exc_info=True,
+                )
+        ins_length = len(obs_seq)
+        try:
+            assert len(var_coding_seq) - len(ref_coding_seq) == ins_length
+        except AssertionError:
+            logger.error(
+                f"For insertion should hold: len(var_coding) - len(reference_coding) = len(insertion)\n=> variant position: {variant.to_string()}",
+                exc_info=True,
+            )
+        diff_len = +1 * ins_length
+
+    elif "dup" in var_edit[0:3]:
+        ### ### ###
+        # for duplication annotation: start & end are the duplication region
+        # the duplication will be placed right-after the end position
+        ### ### ###
+        logger.debug("Add duplication to coding sequence")
+        if not (
+            is_genomic_pos_in_coding_exon(ref_transcript, variant.genomic_start)
+            and is_genomic_pos_in_coding_exon(ref_transcript, variant.genomic_end)
+        ):
+            ### ### ###
+            # variant starts or ends in intronic region
+            ### ### ###
+            logger.debug("Variant start or end not in a coding exonic range")
+            logger.debug(f"var start: {var_start}, end: {var_end}")
+            affected_coding_length = var_end - var_start + 1
+            logger.debug(
+                f"Length of variant sequence that affects coding exonic sequence: {affected_coding_length}"
+            )
+        else:
+            ### ### ###
+            # variant inside coding exonic range
+            ### ### ###
+            affected_coding_length = -1
+
+        ### ### ###
+        # calculate sequence to be duplicated
+        ### ### ###
+        obs_seq = (
+            ("c." + str(transcript.var_hgvs))
+            .split("c.")[1]
+            .split(str(transcript.var_hgvs))[1]
+        )
+        if len(obs_seq) > 0:
+            if affected_coding_length == -1:
+                # all duplication inside coding exon
+                obs_seq = obs_seq
+            else:
+                obs_seq = obs_seq[-affected_coding_length:]
+        else:
+            if var_start == var_end:
+                obs_seq = ref_coding_seq[var_start - 1]
+            else:
+                obs_seq = ref_coding_seq[var_start - 1 : var_end]
+        logger.debug(f"Duplicate the sequence: {obs_seq}")
+
+        ### ### ###
+        # perform duplication
+        ### ### ###
+        if var_start == var_end:
+            # duplication of one nucleotide
+            logger.debug("Duplication of one nucleotide")
+            if var_start >= 1:
+                var_coding_seq = (
+                    ref_coding_seq[0:var_start]
+                    + obs_seq.lower()
+                    + ref_coding_seq[var_start : len(ref_coding_seq)]
+                )
+            else:
+                try:
+                    assert var_start >= 0
+                except AssertionError:
+                    logger.error(
+                        f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
+                        exc_info=True,
+                    )
+        else:
+            # duplication of multiple nucleotides
+            logger.debug("Duplication of multiple nucleotides")
+            if var_start >= 1:
+                if vep_coordinates_used:
+                    var_coding_seq = (
+                        ref_coding_seq[0:var_end]
+                        + obs_seq.lower()
+                        + ref_coding_seq[var_end : len(ref_coding_seq)]
+                    )
+                else:
+                    var_coding_seq = (
+                        ref_coding_seq[0 : var_end + 1]
+                        + obs_seq.lower()
+                        + ref_coding_seq[var_end + 1 : len(ref_coding_seq)]
+                    )
+            else:
+                try:
+                    assert var_start >= 1
+                except AssertionError:
+                    logger.error(
+                        f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
+                        exc_info=True,
+                    )
+        dupl_length = len(obs_seq)
+        try:
+            assert len(var_coding_seq) - len(ref_coding_seq) == dupl_length
+        except AssertionError:
+            logger.error(
+                f"For duplication should hold: len(var_coding) - len(reference_coding) = len(duplication)\n variant position: {variant.to_string()}",
+                exc_info=True,
+            )
+            diff_len = +1 * dupl_length
+
+    ### ### ### ###
+    # after creating coding sequence with variant,
+    # check that indeed is different from the reference
+    ### ### ### ###
+    try:
+        assert ref_coding_seq.upper() != var_coding_seq.upper()
+    except AssertionError:
+        logger.error(
+            f"Coding sequence of reference and sample should be different\n variant position: {variant.to_string()}",
+            exc_info=True,
+        )
+    print_ref_observed_seq(
+        ref_coding_seq,
+        var_coding_seq,
+        transcript,
+        var_start,
+        var_end,
+        var_edit,
+        False,
+    )
+
+    ### ### ### ### ### ###
+    # assert constructed variant coding sequence
+    # contains start (if edit not start_lost) and stop codon
+    ### ### ### ### ### ###
+    check_if_start_stop_codon_exists_in_var_sequence(
+        transcript, variant, var_start, var_end, ref_coding_seq, var_coding_seq
+    )
+    return var_coding_seq, diff_len
+
+
+def check_if_start_stop_codon_exists_in_var_sequence(
+    transcript: TranscriptInfo,
+    variant: VariantInfo,
+    var_start: int,
+    var_end: int,
+    ref_coding_seq: str,
+    var_coding_seq: str,
+) -> None:
+    if var_start == var_end:
+        var_positions = range(var_start, var_start + 1)
+    else:
+        var_positions = range(var_start, var_end)
+
+    if not (
+        "start_lost" in transcript.var_type or "start_retained" in variant.var_type
+    ):
+        start_positions = set(range(1, 4))
+        if (
+            not start_positions.intersection(var_positions)
+            and ref_coding_seq[0:3] == "ATG"
+        ):
+            # if variant does not change positions on the start of the coding sequence
+            # and ensembl record for transcript starts by ATG
+            # assert that the observed coding sequence starts with ATG
+            try:
+                assert var_coding_seq[0:3] == "ATG"
+            except AssertionError:
+                logger.error(
+                    f"Constructed observed coding sequence should contain start codon\n=> variant position: {variant.to_string()}",
+                    exc_info=True,
+                )
+
+        if not (
+            "stop_retained_variant" in transcript.var_type
+            or "stop_lost" in transcript.var_type
+        ):
+            stop_positions = set(
+                range(len(ref_coding_seq) + 1 - 3, len(ref_coding_seq) + 1)
+            )
+            if not stop_positions.intersection(var_positions):
+                # if variant does not change positions in the end of the coding sequence
+                # assert that the observed coding sequence finishes with "TAG", "TAA" or "TGA"
+                try:
+                    assert var_coding_seq[-3:] in ["TAG", "TAA", "TGA"]
+                except AssertionError:
+                    logger.error(
+                        f"Constructed observed coding sequence should contain stop codon\n=> variant position: {variant.to_string()}",
+                        exc_info=True,
+                    )
+
+
+def print_ref_observed_seq(
+    ref_coding_seq: str,
+    var_coding_seq: str,
+    transcript: TranscriptInfo,
+    var_start: int,
+    var_end: int,
+    var_edit: str,
+    is_exon_skipped: bool,
+) -> None:
+    """
+    Print reference and observed coding sequence
     """
     logger.debug("Print reference and observed sequence on the variant region:")
     # set up the variant print region start and end
