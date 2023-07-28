@@ -12,24 +12,31 @@ logger = logging.getLogger("GenOtoScope_Classify.PVS1.exon_skipping")
 hgvs_parser = hgvs.parser.Parser()
 
 
-def assess_exon_skipping(transcript: TranscriptInfo, variant: VariantInfo) -> tuple:
+def assess_exon_skipping(
+    transcript: TranscriptInfo,
+    variant: VariantInfo,
+    ref_transcript: pyensembl.transcript.Transcript,
+) -> tuple:
     """
     Assess if exon will be skipped
     By examining if the affected intron position in on the splice sites: +/- 1,2
     """
 
-    ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
-        transcript.transcript_id
-    )
+    logger.debug("Assess exon skipping for splice acceptor variant")
+
+    are_exons_skipped = False
+    exons_skipped = []
+    start_codon_exon_skipped, stop_codon_exon_skipped = False, False
+    coding_exon_skipped = False
+    skipped_exon_start, skipped_exon_end = 0, 0
+    var_exon_start, var_exon_end = 0, 0
 
     split_symbols, intron_offsets, directions2exon = parse_variant_intron_pos(
         transcript.var_hgvs
     )
 
-    logger.debug("Assess exon skipping for splice acceptor variant")
     logger.debug(f"intron offsets: {intron_offsets}")
 
-    are_exons_skipped = False
     for intron_offset in intron_offsets:
         if intron_offset in [1, 2]:
             # variant is disrupting donor/acceptor splicesome site
