@@ -21,7 +21,7 @@ def assess_pvs1(variant: Variant):
 def assess_pvs1_start_loss(variant: Variant):
     results = []
     for transcript in variant.transcript_info:
-        if transcript.exists_alternative_start_codon:
+        if not transcript.exists_alternative_start_codon:
             comment = "Something"
             results.append(RuleResult("PVS1_start_loss", False, "very_strong", comment))
         else:
@@ -278,7 +278,7 @@ def assess_bp3(variant: Variant):
     for transcript in variant.transcript_info:
         if not transcript.transcript_disease_relevant:
             comment = f"Transcript {transcript.transcript_id} is not disease relevant."
-            result = RuleResult("BP3", True, "supporting", comment)
+            result = RuleResult("BP3", False, "supporting", comment)
         elif (
             transcript.diff_len_protein_percent
             <= Variant.thresholds["diff_len_protein_percent"] and transcript.len_change_in_repetitive_region

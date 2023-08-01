@@ -2,13 +2,14 @@
 
 import logging
 import pyensembl
-from genotoscope_exon_skipping import (
+
+from refactoring.genotoscope_exon_skipping import (
     get_transcript_exon_offsets,
     is_transcript_in_positive_strand,
     find_exon_by_ref_pos,
     find_exon_by_var_pos,
 )
-from variant import TranscriptInfo, VariantInfo
+from refactoring.variant import TranscriptInfo, VariantInfo
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.assess_NMD")
 
@@ -263,6 +264,7 @@ def assess_NMD_exonic_variant(
         logger.debug(f"NMD is predicted to occur: {NMD_occurs}, comment: {NMD_comment}")
     else:
         logger.debug("Variant type not applicable for stop codon search")
+        NMD_occurs = False
         affected_exons_pos = []
 
     return (

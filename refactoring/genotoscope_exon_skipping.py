@@ -6,7 +6,7 @@ import pyensembl
 import hgvs.parser
 import hgvs.posedit
 
-from variant import VariantInfo, TranscriptInfo
+from refactoring.variant import VariantInfo, TranscriptInfo
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.exon_skipping")
 hgvs_parser = hgvs.parser.Parser()
@@ -131,8 +131,8 @@ def assess_exon_skipping(
     return (
         exons_skipped,
         are_exons_skipped,
-        var_exon_start,
-        var_exon_end,
+        skipped_exon_start,
+        skipped_exon_end,
         start_codon_exon_skipped,
         stop_codon_exon_skipped,
         coding_exon_skipped,

@@ -3,11 +3,11 @@
 import logging
 import pyensembl
 
-from genotoscope_exon_skipping import (
+from refactoring.genotoscope_exon_skipping import (
     is_transcript_type_splice_acceptor_donor,
 )
-from genotoscope_assess_NMD import is_genomic_pos_in_coding_exon
-from variant import TranscriptInfo, VariantInfo
+from refactoring.genotoscope_assess_NMD import is_genomic_pos_in_coding_exon
+from refactoring.variant import TranscriptInfo, VariantInfo
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.construct_variant_coding_seq")
 
@@ -42,6 +42,7 @@ def construct_variant_coding_seq_intronic_variant(
     logger.debug(f"Coding seq: {ref_coding_seq}, len={len(ref_coding_seq)}")
     var_coding_seq = ""
     diff_len = 0
+    var_edit = str(transcript.var_hgvs.edit)
     if start_codon_exon_skipped and stop_codon_exon_skipped:
         ### ### ### ###
         # variant skips both exon containing both start and stop codon
@@ -530,15 +531,14 @@ def construct_variant_coding_seq_exonic_variant(
                         f"Supplied coding region position should be >= 0\n=> variant position: {variant.to_string()}",
                         exc_info=True,
                     )
-        dupl_length = len(obs_seq)
+        diff_len = len(obs_seq)
         try:
-            assert len(var_coding_seq) - len(ref_coding_seq) == dupl_length
+            assert len(var_coding_seq) - len(ref_coding_seq) == diff_len
         except AssertionError:
             logger.error(
                 f"For duplication should hold: len(var_coding) - len(reference_coding) = len(duplication)\n variant position: {variant.to_string()}",
                 exc_info=True,
             )
-            diff_len = +1 * dupl_length
 
     ### ### ### ###
     # after creating coding sequence with variant,
