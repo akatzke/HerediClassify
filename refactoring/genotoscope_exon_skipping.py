@@ -48,7 +48,7 @@ def assess_exon_skipping(
         logger.debug("exon is skipped, call find_exon_by_var_pos()")
         # if exon is skipped find its start and end
         exons_skipped, var_exon_start, var_exon_end = find_exon_by_var_pos(
-            ref_transcript, transcript, variant, is_genomic=True
+            ref_transcript, transcript, variant, is_genomic=True, diff_len=0
         )
         ### ### ### ###
         # Examine if skipped exon is coding
@@ -424,6 +424,7 @@ def find_exon_by_var_pos(
     transcript: TranscriptInfo,
     variant: VariantInfo,
     is_genomic: bool,
+    diff_len: int,
 ):
     """
     Find variant exon index by variant coding position, exon index is 1-based
@@ -445,14 +446,14 @@ def find_exon_by_var_pos(
     exon_positions = get_transcript_exon_offsets(ref_transcript, is_genomic)
 
     overlap_exon_indices = []
+    # save the variant start and end offset in the overlapping exon regions
     var_start_offset, var_end_offset = (
         0,
         0,
-    )  # save the variant start and end offset in the overlapping exon regions
+    )
     var_coding = transcript.var_hgvs
-    ### ### ###
+
     # get the strand direction
-    ### ### ###
     if is_transcript_in_positive_strand(ref_transcript):
         strand_direction = +1
     else:
@@ -514,7 +515,7 @@ def find_exon_by_var_pos(
         if var_start < 0:
             var_start = 0
         if var_end < 0:
-            if transcript.diff_len > 0:
+            if diff_len > 0:
                 var_end = var_start + transcript.diff_len
             else:
                 # deletion case
@@ -536,12 +537,15 @@ def find_exon_by_var_pos(
                 exon_interval[1] + 2 * strand_direction,
                 strand_direction,
             )
+            if var_start in normalized_exon_interval:
+                overlap_exon_indices.append(exon_idx + 1)
+                break
         else:
             normalized_exon_interval = range(exon_interval[0], exon_interval[1] + 1)
-        logger.debug(f"Exon interval: {normalized_exon_interval}")
-        if var_start in normalized_exon_interval:
-            overlap_exon_indices.append(exon_idx + 1)
-            break
+            logger.debug(f"Exon interval: {normalized_exon_interval}")
+            if var_start in normalized_exon_interval:
+                overlap_exon_indices.append(exon_idx + 1)
+                break
     logger.debug(
         f"Search var_start: {var_start} found in exon(s): {overlap_exon_indices}"
     )

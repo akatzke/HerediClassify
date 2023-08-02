@@ -62,7 +62,7 @@ def assess_NMD_intronic_variant(
             skipped_exons,
             var_exon_start_offset,
             var_exon_end_offset,
-        ) = find_exon_by_var_pos(ref_transcript, transcript, variant, False)
+        ) = find_exon_by_var_pos(ref_transcript, transcript, variant, False, diff_len)
     NMD_comment = "NMD not predicted"
     if coding_exon_skipped:
         logger.debug("Variant applicable for stop codon searching")
@@ -177,7 +177,7 @@ def assess_NMD_exonic_variant(
             exons_containing_var,
             var_exon_start_offset,
             var_exon_end_offset,
-        ) = find_exon_by_var_pos(ref_transcript, transcript, variant, True)
+        ) = find_exon_by_var_pos(ref_transcript, transcript, variant, True, diff_len)
     elif is_genomic_pos_in_coding_exon(
         ref_transcript, variant.genomic_start
     ) or is_genomic_pos_in_coding_exon(ref_transcript, variant.genomic_end):
@@ -189,7 +189,7 @@ def assess_NMD_exonic_variant(
             exons_containing_var,
             var_exon_start_offset,
             var_exon_end_offset,
-        ) = find_exon_by_var_pos(ref_transcript, transcript, variant, False)
+        ) = find_exon_by_var_pos(ref_transcript, transcript, variant, False, diff_len)
 
     NMD_comment = "NMD is not predicted"
 
@@ -325,7 +325,7 @@ def find_affected_exons_pos(
     start_offset: int,
     end_offset: int,
     variant: VariantInfo,
-):
+) -> list[dict]:
     """
     Find affected exons positions (genomic or coding)
 
