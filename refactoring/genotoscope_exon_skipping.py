@@ -29,7 +29,6 @@ def assess_exon_skipping(
     start_codon_exon_skipped, stop_codon_exon_skipped = False, False
     coding_exon_skipped = False
     skipped_exon_start, skipped_exon_end = 0, 0
-    var_exon_start, var_exon_end = 0, 0
 
     split_symbols, intron_offsets, directions2exon = parse_variant_intron_pos(
         transcript.var_hgvs
@@ -55,10 +54,8 @@ def assess_exon_skipping(
         ### ### ### ###
         # find exons containing start and stop codons
         if is_transcript_in_positive_strand(ref_transcript):
-            transcript_strand = "+"
             start_codon_first_pos = ref_transcript.start_codon_positions[0]
         else:
-            transcript_strand = "-"
             start_codon_first_pos = ref_transcript.start_codon_positions[-1]
         start_codon_exon_idx, start_codon_exon_offset = find_exon_by_ref_pos(
             ref_transcript, start_codon_first_pos, True
@@ -425,7 +422,7 @@ def find_exon_by_var_pos(
     variant: VariantInfo,
     is_genomic: bool,
     diff_len: int,
-):
+) -> tuple:
     """
     Find variant exon index by variant coding position, exon index is 1-based
     Returns
@@ -481,15 +478,17 @@ def find_exon_by_var_pos(
             # (currently modeled that) intron variant can disrupt at most one exon, so equal variant end with its start position
             ### ### ###
 
-            if transcript.exon and transcript.intron:
-                logger.debug(
-                    "Transcript info contains both exon and intron offset => use intron offset"
-                )
-                exon_idx = transcript.intron - 1
-            elif transcript.exon:
+            if transcript.exon:
                 exon_idx = transcript.exon - 1
             elif transcript.intron:
-                exon_idx = transcript.intron - 1
+                print("Is intron")
+                intron_idx = transcript.intron - 1
+                print(directions2exon)
+                if directions2exon[0] == 1:
+                    print("hello")
+                    exon_idx = intron_idx + 1
+                else:
+                    exon_idx = intron_idx
             else:
                 try:
                     assert transcript.exon or transcript.intron
@@ -498,13 +497,10 @@ def find_exon_by_var_pos(
                         f"Variant does not contain exon or intron index in VEP column\n => variant position: {variant.to_string()}",
                         exc_info=True,
                     )
-            if exon_idx + directions2exon[0] >= 0:
-                skipped_exon = exon_positions[exon_idx + directions2exon[0]]
-            else:
-                logger.debug("Skipping first exon")
-                skipped_exon = exon_positions[0]
-            var_start = skipped_exon[0]
-            var_end = var_start
+            var_start = exon_positions[exon_idx][0]
+            var_end = exon_positions[exon_idx][1]
+            print(var_start)
+            print(var_end)
             logger.debug(
                 f"Updated variant start:{var_start}, end: {var_end} on exon idx: {exon_idx + directions2exon[0]}"
             )

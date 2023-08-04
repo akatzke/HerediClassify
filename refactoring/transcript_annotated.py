@@ -140,8 +140,6 @@ class TranscriptInfo_intronic(TranscriptInfo):
             ref_transcript,
             are_exons_skipped,
             exons_skipped,
-            skipped_exon_start,
-            skipped_exon_end,
             start_codon_exon_skipped,
             stop_codon_exon_skipped,
             coding_exon_skipped,

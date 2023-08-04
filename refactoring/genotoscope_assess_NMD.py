@@ -22,8 +22,6 @@ def assess_NMD_intronic_variant(
     ref_transcript: pyensembl.transcript.Transcript,
     are_exons_skipped: bool,
     skipped_exons: list[int],
-    skipped_exon_start: int,
-    skipped_exon_end: int,
     start_codon_exon_skipped: bool,
     stop_codon_exon_skipped,
     coding_exon_skipped: bool,
