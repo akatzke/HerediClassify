@@ -2,6 +2,7 @@
 
 import logging
 import pyensembl
+import sys
 
 from refactoring.genotoscope_exon_skipping import (
     get_transcript_exon_offsets,
@@ -10,6 +11,7 @@ from refactoring.genotoscope_exon_skipping import (
     find_exon_by_var_pos,
 )
 from refactoring.variant import TranscriptInfo, VariantInfo
+
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.assess_NMD")
 
@@ -51,18 +53,9 @@ def assess_NMD_intronic_variant(
     exon_positions = get_transcript_exon_offsets(ref_transcript, True)
     num_exon_positions = len(exon_positions)
 
-    if is_genomic_pos_in_coding_exon(
-        ref_transcript, variant.genomic_start
-    ) or is_genomic_pos_in_coding_exon(ref_transcript, variant.genomic_end):
-        # variant overlaps both intronic and exonic region
-        logger.debug(
-            "Variant genomic position overlaps both intronic and coding exonic range => use exon offsets (VEP coordinates) to find affected exon"
-        )
-        (
-            skipped_exons,
-            var_exon_start_offset,
-            var_exon_end_offset,
-        ) = find_exon_by_var_pos(ref_transcript, transcript, variant, False, diff_len)
+    (skipped_exons, var_exon_start_offset, var_exon_end_offset) = find_exon_by_var_pos(
+        ref_transcript, transcript, variant, False, diff_len
+    )
     NMD_comment = "NMD not predicted"
     if coding_exon_skipped:
         logger.debug("Variant applicable for stop codon searching")
@@ -75,8 +68,8 @@ def assess_NMD_intronic_variant(
             affected_exons_pos = find_affected_exons_pos(
                 ref_transcript,
                 skipped_exons,
-                skipped_exon_start,
-                skipped_exon_end,
+                var_exon_start_offset,
+                var_exon_end_offset,
                 variant,
             )
 
@@ -337,11 +330,7 @@ def find_affected_exons_pos(
 
     logger.debug("Find affected exon positions")
     logger.debug(f"Start offset: {start_offset}, end: {end_offset}")
-    ### ### ###
-    # normalize start and end offset
-    ### ### ###
-    end_offset = end_offset - start_offset
-    start_offset = 0
+
     interact_exon_pos = []
     if is_transcript_in_positive_strand(ref_transcript):
         strand_direction = 1
