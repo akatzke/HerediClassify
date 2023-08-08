@@ -4,7 +4,6 @@ import logging
 import pyensembl
 
 from refactoring.genotoscope_assess_NMD import search_termination_codon, extract_codons
-from refactoring.variant import TranscriptInfo, VariantInfo
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.prot_len_diff")
 
