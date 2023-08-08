@@ -5,6 +5,7 @@ from __future__ import annotations
 import pyensembl
 from dataclasses import dataclass, field
 from typing import Optional
+from refactoring.genotoscope_protein_len_diff import calculate_prot_len_diff
 
 from refactoring.variant import VariantInfo, TranscriptInfo
 from refactoring.genotoscope_exon_skipping import assess_exon_skipping
@@ -37,7 +38,6 @@ class TranscriptInfo_exonic(TranscriptInfo):
     ref_transcript: pyensembl.transcript.Transcript = field(init=True)
     var_seq: str = ""
     diff_len: int = 0
-    diff_len_percent: float = 0
     diff_len_protein_percent: Optional[float] = None
     len_change_in_repetitive_region: bool = False
     is_NMD: bool = False
@@ -58,6 +58,7 @@ class TranscriptInfo_exonic(TranscriptInfo):
             transcript, variant, ref_transcript, var_seq, diff_len
         )
         is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
+        diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
         return TranscriptInfo_exonic(
             transcript_id=transcript.transcript_id,
             var_type=transcript.var_type,
@@ -69,9 +70,7 @@ class TranscriptInfo_exonic(TranscriptInfo):
             intron=transcript.intron,
             ref_transcript=ref_transcript,
             var_seq=var_seq,
-            diff_len=diff_len,
-            diff_len_percent=0,
-            diff_len_protein_percent=0,
+            diff_len_protein_percent=diff_len_protein_percent,
             len_change_in_repetitive_region=False,
             is_NMD=is_NMD,
             NMD_affected_exons=NMD_affected_exons,
@@ -87,7 +86,6 @@ class TranscriptInfo_intronic(TranscriptInfo):
 
     ref_transcript: pyensembl.transcript.Transcript
     diff_len: float
-    diff_len_percent: float
     diff_len_protein_percent: float
     exons_skipped: list[int]
     skipped_exon_start: int
@@ -147,6 +145,7 @@ class TranscriptInfo_intronic(TranscriptInfo):
             diff_len,
         )
         is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
+        diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
         return TranscriptInfo_intronic(
             transcript_id=transcript.transcript_id,
             var_type=transcript.var_type,
@@ -158,8 +157,7 @@ class TranscriptInfo_intronic(TranscriptInfo):
             intron=transcript.intron,
             ref_transcript=ref_transcript,
             diff_len=diff_len,
-            diff_len_percent=0,
-            diff_len_protein_percent=0,
+            diff_len_protein_percent=diff_len_protein_percent,
             exons_skipped=exons_skipped,
             skipped_exon_start=skipped_exon_start,
             skipped_exon_end=skipped_exon_end,
@@ -213,6 +211,6 @@ class TranscriptInfo_start_loss(TranscriptInfo):
             exon=transcript.exon,
             intron=transcript.intron,
             ref_transcript=ref_transcript,
-            position_alternative_start_codon=position_alternative_start_codon
+            position_alternative_start_codon=position_alternative_start_codon,
             pathogenic_variant_between_start_and_stop=False,
         )
