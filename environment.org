@@ -1,0 +1,9 @@
+#+title: Environment
+
+Code to install dependencies
+As installed on my PC @ home
+#+begin_src python
+pip install pyensemble
+pyensembl install --release 75 76 --species human
+pip install hgvs
+#+end_src
