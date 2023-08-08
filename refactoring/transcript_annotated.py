@@ -24,7 +24,7 @@ from refactoring.genotoscope_reading_frame_preservation import (
     assess_reading_frame_preservation,
 )
 from refactoring.genotoscope_exists_alternative_start_codon import (
-    examine_alternative_start_codon,
+    find_alternative_start_codon,
 )
 
 
@@ -187,6 +187,7 @@ class TranscriptInfo_start_loss(TranscriptInfo):
 
     ref_transcript: pyensembl.transcript.Transcript = field(init=True)
     exists_alternative_start_codon: bool
+    position_alternative_start_codon: list[int]
     pathogenic_variant_between_start_and_stop: bool
 
     @classmethod
@@ -196,7 +197,12 @@ class TranscriptInfo_start_loss(TranscriptInfo):
         ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
             transcript.transcript_id
         )
-        exists_alternative_start_codon = examine_alternative_start_codon(ref_transcript)
+        diff_len, var_coding_seq = construct_variant_coding_seq_exonic_variant(
+            transcript, variant, ref_transcript
+        )
+        position_alternative_start_codon = find_alternative_start_codon(
+            variant, ref_transcript, var_coding_seq
+        )
         return TranscriptInfo_start_loss(
             transcript_id=transcript.transcript_id,
             var_type=transcript.var_type,
@@ -207,6 +213,6 @@ class TranscriptInfo_start_loss(TranscriptInfo):
             exon=transcript.exon,
             intron=transcript.intron,
             ref_transcript=ref_transcript,
-            exists_alternative_start_codon=exists_alternative_start_codon,
+            position_alternative_start_codon=position_alternative_start_codon
             pathogenic_variant_between_start_and_stop=False,
         )
