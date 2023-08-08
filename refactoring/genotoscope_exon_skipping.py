@@ -481,11 +481,8 @@ def find_exon_by_var_pos(
             if transcript.exon:
                 exon_idx = transcript.exon - 1
             elif transcript.intron:
-                print("Is intron")
                 intron_idx = transcript.intron - 1
-                print(directions2exon)
                 if directions2exon[0] == 1:
-                    print("hello")
                     exon_idx = intron_idx + 1
                 else:
                     exon_idx = intron_idx
@@ -499,8 +496,6 @@ def find_exon_by_var_pos(
                     )
             var_start = exon_positions[exon_idx][0]
             var_end = exon_positions[exon_idx][1]
-            print(var_start)
-            print(var_end)
             logger.debug(
                 f"Updated variant start:{var_start}, end: {var_end} on exon idx: {exon_idx + directions2exon[0]}"
             )
