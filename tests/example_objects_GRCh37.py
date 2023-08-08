@@ -234,6 +234,28 @@ def create_example_snv_syn() -> tuple:
     return (transcript, variant)
 
 
+def create_start_lost() -> tuple:
+    """
+    Create RAD51D start lost variant
+    From HerediVar
+    """
+    hgvs = hgvs_parser.parse_c_posedit("c.2T>G".split("c.")[1])
+    transcript = TranscriptInfo(
+        "ENST00000345365",
+        "start lost",
+        hgvs,
+        2,
+        2,
+        exon=1,
+        intron=None,
+        var_protein="p.Met1?",
+    )
+    variant = VariantInfo(
+        "RAD51D", ["start_lost"], "17", 33446631, 33446631, "some_id", "A", "C"
+    )
+    return (transcript, variant)
+
+
 def create_brca2_missense() -> tuple:
     """
     Variant defined in origianl GenOtoScope test set
