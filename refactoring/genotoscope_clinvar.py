@@ -7,10 +7,12 @@ from Bio.Data import IUPACData
 from Bio.Seq import Seq
 import vcf
 
+from refactoring.variant import Variant
+
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.assess_NMD")
 
 
-def perform_clinvar_annotation(path_clinvar: str):
+def perform_clinvar_annotation(variant: Variant, path_clinvar: str):
     clinvar_df = load_clinvar_file(path_clinvar)
 
 
