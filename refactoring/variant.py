@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Literal, Optional
 import hgvs.posedit
 import hgvs.parser
 
@@ -44,10 +44,13 @@ class AffectedRegion:
     critical_region_type: str
 
 
+VarType = Literal["splice_donor", "splice_acceptor"]
+
+
 @dataclass
 class VariantInfo:
     gene_name: str
-    var_type: list
+    var_type: list[VarType]
     chr: str
     genomic_start: int
     genomic_end: int
@@ -60,23 +63,13 @@ class VariantInfo:
 
 
 @dataclass
-class ClinVar:
-    same_amino_acid_change_pathogenic: bool
-    same_amino_acid_change_pathogenic_list: list[str]
-    different_amino_acid_change_in_same_position_pathogenic: bool
-    different_amino_acid_change_in_same_position_pathogenic_list: list[str]
-
-
-@dataclass
-class Variant:
+class Variant_import:
     variant_info: VariantInfo
     transcript_info: list[TranscriptInfo]
     prediction_tools: dict
     gnomad: PopulationDatabases
     flossies: PopulationDatabases
     affected_region: AffectedRegion
-    clinvar: ClinVar
-    thresholds: dict
 
 
 @dataclass

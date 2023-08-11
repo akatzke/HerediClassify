@@ -6,4 +6,5 @@ As installed on my PC @ home
 pip install pyensemble
 pyensembl install --release 75 76 --species human
 pip install hgvs
+pip install cyvcf2
 #+end_src

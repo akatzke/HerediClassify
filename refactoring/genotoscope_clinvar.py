@@ -5,31 +5,66 @@ import pandas as pd
 from math import ceil
 from Bio.Data import IUPACData
 from Bio.Seq import Seq
-import vcf
+from cyvcf2 import VCF
 
-from refactoring.variant import Variant
+from refactoring.variant import VariantInfo
+from refactoring.variant_annotate import ClinVar, ClinVar_splice
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.assess_NMD")
 
 
-def perform_clinvar_annotation(variant: Variant, path_clinvar: str):
-    clinvar_df = load_clinvar_file(path_clinvar)
-
-
-def load_clinvar_file(clinvar_file: str):
-    """
-    Load clinvar file to find annotated variants
-    to decide for ACMG/AMP rules
-    kudos: https://github.com/jamescasbon/PyVCF/issues/201
-    """
-    logger.debug("Loading ClinVar file from {}".format(clinvar_file))
-    vcf_reader = vcf.Reader(
-        filename=clinvar_file,
-        compressed=True,
-        encoding="utf-8",
+def check_clinvar_splicing(variant: VariantInfo, path_clinvar: str) -> ClinVar_splice:
+    clinvar_df = VCF(path_clinvar)
+    clinvar_same_pos = clinvar_df(
+        f"{variant.chr}:{variant.genomic_start}-{variant.genomic_end}"
     )
-    return vcf_reader
+    clinvar_same_pos_filtered = filter_clinvars(clinvar_same_pos)
+    if clinvar_same_pos_filtered:
+        max_classification, affected_ID = get_highest_classification(clinvar_same_pos_filtered)
+        return ClinVar_splice(same_nucleotide_change_pathogenic=True, matching_clinvar_entries=clinvar_same_pos_filtered, clinvar_pos_fil)
+    else:
+        (start_splice_site, end_splice_site) = find_corresponding_splice_site(variant)
+        clinvar_splice_site = clinvar_df(
+            f"{variant.chr}:{start_splice_site}-{end_splice_site}"
+        )
+        clinvar_splice_site_filtered = filter_clinvars(clinvar_splice_site)
+        if clinvar_splice_site_filtered:
+            return True, False
+        else:
+            return False, False
 
+
+def check_clinvar_missense(variant: VariantInfo, path_clinvar: str) -> tuple:
+    clinvar_df = VCF(path_clinvar)
+    clinvar_same_pos = clinvar_df(
+        f"{variant.chr}:{variant.genomic_start}-{variant.genomic_end}"
+    )
+    clinvar_same_pos_filtered = filter_clinvars(clinvar_same_pos)
+    if clinvar_same_pos_filtered:
+        for entry in clinvar_same_pos_filtered:
+            if entry.ALT == variant.var_obs:
+                return True, True
+        return True, False
+    else:
+        return False, False
+
+
+def check_clinvar_region(chr: int, start: int, end: int, path_clinvar: str):
+    clinvar_df = VCF(path_clinvar)
+    clinvar_region = clinvar_df(f"{chr}:{start}-{end}")
+    clinvar_region_filtered = filter_clinvars(clinvar_region)
+    return clinvar_region_filtered
+
+
+def find_corresponding_splice_site(variant: VariantInfo) -> tuple:
+    return (variant.genomic_start, variant.genomic_end)
+
+
+def filter_clinvars(clinvars):
+    return clinvars
+
+def get_highest_classification(clinvars) -> str:
+    return clinvars.ID
 
 def extract_var_codon_info(transcripts_info, variant_info):
     """
