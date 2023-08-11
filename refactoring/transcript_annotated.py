@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import pyensembl
 from dataclasses import dataclass, field
-from typing import Optional
 from refactoring.genotoscope_protein_len_diff import calculate_prot_len_diff
 
 from refactoring.variant import VariantInfo, TranscriptInfo
@@ -38,10 +37,11 @@ class TranscriptInfo_exonic(TranscriptInfo):
     ref_transcript: pyensembl.transcript.Transcript = field(init=True)
     var_seq: str = ""
     diff_len: int = 0
-    diff_len_protein_percent: Optional[float] = None
+    diff_len_protein_percent: float = 0
     len_change_in_repetitive_region: bool = False
+    truncated_exon_relevant: bool = False
+    transcript_disease_relevant: bool = False
     is_NMD: bool = False
-    NMD_affected_exons: Optional[list[str]] = None
     is_reading_frame_preserved: bool = True
 
     @classmethod
@@ -73,7 +73,6 @@ class TranscriptInfo_exonic(TranscriptInfo):
             diff_len_protein_percent=diff_len_protein_percent,
             len_change_in_repetitive_region=False,
             is_NMD=is_NMD,
-            NMD_affected_exons=NMD_affected_exons,
             is_reading_frame_preserved=is_reading_frame_preserved,
         )
 
@@ -87,23 +86,12 @@ class TranscriptInfo_intronic(TranscriptInfo):
     ref_transcript: pyensembl.transcript.Transcript
     diff_len: float
     diff_len_protein_percent: float
-    exons_skipped: list[int]
-    skipped_exon_start: int
-    skipped_exon_end: int
-    stop_codon_exon_skipped: bool = False
-    start_codon_exon_skipped: bool = False
     are_exons_skipped: bool = False
-    coding_exon_skipped: bool = False
-    var_seq: str = ""
     len_change_in_repetitive_region: bool = False
     is_NMD: bool = False
-    NMD_affected_exons: list[int] = field(default_factory=list)
     transcript_disease_relevant: bool = False
     truncated_exon_relevant: bool = False
     is_reading_frame_preserved: bool = False
-    exists_alternative_start_codon: bool = False
-    pathogenic_variant_between_start_and_stop: bool = False
-    is_reading_frame_preserved: bool = True
 
     @classmethod
     def annotate(
@@ -156,24 +144,13 @@ class TranscriptInfo_intronic(TranscriptInfo):
             exon=transcript.exon,
             intron=transcript.intron,
             ref_transcript=ref_transcript,
-            diff_len=diff_len,
             diff_len_protein_percent=diff_len_protein_percent,
-            exons_skipped=exons_skipped,
-            skipped_exon_start=skipped_exon_start,
-            skipped_exon_end=skipped_exon_end,
-            stop_codon_exon_skipped=stop_codon_exon_skipped,
-            start_codon_exon_skipped=start_codon_exon_skipped,
             are_exons_skipped=are_exons_skipped,
-            coding_exon_skipped=coding_exon_skipped,
             len_change_in_repetitive_region=False,
-            var_seq=var_seq,
             is_NMD=is_NMD,
-            NMD_affected_exons=NMD_affected_exons,
             transcript_disease_relevant=True,
             truncated_exon_relevant=True,
             is_reading_frame_preserved=is_reading_frame_preserved,
-            exists_alternative_start_codon=False,
-            pathogenic_variant_between_start_and_stop=False,
         )
 
 

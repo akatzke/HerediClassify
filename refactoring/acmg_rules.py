@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
+from refactoring.variant_annotate import Variant_annotated
 from variant import *
-from rule_utils import (
+from refactoring.transcript_annotated import *
+from refactoring.variant_annotate import *
+from refactoring.rule_utils import (
     Prediction_result,
     aggregate_prediction_results,
     assess_prediction_tool,
@@ -8,106 +11,101 @@ from rule_utils import (
 )
 
 
-def assess_pvs1(variant: Variant):
-    result_start_loss = assess_pvs1_start_loss(variant)
-    result_frameshift = assess_pvs1_frameshift(variant)
-    result_splice = assess_pvs1_splice(variant)
-    result = summarise_results_per_transcript(
-        [result_start_loss, result_frameshift, result_splice]
-    )
-    return result
-
-
-def assess_pvs1_start_loss(variant: Variant):
+def assess_pvs1(variant: Variant_annotated):
     results = []
     for transcript in variant.transcript_info:
-        if not transcript.exists_alternative_start_codon:
-            comment = "Something"
-            results.append(RuleResult("PVS1_start_loss", False, "very_strong", comment))
-        else:
-            if transcript.pathogenic_variant_between_start_and_stop:
-                comment = "Something"
-                results.append(RuleResult("PVS1_start_loss", True, "moderate", comment))
-            else:
-                comment = "Something"
-                results.append(
-                    RuleResult("PVS1_start_loss", True, "supporting", comment)
-                )
+        if type(transcript) is TranscriptInfo_exonic:
+            result_frameshift = assess_pvs1_frameshift(transcript)
+            results.append(result_frameshift)
+        elif type(transcript) is TranscriptInfo_intronic:
+            result_splice = assess_pvs1_splice(transcript)
+            results.append(result_splice)
+        elif type(transcript) is TranscriptInfo_start_loss:
+            result_start_loss = assess_pvs1_start_loss(transcript)
+            results.append(result_start_loss)
     result = summarise_results_per_transcript(results)
     return result
 
 
-def assess_pvs1_splice(variant: Variant):
-    results = []
-    for transcript in variant.transcript_info:
-        if transcript.is_NMD:
-            if transcript.transcript_disease_relevant:
-                comment = "Something"
-                results.append(RuleResult("PVS1_splice", True, "very_strong", comment))
-            else:
-                comment = "Something"
-                results.append(RuleResult("PVS1_splice", False, "very_strong", comment))
-        elif (
-            transcript.exon_skipping
-            and not transcript.is_NMD
-            and not transcript.is_reading_frame_preserved
-        ):
-            if transcript.truncated_exon_relevant:
-                comment = "Something"
-                results.append(RuleResult("PVS1_splice", True, "strong", comment))
-            else:
-                if transcript.diff_len_protein_percent > 0.1:
-                    comment = "Something"
-                    results.append(RuleResult("PVS1_splice", True, "strong", comment))
-                else:
-                    comment = "Something"
-                    results.append(RuleResult("PVS1_splice", True, "moderate", comment))
-        elif transcript.exon_skipping or transcript.is_reading_frame_preserved:
-            if transcript.truncated_exon_relevant:
-                comment = "Something"
-                results.append(RuleResult("PVS1_splice", True, "strong", comment))
-            else:
-                if transcript.diff_len_protein_percent > 0.1:
-                    comment = "Something"
-                    results.append(RuleResult("PVS1_splice", True, "strong", comment))
-                else:
-                    comment = "Something"
-                    results.append(RuleResult("PVS1_splice", True, "moderate", comment))
+def assess_pvs1_start_loss(transcript: TranscriptInfo_start_loss):
+    if not transcript.exists_alternative_start_codon:
+        comment = "Something"
+        result = RuleResult("PVS1_start_loss", False, "very_strong", comment)
+    else:
+        if transcript.pathogenic_variant_between_start_and_stop:
+            comment = "Something"
+            result = RuleResult("PVS1_start_loss", True, "moderate", comment)
         else:
             comment = "Something"
-            results.append(RuleResult("PVS1_splice", False, "very_strong", comment))
-    result = summarise_results_per_transcript(results)
+            result = RuleResult("PVS1_start_loss", True, "supporting", comment)
     return result
 
 
-def assess_pvs1_frameshift(variant: Variant):
-    results = []
-    for transcript in variant.transcript_info:
-        if transcript.is_NMD:
-            if transcript.transcript_disease_relevant:
-                comment = "Something"
-                results.append(RuleResult("PVS1_splice", True, "very_strong", comment))
-            else:
-                comment = "Something"
-                results.append(RuleResult("PVS1_splice", False, "very_strong", comment))
+def assess_pvs1_splice(transcript: TranscriptInfo_intronic):
+    if transcript.is_NMD:
+        if transcript.transcript_disease_relevant:
+            comment = "Something"
+            result = RuleResult("PVS1_splice", True, "very_strong", comment)
         else:
-            if transcript.truncated_exon_relevant:
+            comment = "Something"
+            result = RuleResult("PVS1_splice", False, "very_strong", comment)
+    elif (
+        transcript.are_exons_skipped
+        and not transcript.is_NMD
+        and not transcript.is_reading_frame_preserved
+    ):
+        if transcript.truncated_exon_relevant:
+            comment = "Something"
+            result = RuleResult("PVS1_splice", True, "strong", comment)
+        else:
+            if transcript.diff_len_protein_percent > 0.1:
                 comment = "Something"
-                results.append(RuleResult("PVS1_splice", True, "strong", comment))
+                result = RuleResult("PVS1_splice", True, "strong", comment)
             else:
-                if transcript.diff_len_protein_percent > 0.1:
-                    comment = "Something"
-                    results.append(RuleResult("PVS1_splice", True, "strong", comment))
-                else:
-                    comment = "Something"
-                    results.append(RuleResult("PVS1_splice", True, "moderate", comment))
-    result = summarise_results_per_transcript(results)
+                comment = "Something"
+                result = RuleResult("PVS1_splice", True, "moderate", comment)
+    elif transcript.are_exons_skipped or transcript.is_reading_frame_preserved:
+        if transcript.truncated_exon_relevant:
+            comment = "Something"
+            result = RuleResult("PVS1_splice", True, "strong", comment)
+        else:
+            if transcript.diff_len_protein_percent > 0.1:
+                comment = "Something"
+                result = RuleResult("PVS1_splice", True, "strong", comment)
+            else:
+                comment = "Something"
+                result = RuleResult("PVS1_splice", True, "moderate", comment)
+    else:
+        comment = "Something"
+        result = RuleResult("PVS1_splice", False, "very_strong", comment)
     return result
 
 
-def assess_ps1(variant: Variant):
+def assess_pvs1_frameshift(transcript: TranscriptInfo_exonic):
+    if transcript.is_NMD:
+        if transcript.transcript_disease_relevant:
+            comment = "Something"
+            result = RuleResult("PVS1_splice", True, "very_strong", comment)
+        else:
+            comment = "Something"
+            result = RuleResult("PVS1_splice", False, "very_strong", comment)
+    else:
+        if transcript.truncated_exon_relevant:
+            comment = "Something"
+            result = RuleResult("PVS1_splice", True, "strong", comment)
+        else:
+            if transcript.diff_len_protein_percent > 0.1:
+                comment = "Something"
+                result = RuleResult("PVS1_splice", True, "strong", comment)
+            else:
+                comment = "Something"
+                result = RuleResult("PVS1_splice", True, "moderate", comment)
+    return result
+
+
+def assess_ps1(variant: Variant_annotated):
     if variant.clinvar.same_amino_acid_change_pathogenic:
-        comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {variant.clinvar.same_amino_acid_change_pathogenic_list}."
+        comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {variant.clinvar.matching_clinvar_entries}."
         result = RuleResult("PS1", True, "strong", comment)
     else:
         comment = "No matches found for variant."
@@ -115,7 +113,7 @@ def assess_ps1(variant: Variant):
     return result
 
 
-def assess_pm1(variant: Variant):
+def assess_pm1(variant: Variant_annotated):
     if variant.affected_region.critical_region:
         comment = f"Variant in mutational hotspot. {variant.affected_region.critical_region_type}"
         result = RuleResult("PM1", True, "moderate", comment)
@@ -125,7 +123,7 @@ def assess_pm1(variant: Variant):
     return result
 
 
-def assess_pm2(variant: Variant):
+def assess_pm2(variant: Variant_annotated):
     if variant.gnomad.frequency > variant.thresholds["PM2"]:
         comment = (
             f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
@@ -206,7 +204,11 @@ def assess_and_bp4_pp3(variant: Variant):
         comment = "Varinat is predicted to affect splicing and to be pathogenic and is conserved."
         result = RuleResult("PP3", True, "supporting", comment)
         result = RuleResult("BP4", False, "supporting", comment)
-    elif (splicing_result = Prediction_result.BENIGN and pathogenicity_result == Prediction_result.BENIGN and not is_conserved):
+    elif (
+        splicing_result == Prediction_result.BENIGN
+        and pathogenicity_result == Prediction_result.BENIGN
+        and not is_conserved
+    ):
         comment = "Varinat is predicted to not affect splicing and to not be pathogenic and is not conserved."
         result = RuleResult("PP3", False, "supporting", comment)
         result = RuleResult("BP4", True, "supporting", comment)
@@ -227,9 +229,7 @@ def assess_and_bp4_pp3(variant: Variant):
         result = RuleResult("PP3", False, "supporting", comment)
         result = RuleResult("BP4", True, "supporting", comment)
     else:
-        comment = (
-            "No conclusive evidence regarding the prediction of pathogenicity and splicing."
-        )
+        comment = "No conclusive evidence regarding the prediction of pathogenicity and splicing."
         result = RuleResult("PP3", False, "supporting", comment)
         result = RuleResult("BP4", False, "supporting", comment)
     return result
@@ -276,12 +276,18 @@ def asssess_bs2(variant: Variant):
 def assess_bp3(variant: Variant):
     results = []
     for transcript in variant.transcript_info:
+        if (
+            type(transcript) != TranscriptInfo_exonic
+            or type(transcript) != TranscriptInfo_intronic
+        ):
+            break
         if not transcript.transcript_disease_relevant:
             comment = f"Transcript {transcript.transcript_id} is not disease relevant."
             result = RuleResult("BP3", False, "supporting", comment)
         elif (
             transcript.diff_len_protein_percent
-            <= Variant.thresholds["diff_len_protein_percent"] and transcript.len_change_in_repetitive_region
+            <= Variant.thresholds["diff_len_protein_percent"]
+            and transcript.len_change_in_repetitive_region
         ):
             comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
             result = RuleResult("BP3", True, "supporting", comment)
@@ -315,8 +321,6 @@ def assess_bp7(variant: Variant):
         comment = "Variant is predicted to not affect splicing, but is coserved."
         result = RuleResult("BP4", False, "supporting", comment)
     else:
-        comment = (
-            "No conclusive evidence regarding the prediction of splicing."
-        )
+        comment = "No conclusive evidence regarding the prediction of splicing."
         result = RuleResult("BP4", False, "supporting", comment)
     return result
