@@ -45,9 +45,7 @@ class Variant_annotated(VariantInfo):
     thresholds: dict
 
     @classmethod
-    def annotate(
-        cls, annotations: list[Callable], variant: Variant
-    ) -> Variant_annotated:
+    def annotate(cls, annotations: list[Callable], variant: Variant) -> Variant:
         for annotation in annotations:
             variant = annotation(variant)
         return variant

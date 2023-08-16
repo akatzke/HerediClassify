@@ -1,97 +1,126 @@
 #!/usr/bin/env python3
 
 import logging
+import pathlib
 import pandas as pd
+from typing import Generator
 from math import ceil
+from cyvcf2 import VCF
 from Bio.Data import IUPACData
 from Bio.Seq import Seq
-from cyvcf2 import VCF
+import pyensembl
+import hgvs.parser
+import hgvs.posedit
+from refactoring.transcript_annotated import (
+    TranscriptInfo_exonic,
+    TranscriptInfo_intronic,
+)
 
-from refactoring.variant import VariantInfo
-from refactoring.variant_annotate import ClinVar, ClinVar_splice
+from refactoring.variant import VariantInfo, TranscriptInfo
+from refactoring.genotoscope_exon_skipping import is_transcript_in_positive_strand
+
+hgvs_parser = hgvs.parser.Parser()
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.assess_NMD")
 
 
-def check_clinvar_splicing(variant: VariantInfo, path_clinvar: str) -> ClinVar_splice:
-    clinvar_df = VCF(path_clinvar)
-    clinvar_same_pos = clinvar_df(
+def check_clinvar_splicing(
+    variant: VariantInfo,
+    transcripts: list[TranscriptInfo_intronic],
+    path_clinvar: pathlib.Path,
+) -> tuple:
+    """
+    Check ClinVar for entries supporting pathogenicity of splice site
+    """
+    clinvar = VCF(path_clinvar)
+    clinvar_same_pos = clinvar(
         f"{variant.chr}:{variant.genomic_start}-{variant.genomic_end}"
     )
-    clinvar_same_pos_filtered = filter_clinvars(clinvar_same_pos)
-    if clinvar_same_pos_filtered:
-        max_classification, affected_ID = get_highest_classification(clinvar_same_pos_filtered)
-        return ClinVar_splice(same_nucleotide_change_pathogenic=True, matching_clinvar_entries=clinvar_same_pos_filtered, clinvar_pos_fil)
+    clinvar_same_pos_df = convert_vcf_gen_to_df(clinvar_same_pos)
+    if not clinvar_same_pos_df.empty:
+        max_classification, affected_ID = get_highest_classification(clinvar_same_pos)
+        return True, True
+        # return ClinVar_splice(same_nucleotide_change_pathogenic=True, matching_clinvar_entries=clinvar_same_pos_filtered, clinvar_pos_fil)
     else:
         (start_splice_site, end_splice_site) = find_corresponding_splice_site(variant)
-        clinvar_splice_site = clinvar_df(
+        clinvar_splice_site = clinvar(
             f"{variant.chr}:{start_splice_site}-{end_splice_site}"
         )
-        clinvar_splice_site_filtered = filter_clinvars(clinvar_splice_site)
-        if clinvar_splice_site_filtered:
+        clinvar_splice_site_df = convert_vcf_gen_to_df(clinvar_splice_site)
+        if clinvar_splice_site:
             return True, False
         else:
             return False, False
 
 
-def check_clinvar_missense(variant: VariantInfo, path_clinvar: str) -> tuple:
-    clinvar_df = VCF(path_clinvar)
-    clinvar_same_pos = clinvar_df(
-        f"{variant.chr}:{variant.genomic_start}-{variant.genomic_end}"
-    )
-    clinvar_same_pos_filtered = filter_clinvars(clinvar_same_pos)
-    if clinvar_same_pos_filtered:
-        for entry in clinvar_same_pos_filtered:
-            if entry.ALT == variant.var_obs:
-                return True, True
-        return True, False
-    else:
-        return False, False
+def check_clinvar_missense(
+    variant: VariantInfo, transcripts: list[TranscriptInfo_exonic], path_clinvar: str
+):
+    """
+    Check ClinVar for entries supporting pathogenicity of missense variant
+    """
+    var_codon_info = extract_var_codon_info(variant, transcripts)
+
+
+def convert_vcf_gen_to_df(vcf_generator: Generator) -> pd.DataFrame:
+    """
+    Covnerts cyvcf generator into a pd.DataFrame
+    """
+    names = ["chrom", "pos", "id", "ref", "alt", "qual", "filter", "info"]
+    df = pd.DataFrame(columns=names)
+    for entry in vcf_generator:
+        clinvar_split_str = str(entry).split("\t")
+        clinvar_dict = dict(zip(names, clinvar_split_str))
+        df = pd.concat([df, pd.DataFrame([clinvar_dict])], axis=0, ignore_index=True)
+    df_format_info = format_info(df)
+    return df_format_info
+
+
+def format_info(data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Format the info column
+    """
+    info = data["info"]
+    info_split = [entry.split("=") for entry in info]
+    info_split = [entry.split("\n")[0].split(";") for entry in info]
+    processed_info = [[item.split("=") for item in entry] for entry in info_split]
+    dict_info = [
+        {item[0]: item[1] for item in entry if len(item) > 1}
+        for entry in processed_info
+    ]
+    return pd.concat([data, pd.DataFrame(dict_info)], axis=1)
 
 
 def check_clinvar_region(chr: int, start: int, end: int, path_clinvar: str):
     clinvar_df = VCF(path_clinvar)
     clinvar_region = clinvar_df(f"{chr}:{start}-{end}")
-    clinvar_region_filtered = filter_clinvars(clinvar_region)
-    return clinvar_region_filtered
+    return clinvar_region
 
 
 def find_corresponding_splice_site(variant: VariantInfo) -> tuple:
     return (variant.genomic_start, variant.genomic_end)
 
 
-def filter_clinvars(clinvars):
-    return clinvars
-
 def get_highest_classification(clinvars) -> str:
     return clinvars.ID
 
-def extract_var_codon_info(transcripts_info, variant_info):
+
+def extract_var_codon_info(
+    variant_info: VariantInfo, transcripts: list[TranscriptInfo_exonic]
+) -> dict[str, dict[str, str]]:
     """
-    Extract variant-located codon information
-
-    Parameters
-    ----------
-    transcripts_info: list of dict of str : str
-        Selected transcripts to extract var codon information for
-    variant_info : VariantInfo
-    current variant info object
-
-    Returns
-    -------
-    dict of str: dict of str : str
-        first-level dictionary key: transcript id, value: second-level dictionary
-        second-level dictionary: information for codon, where variant is located
+    Get location of variant affected codon in each transcript
     """
     logger.debug("Extract codon information from variant-affected genomic position")
     transcripts_var_codon_info = {}
-    for transcript_info in transcripts_info:
-        logger.debug(f"=== New transcript id = {transcript_info['transcript_id']} ===")
-        transcript = ensembl_data.transcript_by_id(transcript_info["transcript_id"])
-
+    for transcript in transcripts:
+        logger.debug(f"=== New transcript id = {transcript.transcript_id} ===")
+        ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
+            transcript.transcript_id
+        )
         # find at which codon is the variant located
         # based on the variant location in the coding cDNA
-        var_start = int(transcript_info["var_coding"].pos.start.base)
+        var_start = int(transcript.var_hgvs.pos.start.base)
         codon_index = var_start // 3
         var_codon_pos = var_start % 3
 
@@ -151,7 +180,7 @@ def extract_var_codon_info(transcripts_info, variant_info):
         logger.debug(f"var_codon_genomic_pos: {var_codon_genomic_pos}")
 
         # get the transcript strand
-        if is_transcript_in_positive_strand(transcript):
+        if is_transcript_in_positive_strand(ref_transcript):
             var_strand = "+"
         else:
             var_strand = "-"
@@ -161,7 +190,7 @@ def extract_var_codon_info(transcripts_info, variant_info):
             var_codon_genomic_pos_corrected,
             codon_intersects_intron_at,
         ) = normalize_codon_exonic_pos(
-            transcript, variant_info, var_codon_genomic_pos, var_strand
+            ref_transcript, variant_info, var_codon_genomic_pos, var_strand
         )
 
         ### ### ### ### ### ### ### ### ###
@@ -169,13 +198,13 @@ def extract_var_codon_info(transcripts_info, variant_info):
         ### ### ### ### ### ### ### ### ###
         try:
             # use the coding sequence attribute
-            codon_seq_ref = transcript.coding_sequence[
+            codon_seq_ref = ref_transcript.coding_sequence[
                 var_codon_coding_pos[0] - 1 : var_codon_coding_pos[-1]
             ]
         except ValueError:
             # solve value error by using the sequence attribute instead
             # Pyensembl returned ValueError for current transcript with id (seen for mitochondrial genes)
-            codon_seq_ref = transcript.sequence[
+            codon_seq_ref = ref_transcript.sequence[
                 var_codon_coding_pos[0] - 1 : var_codon_coding_pos[-1]
             ]
             logger.debug(
@@ -187,14 +216,14 @@ def extract_var_codon_info(transcripts_info, variant_info):
         ### ### ### ### ### ### ### ### ###
         if var_codon_pos == 3:  # variant on the last position of the codon
             codon_seq_obs = [char for char in codon_seq_ref[0:2]] + [
-                variant_info.obs_base
+                variant_info.var_obs
             ]
         elif var_codon_pos == 1:  # variant on the first position of the codon
-            codon_seq_obs = [variant_info.obs_base] + [
+            codon_seq_obs = [variant_info.var_obs] + [
                 char for char in codon_seq_ref[1:3]
             ]
         elif var_codon_pos == 2:  # variant on the middle (second) position of the codon
-            codon_seq_obs = [codon_seq_ref[0], variant_info.obs_base, codon_seq_ref[2]]
+            codon_seq_obs = [codon_seq_ref[0], variant_info.var_obs, codon_seq_ref[2]]
             codon_seq_obs = "".join(codon_seq_obs)
 
         # assert that the codon size is multiple of 3
@@ -214,7 +243,7 @@ def extract_var_codon_info(transcripts_info, variant_info):
         codon_amino_ref.append("".join(convert_1to3_aa(codon_amino_ref[0])))
         codon_amino_obs.append("".join(convert_1to3_aa(codon_amino_obs[0])))
 
-        transcripts_var_codon_info[transcript_info["transcript_id"]] = {
+        transcripts_var_codon_info[transcript.transcript_id] = {
             "var_start": var_start,
             "genomic_pos": var_codon_genomic_pos_corrected,
             "coding_pos": var_codon_coding_pos,
@@ -707,24 +736,6 @@ def normalize_gene_info(clinvar_rec: dict) -> list:
         return genes_info
     else:
         return None
-
-
-def quality_filter(
-    matched_clinvars: list[dict[str, str]], min_quality_stars: int
-) -> list[dict[str, str]]:
-    """
-    Filter clinvar records and keep the ones that have at least the minimum quality of stars
-    Returns
-    """
-
-    logger.debug("\nFilter ClinVar entries by quality")
-    filtered_clinvars = []
-    if len(matched_clinvars) > 0:
-        for clinvar in matched_clinvars:
-            if clinvar["CLNREVSTAT"] >= min_quality_stars:
-                filtered_clinvars.append(clinvar)
-    logger.debug(f"Review-stars filtered clinvars: {filtered_clinvars}")
-    return filtered_clinvars
 
 
 def uniq_new_filter(new_clinvars: list[dict[str, str]]) -> list[dict[str, str]]:
