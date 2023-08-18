@@ -195,21 +195,33 @@ def create_example_snv_mis() -> tuple:
     Create BRCA1 missense SNV variant
     From HerediVar
     """
-    hgvs = hgvs_parser.parse_c_posedit("c.5219T>G".split("c.")[1])
-    transcript = TranscriptInfo(
+    hgvs_1 = hgvs_parser.parse_c_posedit("c.5219T>G".split("c.")[1])
+    transcript_1 = TranscriptInfo(
         "ENST00000357654",
         "missense_variant",
-        hgvs,
+        hgvs_1,
         5219,
         5219,
         exon=19,
         intron=None,
-        var_protein=None,
+        var_protein="p.Val1740Gly",
     )
+    hgvs_2 = hgvs_parser.parse_c_posedit("c.5282T>G".split("c.")[1])
+    transcript_2 = TranscriptInfo(
+        "ENST00000471181",
+        "missense_variant",
+        hgvs_2,
+        5282,
+        5282,
+        exon=20,
+        intron=None,
+        var_protein="p.Val1761Gly",
+    )
+    transcripts = [transcript_1, transcript_2]
     variant = VariantInfo(
         "BRCA1", ["missense_variant"], "17", 41209127, 41209127, "some_id", "A", "C"
     )
-    return (transcript, variant)
+    return (transcripts, variant)
 
 
 def create_example_snv_syn() -> tuple:

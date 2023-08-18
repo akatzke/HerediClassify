@@ -8,6 +8,17 @@ import hgvs.parser
 hgvs_parser = hgvs.parser.Parser()
 
 
+VarType = Literal[
+    "splice_donor",
+    "splice_acceptor",
+    "missense_variant",
+    "frameshift_variant",
+    "inframe_deletion",
+    "synonymous_variant",
+    "start_lost",
+]
+
+
 @dataclass
 class TranscriptInfo:
     """
@@ -15,7 +26,7 @@ class TranscriptInfo:
     """
 
     transcript_id: str
-    var_type: str
+    var_type: VarType
     var_hgvs: hgvs.posedit.PosEdit
     var_start: int
     var_stop: int
@@ -42,9 +53,6 @@ class AffectedRegion:
     repetitive_region: bool
     critical_region: bool
     critical_region_type: str
-
-
-VarType = Literal["splice_donor", "splice_acceptor"]
 
 
 @dataclass
