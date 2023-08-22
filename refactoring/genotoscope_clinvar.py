@@ -21,6 +21,8 @@ hgvs_parser = hgvs.parser.Parser()
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.assess_NMD")
 
+path_clinvar = pathlib.Path("/home/katzkean/clinvar/clinvar_20230730.vcf.gz")
+
 
 def check_clinvar_splicing(
     variant: VariantInfo,
@@ -55,21 +57,87 @@ def check_clinvar_splicing(
 
 
 def check_clinvar_missense(
-    variant: VariantInfo, transcripts: list[TranscriptInfo], path_clinvar: str
+    variant: VariantInfo, transcripts: list[TranscriptInfo], path_clinvar: pathlib.Path
 ):
     """
     Check ClinVar for entries supporting pathogenicity of missense variant
     """
     affected_transcript = get_affected_transcript(transcripts, ["missense_variant"])
     var_codon_info = extract_var_codon_info(variant, affected_transcript)
-    clinvar = VCF(path_clinvar)
-    clinvar_same_codon = clinvar(
-        f"{variant.chr}:{var_codon_info['genomic_pos'][0]}-{var_codon_info['genomic_pos'][2]}"
+    clinvar_same_codon = extract_clinvar_entries_missense(
+        path_clinvar,
+        variant.chr,
+        var_codon_info["genomic_pos"],
+        var_codon_info["intersects_intron_at"],
     )
-    clinvar_same_codon_df = convert_vcf_gen_to_df(clinvar_same_codon)
-    clinvar_same_codon_aa_df = clinvar_same_codon_df.apply(
+    clinvar_same_codon_aa = clinvar_same_codon.apply(
         construct_clinvar_prot_change, var_codon_info=var_codon_info, axis=1
     )
+    clinvar_final = filter_gene(clinvar_same_codon_aa, variant.gene_name)
+    clinvar_same_aa = clinvar_final[
+        clinvar_final.prot_ref == var_codon_info["prot_alt"]
+    ]
+    if clinvar_same_aa:
+        same_aa_change_pathogenic = True
+        if any(clinvar_same_aa.CLINSIG == "Pathogenic"):
+            same_aa_change_highest_classification = "Pathogenic"
+            same_aa_change_ids = list(clinvar_same_aa[clinvar_same_aa.CLINSIG == "Pathogenic"].id)
+        elif any(clinvar_same_aa.CLINSIG == "Likely_pathogenic") or any(clinvar_same_aa.CLINSIG == "Pathogenic/Likely_pathogenic")
+            same_aa_change_highest_classification = "Likely_pathogenic"
+            same_aa_change_ids = list(clinvar_same_aa[clinvar_same_aa.CLINSIG.str.contains("Likely_pathogenic")])
+        else:
+            same_aa_change_highest_classification = None
+    else:
+        same_aa_change_pathogenic = False
+        same_aa_change_highest_classification = None
+        same_aa_change_ids = None
+    clinvar_diff_aa = clinvar_final[
+        clinvar_final.prot_ref != var_codon_info["prot_alt"]
+    ]
+    if clinvar_diff_aa:
+        diff_aa_change_highest_classification = True
+        if any(clinvar_diff_aa.CLINSIG == "Pathogenic"):
+            diff_aa_change_highest_classification = "Pathogenic"
+            diff_aa_change_ids = list(clinvar_diff_aa[clinvar_same_aa.CLINSIG == "Pathogenic"].id)
+        elif any(clinvar_diff_aa.CLINSIG == "Likely_pathogenic") or any(clinvar_same_aa.CLINSIG == "Pathogenic/Likely_pathogenic")
+            diff_aa_change_highest_classification = "Likely_pathogenic"
+            diff_aa_change_ids = list(clinvar_diff_aa[clinvar_same_aa.CLINSIG.str.contains("Likely_pathogenic")])
+        else:
+            diff_aa_change_highest_classification = None
+    else:
+        diff_aa_change_pathogenic = False
+        diff_aa_change_highest_classification = None
+        diff_aa_change_ids = None
+    return (
+        same_aa_change_pathogenic,
+        same_aa_change_highest_classification,
+        same_aa_change_ids,
+        diff_aa_change_pathogenic,
+        diff_aa_change_highest_classification
+        diff_aa_change_ids,
+    )
+
+
+def extract_clinvar_entries_missense(
+    path_clinvar: pathlib.Path,
+    chrom: str,
+    genomic_positions: list[int],
+    codon_intersects_intron: bool,
+) -> pd.DataFrame:
+    """"""
+    clinvar = VCF(path_clinvar)
+    if not codon_intersects_intron:
+        clinvar_same_codon = clinvar(
+            f"{int(chrom)}:{genomic_positions[0]}-{genomic_positions[2]}"
+        )
+        clinvar_same_codon_df = convert_vcf_gen_to_df(clinvar_same_codon)
+    else:
+        clinvar_same_codon_df = pd.DataFrame()
+        for position in genomic_positions:
+            clinvar = clinvar(f"{chrom}:{position}-{position}")
+            clinvar_df = convert_vcf_gen_to_df(clinvar)
+            clinvar_same_codon = pd.concat([clinvar_same_codon_df, clinvar_df])
+    return clinvar_same_codon_df
 
 
 def get_affected_transcript(
@@ -128,125 +196,174 @@ def extract_var_codon_info(
     variant_info: VariantInfo, transcript: TranscriptInfo
 ) -> dict:
     """
-    Get location of variant affected codon in each transcript
-    Expects list of transcripts with var_type "missense_variant"
+    Construct variant codon information:
+    genomic_pos: list[int]
+    intersect_intron_at: int
+    var_strand: str
+    seq_ref: str
+    prot_start: int
+    amino_ref: str
+    amino_obs str
     """
     logger.debug("Extract codon information from variant-affected genomic position")
     logger.debug(f"=== New transcript id = {transcript.transcript_id} ===")
     ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
         transcript.transcript_id
     )
-    # find at which codon is the variant located
-    # based on the variant location in the coding cDNA
     var_start = int(transcript.var_hgvs.pos.start.base)
-    codon_index = var_start // 3
-    var_codon_pos = var_start % 3
+    var_pos_in_codon = get_variant_position_in_codon(var_start)
 
-    try:
-        var_start == codon_index * 3 + var_codon_pos
-    except AssertionError:
-        logger.error(
-            f"AssertionError: codon_index * 3 + var_codon_pos should be equal to codon index\n=> variant position: {variant_info.to_string()}",
-            exc_info=True,
-        )
-    if var_codon_pos == 0:
-        var_codon_pos = 3
-    logger.debug(
-        f"Var start pos: {var_start} is at codon index: {codon_index} and variant is the codon position of {var_codon_pos}"
-    )
-    var_codon_genomic_pos, var_codon_coding_pos = [], []
-    logger.debug(f"var_codon_pos = {var_codon_pos}")
-
-    # understand variant edit type
-    # create genomic position and amino acid per codon
-    if var_codon_pos == 3:  # variant is at the third (last) position of a codon
-        try:
-            var_start >= 3
-        except AssertionError:
-            logger.error(
-                f"Variant can't be at the last position of codon and not be at least at the coding position 3\n=> variant position: {variant_info.to_string()}",
-                exc_info=True,
-            )
-        var_codon_genomic_pos = [
-            variant_info.genomic_start - 2,
-            variant_info.genomic_start - 1,
-            variant_info.genomic_start,
-        ]
-        var_codon_coding_pos = [var_start - 2, var_start - 1, var_start]
-    elif var_codon_pos == 1:  # variant is at the first position of a codon
-        var_codon_genomic_pos = [
-            variant_info.genomic_start,
-            variant_info.genomic_start + 1,
-            variant_info.genomic_start + 2,
-        ]
-        var_codon_coding_pos = [var_start, var_start + 1, var_start + 2]
-    elif var_codon_pos == 2:  # variant is at the second position of a codon
-        try:
-            var_start >= 2
-        except AssertionError:
-            logger.error(
-                f"Variant can't be at the second position of a codon\n=> variant position: {variant_info.to_string()}",
-                exc_info=True,
-            )
-
-        var_codon_genomic_pos = [
-            variant_info.genomic_start - 1,
-            variant_info.genomic_start,
-            variant_info.genomic_start + 1,
-        ]
-        var_codon_coding_pos = [var_start - 1, var_start, var_start + 1]
-    logger.debug(f"var_codon_genomic_pos: {var_codon_genomic_pos}")
-
-    # get the transcript strand
     if is_transcript_in_positive_strand(ref_transcript):
         var_strand = "+"
     else:
         var_strand = "-"
 
-    # correct variant codon genomic positions
-    print(var_strand)
-    print(var_codon_genomic_pos)
+    logger.debug(f"var_pos_in_codon = {var_pos_in_codon}")
+
+    codon_genomic_pos = construct_codon_position(
+        variant_info.genomic_start, var_pos_in_codon, var_strand
+    )
+    codon_coding_pos = construct_codon_position(var_start, var_pos_in_codon, "+")
+    logger.debug(f"var_codon_genomic_pos: {codon_genomic_pos}")
+
+    # correct variant codon genomic positions for 2 exon spanning codons
     (
         var_codon_genomic_pos_corrected,
         codon_intersects_intron_at,
     ) = normalize_codon_exonic_pos(
-        ref_transcript, variant_info, var_codon_genomic_pos, var_strand
+        ref_transcript, variant_info, codon_genomic_pos, var_strand
     )
-
-    print(var_codon_genomic_pos_corrected)
     ### ### ### ### ### ### ### ### ###
     # create reference codon sequence #
     ### ### ### ### ### ### ### ### ###
     try:
         # use the coding sequence attribute
         codon_seq_ref = ref_transcript.coding_sequence[
-            var_codon_coding_pos[0] - 1 : var_codon_coding_pos[-1]
+            codon_coding_pos[0] - 1 : codon_coding_pos[-1]
         ]
     except ValueError:
         # solve value error by using the sequence attribute instead
         # Pyensembl returned ValueError for current transcript with id (seen for mitochondrial genes)
         codon_seq_ref = ref_transcript.sequence[
-            var_codon_coding_pos[0] - 1 : var_codon_coding_pos[-1]
+            codon_coding_pos[0] - 1 : codon_coding_pos[-1]
         ]
         logger.debug(
             f"Use sequence attribute instead of coding_sequence for transcript id: {transcript.transcript_id}"
         )
 
-    ### ### ### ### ### ### ### ### ###
-    # create observed codon sequence  #
-    ### ### ### ### ### ### ### ### ###
-    comp_bases = {"C": "G", "G": "C", "A": "T", "T": "A"}
-    if var_strand == "+":
-        corrected_obs_base = variant_info.var_obs
+    codon_seq_obs = construct_obs_codon_seq(
+        codon_seq_ref, var_pos_in_codon, variant_info.var_obs, var_strand
+    )
+
+    print(codon_seq_obs)
+    # create amino of protein for affected codon
+    prot_var_start = ceil(var_start / 3)
+    amino_ref = convert_codon_to_aa(codon_seq_ref)
+    amino_obs = convert_codon_to_aa(codon_seq_obs)
+
+    var_codon_info = {
+        "genomic_pos": var_codon_genomic_pos_corrected,
+        "intersects_intron_at": codon_intersects_intron_at,
+        "strand": var_strand,
+        "seq_ref": codon_seq_ref,
+        "prot_start": prot_var_start,
+        "amino_ref": amino_ref,
+        "amino_obs": amino_obs,
+    }
+    logger.debug(f"Var codon info per transcript: {var_codon_info}")
+    return var_codon_info
+
+
+def get_variant_position_in_codon(var_start: int) -> int:
+    """
+    From cDNA position extrapolate position of variant in codon
+    1-based
+    """
+    codon_index = var_start // 3
+    var_pos_in_codon = var_start % 3
+
+    try:
+        var_start == codon_index * 3 + var_pos_in_codon
+    except AssertionError:
+        logger.error(
+            f"AssertionError: codon_index * 3 + var_pos_in_codon should be equal to codon index\n=> variant position: {var_start}",
+            exc_info=True,
+        )
+    if var_pos_in_codon == 0:
+        var_pos_in_codon = 3
+    logger.debug(
+        f"Var start pos: {var_start} is at codon index: {codon_index} and variant is the codon position of {var_pos_in_codon}"
+    )
+    try:
+        var_start >= var_pos_in_codon
+    except AssertionError:
+        logger.error(
+            f"Variant can't be at position {var_pos_in_codon} of codon and not be at least at the coding position {var_pos_in_codon}\n=> variant position: {var_start}",
+            exc_info=True,
+        )
+    return var_pos_in_codon
+
+
+def construct_codon_position(
+    var_start: int, var_pos_in_codon: int, strand: str
+) -> list[int]:
+    """
+    Construct genomic position based on variant genomic start and variant codon position
+    Construct cDNA position of variant
+    """
+    if var_pos_in_codon == 2:
+        codon_pos = [
+            var_start - 1,
+            var_start,
+            var_start + 1,
+        ]
+    elif var_pos_in_codon == 1:
+        if strand == "-":
+            codon_pos = [
+                var_start - 2,
+                var_start - 1,
+                var_start,
+            ]
+        else:
+            codon_pos = [
+                var_start,
+                var_start + 1,
+                var_start + 2,
+            ]
+    elif var_pos_in_codon == 3:
+        if strand == "-":
+            codon_pos = [
+                var_start,
+                var_start + 1,
+                var_start + 2,
+            ]
+        else:
+            codon_pos = [
+                var_start - 2,
+                var_start - 1,
+                var_start,
+            ]
     else:
-        corrected_obs_base = comp_bases[variant_info.var_obs]
-    if var_codon_pos == 3:  # variant on the last position of the codon
+        assert (
+            var_pos_in_codon <= 3 and var_pos_in_codon >= 1
+        ), f"Assertion error: Variant codon postition should be between 1 and 4 \n Variant codon position is {var_pos_in_codon}"
+    return codon_pos
+
+
+def construct_obs_codon_seq(
+    codon_seq_ref: str, var_pos_in_codon: int, obs_base: str, strand: str
+) -> str:
+    """
+    Construct observed codon sequence
+    """
+    corrected_obs_base = correct_observed_base_for_strand(strand, obs_base)
+    if var_pos_in_codon == 3:
         codon_seq_obs = [char for char in codon_seq_ref[0:2]] + [corrected_obs_base]
-    elif var_codon_pos == 1:  # variant on the first position of the codon
+    elif var_pos_in_codon == 1:
         codon_seq_obs = [corrected_obs_base] + [char for char in codon_seq_ref[1:3]]
-    elif var_codon_pos == 2:  # variant on the middle (second) position of the codon
+    elif var_pos_in_codon == 2:
         codon_seq_obs = [codon_seq_ref[0], corrected_obs_base, codon_seq_ref[2]]
-        codon_seq_obs = "".join(codon_seq_obs)
+    codon_seq_obs = "".join(codon_seq_obs)
 
     # assert that the codon size is multiple of 3
     try:
@@ -256,29 +373,16 @@ def extract_var_codon_info(
             f"The codon sequence for reference or observed sequence is not multiple of 3\n=> variant position: {variant_info.to_string()}",
             exc_info=True,
         )
+    return codon_seq_obs
 
-    # create amino of protein for affected codon
-    prot_var_start = ceil(var_start / 3)
-    codon_amino_ref, codon_amino_obs = [], []
-    codon_amino_ref.append(str(Seq(codon_seq_ref).translate()))
-    codon_amino_obs.append(str(Seq(codon_seq_obs).translate()))
-    codon_amino_ref.append("".join(convert_1to3_aa(codon_amino_ref[0])))
-    codon_amino_obs.append("".join(convert_1to3_aa(codon_amino_obs[0])))
 
-    var_codon_info = {
-        "var_start": var_start,
-        "genomic_pos": var_codon_genomic_pos_corrected,
-        "coding_pos": var_codon_coding_pos,
-        "intersects_intron_at": codon_intersects_intron_at,
-        "strand": var_strand,
-        "seq_ref": codon_seq_ref,
-        "seq_obs": codon_seq_obs,
-        "prot_start": prot_var_start,
-        "amino_ref": codon_amino_ref,
-        "amino_obs": codon_amino_obs,
-    }
-    logger.debug(f"Var codon info per transcript: {var_codon_info}")
-    return var_codon_info
+def convert_codon_to_aa(codon: str) -> str:
+    """
+    Get 3 letter amino acid code corresponding to given codon
+    """
+    aa_1let = str(Seq(codon).translate())
+    aa_3let = convert_1to3_aa(aa_1let)
+    return aa_3let
 
 
 def normalize_codon_exonic_pos(
@@ -291,10 +395,9 @@ def normalize_codon_exonic_pos(
     Correct codon position after investigating intersection with an intron
     Returns
     -------
-    codon_pos_corrected : list of list of int
+    codon_pos_corrected : list of int
         corrected codon positions
-    codon_intersects_intron_at : int
-        position that codon intersects with an intron (0-index)
+    codon_intersects_intron : bool
     """
     logger.debug("Normalize codon in exonic positions")
     ### ### ###
@@ -307,11 +410,9 @@ def normalize_codon_exonic_pos(
         transcript_strand = -1
         codon_start, codon_end = codon_genomic_positions[2], codon_genomic_positions[0]
     codon_middle = codon_genomic_positions[1]
-    print(f"Codon start: {codon_start}")
-    print(f"Codon middle: {codon_middle}")
-    print(f"Codon end: {codon_end}")
 
     # for coding_range in transcript.coding_sequence_position_ranges:
+    codon_intersects_intron_at = -1
     coding_seq_positions = []
     for exon in ref_transcript.exons:
         if transcript_strand == +1:
@@ -329,7 +430,6 @@ def normalize_codon_exonic_pos(
     # the codon lies in                               #
     ### ### ### ### ### ### ### ### ### ### ### ### ###
     codon_pos_corrected = []
-    codon_intersects_intron_at = -1
     for cod_seq_idx, coding_seq_range in enumerate(coding_seq_positions):
         coding_seq_start, coding_seq_end = coding_seq_range[0], coding_seq_range[1]
         normalized_exon_interval = range(
@@ -343,9 +443,6 @@ def normalize_codon_exonic_pos(
             and codon_end in normalized_exon_interval
         ):
             logger.debug("codon in exon")
-            # codon inside coding seq =>
-            # ( --- coding_seq --- )
-            #      [ -codon- ]
             codon_pos_corrected = codon_genomic_positions
             codon_intersects_intron_at = -1
             break
@@ -461,345 +558,25 @@ def normalize_codon_exonic_pos(
                         exc_info=True,
                     )
                     start_pos = pos
-    return codon_pos_corrected, codon_intersects_intron_at
+    if codon_intersects_intron_at == -1:
+        codon_intersects_intron = False
+    else:
+        codon_intersects_intron = True
+    codon_pos_corrected_single_list = sum(codon_pos_corrected, [])
+    return codon_pos_corrected_single_list, codon_intersects_intron
 
 
-def convert_1to3_aa(amino_acids: list[str]) -> list[str]:
+def convert_1to3_aa(amino_acid: str) -> str:
     """
     Convert 1 letter amino acid genotoscope to 3 letter equivalent
     For termination codon the return protein change will contain the 3-letter protein letter 'Ter'
     as discussed: https://varnomen.hgvs.org/recommendations/protein/variant/frameshift/
     """
-
-    aa_3code = []
-    for aa in amino_acids:
-        try:
-            letter3 = IUPACData.protein_letters_1to3[aa]
-        except KeyError:
-            letter3 = "Ter"
-        aa_3code.append(letter3)
-    return aa_3code
-
-
-def extract_clinvar_records(transcripts_var_codon_info, variant_info):
-    """
-    Extract ClinVar records matching codon genomic positions per transcript
-    Each extracted clinvar record is a dictionary of
-    ID -> clinvar id
-    CLNDISDB -> clinvar disease db
-    CLNREVSTAT -> converted gold stars from clinvar review status (https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/)
-    CLNSIG -> clinvar clinical significance
-
-    Parameters
-    ----------
-    transcripts_var_codon_info : dict of str : dict of str : str
-        two level dictionary, map each transcript id to codon information
-    variant_info : VariantInfo
-        current variant info object
-
-    Returns
-    -------
-    dict of str : list of dict of str: str
-        dictionary mapping transcript id to all clinvar record found for the specific codon of this transcript
-    """
-
-    logger.debug(
-        "Extract ClinVar records that are found at the same codon as input variant"
-    )
-    codon_clinvars = {}
-    for transcript_id, transcript_codon_info in transcripts_var_codon_info.items():
-        logger.debug(f" === Transcript {transcript_id} === ")
-        chr = variant_info.chrom.split("chr")[1]
-        transcript = ensembl_data.transcript_by_id(transcript_id)
-        transcript_strand = transcript.exons[0].to_dict()["strand"]
-        ### ### ### ###
-        # for each genomic position,
-        # first search the cached clinvars
-        # if no hit, then perform vcf fetch
-        # vcf fetch uses 0-index and open upper limit (stop position)
-        ### ### ### ###
-        if transcript_codon_info["intersects_intron_at"] == -1:
-            logger.debug("Codon does not intersect intron")
-            # codon does not intersect intron
-            start, end = (
-                transcript_codon_info["genomic_pos"][0] - 1,
-                transcript_codon_info["genomic_pos"][2],
-            )
-            matched_clinvars = []
-            for pos in range(start, end):
-                case_hit, cached_clinvars = match_pos2cache(chr, pos, transcript_strand)
-                if not case_hit:
-                    extracted_clinvars = add_info2extracted_clinvars(
-                        list(vcf_reader.fetch(chr, pos, pos + 1))
-                    )
-                    logger.debug(f"Extracted clinvars: {extracted_clinvars}")
-                    if len(extracted_clinvars) > 0:
-                        # cache: save strand and quality filter ClinVars
-                        # uniq_clinvars = uniq_id_filter(extracted_clinvars)
-                        strand_filtered_clinvars = strand_filter(
-                            extracted_clinvars, transcript_strand
-                        )
-                        quality_filtered_clinvars = quality_filter(
-                            strand_filtered_clinvars, min_review_stars
-                        )
-                        unique_clinvars = uniq_new_filter(quality_filtered_clinvars)
-                        cache_clinvars(chr, pos, transcript_strand, unique_clinvars)
-                        matched_clinvars = matched_clinvars + unique_clinvars
-                    else:
-                        # cache: no ClinVar matching this chr,pos,strand
-                        cache_clinvars(chr, pos, transcript_strand, [])
-                        matched_clinvars = matched_clinvars + []
-                else:
-                    # use cached ClinVar entries
-                    try:
-                        assert len(cached_clinvars) >= 0
-                    except AssertionError:
-                        logger.error(
-                            f"Number of extracted clinvars should be >= 0\n=> variant position: {variant_info.to_string()}",
-                            exc_info=True,
-                        )
-                    matched_clinvars = matched_clinvars + cached_clinvars
-        else:
-            ### ### ###
-            # aggregate clinvar entries for the 'separated' genomic positions of the codon
-            ### ### ###
-            logger.debug("Variant on two different exons")
-            try:
-                len(transcript_codon_info["genomic_pos"]) == 2
-            except AssertionError:
-                logger.error(
-                    f"Corrected codon genomic position should be contained into two lists\n=> variant position: {variant_info.to_string}",
-                    exc_info=True,
-                )
-            matched_clinvars = []
-            for codon_genomic_range in transcript_codon_info["genomic_pos"]:
-                if (
-                    len(codon_genomic_range) == 2
-                ):  # two positions are contained in the current codon partition
-                    start, end = codon_genomic_range[0] - 1, codon_genomic_range[1]
-                else:  # one position is contained in the current codon partition
-                    start, end = codon_genomic_range[0] - 1, codon_genomic_range[0]
-                for pos in range(start, end):
-                    case_hit, cached_clinvars = match_pos2cache(
-                        chr, pos, transcript_strand
-                    )
-                    if not case_hit:
-                        extracted_clinvars = add_info2extracted_clinvars(
-                            list(vcf_reader.fetch(chr, pos, pos + 1))
-                        )
-                        logger.debug(f"Extracted clinvars: {extracted_clinvars}")
-                        if len(extracted_clinvars) > 0:
-                            # cache: save strand and quality filter ClinVars
-                            strand_filtered_clinvars = strand_filter(
-                                extracted_clinvars, transcript_strand
-                            )
-                            quality_filtered_clinvars = quality_filter(
-                                strand_filtered_clinvars, min_review_stars
-                            )
-                            unique_clinvars = uniq_new_filter(quality_filtered_clinvars)
-                            cache_clinvars(chr, pos, transcript_strand, unique_clinvars)
-                            matched_clinvars = matched_clinvars + unique_clinvars
-                        else:
-                            # cache: no ClinVar matching this chr,pos,strand
-                            cache_clinvars(chr, pos, transcript_strand, [])
-                            matched_clinvars = matched_clinvars + []
-                    else:
-                        # use cached ClinVars
-                        try:
-                            assert len(cached_clinvars) >= 0
-                        except AssertionError:
-                            logger.error(
-                                f"Number of extracted clinvars should be >= 0\n=> variant position: {variant_info.to_string()}",
-                                exc_info=True,
-                            )
-                        matched_clinvars = matched_clinvars + cached_clinvars
-        if len(matched_clinvars) > 0:
-            codon_clinvars[transcript_id] = uniq_new_filter(matched_clinvars)
-    return codon_clinvars
-
-
-def match_pos2cache(chr: str, pos: int, strand: int) -> tuple:
-    """
-    Match position to ClinVar cache
-
-    Returns
-    -------
-    bool
-        variant position found in cache (True), otherwise False
-    list of dict of str: str
-        cached ClinVars (or None)
-    """
-
-    logger.debug(f"Search pos: chr {chr}, {pos}, {strand} in cache")
-    cache_hit, cached_clinvars = False, None
-    if chr in clinvars_cache:
-        if pos in clinvars_cache[chr]:
-            if strand in clinvars_cache[chr][pos]:
-                cache_hit = True
-                cached_clinvars = clinvars_cache[chr][pos][strand]
-    return cache_hit, cached_clinvars
-
-
-def add_info2extracted_clinvars(clinvar_records):
-    """
-    Add information for extracted clinvar records
-    Each extracted clinvar record is a dictionary of
-    ID -> clinvar id
-    CLNDISDB -> clinvar disease db
-    CLNREVSTAT -> converted gold stars from clinvar review status (https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/)
-    CLNSIG -> clinvar clinical significance
-
-    Parameters
-    ----------
-    clinvar_records : list of vcf.model._Record
-        input clinvar records
-    Returns
-    -------
-    list of dict
-        clinvar records with needed information from vcf
-    """
-
-    logger.debug("Parse needed information for extracted ClinVar records")
-
-    clinvars_info, uniq_ids = [], []
-    for clinvar_rec in clinvar_records:
-        if "CLNSIG" not in list(clinvar_rec.INFO.keys()):
-            # if significance is not specified, pass
-            continue
-        # parse disease db
-        if "CLNDISDB" in clinvar_rec.INFO:
-            if clinvar_rec.INFO["CLNDISDB"][0]:
-                rec_dis_db = ",".join(clinvar_rec.INFO["CLNDISDB"])
-            else:
-                rec_dis_db = "not_specified"
-        else:
-            rec_dis_db = "not_specified"
-        clinvar_dict = {
-            "id": clinvar_rec.ID,
-            "pos": int(clinvar_rec.POS),
-            "ref": str(clinvar_rec.REF),
-            "alt": ",".join([str(alt) for alt in clinvar_rec.ALT]),
-            "CLNDISDB": rec_dis_db,
-            "CLNREVSTAT": convert_review_status2stars(
-                clinvar_stars_df, star_status2int, clinvar_rec.INFO["CLNREVSTAT"]
-            ),
-            "CLNSIG": clinvar_rec.INFO["CLNSIG"],
-            "gene_info": normalize_gene_info(clinvar_rec),
-        }
-        if "None" not in clinvar_dict["alt"] and clinvar_dict["id"] not in uniq_ids:
-            # extract all unique clinvars that do not contain the None nucl as alternate
-            clinvars_info.append(clinvar_dict)
-            uniq_ids.append(clinvar_dict["id"])
-    return clinvars_info
-
-
-def convert_review_status2stars(
-    clinvar_stars_df: pd.DataFrame,
-    star_status2int: dict[str, int],
-    clinvar_rev_status: list[str],
-) -> int:
-    """
-    Convert CLNREVSTAT (review status) tab from clinvar vcf file to number of review stars
-    for unknown description -> star= -1
-    ClinVar review status documentation: https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/
-    """
-    rev_status = [review_elem.replace("_", " ") for review_elem in clinvar_rev_status]
-
-    rev_status = ",".join(rev_status)
-    if (
-        rev_status not in clinvar_stars_df.Review_status.values
-    ):  # if retrieved status not in status
-        return star_status2int["unknown review status"]
-    else:
-        return star_status2int[
-            clinvar_stars_df.loc[clinvar_stars_df["Review_status"] == rev_status][
-                "Number_of_gold_stars"
-            ].iloc[0]
-        ]
-
-
-def normalize_gene_info(clinvar_rec: dict) -> list:
-    """
-    Normalize ClinVar gene information
-    Returns
-    -------
-    list of str, int
-        list of genes containing [gene symbol, gene id]
-    """
-
-    logger.debug("Normalize gene information")
-    if "GENEINFO" in clinvar_rec.INFO:
-        genes_info = []
-        for gene in clinvar_rec.INFO["GENEINFO"].strip().split("|"):
-            genes_info.append(gene.split(":"))
-        return genes_info
-    else:
-        return None
-
-
-def uniq_new_filter(new_clinvars: list[dict[str, str]]) -> list[dict[str, str]]:
-    """
-    Filter clinvar records to keep the ones not already found in matched list
-    """
-
-    logger.debug("\nFilter all new clinvars to keep the unique ones only")
-    ids, uniq_clinvars = [], []
-    for clinvar in new_clinvars:
-        if clinvar["id"] not in ids:
-            uniq_clinvars.append(clinvar)
-            ids.append(clinvar["id"])
-    logger.debug(f"Unique clinvars: {uniq_clinvars}")
-    return uniq_clinvars
-
-
-def strand_filter(
-    matched_clinvars: list[dict[str, str]], transcript_strand: str
-) -> list[dict[str, str]]:
-    """
-    Filter matched ClinVars to ensure the same strand with affected transcript
-
-    Returns
-    -------
-    list of dict of str: str
-        filtered clinvars by strand information
-    """
-
-    logger.debug(f"\nFilter by strand the {len(matched_clinvars)} matching clinvars")
-    filtered_clinvars = []
-    for candidate_clinvar in matched_clinvars:
-        if candidate_clinvar["gene_info"]:
-            # get the symbol for the first registered gene in ClinVar
-            gene_symbol, gene_id = candidate_clinvar["gene_info"][0]
-        else:
-            gene_symbol = None
-        logger.debug(f"clinvar's gene: {gene_symbol}")
-
-        ### ### ###
-        # save a clinvar entry if
-        # a) the strand is the same as for the PyEnsembl annotation
-        # b) the significance field is filled
-        ### ### ###
-        if (
-            get_clinvar_strand(hugo_genes_df, gene_symbol) == transcript_strand
-            and "CLNSIG" in candidate_clinvar
-        ):
-            if "None" not in candidate_clinvar["alt"]:
-                # do not extract a clinvar record that contains the None nucl as alternate
-                filtered_clinvars.append(candidate_clinvar)
-    logger.debug(f"Strand-filtered clinvars: {filtered_clinvars}")
-    return filtered_clinvars
-
-
-def get_clinvar_strand(hugo_genes_df: pd.DataFrame, gene_symbol: str) -> str:
-    """
-    Get strand for gene found in clinvar entry
-    """
-
-    logger.debug("Get strand for gene found in ClinVar entry")
-    if gene_symbol in hugo_genes_df.index:
-        return hugo_genes_df.loc[gene_symbol].strand
-    else:
-        return None
+    try:
+        amino_acid_3let = IUPACData.protein_letters_1to3[amino_acid]
+    except KeyError:
+        amino_acid_3let = "Ter"
+    return amino_acid_3let
 
 
 def construct_clinvar_prot_change(
@@ -811,11 +588,13 @@ def construct_clinvar_prot_change(
     For termination codon the return protein change will contain the 3-letter protein letter 'Ter'
     as discussed: https://varnomen.hgvs.org/recommendations/protein/variant/frameshift/
     """
-
     logger.debug(f"Construct protein change for clinvar record: {clinvar_rec}")
     # get position of clinvar nucleotide
-    clinvar_rec["var_pos_idx"] = var_codon_info["genomic_pos"].index(
-        int(clinvar_rec["pos"])
+    print(var_codon_info["strand"])
+    print(var_codon_info["genomic_pos"])
+    print(clinvar_rec.pos)
+    clinvar_rec["var_pos_idx"] = get_variant_position_in_codon_from_genomic_position(
+        var_codon_info["strand"], var_codon_info["genomic_pos"], clinvar_rec.pos
     )
     logger.debug(
         f"ClinVar record is found in codon position: {clinvar_rec.var_pos_idx}"
@@ -825,20 +604,18 @@ def construct_clinvar_prot_change(
     ### ### ###
     print(clinvar_rec.id)
     print(var_codon_info["seq_ref"])
-    clinvar_ref_seq, clinvar_alt_seq = [], []
-    for idx, nucl in enumerate(var_codon_info["seq_ref"]):
-        if idx == clinvar_rec.var_pos_idx:
-            clinvar_ref_seq.append(clinvar_rec["ref"])
-        else:
-            clinvar_ref_seq.append(nucl)
+    clinvar_ref_seq = list(var_codon_info["seq_ref"])
     logger.debug(f"clinvar ref: {clinvar_ref_seq}")
-    print(f"clinvar ref: {clinvar_ref_seq}")
     ### ### ###
     # and then construct the alternate sequence
     ### ### ###
+    clinvar_alt_seq = []
+    corrected_obs_base = correct_observed_base_for_strand(
+        var_codon_info["strand"], clinvar_rec.alt
+    )
     for idx, nucl in enumerate(var_codon_info["seq_ref"]):
         if idx == clinvar_rec.var_pos_idx:
-            clinvar_alt_seq.append(clinvar_rec["alt"])
+            clinvar_alt_seq.append(corrected_obs_base)
         else:
             clinvar_alt_seq.append(nucl)
     logger.debug(f"clinvar alt: {clinvar_alt_seq}")
@@ -860,6 +637,23 @@ def construct_clinvar_prot_change(
     )
     clinvar_rec["prot_start"] = var_codon_info["prot_start"]
     return clinvar_rec
+
+
+def get_variant_position_in_codon_from_genomic_position(
+    var_strand: str, codon_pos_genomic: list[int], var_genomic_pos: int
+) -> int:
+    """
+    From variant genomic position and genomic positions of codon get var_pos_in_codon
+    0-based index
+    """
+    if var_strand == "+":
+        var_pos_in_codon = codon_pos_genomic.index(int(var_genomic_pos))
+        return var_pos_in_codon
+    else:
+        convert_index = {0: 2, 1: 1, 2: 0}
+        var_pos_in_codon_pos_strand = codon_pos_genomic.index(int(var_genomic_pos))
+        var_pos_in_codon_neg_strand = convert_index[var_pos_in_codon_pos_strand]
+        return var_pos_in_codon_neg_strand
 
 
 def normalize_codon_nucleotides(nucl_per_codon_pos) -> Seq:
@@ -895,61 +689,21 @@ def pad_seq(sequence: Seq) -> Seq:
     return sequence if remainder == 0 else sequence + "N" * (3 - remainder)
 
 
-def compact_clinvar_entries(clinvar_records: list[dict]) -> str:
+def correct_observed_base_for_strand(strand: str, base: str) -> str:
     """
-    Compact ClinVar entries
+    Depending on which strand the transcript is located on, correct observed base
     """
-
-    logger.debug("Compact clinvar entries")
-    clinvar_attributes_ordered = [
-        "id",
-        "pos",
-        "ref",
-        "alt",
-        "CLNDISDB",
-        "CLNREVSTAT",
-        "CLNSIG",
-    ]
-
-    compacted_clinvars = []
-    for clinvar in clinvar_records:
-        clinvar_str = []
-        for attr in clinvar_attributes_ordered:
-            if attr != "CLNSIG":
-                clinvar_str.append(attr + ":" + str(clinvar[attr]))
-            else:
-                clinvar_str.append(
-                    attr
-                    + ":"
-                    + "::".join(
-                        [str(signif).replace("_", " ") for signif in clinvar[attr]]
-                    )
-                )
-        # save compacted clinvar and append to all compacts
-        compacted_clinvar = ",".join(clinvar_str)
-        logger.debug(f"compacted clinvar: {compacted_clinvar}")
-        compacted_clinvars.append(compacted_clinvar)
-    logger.debug(f"compacted clinvars: {compacted_clinvars}")
-    return ";".join(compacted_clinvars)
-
-
-def cache_clinvars(
-    chr: str, pos: int, strand: str, extracted_clinvars: list[dict[str, str]]
-) -> None:
-    """
-    Save extracted clinvars to cache
-    """
-
-    logger.debug(f"Cache clinvars for pos: chr{chr},{pos},{strand}")
-    if chr in clinvars_cache:
-        if pos in clinvars_cache[chr]:
-            if strand in clinvars_cache[chr][pos]:
-                clinvars_cache[chr][pos][strand] = (
-                    clinvars_cache[chr][pos][strand] + extracted_clinvars
-                )
-            else:
-                clinvars_cache[chr][pos][strand] = extracted_clinvars
-        else:
-            clinvars_cache[chr][pos] = {strand: extracted_clinvars}
+    comp_bases = {"C": "G", "G": "C", "A": "T", "T": "A"}
+    if strand == "+":
+        corrected_base = base
     else:
-        clinvars_cache[chr] = {pos: {strand: extracted_clinvars}}
+        corrected_base = comp_bases[base]
+    return corrected_base
+
+
+def filter_gene(clinvar: pd.DataFrame, gene: str) -> pd.DataFrame:
+    """
+    Filter out ClinVar entries that don't contain gene in GENEINFO
+    """
+    clinvar_filtered = clinvar[clinvar.GENEINFO.str.contains(gene)]
+    return clinvar_filtered

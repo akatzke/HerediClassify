@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from typing import Callable
+from typing import Callable, Optional
+import pathlib
 from attr import dataclass
 from cyvcf2 import Variant
 from refactoring.variant import (
@@ -13,20 +14,28 @@ from refactoring.variant import (
 
 @dataclass
 class ClinVar:
-    same_nucleotide_change_pathogenic: bool
-    matching_clinvar_entries: list[str]
-    matching_clinvar_entries_highest_classification: str
+    path_clinvar: pathlib.Path
+    filter: Optional[list[str]]
 
 
 @dataclass
 class ClinVar_exonic(ClinVar):
-    same_amino_acid_change_pathogenic: bool
-    different_amino_acid_change_in_same_position_pathogenic: bool
+    same_aa_change_pathogenic: bool
+    same_aa_change_highest_classification: Optional[str]
+    same_aa_change_ids: Optional[list[str]]
+    diff_aa_change_in_pathogenic: bool
+    diff_aa_change_highest_classification: Optional[str]
+    diff_aa_change_ids: Optional[list[str]]
 
 
 @dataclass
 class ClinVar_splice(ClinVar):
+    same_nucleotide_change_pathogenic: bool
+    same_nucleotide_change_highest_classification: Optional[str]
+    same_nucleotide_change_ids: Optional[list[str]]
     same_splice_site_pathogenic: bool
+    same_splice_site_highest_classification: Optional[str]
+    same_splice_site_change_ids: Optional[list[str]]
 
 
 @dataclass

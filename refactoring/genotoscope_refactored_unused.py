@@ -292,3 +292,359 @@ def set_up_start_end_pos(
     for positions in start_end:
         assert positions[0] <= positions[1], "Start should be lower than end position"
     return start_end
+
+
+def extract_clinvar_records(transcripts_var_codon_info, variant_info):
+    """
+    Extract ClinVar records matching codon genomic positions per transcript
+    Each extracted clinvar record is a dictionary of
+    ID -> clinvar id
+    CLNDISDB -> clinvar disease db
+    CLNREVSTAT -> converted gold stars from clinvar review status (https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/)
+    CLNSIG -> clinvar clinical significance
+
+    Parameters
+    ----------
+    transcripts_var_codon_info : dict of str : dict of str : str
+        two level dictionary, map each transcript id to codon information
+    variant_info : VariantInfo
+        current variant info object
+
+    Returns
+    -------
+    dict of str : list of dict of str: str
+        dictionary mapping transcript id to all clinvar record found for the specific codon of this transcript
+    """
+
+    logger.debug(
+        "Extract ClinVar records that are found at the same codon as input variant"
+    )
+    codon_clinvars = {}
+    for transcript_id, transcript_codon_info in transcripts_var_codon_info.items():
+        logger.debug(f" === Transcript {transcript_id} === ")
+        chr = variant_info.chrom.split("chr")[1]
+        transcript = ensembl_data.transcript_by_id(transcript_id)
+        transcript_strand = transcript.exons[0].to_dict()["strand"]
+        ### ### ### ###
+        # for each genomic position,
+        # first search the cached clinvars
+        # if no hit, then perform vcf fetch
+        # vcf fetch uses 0-index and open upper limit (stop position)
+        ### ### ### ###
+        if transcript_codon_info["intersects_intron_at"] == -1:
+            logger.debug("Codon does not intersect intron")
+            # codon does not intersect intron
+            start, end = (
+                transcript_codon_info["genomic_pos"][0] - 1,
+                transcript_codon_info["genomic_pos"][2],
+            )
+            matched_clinvars = []
+            for pos in range(start, end):
+                case_hit, cached_clinvars = match_pos2cache(chr, pos, transcript_strand)
+                if not case_hit:
+                    extracted_clinvars = add_info2extracted_clinvars(
+                        list(vcf_reader.fetch(chr, pos, pos + 1))
+                    )
+                    logger.debug(f"Extracted clinvars: {extracted_clinvars}")
+                    if len(extracted_clinvars) > 0:
+                        # cache: save strand and quality filter ClinVars
+                        # uniq_clinvars = uniq_id_filter(extracted_clinvars)
+                        strand_filtered_clinvars = strand_filter(
+                            extracted_clinvars, transcript_strand
+                        )
+                        quality_filtered_clinvars = quality_filter(
+                            strand_filtered_clinvars, min_review_stars
+                        )
+                        unique_clinvars = uniq_new_filter(quality_filtered_clinvars)
+                        cache_clinvars(chr, pos, transcript_strand, unique_clinvars)
+                        matched_clinvars = matched_clinvars + unique_clinvars
+                    else:
+                        # cache: no ClinVar matching this chr,pos,strand
+                        cache_clinvars(chr, pos, transcript_strand, [])
+                        matched_clinvars = matched_clinvars + []
+                else:
+                    # use cached ClinVar entries
+                    try:
+                        assert len(cached_clinvars) >= 0
+                    except AssertionError:
+                        logger.error(
+                            f"Number of extracted clinvars should be >= 0\n=> variant position: {variant_info.to_string()}",
+                            exc_info=True,
+                        )
+                    matched_clinvars = matched_clinvars + cached_clinvars
+        else:
+            ### ### ###
+            # aggregate clinvar entries for the 'separated' genomic positions of the codon
+            ### ### ###
+            logger.debug("Variant on two different exons")
+            try:
+                len(transcript_codon_info["genomic_pos"]) == 2
+            except AssertionError:
+                logger.error(
+                    f"Corrected codon genomic position should be contained into two lists\n=> variant position: {variant_info.to_string}",
+                    exc_info=True,
+                )
+            matched_clinvars = []
+            for codon_genomic_range in transcript_codon_info["genomic_pos"]:
+                if (
+                    len(codon_genomic_range) == 2
+                ):  # two positions are contained in the current codon partition
+                    start, end = codon_genomic_range[0] - 1, codon_genomic_range[1]
+                else:  # one position is contained in the current codon partition
+                    start, end = codon_genomic_range[0] - 1, codon_genomic_range[0]
+                for pos in range(start, end):
+                    case_hit, cached_clinvars = match_pos2cache(
+                        chr, pos, transcript_strand
+                    )
+                    if not case_hit:
+                        extracted_clinvars = add_info2extracted_clinvars(
+                            list(vcf_reader.fetch(chr, pos, pos + 1))
+                        )
+                        logger.debug(f"Extracted clinvars: {extracted_clinvars}")
+                        if len(extracted_clinvars) > 0:
+                            # cache: save strand and quality filter ClinVars
+                            strand_filtered_clinvars = strand_filter(
+                                extracted_clinvars, transcript_strand
+                            )
+                            quality_filtered_clinvars = quality_filter(
+                                strand_filtered_clinvars, min_review_stars
+                            )
+                            unique_clinvars = uniq_new_filter(quality_filtered_clinvars)
+                            cache_clinvars(chr, pos, transcript_strand, unique_clinvars)
+                            matched_clinvars = matched_clinvars + unique_clinvars
+                        else:
+                            # cache: no ClinVar matching this chr,pos,strand
+                            cache_clinvars(chr, pos, transcript_strand, [])
+                            matched_clinvars = matched_clinvars + []
+                    else:
+                        # use cached ClinVars
+                        try:
+                            assert len(cached_clinvars) >= 0
+                        except AssertionError:
+                            logger.error(
+                                f"Number of extracted clinvars should be >= 0\n=> variant position: {variant_info.to_string()}",
+                                exc_info=True,
+                            )
+                        matched_clinvars = matched_clinvars + cached_clinvars
+        if len(matched_clinvars) > 0:
+            codon_clinvars[transcript_id] = uniq_new_filter(matched_clinvars)
+    return codon_clinvars
+
+
+def match_pos2cache(chr: str, pos: int, strand: int) -> tuple:
+    """
+    Match position to ClinVar cache
+
+    Returns
+    -------
+    bool
+        variant position found in cache (True), otherwise False
+    list of dict of str: str
+        cached ClinVars (or None)
+    """
+
+    logger.debug(f"Search pos: chr {chr}, {pos}, {strand} in cache")
+    cache_hit, cached_clinvars = False, None
+    if chr in clinvars_cache:
+        if pos in clinvars_cache[chr]:
+            if strand in clinvars_cache[chr][pos]:
+                cache_hit = True
+                cached_clinvars = clinvars_cache[chr][pos][strand]
+    return cache_hit, cached_clinvars
+
+
+def add_info2extracted_clinvars(clinvar_records):
+    """
+    Add information for extracted clinvar records
+    Each extracted clinvar record is a dictionary of
+    ID -> clinvar id
+    CLNDISDB -> clinvar disease db
+    CLNREVSTAT -> converted gold stars from clinvar review status (https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/)
+    CLNSIG -> clinvar clinical significance
+
+    Parameters
+    ----------
+    clinvar_records : list of vcf.model._Record
+        input clinvar records
+    Returns
+    -------
+    list of dict
+        clinvar records with needed information from vcf
+    """
+
+    logger.debug("Parse needed information for extracted ClinVar records")
+
+    clinvars_info, uniq_ids = [], []
+    for clinvar_rec in clinvar_records:
+        if "CLNSIG" not in list(clinvar_rec.INFO.keys()):
+            # if significance is not specified, pass
+            continue
+        # parse disease db
+        if "CLNDISDB" in clinvar_rec.INFO:
+            if clinvar_rec.INFO["CLNDISDB"][0]:
+                rec_dis_db = ",".join(clinvar_rec.INFO["CLNDISDB"])
+            else:
+                rec_dis_db = "not_specified"
+        else:
+            rec_dis_db = "not_specified"
+        clinvar_dict = {
+            "id": clinvar_rec.ID,
+            "pos": int(clinvar_rec.POS),
+            "ref": str(clinvar_rec.REF),
+            "alt": ",".join([str(alt) for alt in clinvar_rec.ALT]),
+            "CLNDISDB": rec_dis_db,
+            "CLNREVSTAT": convert_review_status2stars(
+                clinvar_stars_df, star_status2int, clinvar_rec.INFO["CLNREVSTAT"]
+            ),
+            "CLNSIG": clinvar_rec.INFO["CLNSIG"],
+            "gene_info": normalize_gene_info(clinvar_rec),
+        }
+        if "None" not in clinvar_dict["alt"] and clinvar_dict["id"] not in uniq_ids:
+            # extract all unique clinvars that do not contain the None nucl as alternate
+            clinvars_info.append(clinvar_dict)
+            uniq_ids.append(clinvar_dict["id"])
+    return clinvars_info
+
+
+def normalize_gene_info(clinvar_rec: dict) -> list:
+    """
+    Normalize ClinVar gene information
+    Returns
+    -------
+    list of str, int
+        list of genes containing [gene symbol, gene id]
+    """
+
+    logger.debug("Normalize gene information")
+    if "GENEINFO" in clinvar_rec.INFO:
+        genes_info = []
+        for gene in clinvar_rec.INFO["GENEINFO"].strip().split("|"):
+            genes_info.append(gene.split(":"))
+        return genes_info
+    else:
+        return None
+
+
+def uniq_new_filter(new_clinvars: list[dict[str, str]]) -> list[dict[str, str]]:
+    """
+    Filter clinvar records to keep the ones not already found in matched list
+    """
+
+    logger.debug("\nFilter all new clinvars to keep the unique ones only")
+    ids, uniq_clinvars = [], []
+    for clinvar in new_clinvars:
+        if clinvar["id"] not in ids:
+            uniq_clinvars.append(clinvar)
+            ids.append(clinvar["id"])
+    logger.debug(f"Unique clinvars: {uniq_clinvars}")
+    return uniq_clinvars
+
+
+def strand_filter(
+    matched_clinvars: list[dict[str, str]], transcript_strand: str
+) -> list[dict[str, str]]:
+    """
+    Filter matched ClinVars to ensure the same strand with affected transcript
+
+    Returns
+    -------
+    list of dict of str: str
+        filtered clinvars by strand information
+    """
+
+    logger.debug(f"\nFilter by strand the {len(matched_clinvars)} matching clinvars")
+    filtered_clinvars = []
+    for candidate_clinvar in matched_clinvars:
+        if candidate_clinvar["gene_info"]:
+            # get the symbol for the first registered gene in ClinVar
+            gene_symbol, gene_id = candidate_clinvar["gene_info"][0]
+        else:
+            gene_symbol = None
+        logger.debug(f"clinvar's gene: {gene_symbol}")
+
+        ### ### ###
+        # save a clinvar entry if
+        # a) the strand is the same as for the PyEnsembl annotation
+        # b) the significance field is filled
+        ### ### ###
+        if (
+            get_clinvar_strand(hugo_genes_df, gene_symbol) == transcript_strand
+            and "CLNSIG" in candidate_clinvar
+        ):
+            if "None" not in candidate_clinvar["alt"]:
+                # do not extract a clinvar record that contains the None nucl as alternate
+                filtered_clinvars.append(candidate_clinvar)
+    logger.debug(f"Strand-filtered clinvars: {filtered_clinvars}")
+    return filtered_clinvars
+
+
+def get_clinvar_strand(hugo_genes_df: pd.DataFrame, gene_symbol: str) -> str:
+    """
+    Get strand for gene found in clinvar entry
+    """
+
+    logger.debug("Get strand for gene found in ClinVar entry")
+    if gene_symbol in hugo_genes_df.index:
+        return hugo_genes_df.loc[gene_symbol].strand
+    else:
+        return None
+
+
+def compact_clinvar_entries(clinvar_records: list[dict]) -> str:
+    """
+    Compact ClinVar entries
+    """
+
+    logger.debug("Compact clinvar entries")
+    clinvar_attributes_ordered = [
+        "id",
+        "pos",
+        "ref",
+        "alt",
+        "CLNDISDB",
+        "CLNREVSTAT",
+        "CLNSIG",
+    ]
+
+    compacted_clinvars = []
+    for clinvar in clinvar_records:
+        clinvar_str = []
+        for attr in clinvar_attributes_ordered:
+            if attr != "CLNSIG":
+                clinvar_str.append(attr + ":" + str(clinvar[attr]))
+            else:
+                clinvar_str.append(
+                    attr
+                    + ":"
+                    + "::".join(
+                        [str(signif).replace("_", " ") for signif in clinvar[attr]]
+                    )
+                )
+        # save compacted clinvar and append to all compacts
+        compacted_clinvar = ",".join(clinvar_str)
+        logger.debug(f"compacted clinvar: {compacted_clinvar}")
+        compacted_clinvars.append(compacted_clinvar)
+    logger.debug(f"compacted clinvars: {compacted_clinvars}")
+    return ";".join(compacted_clinvars)
+
+
+def cache_clinvars(
+    chr: str, pos: int, strand: str, extracted_clinvars: list[dict[str, str]]
+) -> None:
+    """
+    Save extracted clinvars to cache
+    """
+
+    logger.debug(f"Cache clinvars for pos: chr{chr},{pos},{strand}")
+    if chr in clinvars_cache:
+        if pos in clinvars_cache[chr]:
+            if strand in clinvars_cache[chr][pos]:
+                clinvars_cache[chr][pos][strand] = (
+                    clinvars_cache[chr][pos][strand] + extracted_clinvars
+                )
+            else:
+                clinvars_cache[chr][pos][strand] = extracted_clinvars
+        else:
+            clinvars_cache[chr][pos] = {strand: extracted_clinvars}
+    else:
+        clinvars_cache[chr] = {pos: {strand: extracted_clinvars}}

@@ -83,3 +83,28 @@ def index_vcf(path: pathlib.Path) -> None:
     """
     cmd_index = f"bcftools index -t {path}"
     os.system(cmd_index)
+
+
+def convert_review_status2stars(
+    clinvar_stars_df: pd.DataFrame,
+    star_status2int: dict[str, int],
+    clinvar_rev_status: list[str],
+) -> int:
+    """
+    Convert CLNREVSTAT (review status) tab from clinvar vcf file to number of review stars
+    for unknown description -> star= -1
+    ClinVar review status documentation: https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/
+    """
+    rev_status = [review_elem.replace("_", " ") for review_elem in clinvar_rev_status]
+
+    rev_status = ",".join(rev_status)
+    if (
+        rev_status not in clinvar_stars_df.Review_status.values
+    ):  # if retrieved status not in status
+        return star_status2int["unknown review status"]
+    else:
+        return star_status2int[
+            clinvar_stars_df.loc[clinvar_stars_df["Review_status"] == rev_status][
+                "Number_of_gold_stars"
+            ].iloc[0]
+        ]
