@@ -6,7 +6,7 @@ import pyensembl
 import hgvs.parser
 import hgvs.posedit
 
-from refactoring.variant import VariantInfo, TranscriptInfo
+from refactoring.variant import VariantInfo, TranscriptInfo, VarType
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.exon_skipping")
 hgvs_parser = hgvs.parser.Parser()
@@ -30,17 +30,16 @@ def assess_exon_skipping(
     coding_exon_skipped = False
     skipped_exon_start, skipped_exon_end = 0, 0
 
-    split_symbols, intron_offsets, directions2exon = parse_variant_intron_pos(
+    split_symbol, intron_offset, direction2exon = parse_variant_intron_pos(
         transcript.var_hgvs
     )
 
-    logger.debug(f"intron offsets: {intron_offsets}")
+    logger.debug(f"Intron offset: {intron_offset}")
 
-    for intron_offset in intron_offsets:
-        if intron_offset in [1, 2]:
-            # variant is disrupting donor/acceptor splicesome site
-            # predict that exon will be skipped
-            are_exons_skipped = True
+    if intron_offset in [1, 2]:
+        # variant is disrupting donor/acceptor splicesome site
+        # predict that exon will be skipped
+        are_exons_skipped = True
     logger.debug(f"is_exon_skipped: {are_exons_skipped}")
 
     if are_exons_skipped:
@@ -342,19 +341,19 @@ def get_codon_index(seq_codons: list[str], target_codon: str) -> int:
     return codon_index
 
 
-def parse_variant_intron_pos(var_coding: hgvs.posedit.PosEdit):
+def parse_variant_intron_pos(var_coding: hgvs.posedit.PosEdit) -> tuple[str, int, int]:
     """
     Parse variant offset in intron
 
     Returns
     -------
-    list of str
+    str
         for each variant edit part (start and end):
         '+' to show that variant is just after an exon, '-' to show that the variant is before an exon
-    list of int
+    int
         for each variant edit part:
         variant offset in intron
-    list of int
+    int
         for each variant edit part:
         +1 if variant needs to increase its position to get to the closest exon (split_symbol = -)
         -1 if variant needs to decrease its position to get to the closest exon (split_symbol = +)
@@ -363,13 +362,11 @@ def parse_variant_intron_pos(var_coding: hgvs.posedit.PosEdit):
     logger.debug("Parse intron variant position")
     var_coding_str = str(var_coding)
     var_edit = str(var_coding.edit)
-    intron_offset, direction2closest_exon = 0, 0
-    split_symbols, intron_offsets, directions2exon = [], [], []
+    intron_offset_pos, direction2closest_exon, split_symbol = 0, 0, "+"
     # find the direction of the closest exon
     if "_" in var_coding_str:
         # for duplication, insertion and deletion
         # split on '_' character before finding direction
-        [edit_start, edit_end] = var_coding_str.split(var_edit)[0].split("_")
         for edit_part in var_coding_str.split(var_edit)[0].split("_"):
             if "+" in edit_part:  # after exon in start of the intron
                 split_symbol = "+"
@@ -378,14 +375,9 @@ def parse_variant_intron_pos(var_coding: hgvs.posedit.PosEdit):
                 split_symbol = "-"
                 direction2closest_exon = +1
             else:
-                # print("var edit part: {} does not contain split symbol".format(edit_part))
                 continue
             # get position of edit part inside the exon
-
             intron_offset_pos = int(edit_part.split(split_symbol)[1])
-            split_symbols.append(split_symbol)
-            directions2exon.append(direction2closest_exon)
-            intron_offsets.append(intron_offset_pos)
     else:
         # for SNP find direction symbol
         if "+" in var_coding_str:  # after exon in start of the intron
@@ -394,27 +386,15 @@ def parse_variant_intron_pos(var_coding: hgvs.posedit.PosEdit):
         else:  # before exon in the end of the intron
             split_symbol = "-"
             direction2closest_exon = +1
-        split_symbols.append(split_symbol)
-        directions2exon.append(direction2closest_exon)
         # to get the splice site position, after splitting on - or +,
         # split on the edit to get the splice offset
         intron_offset_pos = int(
             var_coding_str.split(split_symbol)[-1].split(var_edit)[0]
         )
-        intron_offsets.append(intron_offset_pos)
     logger.debug(
-        f"split_symbols: {split_symbols}, intron_offsets: {intron_offset}, directions2exon: {directions2exon}".format(
-            split_symbols, intron_offsets, directions2exon
-        )
+        f"split_symbol: {split_symbol}, intron_offset_pos: {intron_offset_pos}, direction2exon: {direction2closest_exon}"
     )
-    try:
-        assert len(split_symbols) == len(intron_offsets) == len(directions2exon)
-    except AssertionError:
-        logger.error(
-            "All parts of variant edit should contain split symbol, intron offset and direction to closest exon.",
-            exc_info=True,
-        )
-    return split_symbols, intron_offsets, directions2exon
+    return split_symbol, intron_offset_pos, direction2closest_exon
 
 
 def find_exon_by_var_pos(
@@ -468,7 +448,7 @@ def find_exon_by_var_pos(
             logger.debug(
                 "Intron variant type => update as variant pos the starting position of skipped exon"
             )
-            split_symbols, intron_offsets, directions2exon = parse_variant_intron_pos(
+            split_symbols, intron_offsets, direction2exon = parse_variant_intron_pos(
                 var_coding
             )
 
@@ -483,7 +463,7 @@ def find_exon_by_var_pos(
                 exon_idx = transcript.exon - 1
             elif transcript.intron:
                 intron_idx = transcript.intron - 1
-                if directions2exon[0] == 1:
+                if direction2exon == 1:
                     exon_idx = intron_idx + 1
                 else:
                     exon_idx = intron_idx
@@ -498,7 +478,7 @@ def find_exon_by_var_pos(
             var_start = exon_positions[exon_idx][0]
             var_end = exon_positions[exon_idx][1]
             logger.debug(
-                f"Updated variant start:{var_start}, end: {var_end} on exon idx: {exon_idx + directions2exon[0]}"
+                f"Updated variant start:{var_start}, end: {var_end} on exon idx: {exon_idx + direction2exon}"
             )
     else:
         # use cDNA offset for both frameshift and nonsense mutation
