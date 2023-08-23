@@ -340,7 +340,7 @@ def create_example_splice_donor_exonic_BRCA2() -> tuple:
     return (transcript, variant)
 
 
-def create_example_splice_variant_BRCA2() -> tuple:
+def create_example_splice_variant_BRCA2_minus() -> tuple:
     """
     Create BRCA2 splice acceptor variant
     On + strand, in splice_site
@@ -370,13 +370,13 @@ def create_example_splice_variant_BRCA2() -> tuple:
     return (transcript, variant)
 
 
-def create_example_splice_variant_BRCA2_2() -> tuple:
+def create_example_splice_variant_BRCA2_plus() -> tuple:
     """
     Create BRCA2 splice acceptor variant
     On + strand, in splice_site
     From ClinVar: VCV000918812.2
     """
-    hgvs = hgvs_parser.parse_c_posedit("c.7805+8A>c".split("c.")[1])
+    hgvs = hgvs_parser.parse_c_posedit("c.7805+8A>C".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000380152",
         ["splice_region_variant", "intron_variant"],

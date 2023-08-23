@@ -12,7 +12,7 @@ from refactoring.variant import (
 )
 
 ClinVar_Type = Literal[
-    "same_aa_change", "diff_aa_change", "same_nucleotide" "same_splice_site"
+    "same_aa_change", "diff_aa_change", "same_nucleotide", "same_splice_site"
 ]
 
 ClinVar_Status = Literal["Pathogenic", "Likely_pathogenic"]

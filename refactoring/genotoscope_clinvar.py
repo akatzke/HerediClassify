@@ -15,7 +15,10 @@ import hgvs.posedit
 
 
 from refactoring.variant import VariantInfo, TranscriptInfo, VarType
-from refactoring.genotoscope_exon_skipping import is_transcript_in_positive_strand
+from refactoring.genotoscope_exon_skipping import (
+    is_transcript_in_positive_strand,
+    parse_variant_intron_pos,
+)
 from refactoring.variant_annotate import ClinVar, ClinVar_Type
 
 hgvs_parser = hgvs.parser.Parser()
@@ -29,32 +32,31 @@ def check_clinvar_splicing(
     variant: VariantInfo,
     transcripts: Iterable[TranscriptInfo],
     path_clinvar: pathlib.Path,
-) -> tuple:
+) -> tuple[ClinVar, ClinVar]:
     """
     Check ClinVar for entries supporting pathogenicity of splice site
     """
     clinvar = VCF(path_clinvar)
-    affect_transcript = get_affected_transcript(
-        transcripts, ["splice_donor", "splice_acceptor"]
-    )
+    ### Check ClinVar for pathogenic variants with same nucleotide change
     clinvar_same_pos = clinvar(
         f"{variant.chr}:{variant.genomic_start}-{variant.genomic_end}"
     )
     clinvar_same_pos_df = convert_vcf_gen_to_df(clinvar_same_pos)
-    if not clinvar_same_pos_df.empty:
-        max_classification, affected_ID = get_highest_classification(clinvar_same_pos)
-        return True, True
-        # return ClinVar_splice(same_nucleotide_change_pathogenic=True, matching_clinvar_entries=clinvar_same_pos_filtered, clinvar_pos_fil)
-    else:
-        (start_splice_site, end_splice_site) = find_corresponding_splice_site(variant)
-        clinvar_splice_site = clinvar(
-            f"{variant.chr}:{start_splice_site}-{end_splice_site}"
-        )
-        clinvar_splice_site_df = convert_vcf_gen_to_df(clinvar_splice_site)
-        if clinvar_splice_site:
-            return True, False
-        else:
-            return False, False
+    ClinVar_same_pos = create_ClinVar(clinvar_same_pos_df, "same_nucleotide")
+
+    ### Check ClinVar for pathogenic variant in same / closest splice site
+    affected_transcript = get_affected_transcript(
+        transcripts, ["splice_donor", "splice_acceptor"]
+    )
+    (start_splice_site, end_splice_site) = find_corresponding_splice_site(
+        affected_transcript, variant
+    )
+    clinvar_splice_site = clinvar(
+        f"{variant.chr}:{start_splice_site}-{end_splice_site}"
+    )
+    clinvar_splice_site_df = convert_vcf_gen_to_df(clinvar_splice_site)
+    ClinVar_splice_site = create_ClinVar(clinvar_splice_site_df, "same_splice_site")
+    return (ClinVar_same_pos, ClinVar_splice_site)
 
 
 def check_clinvar_missense(
@@ -80,12 +82,12 @@ def check_clinvar_missense(
     clinvar_same_aa_df = clinvar_same_codon_aa_filtered[
         clinvar_same_codon_aa_filtered.prot_ref == var_codon_info["prot_alt"]
     ]
-    ClinVar_same_aa = get_highest_classification(clinvar_same_aa_df, "same_aa_change")
+    ClinVar_same_aa = create_ClinVar(clinvar_same_aa_df, "same_aa_change")
 
     clinvar_diff_aa = clinvar_same_codon_aa_filtered[
         clinvar_same_codon_aa_filtered.prot_ref != var_codon_info["prot_alt"]
     ]
-    ClinVar_diff_aa = get_highest_classification(clinvar_diff_aa, "diff_aa_change")
+    ClinVar_diff_aa = create_ClinVar(clinvar_diff_aa, "diff_aa_change")
 
     return (ClinVar_same_aa, ClinVar_diff_aa)
 
@@ -156,11 +158,53 @@ def check_clinvar_region(chr: int, start: int, end: int, path_clinvar: str):
     return clinvar_region
 
 
-def find_corresponding_splice_site(variant: VariantInfo) -> tuple:
-    return (variant.genomic_start, variant.genomic_end)
+def find_corresponding_splice_site(
+    transcript: TranscriptInfo, variant: VariantInfo
+) -> tuple[int, int]:
+    """
+    Reconstruct splice site
+    Splice site is defined as +/- 1,2 as only for these locations varinat is clearly defines as a splice variant
+    """
+    ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
+        transcript.transcript_id
+    )
+    if "+" in str(transcript.var_hgvs) or "-" in str(transcript.var_hgvs):
+        splice_site_start, splice_site_stop = get_splice_site_for_intronic_variant(
+            transcript, variant
+        )
+    else:
+        splice_site_start, splice_site_stop = get_splice_site_for_exonic_variant(
+            transcript, variant
+        )
+    return (splice_site_start, splice_site_stop)
 
 
-def get_highest_classification(clinvar: pd.DataFrame, type: ClinVar_Type) -> ClinVar:
+def get_splice_site_for_intronic_variant(
+    variant: VariantInfo,
+    transcript: TranscriptInfo,
+    ref_transcript: pyensembl.transcript.Transcript,
+) -> tuple[int, int]:
+    """
+    Get splice site for intronic variant
+    """
+    (
+        split_symbol,
+        direction_to_splice_site,
+        distance_to_splice_site,
+    ) = parse_variant_intron_pos(transcript.var_hgvs)
+    if ref_transcript.strand == "-":
+        reverse_directions = {}
+
+
+def get_splice_site_for_exonic_variant(
+    transcript: TranscriptInfo, variant: VariantInfo
+) -> tuple[int, int]:
+    """
+    Get splice site for exonic variant
+    """
+
+
+def create_ClinVar(clinvar: pd.DataFrame, type: ClinVar_Type) -> ClinVar:
     """
     From clinvar entries, get highest classification and IDs of ClinVar entries with that classification
     """
