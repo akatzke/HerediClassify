@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Callable, Optional
+from typing import Callable, Optional, Literal
 import pathlib
 from attr import dataclass
 from cyvcf2 import Variant
@@ -11,31 +11,19 @@ from refactoring.variant import (
     AffectedRegion,
 )
 
+ClinVar_Type = Literal[
+    "same_aa_change", "diff_aa_change", "same_nucleotide" "same_splice_site"
+]
+
+ClinVar_Status = Literal["Pathogenic", "Likely_pathogenic"]
+
 
 @dataclass
 class ClinVar:
-    path_clinvar: pathlib.Path
-    filter: Optional[list[str]]
-
-
-@dataclass
-class ClinVar_exonic(ClinVar):
-    same_aa_change_pathogenic: bool
-    same_aa_change_highest_classification: Optional[str]
-    same_aa_change_ids: Optional[list[str]]
-    diff_aa_change_in_pathogenic: bool
-    diff_aa_change_highest_classification: Optional[str]
-    diff_aa_change_ids: Optional[list[str]]
-
-
-@dataclass
-class ClinVar_splice(ClinVar):
-    same_nucleotide_change_pathogenic: bool
-    same_nucleotide_change_highest_classification: Optional[str]
-    same_nucleotide_change_ids: Optional[list[str]]
-    same_splice_site_pathogenic: bool
-    same_splice_site_highest_classification: Optional[str]
-    same_splice_site_change_ids: Optional[list[str]]
+    pathogenic: bool
+    type: ClinVar_Type
+    highest_classification: Optional[ClinVar_Status]
+    ids: Optional[list[str]]
 
 
 @dataclass
@@ -47,6 +35,10 @@ class Variant_annotated(VariantInfo):
     variant_info: VariantInfo
     transcript_info: list[TranscriptInfo]
     prediction_tools: dict
+    same_aa_change_clinvar: ClinVar
+    diff_aa_change_clinvar: ClinVar
+    same_nuleotide_change: ClinVar
+    same_splice_site: ClinVar
     gnomad: PopulationDatabases
     flossies: PopulationDatabases
     affected_region: AffectedRegion

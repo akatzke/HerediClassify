@@ -16,6 +16,7 @@ import hgvs.posedit
 
 from refactoring.variant import VariantInfo, TranscriptInfo, VarType
 from refactoring.genotoscope_exon_skipping import is_transcript_in_positive_strand
+from refactoring.variant_annotate import ClinVar, ClinVar_Type
 
 hgvs_parser = hgvs.parser.Parser()
 
@@ -58,7 +59,7 @@ def check_clinvar_splicing(
 
 def check_clinvar_missense(
     variant: VariantInfo, transcripts: list[TranscriptInfo], path_clinvar: pathlib.Path
-):
+) -> tuple[ClinVar, ClinVar]:
     """
     Check ClinVar for entries supporting pathogenicity of missense variant
     """
@@ -73,49 +74,20 @@ def check_clinvar_missense(
     clinvar_same_codon_aa = clinvar_same_codon.apply(
         construct_clinvar_prot_change, var_codon_info=var_codon_info, axis=1
     )
-    clinvar_final = filter_gene(clinvar_same_codon_aa, variant.gene_name)
-    clinvar_same_aa = clinvar_final[
-        clinvar_final.prot_ref == var_codon_info["prot_alt"]
-    ]
-    if clinvar_same_aa:
-        same_aa_change_pathogenic = True
-        if any(clinvar_same_aa.CLINSIG == "Pathogenic"):
-            same_aa_change_highest_classification = "Pathogenic"
-            same_aa_change_ids = list(clinvar_same_aa[clinvar_same_aa.CLINSIG == "Pathogenic"].id)
-        elif any(clinvar_same_aa.CLINSIG == "Likely_pathogenic") or any(clinvar_same_aa.CLINSIG == "Pathogenic/Likely_pathogenic")
-            same_aa_change_highest_classification = "Likely_pathogenic"
-            same_aa_change_ids = list(clinvar_same_aa[clinvar_same_aa.CLINSIG.str.contains("Likely_pathogenic")])
-        else:
-            same_aa_change_highest_classification = None
-    else:
-        same_aa_change_pathogenic = False
-        same_aa_change_highest_classification = None
-        same_aa_change_ids = None
-    clinvar_diff_aa = clinvar_final[
-        clinvar_final.prot_ref != var_codon_info["prot_alt"]
-    ]
-    if clinvar_diff_aa:
-        diff_aa_change_highest_classification = True
-        if any(clinvar_diff_aa.CLINSIG == "Pathogenic"):
-            diff_aa_change_highest_classification = "Pathogenic"
-            diff_aa_change_ids = list(clinvar_diff_aa[clinvar_same_aa.CLINSIG == "Pathogenic"].id)
-        elif any(clinvar_diff_aa.CLINSIG == "Likely_pathogenic") or any(clinvar_same_aa.CLINSIG == "Pathogenic/Likely_pathogenic")
-            diff_aa_change_highest_classification = "Likely_pathogenic"
-            diff_aa_change_ids = list(clinvar_diff_aa[clinvar_same_aa.CLINSIG.str.contains("Likely_pathogenic")])
-        else:
-            diff_aa_change_highest_classification = None
-    else:
-        diff_aa_change_pathogenic = False
-        diff_aa_change_highest_classification = None
-        diff_aa_change_ids = None
-    return (
-        same_aa_change_pathogenic,
-        same_aa_change_highest_classification,
-        same_aa_change_ids,
-        diff_aa_change_pathogenic,
-        diff_aa_change_highest_classification
-        diff_aa_change_ids,
+    clinvar_same_codon_aa_filtered = filter_gene(
+        clinvar_same_codon_aa, variant.gene_name
     )
+    clinvar_same_aa_df = clinvar_same_codon_aa_filtered[
+        clinvar_same_codon_aa_filtered.prot_ref == var_codon_info["prot_alt"]
+    ]
+    ClinVar_same_aa = get_highest_classification(clinvar_same_aa_df, "same_aa_change")
+
+    clinvar_diff_aa = clinvar_same_codon_aa_filtered[
+        clinvar_same_codon_aa_filtered.prot_ref != var_codon_info["prot_alt"]
+    ]
+    ClinVar_diff_aa = get_highest_classification(clinvar_diff_aa, "diff_aa_change")
+
+    return (ClinVar_same_aa, ClinVar_diff_aa)
 
 
 def extract_clinvar_entries_missense(
@@ -144,7 +116,7 @@ def get_affected_transcript(
     transcripts: Iterable[TranscriptInfo], var_types: Iterable[VarType]
 ) -> TranscriptInfo:
     for transcript in transcripts:
-        if transcript.var_type in var_types:
+        if any(var_type in transcript.var_type for var_type in var_types):
             return transcript
     raise ValueError(f"No transcript has {var_types}")
 
@@ -188,8 +160,27 @@ def find_corresponding_splice_site(variant: VariantInfo) -> tuple:
     return (variant.genomic_start, variant.genomic_end)
 
 
-def get_highest_classification(clinvars) -> str:
-    return clinvars.ID
+def get_highest_classification(clinvar: pd.DataFrame, type: ClinVar_Type) -> ClinVar:
+    """
+    From clinvar entries, get highest classification and IDs of ClinVar entries with that classification
+    """
+    is_pathogenic = False
+    highest_classification = None
+    clinvar_ids = None
+    if not clinvar.empty:
+        if any(clinvar.CLINSIG == "Pathogenic"):
+            is_pathogenic = True
+            highest_classification = "Pathogenic"
+            clinvar_ids = list(clinvar[clinvar.CLINSIG == "Pathogenic"].id)
+        elif any(clinvar.CLINSIG == "Likely_pathogenic") or any(
+            clinvar.CLINSIG == "Pathogenic/Likely_pathogenic"
+        ):
+            is_pathogenic = True
+            highest_classification = "Likely_pathogenic"
+            clinvar_ids = list(
+                clinvar[clinvar.CLINSIG.str.contains("Likely_pathogenic")].id
+            )
+    return ClinVar(is_pathogenic, type, highest_classification, clinvar_ids)
 
 
 def extract_var_codon_info(
