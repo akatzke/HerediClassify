@@ -29,7 +29,7 @@ def is_len_change_in_repetitive_region(
 
 def assess_effect_splice_variants(variant: Variant) -> None:
     for transcript in variant.transcript_info:
-        if transcript.var_type in ["splicing_phenotypes"]:
+        if any(var_type in transcript.var_type for var_type in ["splicing_phenotypes"]):
             assess_exon_skipping(transcript, variant.variant_info)
         else:
             continue

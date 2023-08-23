@@ -297,7 +297,7 @@ def extract_codons(sequence: str) -> list[str]:
     return codons
 
 
-def is_transcript_type_splice_acceptor_donor(transcript_typ: str) -> bool:
+def is_transcript_type_splice_acceptor_donor(transcript_type: list[VarType]) -> bool:
     """
     Examine if transcript type is splice acceptor or splice donor
     """
@@ -320,9 +320,10 @@ def is_transcript_type_splice_acceptor_donor(transcript_typ: str) -> bool:
         "conservative_inframe_deletion",
     }
 
-    if (
-        transcript_typ in intron_variant_types
-        and not transcript_typ in exon_variant_types
+    if any(
+        intron_var_type in transcript_type for intron_var_type in intron_variant_types
+    ) and not any(
+        exon_var_type in transcript_type for exon_var_type in exon_variant_types
     ):
         return True
     else:

@@ -184,7 +184,7 @@ def assess_NMD_exonic_variant(
 
     NMD_comment = "NMD is not predicted"
 
-    exon_variant_types = {
+    exon_var_types = {
         "stop_gained",
         "stop_lost",
         "frameshift",
@@ -197,7 +197,7 @@ def assess_NMD_exonic_variant(
         "conservative_inframe_deletion",
     }
 
-    if transcript.var_type in exon_variant_types:
+    if any(var_type in transcript.var_type for var_type in exon_var_types):
         logger.debug("Variant applicable for stop codon searching")
         logger.debug(
             "Update exon positions for variant that skips both start and stop exons or does not skip start codon exon"
