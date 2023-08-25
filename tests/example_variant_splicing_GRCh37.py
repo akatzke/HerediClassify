@@ -157,9 +157,70 @@ def create_example_splice_donor_BRCA1_2() -> tuple:
     return (transcript, variant)
 
 
+def create_example_minus_BRCA1() -> tuple:
+    """
+    Create BRCA1 splice donor variant
+    - strand, outside of splice site
+    From ClinVar: VCV000433731.4
+    """
+    hgvs = hgvs_parser.parse_c_posedit("c.5278-6T>C".split("c.")[1])
+    transcript = TranscriptInfo(
+        "ENST00000357654",
+        ["splice_donor"],
+        hgvs,
+        5278,
+        5278,
+        exon=None,
+        intron=None,
+        var_protein=None,
+    )
+    variant = VariantInfo(
+        "BRCA1",
+        ["splice_donor"],
+        "17",
+        41203140,
+        41203140,
+        "some_id",
+        "A",
+        "G",
+    )
+    return (transcript, variant)
+
+
+def create_example_plus_BRCA1() -> tuple:
+    """
+    Create BRCA1 splice donor variant
+    - strand, outside of splice site
+    From ClinVar: VCV000125827.18
+    """
+    hgvs = hgvs_parser.parse_c_posedit("c.5332+4A>G".split("c.")[1])
+    transcript = TranscriptInfo(
+        "ENST00000357654",
+        ["splice_donor"],
+        hgvs,
+        5332,
+        5332,
+        exon=None,
+        intron=None,
+        var_protein=None,
+    )
+    variant = VariantInfo(
+        "BRCA1",
+        ["splice_donor"],
+        "17",
+        41203076,
+        41203076,
+        "some_id",
+        "T",
+        "C",
+    )
+    return (transcript, variant)
+
+
 def create_example_splice_BARD1() -> tuple:
     """
     Create BARD1 splice donor variant
+    - strand,
     From ClinVar: VCV125738.12
     """
     hgvs = hgvs_parser.parse_c_posedit("c.1569-7T>G".split("c.")[1])
@@ -179,7 +240,11 @@ def create_example_splice_BARD1() -> tuple:
     )
     variant = VariantInfo(
         "BARD1",
-        ["splice_donor"],
+        [
+            "splice_region_variant",
+            "splice_polypyrimidine_tract_variant",
+            "intron_variant",
+        ],
         "2",
         215617286,
         215617286,

@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from refactoring.genotoscope_protein_len_diff import calculate_prot_len_diff
 
 from refactoring.variant import VariantInfo, TranscriptInfo
+from refactoring.variant_annotate import ClinVar
 from refactoring.genotoscope_exon_skipping import assess_exon_skipping
 from refactoring.genotoscope_assess_NMD import (
     assess_NMD_exonic_variant,
@@ -24,7 +25,11 @@ from refactoring.genotoscope_reading_frame_preservation import (
     assess_reading_frame_preservation,
 )
 from refactoring.genotoscope_exists_alternative_start_codon import (
-    find_alternative_start_codon,
+    assess_alternative_start_codon,
+)
+from refactoring.clinvar_region import (
+    check_clinvar_NMD_exon,
+    check_clinvar_start_alt_start,
 )
 
 
@@ -132,6 +137,7 @@ class TranscriptInfo_intronic(TranscriptInfo):
             var_seq,
             diff_len,
         )
+        truncated_exon_relevant = check_clinvar_NMD_exon(variant, NMD_affected_exons)
         is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
         diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
         return TranscriptInfo_intronic(
@@ -149,7 +155,7 @@ class TranscriptInfo_intronic(TranscriptInfo):
             len_change_in_repetitive_region=False,
             is_NMD=is_NMD,
             transcript_disease_relevant=True,
-            truncated_exon_relevant=True,
+            truncated_exon_relevant=truncated_exon_relevant,
             is_reading_frame_preserved=is_reading_frame_preserved,
         )
 
@@ -160,10 +166,9 @@ class TranscriptInfo_start_loss(TranscriptInfo):
     Class containing start loss specific annotation
     """
 
-    ref_transcript: pyensembl.transcript.Transcript = field(init=True)
     exists_alternative_start_codon: bool
     position_alternative_start_codon: list[int]
-    pathogenic_variant_between_start_and_stop: bool
+    pathogenic_variants_between_start_and_alt_start: ClinVar
 
     @classmethod
     def annotate(
@@ -172,11 +177,15 @@ class TranscriptInfo_start_loss(TranscriptInfo):
         ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
             transcript.transcript_id
         )
-        diff_len, var_coding_seq = construct_variant_coding_seq_exonic_variant(
+        var_coding_seq, diff_len = construct_variant_coding_seq_exonic_variant(
             transcript, variant, ref_transcript
         )
-        position_alternative_start_codon = find_alternative_start_codon(
-            variant, ref_transcript, var_coding_seq
+        (
+            exists_alternative_start_codon,
+            position_alternative_start_codon,
+        ) = assess_alternative_start_codon(variant, ref_transcript, var_coding_seq)
+        pathogenic_variants_between_start_and_alt_start = check_clinvar_start_alt_start(
+            ref_transcript, variant, position_alternative_start_codon
         )
         return TranscriptInfo_start_loss(
             transcript_id=transcript.transcript_id,
@@ -187,7 +196,7 @@ class TranscriptInfo_start_loss(TranscriptInfo):
             var_protein=transcript.var_protein,
             exon=transcript.exon,
             intron=transcript.intron,
-            ref_transcript=ref_transcript,
+            exists_alternative_start_codon=exists_alternative_start_codon,
             position_alternative_start_codon=position_alternative_start_codon,
-            pathogenic_variant_between_start_and_stop=False,
+            pathogenic_variants_between_start_and_alt_start=pathogenic_variants_between_start_and_alt_start,
         )

@@ -13,11 +13,26 @@ from refactoring.genotoscope_exon_skipping import (
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.find_alternative_start_codon")
 
 
-def find_alternative_start_codon(
+def assess_alternative_start_codon(
     variant: VariantInfo,
     ref_transcript: pyensembl.transcript.Transcript,
     var_coding_seq: str,
-) -> list[int]:
+) -> tuple[bool, list[int]]:
+    alternative_start_codons = find_alternative_start_codons(
+        variant, ref_transcript, var_coding_seq
+    )
+    if len(alternative_start_codons) == 0:
+        return False, [0, 0, 0]
+    else:
+        alternative_start_codons.sort()
+        return True, alternative_start_codons[0]
+
+
+def find_alternative_start_codons(
+    variant: VariantInfo,
+    ref_transcript: pyensembl.transcript.Transcript,
+    var_coding_seq: str,
+) -> list[list[int]]:
     """
     First seach for alternative start codon in other reference transcripts
     If no start codon is found, search in sequence for other start codons
@@ -110,14 +125,10 @@ def search_closest_start_codon(codons: list[str], variant: VariantInfo) -> int:
     Search for start codon in input codons
     if exists, return the closest to the start
 
-    Returns
-    -------
-    int
-        positive value = index of start codon in input list of codons,
-        negative value = start codon is not contained in the input list of codons
+    positive value = index of start codon in input list of codons,
+    negative value = start codon is not contained in the input list of codons
     """
 
-    # print("Search for start codon")
     try:
         return codons.index("ATG")
     except ValueError:
@@ -170,7 +181,6 @@ def convert_exon_pos2genomic_pos(
     Convert overlap position in exonic coordinates to genomic position
     """
 
-    # print("Convert exon position to genomic position")
     overlap_exon = ref_transcript.exons[overlap_exon_index]
 
     if is_transcript_in_positive_strand(ref_transcript):
