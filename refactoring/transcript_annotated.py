@@ -45,7 +45,7 @@ class TranscriptInfo_exonic(TranscriptInfo):
     diff_len_protein_percent: float = 0
     len_change_in_repetitive_region: bool = False
     truncated_exon_relevant: bool = False
-    transcript_disease_relevant: bool = False
+    pathogenic_variants_truncated_exons: list[str] = field(default_factory=list)
     is_NMD: bool = False
     is_reading_frame_preserved: bool = True
 
@@ -94,8 +94,8 @@ class TranscriptInfo_intronic(TranscriptInfo):
     are_exons_skipped: bool = False
     len_change_in_repetitive_region: bool = False
     is_NMD: bool = False
-    transcript_disease_relevant: bool = False
-    truncated_exon_relevant: bool = False
+    skipped_exon_relevant: bool = False
+    pathogenic_variants_skipped_exon: list[str] = field(default_factory=list)
     is_reading_frame_preserved: bool = False
 
     @classmethod
@@ -137,7 +137,7 @@ class TranscriptInfo_intronic(TranscriptInfo):
             var_seq,
             diff_len,
         )
-        truncated_exon_relevant = check_clinvar_NMD_exon(variant, NMD_affected_exons)
+        skipped_exon_ClinVar = check_clinvar_NMD_exon(variant, NMD_affected_exons)
         is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
         diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
         return TranscriptInfo_intronic(
@@ -154,8 +154,8 @@ class TranscriptInfo_intronic(TranscriptInfo):
             are_exons_skipped=are_exons_skipped,
             len_change_in_repetitive_region=False,
             is_NMD=is_NMD,
-            transcript_disease_relevant=True,
-            truncated_exon_relevant=truncated_exon_relevant,
+            skipped_exon_relevant=skipped_exon_ClinVar.pathogenic,
+            pathogenic_variants_skipped_exon=skipped_exon_ClinVar.ids,
             is_reading_frame_preserved=is_reading_frame_preserved,
         )
 
@@ -184,6 +184,7 @@ class TranscriptInfo_start_loss(TranscriptInfo):
             exists_alternative_start_codon,
             position_alternative_start_codon,
         ) = assess_alternative_start_codon(variant, ref_transcript, var_coding_seq)
+        print(position_alternative_start_codon)
         pathogenic_variants_between_start_and_alt_start = check_clinvar_start_alt_start(
             ref_transcript, variant, position_alternative_start_codon
         )

@@ -29,32 +29,34 @@ def assess_pvs1(variant: Variant_annotated):
 
 def assess_pvs1_start_loss(transcript: TranscriptInfo_start_loss):
     if not transcript.exists_alternative_start_codon:
-        comment = "Something"
+        comment = f"An alternative start code in transcript {transcript.transcript_id} at {transcript.position_alternative_start_codon} detected."
         result = RuleResult("PVS1_start_loss", False, "very_strong", comment)
     else:
-        if transcript.pathogenic_variant_between_start_and_stop:
-            comment = "Something"
+        comment = f"No alternative start codon detected for transcript {transcript.transcript_id}."
+        if transcript.pathogenic_variants_between_start_and_alt_start.pathogenic:
+            comment = f"Pathogenic variants detected between start codon and alternative start codon detected. \n ClinVar ID: {transcript.pathogenic_variants_between_start_and_alt_start.ids}"
             result = RuleResult("PVS1_start_loss", True, "moderate", comment)
         else:
-            comment = "Something"
+            comment = "No pathogenic variant detected between start codon and alternative start codon."
             result = RuleResult("PVS1_start_loss", True, "supporting", comment)
     return result
 
 
 def assess_pvs1_splice(transcript: TranscriptInfo_intronic):
     if transcript.is_NMD:
-        if transcript.transcript_disease_relevant:
-            comment = "Something"
+        comment = f"Transcript {transcript.transcript_id} undergoes NMD."
+        if transcript.skipped_exon_relevant:
+            comment = f"Skipped exon contais (likely) pathogenic variants."
             result = RuleResult("PVS1_splice", True, "very_strong", comment)
         else:
-            comment = "Something"
+            comment = "Skipped exon contains no (likely) pathogenic variants and is therefore not considered disease relevant."
             result = RuleResult("PVS1_splice", False, "very_strong", comment)
     elif (
         transcript.are_exons_skipped
         and not transcript.is_NMD
         and not transcript.is_reading_frame_preserved
     ):
-        if transcript.truncated_exon_relevant:
+        if transcript.skipped_exon_relevant:
             comment = "Something"
             result = RuleResult("PVS1_splice", True, "strong", comment)
         else:
@@ -65,7 +67,7 @@ def assess_pvs1_splice(transcript: TranscriptInfo_intronic):
                 comment = "Something"
                 result = RuleResult("PVS1_splice", True, "moderate", comment)
     elif transcript.are_exons_skipped or transcript.is_reading_frame_preserved:
-        if transcript.truncated_exon_relevant:
+        if transcript.skipped_exon_relevant:
             comment = "Something"
             result = RuleResult("PVS1_splice", True, "strong", comment)
         else:
@@ -83,7 +85,7 @@ def assess_pvs1_splice(transcript: TranscriptInfo_intronic):
 
 def assess_pvs1_frameshift(transcript: TranscriptInfo_exonic):
     if transcript.is_NMD:
-        if transcript.transcript_disease_relevant:
+        if transcript.truncated_exon_relevant:
             comment = "Something"
             result = RuleResult("PVS1_splice", True, "very_strong", comment)
         else:
@@ -104,7 +106,7 @@ def assess_pvs1_frameshift(transcript: TranscriptInfo_exonic):
 
 
 def assess_ps1(variant: Variant_annotated):
-    if variant.clinvar.same_amino_acid_change_pathogenic:
+    if variant.same_aa_change_clinvar.pathogenic:
         comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {variant.clinvar.matching_clinvar_entries}."
         result = RuleResult("PS1", True, "strong", comment)
     else:

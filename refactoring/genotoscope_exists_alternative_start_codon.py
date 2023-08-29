@@ -25,14 +25,14 @@ def assess_alternative_start_codon(
         return False, [0, 0, 0]
     else:
         alternative_start_codons.sort()
-        return True, alternative_start_codons[0]
+        return True, alternative_start_codons
 
 
 def find_alternative_start_codons(
     variant: VariantInfo,
     ref_transcript: pyensembl.transcript.Transcript,
     var_coding_seq: str,
-) -> list[list[int]]:
+) -> list[int]:
     """
     First seach for alternative start codon in other reference transcripts
     If no start codon is found, search in sequence for other start codons
@@ -94,7 +94,6 @@ def examine_start_codon_other_transcripts(ref_transcript) -> list[int]:
         return []
     elif is_transcript_in_positive_strand(ref_transcript):
         sorted_start_codons = sorted(alternate_transcripts_unique_start_chr_pos)
-        print(sorted_start_codons)
         for start_codon in sorted_start_codons:
             if min(start_codon) > min(ref_transcript.start_codon_positions):
                 return start_codon
@@ -103,7 +102,6 @@ def examine_start_codon_other_transcripts(ref_transcript) -> list[int]:
         sorted_start_codons = sorted(
             alternate_transcripts_unique_start_chr_pos, reverse=True
         )
-        print(sorted_start_codons)
         for start_codon in sorted_start_codons:
             if max(start_codon) < max(ref_transcript.start_codon_positions):
                 return start_codon
