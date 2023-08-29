@@ -21,8 +21,8 @@ def check_clinvar_start_alt_start(
     path_clinvar = pathlib.Path("/home/katzkean/clinvar/clinvar_20230730.vcf.gz")
     ref_start_codon = ref_transcript.start_codon_positions
     if ref_transcript.strand == "-":
-        region_start = alt_start_codon[3] + 1
-        region_stop = ref_start_codon[3]
+        region_start = alt_start_codon[2] + 1
+        region_stop = ref_start_codon[2]
     else:
         region_start = ref_start_codon[0]
         region_stop = alt_start_codon[0] - 1

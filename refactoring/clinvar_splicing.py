@@ -43,10 +43,11 @@ def check_clinvar_splicing(
     )
     clinvar_same_pos_df = convert_vcf_gen_to_df(clinvar_same_pos)
     ClinVar_same_pos = create_ClinVar(clinvar_same_pos_df, "same_nucleotide")
+    print(clinvar_same_pos_df[["pos", "id", "ref", "alt", "CLNSIG"]])
 
     ### Check ClinVar for pathogenic variant in same / closest splice site
     affected_transcript = get_affected_transcript(
-        transcripts, ["splice_donor", "splice_acceptor"]
+        transcripts, ["splice_donor", "splice_acceptor", "splice_region_variant"]
     )
     (start_splice_site, end_splice_site) = find_corresponding_splice_site(
         affected_transcript, variant
@@ -55,6 +56,7 @@ def check_clinvar_splicing(
         f"{variant.chr}:{start_splice_site}-{end_splice_site}"
     )
     clinvar_splice_site_df = convert_vcf_gen_to_df(clinvar_splice_site)
+    print(clinvar_splice_site_df[["pos", "id", "ref", "alt", "CLNSIG"]])
     ClinVar_splice_site = create_ClinVar(clinvar_splice_site_df, "same_splice_site")
     return (ClinVar_same_pos, ClinVar_splice_site)
 

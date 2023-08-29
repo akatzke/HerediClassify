@@ -37,6 +37,7 @@ def check_clinvar_missense(
     """
     affected_transcript = get_affected_transcript(transcripts, ["missense_variant"])
     var_codon_info = extract_var_codon_info(variant, affected_transcript)
+    print(var_codon_info)
     clinvar_same_codon = extract_clinvar_entries_missense(
         path_clinvar,
         variant.chr,
@@ -46,16 +47,22 @@ def check_clinvar_missense(
     clinvar_same_codon_aa = clinvar_same_codon.apply(
         construct_clinvar_prot_change, var_codon_info=var_codon_info, axis=1
     )
+    print(
+        clinvar_same_codon_aa[
+            ["pos", "id", "ref", "alt", "prot_ref", "prot_alt", "CLNSIG"]
+        ]
+    )
     clinvar_same_codon_aa_filtered = filter_gene(
         clinvar_same_codon_aa, variant.gene_name
     )
+    print(var_codon_info["prot_alt"])
     clinvar_same_aa_df = clinvar_same_codon_aa_filtered[
-        clinvar_same_codon_aa_filtered.prot_ref == var_codon_info["prot_alt"]
+        clinvar_same_codon_aa_filtered.prot_alt == var_codon_info["prot_alt"]
     ]
     ClinVar_same_aa = create_ClinVar(clinvar_same_aa_df, "same_aa_change")
 
     clinvar_diff_aa = clinvar_same_codon_aa_filtered[
-        clinvar_same_codon_aa_filtered.prot_ref != var_codon_info["prot_alt"]
+        clinvar_same_codon_aa_filtered.prot_alt != var_codon_info["prot_alt"]
     ]
     ClinVar_diff_aa = create_ClinVar(clinvar_diff_aa, "diff_aa_change")
 
@@ -72,8 +79,8 @@ def extract_var_codon_info(
     var_strand: str
     seq_ref: str
     prot_start: int
-    amino_ref: str
-    amino_obs str
+    prot_ref: str
+    prot_alt str
     """
     logger.debug("Extract codon information from variant-affected genomic position")
     logger.debug(f"=== New transcript id = {transcript.transcript_id} ===")
@@ -125,11 +132,10 @@ def extract_var_codon_info(
         codon_seq_ref, var_pos_in_codon, variant_info.var_obs, var_strand
     )
 
-    print(codon_seq_obs)
     # create amino of protein for affected codon
     prot_var_start = ceil(var_start / 3)
-    amino_ref = convert_codon_to_aa(codon_seq_ref)
-    amino_obs = convert_codon_to_aa(codon_seq_obs)
+    prot_ref = convert_codon_to_aa(codon_seq_ref)
+    prot_alt = convert_codon_to_aa(codon_seq_obs)
 
     var_codon_info = {
         "genomic_pos": var_codon_genomic_pos_corrected,
@@ -137,8 +143,8 @@ def extract_var_codon_info(
         "strand": var_strand,
         "seq_ref": codon_seq_ref,
         "prot_start": prot_var_start,
-        "amino_ref": amino_ref,
-        "amino_obs": amino_obs,
+        "prot_ref": prot_ref,
+        "prot_alt": prot_alt,
     }
     logger.debug(f"Var codon info per transcript: {var_codon_info}")
     return var_codon_info
@@ -209,7 +215,6 @@ def construct_clinvar_prot_change(
         else:
             clinvar_alt_seq.append(nucl)
     logger.debug(f"clinvar alt: {clinvar_alt_seq}")
-    print(f"clinvar alt: {clinvar_alt_seq}")
 
     ### ### ###
     # translate these ref and alt sequence to protein edit
@@ -283,9 +288,9 @@ def extract_clinvar_entries_missense(
     else:
         clinvar_same_codon_df = pd.DataFrame()
         for position in genomic_positions:
-            clinvar = clinvar(f"{chrom}:{position}-{position}")
-            clinvar_df = convert_vcf_gen_to_df(clinvar)
-            clinvar_same_codon = pd.concat([clinvar_same_codon_df, clinvar_df])
+            clinvar_one_nucleotide = clinvar(f"{chrom}:{position}-{position}")
+            clinvar_df = convert_vcf_gen_to_df(clinvar_one_nucleotide)
+            clinvar_same_codon_df = pd.concat([clinvar_same_codon_df, clinvar_df])
     return clinvar_same_codon_df
 
 
@@ -379,7 +384,7 @@ def normalize_codon_exonic_pos(
     # find at which exon (or between which two exons) #
     # the codon lies in                               #
     ### ### ### ### ### ### ### ### ### ### ### ### ###
-    codon_pos_corrected = []
+    codon_pos_corrected_tmp = []
     for cod_seq_idx, coding_seq_range in enumerate(coding_seq_positions):
         coding_seq_start, coding_seq_end = coding_seq_range[0], coding_seq_range[1]
         normalized_exon_interval = range(
@@ -401,8 +406,8 @@ def normalize_codon_exonic_pos(
             if codon_start == coding_seq_end:
                 logger.debug("Codon start is the last base of exon")
                 if transcript_strand == +1:
-                    codon_pos_corrected.append([codon_start])
-                    codon_pos_corrected.append(
+                    codon_pos_corrected_tmp.append([codon_start])
+                    codon_pos_corrected_tmp.append(
                         [
                             coding_seq_positions[cod_seq_idx + 1][0],
                             coding_seq_positions[cod_seq_idx + 1][0] + 1,
@@ -410,29 +415,31 @@ def normalize_codon_exonic_pos(
                     )
                 else:
                     # codon start is the one before the last base of the exon
-                    codon_pos_corrected.append(
+                    codon_pos_corrected_tmp.append(
                         [
                             coding_seq_positions[cod_seq_idx + 1][0] - 1,
                             coding_seq_positions[cod_seq_idx + 1][0],
                         ]
                     )
-                    codon_pos_corrected.append([codon_start])
+                    codon_pos_corrected_tmp.append([codon_start])
                 # intersects on the 2nd position (0-index = 1)
                 codon_intersects_intron_at = 1
+                codon_pos_corrected = sum(codon_pos_corrected_tmp, [])
             elif codon_start == coding_seq_end - 1 * transcript_strand:
                 logger.debug("Codon start is the penultimate base of exon")
                 if transcript_strand == +1:
-                    codon_pos_corrected.append([codon_start, codon_middle])
-                    codon_pos_corrected.append(
+                    codon_pos_corrected_tmp.append([codon_start, codon_middle])
+                    codon_pos_corrected_tmp.append(
                         [coding_seq_positions[cod_seq_idx + 1][0]]
                     )
                 else:
-                    codon_pos_corrected.append(
+                    codon_pos_corrected_tmp.append(
                         [coding_seq_positions[cod_seq_idx + 1][0]]
                     )
-                    codon_pos_corrected.append([codon_middle, codon_start])
+                    codon_pos_corrected_tmp.append([codon_middle, codon_start])
                 # intersects on the 3rd position (0-index = 2)
                 codon_intersects_intron_at = 2
+                codon_pos_corrected = sum(codon_pos_corrected_tmp, [])
             break
         elif (
             codon_middle in normalized_exon_interval
@@ -440,27 +447,32 @@ def normalize_codon_exonic_pos(
         ):
             logger.debug("middle,end in exon")
             if transcript_strand == +1:
-                codon_pos_corrected.append([coding_seq_positions[cod_seq_idx - 1][1]])
-                codon_pos_corrected.append([codon_middle, codon_end])
+                codon_pos_corrected_tmp.append(
+                    [coding_seq_positions[cod_seq_idx - 1][1]]
+                )
+                codon_pos_corrected_tmp.append([codon_middle, codon_end])
             else:
-                codon_pos_corrected.append([codon_end, codon_middle])
-                codon_pos_corrected.append([coding_seq_positions[cod_seq_idx - 1][1]])
+                codon_pos_corrected_tmp.append([codon_end, codon_middle])
+                codon_pos_corrected_tmp.append(
+                    [coding_seq_positions[cod_seq_idx - 1][1]]
+                )
             # genomic position of codon intersects 1st position (0-index = 0)
             codon_intersects_intron_at = 0
+            codon_pos_corrected = sum(codon_pos_corrected_tmp, [])
             break
         elif codon_end in normalized_exon_interval:
             logger.debug("end in exon")
             if transcript_strand == +1:
-                codon_pos_corrected.append(
+                codon_pos_corrected_tmp.append(
                     [
                         coding_seq_positions[cod_seq_idx - 1][1] - 1,
                         coding_seq_positions[cod_seq_idx - 1][1],
                     ]
                 )
-                codon_pos_corrected.append([codon_end])
+                codon_pos_corrected_tmp.append([codon_end])
             else:
-                codon_pos_corrected.append([codon_end])
-                codon_pos_corrected.append(
+                codon_pos_corrected_tmp.append([codon_end])
+                codon_pos_corrected_tmp.append(
                     [
                         coding_seq_positions[cod_seq_idx - 1][1],
                         coding_seq_positions[cod_seq_idx - 1][1] + 1,
@@ -468,17 +480,18 @@ def normalize_codon_exonic_pos(
                 )
             # genomic position of codon intersects 1st position (0-index = 0)
             codon_intersects_intron_at = 0
+            codon_pos_corrected = sum(codon_pos_corrected_tmp, [])
             break
     logger.debug(f"normalized positions: {codon_pos_corrected}")
     logger.debug(f"codon intersects intron at: {codon_intersects_intron_at}")
+    try:
+        assert len(codon_pos_corrected) == 3
+    except AssertionError:
+        logger.error(
+            f"AssertionError: Codon does not intersects intron, thus corrected codon positions should be 3 \n=> variant position: {variant_info.to_string()}",
+            exc_info=True,
+        )
     if codon_intersects_intron_at == -1:
-        try:
-            assert len(codon_pos_corrected) == 3
-        except AssertionError:
-            logger.error(
-                f"AssertionError: Codon does not intersects intron, thus corrected codon positions should be 3 \n=> variant position: {variant_info.to_string()}",
-                exc_info=True,
-            )
         # assert corrected positions are sorted
         try:
             assert sorted(codon_pos_corrected) == codon_pos_corrected
@@ -488,32 +501,22 @@ def normalize_codon_exonic_pos(
                 exc_info=True,
             )
     else:
-        try:
-            assert len(codon_pos_corrected) == 2
-        except AssertionError:
-            logger.error(
-                f"AssertionError: Codon intersect intron at {codon_intersects_intron_at}, thus codon positions should two lists \n=> variant position: {variant_info.to_string()}",
-                exc_info=True,
-            )
-
         # check that codon positions are increasing
         start_pos = 0
-        for codon_positions in codon_pos_corrected:
-            for pos in codon_positions:
-                try:
-                    assert pos > start_pos
-                except AssertionError:
-                    logger.error(
-                        f"AssertionError: Codon positions are not increasing: {codon_pos_corrected}\n=> variant position: {variant_info.to_string}",
-                        exc_info=True,
-                    )
-                    start_pos = pos
+        for codon_position in codon_pos_corrected:
+            try:
+                assert codon_position > start_pos
+            except AssertionError:
+                logger.error(
+                    f"AssertionError: Codon positions are not increasing: {codon_pos_corrected}\n=> variant position: {variant_info.to_string}",
+                    exc_info=True,
+                )
+                start_pos = codon_position
     if codon_intersects_intron_at == -1:
         codon_intersects_intron = False
     else:
         codon_intersects_intron = True
-    codon_pos_corrected_single_list = sum(codon_pos_corrected, [])
-    return codon_pos_corrected_single_list, codon_intersects_intron
+    return codon_pos_corrected, codon_intersects_intron
 
 
 def get_variant_position_in_codon_from_genomic_position(

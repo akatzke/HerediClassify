@@ -60,17 +60,17 @@ def create_ClinVar(clinvar: pd.DataFrame, type: ClinVar_Type) -> ClinVar:
     highest_classification = None
     clinvar_ids = None
     if not clinvar.empty:
-        if any(clinvar.CLINSIG == "Pathogenic"):
+        if any(clinvar.CLNSIG == "Pathogenic"):
             is_pathogenic = True
             highest_classification = "Pathogenic"
-            clinvar_ids = list(clinvar[clinvar.CLINSIG == "Pathogenic"].id)
-        elif any(clinvar.CLINSIG == "Likely_pathogenic") or any(
-            clinvar.CLINSIG == "Pathogenic/Likely_pathogenic"
+            clinvar_ids = list(clinvar[clinvar.CLNSIG == "Pathogenic"].id)
+        elif any(clinvar.CLNSIG == "Likely_pathogenic") or any(
+            clinvar.CLNSIG == "Pathogenic/Likely_pathogenic"
         ):
             is_pathogenic = True
             highest_classification = "Likely_pathogenic"
             clinvar_ids = list(
-                clinvar[clinvar.CLINSIG.str.contains("Likely_pathogenic")].id
+                clinvar[clinvar.CLNSIG.str.contains("Likely_pathogenic")].id
             )
     return ClinVar(is_pathogenic, type, highest_classification, clinvar_ids)
 
