@@ -58,7 +58,7 @@ def create_ClinVar(clinvar: pd.DataFrame, type: ClinVar_Type) -> ClinVar:
     """
     is_pathogenic = False
     highest_classification = None
-    clinvar_ids = None
+    clinvar_ids = []
     if not clinvar.empty:
         if any(clinvar.CLNSIG == "Pathogenic"):
             is_pathogenic = True
@@ -81,3 +81,24 @@ def filter_gene(clinvar: pd.DataFrame, gene: str) -> pd.DataFrame:
     """
     clinvar_filtered = clinvar[clinvar.GENEINFO.str.contains(gene)]
     return clinvar_filtered
+
+
+def summarise_ClinVars(clinvars: list[ClinVar], type: ClinVar_Type) -> ClinVar:
+    """
+    Summarise a list of ClinVars into one ClinVar object
+    """
+    if len(clinvars) == 0:
+        return ClinVar(pathogenic=False, highest_classification=None, ids=[], type=type)
+    elif len(clinvars) == 1:
+        return clinvars[0]
+    else:
+        pathogenic = False
+        highest_classification = None
+        ids = []
+        for entry in clinvars:
+            if entry.pathogenic:
+                pathogenic = True
+                ids.append(entry.ids)
+                if not highest_classification == "Pathogenic":
+                    highest_classification = entry.highest_classification
+        return ClinVar(pathogenic, type, highest_classification, ids)

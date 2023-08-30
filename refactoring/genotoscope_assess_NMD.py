@@ -2,7 +2,6 @@
 
 import logging
 import pyensembl
-import sys
 
 from refactoring.genotoscope_exon_skipping import (
     get_transcript_exon_offsets,
@@ -181,6 +180,10 @@ def assess_NMD_exonic_variant(
             var_exon_start_offset,
             var_exon_end_offset,
         ) = find_exon_by_var_pos(ref_transcript, transcript, variant, False, diff_len)
+    else:
+        raise ValueError(
+            "Genomic position in transcript coding region expected, but variant no located in coding region."
+        )
 
     NMD_comment = "NMD is not predicted"
 

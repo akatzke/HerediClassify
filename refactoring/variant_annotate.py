@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 from typing import Callable, Optional, Literal
-import pathlib
-from attr import dataclass
+from dataclasses import dataclass, field
 from cyvcf2 import Variant
 from refactoring.variant import (
     VariantInfo,
@@ -23,7 +22,7 @@ class ClinVar:
     pathogenic: bool
     type: ClinVar_Type
     highest_classification: Optional[ClinVar_Status]
-    ids: Optional[list[str]]
+    ids: list[str] = field(default_factory=list)
 
 
 @dataclass
