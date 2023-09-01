@@ -23,6 +23,7 @@ class ClinVar:
     type: ClinVar_Type
     highest_classification: Optional[ClinVar_Status]
     ids: list[str] = field(default_factory=list)
+    associated_ids: list[str] = field(default_factory=list)
 
 
 @dataclass
