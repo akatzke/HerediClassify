@@ -11,7 +11,11 @@ from refactoring.rule_utils import (
 )
 
 
-def assess_pvs1(variant: Variant_annotated):
+def assess_pvs1(variant: Variant_annotated) -> RuleResult:
+    """
+    PVS1: Loss of function
+    Devided into three separate parts: Frameshift, splice and start_loss
+    """
     results = []
     for transcript in variant.transcript_info:
         if type(transcript) is TranscriptInfo_exonic:
@@ -27,7 +31,10 @@ def assess_pvs1(variant: Variant_annotated):
     return result
 
 
-def assess_pvs1_start_loss(transcript: TranscriptInfo_start_loss):
+def assess_pvs1_start_loss(transcript: TranscriptInfo_start_loss) -> RuleResult:
+    """
+    Assess PVS1 for start lost variants
+    """
     if not transcript.exists_alternative_start_codon:
         comment = f"An alternative start code in transcript {transcript.transcript_id} at {transcript.position_alternative_start_codon} detected."
         result = RuleResult("PVS1_start_loss", False, "very_strong", comment)
@@ -42,11 +49,14 @@ def assess_pvs1_start_loss(transcript: TranscriptInfo_start_loss):
     return result
 
 
-def assess_pvs1_splice(transcript: TranscriptInfo_intronic):
+def assess_pvs1_splice(transcript: TranscriptInfo_intronic) -> RuleResult:
+    """
+    Assess PVS1 for splice variants
+    """
     if transcript.is_NMD:
         comment = f"Transcript {transcript.transcript_id} undergoes NMD."
         if transcript.skipped_exon_relevant:
-            comment = f"Skipped exon contais (likely) pathogenic variants."
+            comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant."
             result = RuleResult("PVS1_splice", True, "very_strong", comment)
         else:
             comment = "Skipped exon contains no (likely) pathogenic variants and is therefore not considered disease relevant."
@@ -83,7 +93,10 @@ def assess_pvs1_splice(transcript: TranscriptInfo_intronic):
     return result
 
 
-def assess_pvs1_frameshift(transcript: TranscriptInfo_exonic):
+def assess_pvs1_frameshift(transcript: TranscriptInfo_exonic) -> RuleResult:
+    """
+    Assess PVS1 for frameshift variants
+    """
     if transcript.is_NMD:
         if transcript.truncated_exon_relevant:
             comment = "Something"
@@ -105,7 +118,10 @@ def assess_pvs1_frameshift(transcript: TranscriptInfo_exonic):
     return result
 
 
-def assess_ps1(variant: Variant_annotated):
+def assess_ps1(variant: Variant_annotated) -> RuleResult:
+    """
+    PS1: Same amino accid change has been identified as pathogenic in ClinVar
+    """
     if variant.same_aa_change_clinvar.pathogenic:
         comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {variant.clinvar.matching_clinvar_entries}."
         result = RuleResult("PS1", True, "strong", comment)
@@ -115,7 +131,10 @@ def assess_ps1(variant: Variant_annotated):
     return result
 
 
-def assess_pm1(variant: Variant_annotated):
+def assess_pm1(variant: Variant_annotated) -> RuleResult:
+    """
+    PM1: Variant located in mutational hot spot or citical protein region
+    """
     if variant.affected_region.critical_region:
         comment = f"Variant in mutational hotspot. {variant.affected_region.critical_region_type}"
         result = RuleResult("PM1", True, "moderate", comment)
@@ -125,7 +144,11 @@ def assess_pm1(variant: Variant_annotated):
     return result
 
 
-def assess_pm2(variant: Variant_annotated):
+def assess_pm2(variant: Variant_annotated) -> RuleResult:
+    """
+    PM2: Varinat is absent from control population
+    In case of recessive disorders: Variant occurres less than expected carrier rate
+    """
     if variant.gnomad.frequency > variant.thresholds["PM2"]:
         comment = (
             f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
@@ -139,7 +162,10 @@ def assess_pm2(variant: Variant_annotated):
     return result
 
 
-def assess_pm4(variant: Variant):
+def assess_pm4(variant: Variant) -> RuleResult:
+    """
+    PM4: Protein length change caused by variant is above 10% threshold
+    """
     results = []
     for transcript in variant.transcript_info:
         if not transcript.transcript_disease_relevant:
@@ -168,7 +194,10 @@ def assess_pm4(variant: Variant):
     return final_result
 
 
-def assess_pm5(variant: Variant):
+def assess_pm5(variant: Variant) -> RuleResult:
+    """
+    PM5: Pathogenic missense variant to different amino acid in same position classified as pathogenic in ClinVar
+    """
     if variant.clinvar.different_amino_acid_change_in_same_position_pathogenic:
         comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {variant.clinvar.different_amino_acid_change_in_same_position_pathogenic_list}."
         result = RuleResult("PM5", True, "moderate", comment)
@@ -178,7 +207,10 @@ def assess_pm5(variant: Variant):
     return result
 
 
-def assess_and_bp4_pp3(variant: Variant):
+def assess_and_bp4_pp3(variant: Variant) -> RuleResult:
+    """
+    BP4 and PP3: Assess results of prediction programs
+    """
     splicing_prediction = []
     pathogenicity_prediction = []
     conservation_prediction = []
@@ -237,7 +269,10 @@ def assess_and_bp4_pp3(variant: Variant):
     return result
 
 
-def assess_ba1(variant: Variant):
+def assess_ba1(variant: Variant) -> RuleResult:
+    """
+    BA1: High frequency of variant in healthy population (e.g. gnomAD)
+    """
     if variant.gnomad.frequency > variant.thresholds["BA1"]:
         comment = (
             f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
@@ -251,7 +286,10 @@ def assess_ba1(variant: Variant):
     return result
 
 
-def assess_bs1(variant: Variant):
+def assess_bs1(variant: Variant) -> RuleResult:
+    """
+    BS1: Frequency of variant higher in population than expected based on disease frequency
+    """
     if variant.gnomad.frequency > variant.thresholds["BS1"]:
         comment = (
             f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
@@ -265,7 +303,10 @@ def assess_bs1(variant: Variant):
     return result
 
 
-def asssess_bs2(variant: Variant):
+def asssess_bs2(variant: Variant) -> RuleResult:
+    """
+    BS2: Mutation found in healthy individuals
+    """
     if variant.flossies.frequency == 0:
         comment = "Something"
         result = RuleResult("BS2", True, "strong", comment)
@@ -275,7 +316,10 @@ def asssess_bs2(variant: Variant):
     return result
 
 
-def assess_bp3(variant: Variant):
+def assess_bp3(variant: Variant) -> RuleResult:
+    """
+    BP3: Protein length change in repetitive region
+    """
     results = []
     for transcript in variant.transcript_info:
         if (
@@ -301,7 +345,10 @@ def assess_bp3(variant: Variant):
     return final_result
 
 
-def assess_bp7(variant: Variant):
+def assess_bp7(variant: Variant) -> RuleResult:
+    """
+    BP7: Silent missense variant is predicted to have effect on splicing
+    """
     splicing_prediction = []
     conservation_prediction = []
     for entry in variant.prediction_tools:
