@@ -42,13 +42,15 @@
               "pattern" : "[pP]\\.\\S+"
             },
             "consequence": {
-              "type": "string"
+              "type": "array",
+              "minItems": 2,
+              "items": {"type" : "string"}
             },
             "exon": {
-              "type": "integer"
+              "type": ["integer", "null"]
             },
             "intron": {
-              "type" : "integer"
+              "type" : ["integer", "null"]
             },
             "protein_domain": {
               "type" : ["string", "null"]
