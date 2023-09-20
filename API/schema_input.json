@@ -47,6 +47,9 @@
             "exon": {
               "type": "integer"
             },
+            "intron": {
+              "type" : "integer"
+            },
             "protein_domain": {
               "type" : ["string", "null"]
             }
@@ -54,9 +57,7 @@
           "required": [
             "transcript",
             "hgvs_c",
-            "hgvs_p",
             "consequence",
-            "exon",
             "protein_domain"
           ]
         }
@@ -65,7 +66,7 @@
     "VUS_task_force_domain": {
       "type": "boolean"
     },
-    "spli {
+    "splicing_prediction_tools": {
       "type": "object",
       "properties": {
         "SpliceAI": {

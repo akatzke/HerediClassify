@@ -5,7 +5,10 @@
     "id" : "rs13265",
     "ref" : "A",
     "alt" : "T",
-    "variant_type" : "missense",
+    "variant_type" : [
+        {"type": "missense"},
+        {"type": "splice_donor"}
+    ],
     "variant_effect" : [
         {"transcript" : "ENST000001",
          "hgvs_c" : "c.1972C>T",
@@ -14,10 +17,10 @@
          "exon" : 10,
          "protein_domain" : "Zink finger"},
         {"transcript" : "ENST000002",
-         "hgvs_c" : "c.1969C>T",
-         "hgvs_p" : "p.Trp22Cys",
-         "consequence" : "missense",
-         "exon" : 10,
+         "hgvs_c" : "c.1969-1C>T",
+         "hgvs_p" : "",
+         "consequence" : [{"missense"}],
+         "intron" : 10,
          "protein_domain" : "Zink finger"}
     ],
     "VUS_task_force_domain" : true,
