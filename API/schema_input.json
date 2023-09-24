@@ -41,7 +41,7 @@
               "type": ["string", "null"],
               "pattern" : "[pP]\\.\\S+"
             },
-            "consequence": {
+            "variant_type": {
               "type": "array",
               "minItems": 2,
               "items": {"type" : "string"}
@@ -205,6 +205,12 @@
     },
     "co-occurrence_in_trans": {
       "type": "boolean"
+    },
+    "cancer_hotspot" : {
+      "type": "boolean"
+    },
+    "segregation" : {
+      "type":  "number"
     }
   },
   "required": [
@@ -223,6 +229,8 @@
     "FLOSSIES",
     "mRNA_analysis",
     "prior",
-    "co-occurrence_in_trans"
+    "co-occurrence_in_trans",
+    "segregation",
+    "cancer_hotspot"
   ]
 }
