@@ -4,6 +4,7 @@ import pathlib
 import logging
 import os
 from cyvcf2 import VCF, Writer
+import pandas as pd
 
 
 logger = logging.getLogger("GenOtoScope_Annotate.filter_clinvar")

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import pathlib
-from platform import python_implementation
 
 from cyvcf2 import VCF
 import pyensembl
