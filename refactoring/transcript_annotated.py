@@ -30,6 +30,7 @@ from refactoring.genotoscope_exists_alternative_start_codon import (
 from refactoring.clinvar_region import (
     check_clinvar_NMD_exon,
     check_clinvar_start_alt_start,
+    check_clinvar_truncated_region,
 )
 
 
@@ -47,6 +48,8 @@ class TranscriptInfo_exonic(TranscriptInfo):
     is_NMD: bool = False
     is_truncated_exon_relevant: bool = False
     pathogenic_variants_truncated_exons: list[str] = field(default_factory=list)
+    is_NMD_exon_relevant: bool = False
+    pathogenic_variants_NMD_exon: list[str] = field(default_factory=list)
     is_reading_frame_preserved: bool = True
 
     @classmethod
@@ -63,7 +66,18 @@ class TranscriptInfo_exonic(TranscriptInfo):
             transcript, variant, ref_transcript, var_seq, diff_len
         )
         print(NMD_affected_exons)
-        truncated_exon_ClinVar = check_clinvar_NMD_exon(variant, NMD_affected_exons)
+        if is_NMD:
+            NMD_exon_ClinVar = check_clinvar_NMD_exon(variant, NMD_affected_exons)
+            truncated_region_ClinVar = ClinVar(
+                pathogenic=False, type="region", highest_classification=None
+            )
+        else:
+            NMD_exon_ClinVar = ClinVar(
+                pathogenic=False, type="region", highest_classification=None
+            )
+            truncated_region_ClinVar = check_clinvar_truncated_region(
+                variant, ref_transcript
+            )
         is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
         diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
         return TranscriptInfo_exonic(
@@ -81,8 +95,10 @@ class TranscriptInfo_exonic(TranscriptInfo):
             len_change_in_repetitive_region=False,
             is_NMD=is_NMD,
             is_reading_frame_preserved=is_reading_frame_preserved,
-            is_truncated_exon_relevant=truncated_exon_ClinVar.pathogenic,
-            pathogenic_variants_truncated_exons=truncated_exon_ClinVar.ids,
+            is_truncated_exon_relevant=truncated_region_ClinVar.pathogenic,
+            pathogenic_variants_truncated_exons=truncated_region_ClinVar.ids,
+            is_NMD_exon_relevant=NMD_exon_ClinVar.pathogenic,
+            pathogenic_variants_NMD_exon=NMD_exon_ClinVar.ids,
         )
 
 
@@ -141,6 +157,7 @@ class TranscriptInfo_intronic(TranscriptInfo):
             var_seq,
             diff_len,
         )
+        print(NMD_affected_exons)
         skipped_exon_ClinVar = check_clinvar_NMD_exon(variant, NMD_affected_exons)
         is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
         diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
@@ -171,9 +188,12 @@ class TranscriptInfo_start_loss(TranscriptInfo):
     Class containing start loss specific annotation
     """
 
-    exists_alternative_start_codon: bool
-    position_alternative_start_codon: list[int]
-    pathogenic_variants_between_start_and_alt_start: ClinVar
+    exists_alternative_start_codon: bool = False
+    position_alternative_start_codon: list[int] = field(default_factory=list)
+    are_pathogenic_variants_between_start_and_alt_start: bool = False
+    pathogenic_variants_between_start_and_alt_start: list[str] = field(
+        default_factory=list
+    )
 
     @classmethod
     def annotate(
@@ -203,5 +223,6 @@ class TranscriptInfo_start_loss(TranscriptInfo):
             intron=transcript.intron,
             exists_alternative_start_codon=exists_alternative_start_codon,
             position_alternative_start_codon=position_alternative_start_codon,
-            pathogenic_variants_between_start_and_alt_start=pathogenic_variants_between_start_and_alt_start,
+            are_pathogenic_variants_between_start_and_alt_start=pathogenic_variants_between_start_and_alt_start.pathogenic,
+            pathogenic_variants_between_start_and_alt_start=pathogenic_variants_between_start_and_alt_start.ids,
         )

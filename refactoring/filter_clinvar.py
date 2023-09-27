@@ -66,6 +66,25 @@ def filter_clinvar_snv(clinvar_path: pathlib.Path) -> pathlib.Path:
     return path_comp
 
 
+def filter_clinvar_small_indel(clinvar_path: pathlib.Path) -> pathlib.Path:
+    """
+    Filter out all non SNVs from dataset
+    """
+    clinvar = VCF(clinvar_path)
+    out_name = clinvar_path.stem.split(".")[0] + f"_small_indel.vcf"
+    out_path = clinvar_path.parent / out_name
+    w = Writer(out_path, clinvar)
+    for entry in clinvar:
+        if (len(entry.REF) > 1 and len(entry.REF) <= 15) and len(entry.ALT) == 1:
+            if len(entry.ALT[0]) > 1 and len(entry.ALT[0]) <= 15:
+                w.write_record(entry)
+    w.close()
+    clinvar.close()
+    path_comp = compress_vcf(out_path)
+    index_vcf(path_comp)
+    return path_comp
+
+
 def compress_vcf(path: pathlib.Path) -> pathlib.Path:
     """
     Compress vcf file and output path to compressed file
@@ -83,28 +102,3 @@ def index_vcf(path: pathlib.Path) -> None:
     """
     cmd_index = f"bcftools index -t {path}"
     os.system(cmd_index)
-
-
-def convert_review_status2stars(
-    clinvar_stars_df: pd.DataFrame,
-    star_status2int: dict[str, int],
-    clinvar_rev_status: list[str],
-) -> int:
-    """
-    Convert CLNREVSTAT (review status) tab from clinvar vcf file to number of review stars
-    for unknown description -> star= -1
-    ClinVar review status documentation: https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/
-    """
-    rev_status = [review_elem.replace("_", " ") for review_elem in clinvar_rev_status]
-
-    rev_status = ",".join(rev_status)
-    if (
-        rev_status not in clinvar_stars_df.Review_status.values
-    ):  # if retrieved status not in status
-        return star_status2int["unknown review status"]
-    else:
-        return star_status2int[
-            clinvar_stars_df.loc[clinvar_stars_df["Review_status"] == rev_status][
-                "Number_of_gold_stars"
-            ].iloc[0]
-        ]
