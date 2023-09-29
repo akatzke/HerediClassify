@@ -80,6 +80,12 @@ class TranscriptInfo_exonic(TranscriptInfo):
             )
         is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
         diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
+        if diff_len_protein_percent != 0:
+            len_change_in_repetitive_region = (
+                check_prot_len_change_in_repetitive_region(variant)
+            )
+        else:
+            len_change_in_repetitive_region = False
         return TranscriptInfo_exonic(
             transcript_id=transcript.transcript_id,
             var_type=transcript.var_type,
@@ -92,7 +98,7 @@ class TranscriptInfo_exonic(TranscriptInfo):
             ref_transcript=ref_transcript,
             var_seq=var_seq,
             diff_len_protein_percent=diff_len_protein_percent,
-            len_change_in_repetitive_region=False,
+            len_change_in_repetitive_region=len_change_in_repetitive_region,
             is_NMD=is_NMD,
             is_reading_frame_preserved=is_reading_frame_preserved,
             is_truncated_exon_relevant=truncated_region_ClinVar.pathogenic,

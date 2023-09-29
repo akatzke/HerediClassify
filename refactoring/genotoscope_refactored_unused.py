@@ -12,6 +12,122 @@ from refactoring.genotoscope_exon_skipping import (
 logger = logging.getLogger("GenOtoScope_Classify.unused_functions")
 
 
+def find_affected_exons_pos(
+    ref_transcript: pyensembl.transcript.Transcript,
+    affected_exon_idxs: list[int],
+    start_offset: int,
+    end_offset: int,
+    variant: VariantInfo,
+) -> list[dict]:
+    """
+    ORIGINALLY LOCATED IN GENOTOSCOPE_ASSESS_NMD
+    REPLACED BY FIND_POS_AFFECTED_EXON
+    Find affected exons positions (genomic or coding)
+
+    Returns
+    -------
+    list of dict of str: str or int
+        affected exons: id, start and end (genomic positions)
+    """
+
+    logger.debug("Find affected exon positions")
+    logger.debug(f"Start offset: {start_offset}, end: {end_offset}")
+
+    interact_exon_pos = []
+    if is_transcript_in_positive_strand(ref_transcript):
+        strand_direction = 1
+    else:
+        strand_direction = -1
+    if len(affected_exon_idxs) == 1:
+        ### ### ###
+        # one affected exon
+        ### ### ###
+        logger.debug(f"One affected exon with index: {affected_exon_idxs}")
+
+        exon = ref_transcript.exons[affected_exon_idxs[0] - 1]
+        logger.debug(f"selected exon: {exon}")
+        if strand_direction == 1:
+            interact_exon_pos.append(
+                {
+                    "exon_id": exon.id,
+                    "exon_start": exon.to_dict()["start"] + start_offset,
+                    "exon_end": exon.to_dict()["start"] + end_offset,
+                }
+            )
+        else:
+            interact_exon_pos.append(
+                {
+                    "exon_id": exon.id,
+                    "exon_start": exon.to_dict()["end"] - end_offset,
+                    "exon_end": exon.to_dict()["end"] - start_offset,
+                }
+            )
+    else:
+        ### ### ###
+        # multiple affected exons
+        ### ### ###
+        for idx, exon in enumerate(ref_transcript.exons):
+            if idx + 1 in affected_exon_idxs:
+                if affected_exon_idxs.index(idx + 1) == 0:
+                    # first affected exon
+                    if strand_direction == 1:
+                        interact_exon_pos.append(
+                            {
+                                "exon_id": exon.id,
+                                "exon_start": exon.to_dict()["start"],
+                                "exon_end": exon.to_dict()["start"] + start_offset,
+                            }
+                        )
+                    else:
+                        interact_exon_pos.append(
+                            {
+                                "exon_id": exon.id,
+                                "exon_start": exon.to_dict()["start"],
+                                "exon_end": exon.to_dict()["end"] - end_offset,
+                            }
+                        )
+                elif affected_exon_idxs.index(idx + 1) == len(affected_exon_idxs) - 1:
+                    # last affected exon
+                    if is_transcript_in_positive_strand(ref_transcript):
+                        interact_exon_pos.append(
+                            {
+                                "exon_id": exon.id,
+                                "exon_start": exon.to_dict()["start"],
+                                "exon_end": exon.to_dict()["start"] + end_offset,
+                            }
+                        )
+                    else:
+                        interact_exon_pos.append(
+                            {
+                                "exon_id": exon.id,
+                                "exon_start": exon.to_dict()["end"] - start_offset,
+                                "exon_end": exon.to_dict()["end"],
+                            }
+                        )
+                else:
+                    # middle affected exons
+                    interact_exon_pos.append(
+                        {
+                            "exon_id": exon.id,
+                            "exon_start": exon.to_dict()["start"],
+                            "exon_end": exon.to_dict()["end"],
+                        }
+                    )
+
+    # assert that created information for interacting exon have start <= end
+    for interacting_exon in interact_exon_pos:
+        try:
+            assert interacting_exon["exon_start"] <= interacting_exon["exon_end"]
+        except AssertionError:
+            logger.error(
+                f"Affected exon start is higher than end\n=> variant position: {variant.to_string}",
+                exc_info=True,
+            )
+
+    logger.debug(f"Genomic positions of affected exons: {interact_exon_pos}")
+    return interact_exon_pos
+
+
 def convert_genomic2coding_pos(
     ref_transcript: pyensembl.transcript.Transcript,
     genomic_pos: int,
