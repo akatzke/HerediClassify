@@ -65,19 +65,7 @@ class TranscriptInfo_exonic(TranscriptInfo):
         is_NMD, NMD_affected_exons = assess_NMD_exonic_variant(
             transcript, variant, ref_transcript, var_seq, diff_len
         )
-        print(NMD_affected_exons)
-        if is_NMD:
-            NMD_exon_ClinVar = check_clinvar_NMD_exon(variant, NMD_affected_exons)
-            truncated_region_ClinVar = ClinVar(
-                pathogenic=False, type="region", highest_classification=None
-            )
-        else:
-            NMD_exon_ClinVar = ClinVar(
-                pathogenic=False, type="region", highest_classification=None
-            )
-            truncated_region_ClinVar = check_clinvar_truncated_region(
-                variant, ref_transcript
-            )
+        truncated_exon_ClinVar = check_clinvar_NMD_exon(variant, NMD_affected_exons)
         is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
         diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
         if diff_len_protein_percent != 0:

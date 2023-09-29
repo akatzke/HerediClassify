@@ -1,0 +1,33 @@
+* Clinvar Summary classifier
+** Question
+Currently only ClinVar entries that have no conflicting information or have been classified by three-star submitters is being reagrded
+Additionally, when there are conflicting classifications then the classifications are also disregarded
+This leads to a lot of information in ClinVar to be disregarded
+** Criteria
+This should include:
+- Star rating of the submitter
+- Time of the classification
+Possible inclusions:
+- Criteria given
+- Which criteria specifically were given
+** Outstanding questions and issues
+* TODO Check out if it's actually possible to access the rules that were applied by the submitter
+This will probably not be possible
+Chat about that with Gunnar
+** Evaluation
+*** TODO Comparison of my appraoch to the simple mean approach
+Currently the HerediVar database is "simply" making a mean of all available classifications and is using that at it's prediction
+So the main comparison would be to that
+But that is more of a procedural comparison
+*** TODO Functional assessment of new score
+The real question is how to functionally assess the classification
+Which I'm not entirely sure is possible
+Like how do you benchmark something like this?
+Isn't this more something you would need the credibility and expertise of an expert commission to fuly accomplish?
+** Possible implementations
+Essentially go away from a mean to a weighted mean
+The weight of each entry will be determined by the criteria mentioned above
+For that purpose for star rating corresponds to a specific weighting of the entry
+Last years in two year steps should be categorised and assigend a weight
+*** TODO Weighting between star rating and years
+Should these two be considered equally important or contribute at different rates to the weigth with which a classification is considered

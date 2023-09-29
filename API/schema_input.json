@@ -41,14 +41,16 @@
               "type": ["string", "null"],
               "pattern" : "[pP]\\.\\S+"
             },
-            "consequence": {
-              "type": "string"
+            "variant_type": {
+              "type": "array",
+              "minItems": 2,
+              "items": {"type" : "string"}
             },
             "exon": {
-              "type": "integer"
+              "type": ["integer", "null"]
             },
             "intron": {
-              "type" : "integer"
+              "type" : ["integer", "null"]
             },
             "protein_domain": {
               "type" : ["string", "null"]
@@ -203,6 +205,12 @@
     },
     "co-occurrence_in_trans": {
       "type": "boolean"
+    },
+    "cancer_hotspot" : {
+      "type": "boolean"
+    },
+    "segregation" : {
+      "type":  "number"
     }
   },
   "required": [
@@ -221,6 +229,8 @@
     "FLOSSIES",
     "mRNA_analysis",
     "prior",
-    "co-occurrence_in_trans"
+    "co-occurrence_in_trans",
+    "segregation",
+    "cancer_hotspot"
   ]
 }

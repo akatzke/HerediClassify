@@ -5,10 +5,7 @@
     "id" : "rs13265",
     "ref" : "A",
     "alt" : "T",
-    "variant_type" : [
-        {"type": "missense"},
-        {"type": "splice_donor"}
-    ],
+    "variant_type" : ["missense", "splice_donor"],
     "variant_effect" : [
         {"transcript" : "ENST000001",
          "hgvs_c" : "c.1972C>T",
@@ -19,7 +16,7 @@
         {"transcript" : "ENST000002",
          "hgvs_c" : "c.1969-1C>T",
          "hgvs_p" : "",
-         "consequence" : [{"missense"}],
+         "consequence" : ["missense", "splice_donor],
          "intron" : 10,
          "protein_domain" : "Zink finger"}
     ],
@@ -55,5 +52,7 @@
          "comment" : "Something"}
     ],
     "prior": 0.25,
-    "co-occurrence_in_trans" : true
+    "co-occurrence_in_trans" : true,
+    "segregation" : 0.56,
+    "cancer_hotspot": True
 }
