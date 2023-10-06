@@ -11,7 +11,7 @@ from refactoring.variant import TranscriptInfo, VariantInfo
 logger = logging.getLogger("GenOtoScope_Classify.protein_len_diff_repetitive_region")
 
 
-def check_prot_len_change_in_repetive_region(
+def check_prot_len_change_in_repetitive_region(
     variant: VariantInfo,
     ref_transcript: pyensembl.transcript.Transcript,
     path_rep_uniprot: pathlib.Path,
@@ -37,7 +37,7 @@ def create_bed_line(variant: VariantInfo, transcript_strand: str) -> str:
     """
     bed_line = " ".join(
         [
-            variant.chr,
+            "chr" + str(variant.chr),
             str(variant.genomic_start),
             str(variant.genomic_end),
             variant.gene_name,

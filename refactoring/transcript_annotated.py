@@ -27,6 +27,11 @@ from refactoring.genotoscope_reading_frame_preservation import (
 from refactoring.genotoscope_exists_alternative_start_codon import (
     assess_alternative_start_codon,
 )
+
+from refactoring.genotoscope_protein_len_diff_repetitive_region import (
+    check_prot_len_change_in_repetitive_region,
+)
+
 from refactoring.clinvar_region import (
     check_clinvar_NMD_exon,
     check_clinvar_start_alt_start,
