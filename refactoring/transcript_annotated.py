@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pyensembl
+import pandas as pd
 from dataclasses import dataclass, field
 from refactoring.genotoscope_protein_len_diff import calculate_prot_len_diff
 
@@ -20,6 +21,7 @@ from refactoring.genotoscope_construct_variant_sequence import (
 from refactoring.genotoscope_assess_NMD import (
     assess_NMD_exonic_variant,
     assess_NMD_intronic_variant,
+    assess_NMD_threshold
 )
 from refactoring.genotoscope_reading_frame_preservation import (
     assess_reading_frame_preservation,
@@ -46,23 +48,34 @@ class TranscriptInfo_exonic(TranscriptInfo):
     len_change_in_repetitive_region: bool = False
     is_NMD: bool = False
     is_truncated_exon_relevant: bool = False
-    pathogenic_variants_truncated_exons: list[str] = field(default_factory=list)
+    comment_truncated_exon_relevant: str = ""
     is_reading_frame_preserved: bool = True
 
     @classmethod
     def annotate(
-        cls, variant: VariantInfo, transcript: TranscriptInfo
+            cls, variant: VariantInfo, transcript: TranscriptInfo, threshold_NMD: int, clin_transcript: str, functional_relevant_region: pd.DataFrame
     ) -> TranscriptInfo_exonic:
+        """
+        Perform annotation for exonic variants
+        """
         ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
             transcript.transcript_id
         )
         var_seq, diff_len = construct_variant_coding_seq_exonic_variant(
             transcript, variant, ref_transcript
         )
-        is_NMD, NMD_affected_exons = assess_NMD_exonic_variant(
-            transcript, variant, ref_transcript, var_seq, diff_len
-        )
-        truncated_exon_ClinVar = check_clinvar_NMD_exon(variant, NMD_affected_exons)
+        if threshold_NMD:
+            is_NMD, NMD_affected_exons = assess_NMD_threshold(transcript, threshold_NMD, clin_transcript)
+        else:
+            is_NMD, NMD_affected_exons = assess_NMD_exonic_variant(
+                transcript, variant, ref_transcript, var_seq, diff_len
+            )
+        if functional_relevant_region:
+            is_truncated_exon_relevant, comment_truncated_exon_relevant = check_if_variant_affects_functional_region(variant, functional_relevant_region)
+        else:
+            truncated_exon_ClinVar = check_clinvar_NMD_exon(variant, NMD_affected_exons)
+            is_truncated_exon_relevant = truncated_exon_ClinVar.pathogenic
+            comment_truncated_exon_relevant = truncated_exon_ClinVar.ids
         is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
         diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
         return TranscriptInfo_exonic(
@@ -80,8 +93,8 @@ class TranscriptInfo_exonic(TranscriptInfo):
             len_change_in_repetitive_region=False,
             is_NMD=is_NMD,
             is_reading_frame_preserved=is_reading_frame_preserved,
-            is_truncated_exon_relevant=truncated_exon_ClinVar.pathogenic,
-            pathogenic_variants_truncated_exons=truncated_exon_ClinVar.ids,
+            is_truncated_exon_relevant=is_truncated_exon_relevant,
+            comment_truncated_exon_relevant=comment_truncated_exon_relevant
         )
 
 
@@ -103,8 +116,11 @@ class TranscriptInfo_intronic(TranscriptInfo):
 
     @classmethod
     def annotate(
-        cls, variant: VariantInfo, transcript: TranscriptInfo
+            cls, variant: VariantInfo, transcript: TranscriptInfo, splice_classificaton: pd.DataFrame
     ) -> TranscriptInfo_intronic:
+        """
+        Perform annotation specific for intronic variants
+        """
         ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
             transcript.transcript_id
         )

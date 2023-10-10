@@ -15,6 +15,21 @@ from refactoring.variant import TranscriptInfo, VariantInfo
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.assess_NMD")
 
 
+def assess_NMD_threshold(transcript: TranscriptInfo, threshold: int, clin_transcript: str) -> tuple:
+    """
+    Examine if position of variant is located before or after given threshold for NMD
+    """
+    if transcript.transcript_id == clin_transcript:
+        if transcript.var_start >= threshold:
+            NMD_affected_exon = []
+            return True, NMD_affected_exon
+        else:
+            return False, []
+    else:
+        return True, []
+
+
+
 def assess_NMD_intronic_variant(
     transcript: TranscriptInfo,
     variant: VariantInfo,
