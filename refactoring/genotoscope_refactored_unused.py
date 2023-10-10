@@ -2,6 +2,7 @@
 
 import pyensembl
 import logging
+import pandas as pd
 
 from refactoring.variant import VariantInfo
 from refactoring.genotoscope_exon_skipping import (
@@ -9,6 +10,122 @@ from refactoring.genotoscope_exon_skipping import (
 )
 
 logger = logging.getLogger("GenOtoScope_Classify.unused_functions")
+
+
+def find_affected_exons_pos(
+    ref_transcript: pyensembl.transcript.Transcript,
+    affected_exon_idxs: list[int],
+    start_offset: int,
+    end_offset: int,
+    variant: VariantInfo,
+) -> list[dict]:
+    """
+    ORIGINALLY LOCATED IN GENOTOSCOPE_ASSESS_NMD
+    REPLACED BY FIND_POS_AFFECTED_EXON
+    Find affected exons positions (genomic or coding)
+
+    Returns
+    -------
+    list of dict of str: str or int
+        affected exons: id, start and end (genomic positions)
+    """
+
+    logger.debug("Find affected exon positions")
+    logger.debug(f"Start offset: {start_offset}, end: {end_offset}")
+
+    interact_exon_pos = []
+    if is_transcript_in_positive_strand(ref_transcript):
+        strand_direction = 1
+    else:
+        strand_direction = -1
+    if len(affected_exon_idxs) == 1:
+        ### ### ###
+        # one affected exon
+        ### ### ###
+        logger.debug(f"One affected exon with index: {affected_exon_idxs}")
+
+        exon = ref_transcript.exons[affected_exon_idxs[0] - 1]
+        logger.debug(f"selected exon: {exon}")
+        if strand_direction == 1:
+            interact_exon_pos.append(
+                {
+                    "exon_id": exon.id,
+                    "exon_start": exon.to_dict()["start"] + start_offset,
+                    "exon_end": exon.to_dict()["start"] + end_offset,
+                }
+            )
+        else:
+            interact_exon_pos.append(
+                {
+                    "exon_id": exon.id,
+                    "exon_start": exon.to_dict()["end"] - end_offset,
+                    "exon_end": exon.to_dict()["end"] - start_offset,
+                }
+            )
+    else:
+        ### ### ###
+        # multiple affected exons
+        ### ### ###
+        for idx, exon in enumerate(ref_transcript.exons):
+            if idx + 1 in affected_exon_idxs:
+                if affected_exon_idxs.index(idx + 1) == 0:
+                    # first affected exon
+                    if strand_direction == 1:
+                        interact_exon_pos.append(
+                            {
+                                "exon_id": exon.id,
+                                "exon_start": exon.to_dict()["start"],
+                                "exon_end": exon.to_dict()["start"] + start_offset,
+                            }
+                        )
+                    else:
+                        interact_exon_pos.append(
+                            {
+                                "exon_id": exon.id,
+                                "exon_start": exon.to_dict()["start"],
+                                "exon_end": exon.to_dict()["end"] - end_offset,
+                            }
+                        )
+                elif affected_exon_idxs.index(idx + 1) == len(affected_exon_idxs) - 1:
+                    # last affected exon
+                    if is_transcript_in_positive_strand(ref_transcript):
+                        interact_exon_pos.append(
+                            {
+                                "exon_id": exon.id,
+                                "exon_start": exon.to_dict()["start"],
+                                "exon_end": exon.to_dict()["start"] + end_offset,
+                            }
+                        )
+                    else:
+                        interact_exon_pos.append(
+                            {
+                                "exon_id": exon.id,
+                                "exon_start": exon.to_dict()["end"] - start_offset,
+                                "exon_end": exon.to_dict()["end"],
+                            }
+                        )
+                else:
+                    # middle affected exons
+                    interact_exon_pos.append(
+                        {
+                            "exon_id": exon.id,
+                            "exon_start": exon.to_dict()["start"],
+                            "exon_end": exon.to_dict()["end"],
+                        }
+                    )
+
+    # assert that created information for interacting exon have start <= end
+    for interacting_exon in interact_exon_pos:
+        try:
+            assert interacting_exon["exon_start"] <= interacting_exon["exon_end"]
+        except AssertionError:
+            logger.error(
+                f"Affected exon start is higher than end\n=> variant position: {variant.to_string}",
+                exc_info=True,
+            )
+
+    logger.debug(f"Genomic positions of affected exons: {interact_exon_pos}")
+    return interact_exon_pos
 
 
 def convert_genomic2coding_pos(
@@ -648,3 +765,28 @@ def cache_clinvars(
             clinvars_cache[chr][pos] = {strand: extracted_clinvars}
     else:
         clinvars_cache[chr] = {pos: {strand: extracted_clinvars}}
+
+
+def convert_review_status2stars(
+    clinvar_stars_df: pd.DataFrame,
+    star_status2int: dict[str, int],
+    clinvar_rev_status: list[str],
+) -> int:
+    """
+    Convert CLNREVSTAT (review status) tab from clinvar vcf file to number of review stars
+    for unknown description -> star= -1
+    ClinVar review status documentation: https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/
+    """
+    rev_status = [review_elem.replace("_", " ") for review_elem in clinvar_rev_status]
+
+    rev_status = ",".join(rev_status)
+    if (
+        rev_status not in clinvar_stars_df.Review_status.values
+    ):  # if retrieved status not in status
+        return star_status2int["unknown review status"]
+    else:
+        return star_status2int[
+            clinvar_stars_df.loc[clinvar_stars_df["Review_status"] == rev_status][
+                "Number_of_gold_stars"
+            ].iloc[0]
+        ]

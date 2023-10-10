@@ -36,31 +36,27 @@ def check_clinvar_start_alt_start(
     return ClinVar_start_alt_start
 
 
-def check_clinvar_exonic_pvs1_variant(
+def check_clinvar_truncated_region(
     variant: VariantInfo,
-    is_NMD: bool,
-    NMD_affected_exon: dict,
     ref_transcript: pyensembl.transcript.Transcript,
 ) -> ClinVar:
     """
     For exonic pvs1 variant coordinate appropriate clinvar entries
     """
-    if is_NMD:
-        clinvar_exon = check_clinvar_NMD_exon(variant, NMD_affected_exon)
-    else:
-        start, stop = define_range_truncation(ref_transcript, variant)
-        clinvar_region = check_clinvar_region(variant, start, stop)
-        start, stop = define_range_truncation_exon(ref_transcript, variant)
-        clinvar_affected_exon_truncation = check_clinvar_region(variant, start, stop)
+    start, stop = define_range_truncation(ref_transcript, variant)
+    clinvar_exonic = check_clinvar_region(variant, start, stop)
+    return clinvar_exonic
 
 
-def check_clinvar_NMD_exon(variant: VariantInfo, NMD_affected_exon: dict) -> ClinVar:
+def check_clinvar_NMD_exon(
+    variant: VariantInfo, NMD_affected_exons: list[dict]
+) -> ClinVar:
     """
     Check if exon contains any pathogenic variants
     """
-    if NMD_affected_exon:
+    if NMD_affected_exons:
         ClinVar_exons = []
-        for exon in NMD_affected_exon:
+        for exon in NMD_affected_exons:
             ClinVar_exon = check_clinvar_region(
                 variant, exon["exon_start"], exon["exon_end"]
             )
