@@ -40,8 +40,8 @@ def assess_pvs1_start_loss(transcript: TranscriptInfo_start_loss) -> RuleResult:
         result = RuleResult("PVS1_start_loss", False, "very_strong", comment)
     else:
         comment = f"No alternative start codon detected for transcript {transcript.transcript_id}."
-        if transcript.pathogenic_variants_between_start_and_alt_start.pathogenic:
-            comment = f"Pathogenic variants detected between start codon and alternative start codon detected. \n ClinVar ID: {transcript.pathogenic_variants_between_start_and_alt_start.ids}"
+        if transcript.is_truncated_region_disease_relevant:
+            comment = f"Pathogenic variants detected between start codon and alternative start codon detected. \n ClinVar ID: {transcript.pathogenic_variants_truncated_region}"
             result = RuleResult("PVS1_start_loss", True, "moderate", comment)
         else:
             comment = "No pathogenic variant detected between start codon and alternative start codon."
@@ -55,8 +55,8 @@ def assess_pvs1_splice(transcript: TranscriptInfo_intronic) -> RuleResult:
     """
     if transcript.is_NMD:
         comment = f"Transcript {transcript.transcript_id} undergoes NMD."
-        if transcript.skipped_exon_relevant:
-            comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant. \n ClinVar ID: {transcript.pathogenic_variants_skipped_exon}"
+        if transcript.is_truncated_region_disease_relevant:
+            comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant. \n ClinVar ID: {transcript.pathogenic_variants_truncated_region}"
             result = RuleResult("PVS1_splice", True, "very_strong", comment)
         else:
             comment = "Skipped exon contains no (likely) pathogenic variants and is therefore not considered disease relevant."
@@ -67,8 +67,8 @@ def assess_pvs1_splice(transcript: TranscriptInfo_intronic) -> RuleResult:
         and not transcript.is_reading_frame_preserved
     ):
         comment = f"Transcript {transcript.transcript_id} does not undergo NMD."
-        if transcript.skipped_exon_relevant:
-            comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant. \n ClinVar ID: {transcript.pathogenic_variants_skipped_exon}"
+        if transcript.is_truncated_region_disease_relevant:
+            comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant. \n ClinVar ID: {transcript.pathogenic_variants_truncated_region}"
             result = RuleResult("PVS1_splice", True, "strong", comment)
         else:
             if transcript.diff_len_protein_percent > 0.1:
@@ -78,7 +78,7 @@ def assess_pvs1_splice(transcript: TranscriptInfo_intronic) -> RuleResult:
                 comment = "Something"
                 result = RuleResult("PVS1_splice", True, "moderate", comment)
     elif transcript.are_exons_skipped and transcript.is_reading_frame_preserved:
-        if transcript.skipped_exon_relevant:
+        if transcript.is_truncated_region_disease_relevant:
             comment = "Something"
             result = RuleResult("PVS1_splice", True, "strong", comment)
         else:
@@ -99,14 +99,14 @@ def assess_pvs1_frameshift(transcript: TranscriptInfo_exonic) -> RuleResult:
     Assess PVS1 for frameshift variants
     """
     if transcript.is_NMD:
-        if transcript.is_truncated_exon_relevant:
+        if transcript.is_truncated_region_disease_relevant:
             comment = "Something"
             result = RuleResult("PVS1_splice", True, "very_strong", comment)
         else:
             comment = "Something"
             result = RuleResult("PVS1_splice", False, "very_strong", comment)
     else:
-        if transcript.is_truncated_exon_relevant:
+        if transcript.is_truncated_region_disease_relevant:
             comment = "Something"
             result = RuleResult("PVS1_splice", True, "strong", comment)
         else:
@@ -169,20 +169,20 @@ def assess_pm4(variant: Variant) -> RuleResult:
     """
     results = []
     for transcript in variant.transcript_info:
-        if not transcript.transcript_disease_relevant:
+        if not transcript.is_truncated_region_disease_relevant:
             comment = f"Transcript {transcript.transcript_id} is not disease relevant."
             result = RuleResult("PM4", False, "moderate", comment)
         elif (
             transcript.diff_len_protein_percent
             > Variant.thresholds["diff_len_protein_percent"]
-            and transcript.transcript_disease_relevant
+            and transcript.is_truncated_region_disease_relevant
             and not transcript.len_change_in_repetitive_region
         ):
             comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region does not overlap repetitive region."
             result = RuleResult("PM4", True, "moderate", comment)
         elif (
             transcript.diff_len_protein_percent > 0.1
-            and transcript.transcript_disease_relevant
+            and transcript.is_truncated_region_disease_relevant
             and transcript.len_change_in_repetitive_region
         ):
             comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
