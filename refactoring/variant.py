@@ -1,58 +1,58 @@
 #!/usr/bin/env python3
 
 from dataclasses import dataclass
-from typing import Literal, Optional
+from typing import Optional
+from enum import Enum
 import hgvs.posedit
 import hgvs.parser
 
 hgvs_parser = hgvs.parser.Parser()
 
 
-VarType = Literal[
-    "transcript_ablation",
-    "splice_donor_variant",
-    "splice_donor",
-    "splice_acceptor_variant",
-    "splice_acceptor",
-    "stop_gained",
-    "frameshift_variant",
-    "stop_lost",
-    "start_lost",
-    "transcript_amplification",
-    "feature_elongation",
-    "feature truncation",
-    "inframe_deletion",
-    "inframe_insertion",
-    "missense_variant",
-    "protein_altering_variant",
-    "splice_donor_5th_base_variant",
-    "splice_region_variant",
-    "splice_donor_region_variant",
-    "splice_polypyrimidine_tract_variant",
-    "incomplete_terminal_codon_variant",
-    "start_retained_variant",
-    "stop_retained_variant",
-    "synonymous_variant",
-    "coding_sequence_variant",
-    "mature_miRNA_variant",
-    "5_prime_UTR_variant",
-    "3_prime_UTR_variant",
-    "non_coding_transcript_exon_variant",
-    "intron_variant",
-    "NMD_transcript_variant",
-    "non_coding_transcript_variant",
-    "coding_transcript_variant",
-    "upstream_gene_variant",
-    "downstream_gene_variant",
-    "TFBS_ablation",
-    "TFBS_amplification",
-    "TF_binding_site_variant",
-    "regulatory_region_ablation",
-    "regulatory_region_amplification",
-    "regulatory_region_variant",
-    "intergenic_variant",
-    "sequence_variant",
-]
+class VarType(Enum):
+    TRANSCRIPT_ABLATION = "transcript_ablation"
+    SPLICE_DONOR_VARIANT = "splice_donor_variant"
+    SPLICE_DONOR = "splice_donor"
+    SPLICE_ACCEPTOR_VARIANT = "splice_acceptor_variant"
+    SPLICE_ACCEPTOR = "splice_acceptor"
+    STOP_GAINED = "stop_gained"
+    FRAMESHIFT_VARIANT = "frameshift_variant"
+    STOP_LOST = "stop_lost"
+    START_LOST = "start_lost"
+    TRANSCRIPT_AMPLIFICATION = "transcript_amplification"
+    FEATURE_ELONGATION = "feature_elongation"
+    FEATURE_TRUNCATION = "feature truncation"
+    INFRAME_DELETION = "inframe_deletion"
+    INFRAME_INSERTION = "inframe_insertion"
+    MISSENSE_VARIANT = "missense_variant"
+    PROTEIN_ALTERING_VARIANT = "protein_altering_variant"
+    SPLICE_DONOR_5TH_BASE_VARIANT = "splice_donor_5th_base_variant"
+    SPLICE_REGION_VARIANT = "splice_region_variant"
+    SPLICE_DONOR_REGION_VARIANT = "splice_donor_region_variant"
+    SPLICE_POLYPYRIMIDINE_TRACT_VARIANT = "splice_polypyrimidine_tract_variant"
+    INCOMPLETE_TERMINAL_CODON_VARIANT = "incomplete_terminal_codon_variant"
+    START_RETAINED_VARIANT = "start_retained_variant"
+    STOP_RETAINED_VARIANT = "stop_retained_variant"
+    SYNONYMOUS_VARIANT = "synonymous_variant"
+    CODING_SEQUENCE_VARIANT = "coding_sequence_variant"
+    MATURE_MIRNA_VARIANT = "mature_miRNA_variant"
+    FIVE_PRIME_UTR_VARIANT = "5_prime_UTR_variant"
+    THREE_PRIME_UTR_VARIANT = "3_prime_UTR_variant"
+    NON_CODING_TRANSCRIPT_EXON_VARIANT = "non_coding_transcript_exon_variant"
+    INTRON_VARIANT = "intron_variant"
+    NMD_TRANSCRIPT_VARIANT = "NMD_transcript_variant"
+    NON_CODING_TRANSCRIPT_VARIANT = "non_coding_transcript_variant"
+    CODING_TRANSCRIPT_VARIANT = "coding_transcript_variant"
+    UPSTREAM_GENE_VARIANT = "upstream_gene_variant"
+    DOWNSTREAM_GENE_VARIANT = "downstream_gene_variant"
+    TFBS_ABLATION = "TFBS_ablation"
+    TFBS_AMPLIFICATION = "TFBS_amplification"
+    TP_BINDING_SITE_VARIANT = "TF_binding_site_variant"
+    REGULATORY_REGION_ABLATION = "regulatory_region_ablation"
+    REGULATORY_REGION_AMPLIFICATION = "regulatory_region_amplification"
+    REGULATORY_REGION_VARIANT = "regulatory_region_variant"
+    INTERGENIC_VARIANT = "intergenic_variant"
+    SEQUENCE_VARIANT = "sequence_variant"
 
 
 @dataclass

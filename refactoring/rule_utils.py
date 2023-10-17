@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-from variant import *
 from typing import List
 from enum import Enum
 import warnings
+
+from refactoring.variant import *
 
 
 def summarise_results_per_transcript(results: List[RuleResult]) -> RuleResult:
