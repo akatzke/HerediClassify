@@ -8,28 +8,18 @@ import hgvs.parser
 
 hgvs_parser = hgvs.parser.Parser()
 
-
-class VarType(Enum):
-    TRANSCRIPT_ABLATION = "transcript_ablation"
-    SPLICE_DONOR_VARIANT = "splice_donor_variant"
-    SPLICE_DONOR = "splice_donor"
-    SPLICE_ACCEPTOR_VARIANT = "splice_acceptor_variant"
-    SPLICE_ACCEPTOR = "splice_acceptor"
+class VARTYPE(Enum):
     STOP_GAINED = "stop_gained"
-    FRAMESHIFT_VARIANT = "frameshift_variant"
     STOP_LOST = "stop_lost"
-    START_LOST = "start_lost"
+    FRAMESHIFT_VARIANT = "frameshift_variant"
+    INFRAME_DELETION = "inframe_deletion"
+    INFRAME_INSERTION = "inframe_insertion"
+    TRANSCRIPT_ABLATION = "transcript_ablation"
     TRANSCRIPT_AMPLIFICATION = "transcript_amplification"
     FEATURE_ELONGATION = "feature_elongation"
     FEATURE_TRUNCATION = "feature truncation"
-    INFRAME_DELETION = "inframe_deletion"
-    INFRAME_INSERTION = "inframe_insertion"
     MISSENSE_VARIANT = "missense_variant"
     PROTEIN_ALTERING_VARIANT = "protein_altering_variant"
-    SPLICE_DONOR_5TH_BASE_VARIANT = "splice_donor_5th_base_variant"
-    SPLICE_REGION_VARIANT = "splice_region_variant"
-    SPLICE_DONOR_REGION_VARIANT = "splice_donor_region_variant"
-    SPLICE_POLYPYRIMIDINE_TRACT_VARIANT = "splice_polypyrimidine_tract_variant"
     INCOMPLETE_TERMINAL_CODON_VARIANT = "incomplete_terminal_codon_variant"
     START_RETAINED_VARIANT = "start_retained_variant"
     STOP_RETAINED_VARIANT = "stop_retained_variant"
@@ -53,6 +43,21 @@ class VarType(Enum):
     REGULATORY_REGION_VARIANT = "regulatory_region_variant"
     INTERGENIC_VARIANT = "intergenic_variant"
     SEQUENCE_VARIANT = "sequence_variant"
+    START_LOST = "start_lost"
+    SPLICE_DONOR_5TH_BASE_VARIANT = "splice_donor_5th_base_variant"
+    SPLICE_REGION_VARIANT = "splice_region_variant"
+    SPLICE_DONOR_REGION_VARIANT = "splice_donor_region_variant"
+    SPLICE_POLYPYRIMIDINE_TRACT_VARIANT = "splice_polypyrimidine_tract_variant"
+    SPLICE_DONOR_VARIANT = "splice_donor_variant"
+    SPLICE_DONOR = "splice_donor"
+    SPLICE_ACCEPTOR_VARIANT = "splice_acceptor_variant"
+    SPLICE_ACCEPTOR = "splice_acceptor"
+
+
+class VARTYPE_GROUPS(Enum):
+    EXONIC = {VARTYPE.STOP_GAINED, VARTYPE.STOP_LOST, VARTYPE.FRAMESHIFT_VARIANT, VARTYPE.INFRAME_DELETION, VARTYPE. INFRAME_INSERTION}
+    START_LOST = {VARTYPE.START_LOST}
+    INTRONIC = {VARTYPE.SPLICE_ACCEPTOR, VARTYPE.SPLICE_ACCEPTOR_VARIANT, VARTYPE.SPLICE_DONOR, VARTYPE.SPLICE_DONOR_VARIANT}
 
 
 @dataclass
@@ -62,7 +67,7 @@ class TranscriptInfo:
     """
 
     transcript_id: str
-    var_type: list[VarType]
+    var_type: list[VARTYPE]
     var_hgvs: hgvs.posedit.PosEdit
     var_start: int
     var_stop: int
@@ -94,7 +99,7 @@ class AffectedRegion:
 @dataclass
 class VariantInfo:
     gene_name: str
-    var_type: list[VarType]
+    var_type: list[VARTYPE]
     chr: str
     genomic_start: int
     genomic_end: int

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from abc import ABC, abstractmethod
+from typing import Callable
 
 from refactoring.variant_annotate import Variant_annotated
 from refactoring.variant import RuleResult
@@ -15,12 +16,14 @@ from refactoring.config_annotation import classification_information
 
 
 class abstract_rule(ABC):
+
     @abstractmethod
-    def get_assess_rule(self) -> tuple:
+    def get_assess_rule(cls) -> Callable:
         """
-        Return assess_rule function and the arguments taken by it
+        Get function that assess rule
         """
         pass
+
 
     @abstractmethod
     def assess_rule(self, args) -> RuleResult:
@@ -29,30 +32,18 @@ class abstract_rule(ABC):
         """
         pass
 
-
 class pvs1(abstract_rule):
     """
     PVS1: Loss of function
     Devided into three separate parts: Frameshift, splice and start_loss
     """
+    arguments = [classification_information.ANNOTATED_TRANSCRIPT_LIST]
 
-    def get_assess_rule(self) -> tuple:
-        return (self.assess_rule, classification_information.ANNOTATED_TRANSCRIPT_LIST)
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
 
-<<<<<<< HEAD
-def assess_pvs1_start_loss(transcript: TranscriptInfo_start_loss) -> RuleResult:
-    """
-    Assess PVS1 for start lost variants
-    """
-    if not transcript.exists_alternative_start_codon:
-        comment = f"An alternative start code in transcript {transcript.transcript_id} at {transcript.position_alternative_start_codon} detected."
-        result = RuleResult("PVS1_start_loss", False, "very_strong", comment)
-    else:
-        comment = f"No alternative start codon detected for transcript {transcript.transcript_id}."
-        if transcript.is_truncated_region_disease_relevant:
-            comment = f"Pathogenic variants detected between start codon and alternative start codon detected. \n ClinVar ID: {transcript.pathogenic_variants_truncated_region}"
-            result = RuleResult("PVS1_start_loss", True, "moderate", comment)
-=======
+
     def assess_rule(self, annotated_transcripts: list[TranscriptInfo]) -> RuleResult:
         results = []
         for transcript in annotated_transcripts:
@@ -77,88 +68,24 @@ def assess_pvs1_start_loss(transcript: TranscriptInfo_start_loss) -> RuleResult:
         if not transcript.exists_alternative_start_codon:
             comment = f"An alternative start code in transcript {transcript.transcript_id} at {transcript.position_alternative_start_codon} detected."
             result = RuleResult("PVS1_start_loss", False, "very_strong", comment)
->>>>>>> 0c947af (Start implementation configuration)
         else:
             comment = f"No alternative start codon detected for transcript {transcript.transcript_id}."
-            if transcript.are_pathogenic_variants_between_start_and_alt_start:
-                comment = f"Pathogenic variants detected between start codon and alternative start codon detected. \n ClinVar ID: {transcript.pathogenic_variants_between_start_and_alt_start.ids}"
+            if transcript.is_truncated_region_disease_relevant:
+                comment = f"Pathogenic variants detected between start codon and alternative start codon detected. \n ClinVar ID: {transcript.pathogenic_variants_truncated_region}"
                 result = RuleResult("PVS1_start_loss", True, "moderate", comment)
             else:
                 comment = "No pathogenic variant detected between start codon and alternative start codon."
                 result = RuleResult("PVS1_start_loss", True, "supporting", comment)
         return result
 
-<<<<<<< HEAD
-
-def assess_pvs1_splice(transcript: TranscriptInfo_intronic) -> RuleResult:
-    """
-    Assess PVS1 for splice variants
-    """
-    if transcript.is_NMD:
-        comment = f"Transcript {transcript.transcript_id} undergoes NMD."
-        if transcript.is_truncated_region_disease_relevant:
-            comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant. \n ClinVar ID: {transcript.pathogenic_variants_truncated_region}"
-            result = RuleResult("PVS1_splice", True, "very_strong", comment)
-        else:
-            comment = "Skipped exon contains no (likely) pathogenic variants and is therefore not considered disease relevant."
-            result = RuleResult("PVS1_splice", False, "very_strong", comment)
-    elif (
-        transcript.are_exons_skipped
-        and not transcript.is_NMD
-        and not transcript.is_reading_frame_preserved
-    ):
-        comment = f"Transcript {transcript.transcript_id} does not undergo NMD."
-        if transcript.is_truncated_region_disease_relevant:
-            comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant. \n ClinVar ID: {transcript.pathogenic_variants_truncated_region}"
-            result = RuleResult("PVS1_splice", True, "strong", comment)
-        else:
-            if transcript.diff_len_protein_percent > 0.1:
-                comment = "Protein length change of"
-                result = RuleResult("PVS1_splice", True, "strong", comment)
-            else:
-                comment = "Something"
-                result = RuleResult("PVS1_splice", True, "moderate", comment)
-    elif transcript.are_exons_skipped and transcript.is_reading_frame_preserved:
-        if transcript.is_truncated_region_disease_relevant:
-            comment = "Something"
-            result = RuleResult("PVS1_splice", True, "strong", comment)
-        else:
-            if transcript.diff_len_protein_percent > 0.1:
-                comment = "Something"
-                result = RuleResult("PVS1_splice", True, "strong", comment)
-            else:
-                comment = "Something"
-                result = RuleResult("PVS1_splice", True, "moderate", comment)
-    else:
-        comment = "Something"
-        result = RuleResult("PVS1_splice", False, "very_strong", comment)
-    return result
-
-
-def assess_pvs1_frameshift(transcript: TranscriptInfo_exonic) -> RuleResult:
-    """
-    Assess PVS1 for frameshift variants
-    """
-    if transcript.is_NMD:
-        if transcript.is_truncated_region_disease_relevant:
-            comment = "Something"
-            result = RuleResult("PVS1_splice", True, "very_strong", comment)
-        else:
-            comment = "Something"
-            result = RuleResult("PVS1_splice", False, "very_strong", comment)
-    else:
-        if transcript.is_truncated_region_disease_relevant:
-            comment = "Something"
-            result = RuleResult("PVS1_splice", True, "strong", comment)
-=======
     def assess_pvs1_splice(self, transcript: TranscriptInfo_intronic) -> RuleResult:
         """
         Assess PVS1 for splice variants
         """
         if transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} undergoes NMD."
-            if transcript.skipped_exon_relevant:
-                comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant. \n ClinVar ID: {transcript.pathogenic_variants_skipped_exon}"
+            if transcript.is_truncated_region_disease_relevant:
+                comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considexoneredexon to be disease relevant. \n ClinVar ID: {transcript.pathogenic_variants_truncated_region}"
                 result = RuleResult("PVS1_splice", True, "very_strong", comment)
             else:
                 comment = "Skipped exon contains no (likely) pathogenic variants and is therefore not considered disease relevant."
@@ -169,8 +96,8 @@ def assess_pvs1_frameshift(transcript: TranscriptInfo_exonic) -> RuleResult:
             and not transcript.is_reading_frame_preserved
         ):
             comment = f"Transcript {transcript.transcript_id} does not undergo NMD."
-            if transcript.skipped_exon_relevant:
-                comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant. \n ClinVar ID: {transcript.pathogenic_variants_skipped_exon}"
+            if transcript.is_truncated_region_disease_relevant:
+                comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant. \n ClinVar ID: {transcript.pathogenic_variants_truncated_region}"
                 result = RuleResult("PVS1_splice", True, "strong", comment)
             else:
                 if transcript.diff_len_protein_percent > 0.1:
@@ -180,7 +107,7 @@ def assess_pvs1_frameshift(transcript: TranscriptInfo_exonic) -> RuleResult:
                     comment = "Something"
                     result = RuleResult("PVS1_splice", True, "moderate", comment)
         elif transcript.are_exons_skipped and transcript.is_reading_frame_preserved:
-            if transcript.skipped_exon_relevant:
+            if transcript.is_truncated_region_disease_relevant:
                 comment = "Something"
                 result = RuleResult("PVS1_splice", True, "strong", comment)
             else:
@@ -202,15 +129,14 @@ def assess_pvs1_frameshift(transcript: TranscriptInfo_exonic) -> RuleResult:
         Assess PVS1 for frameshift variants
         """
         if transcript.is_NMD:
-            if transcript.is_truncated_exon_relevant:
+            if transcript.is_truncated_region_disease_relevant:
                 comment = "Something"
                 result = RuleResult("PVS1_splice", True, "very_strong", comment)
             else:
                 comment = "Something"
                 result = RuleResult("PVS1_splice", False, "very_strong", comment)
->>>>>>> 0c947af (Start implementation configuration)
         else:
-            if transcript.is_truncated_exon_relevant:
+            if transcript.is_truncated_region_disease_relevant:
                 comment = "Something"
                 result = RuleResult("PVS1_splice", True, "strong", comment)
             else:
@@ -224,15 +150,18 @@ def assess_pvs1_frameshift(transcript: TranscriptInfo_exonic) -> RuleResult:
 
 
 class ps1(abstract_rule):
-    def get_assess_rule(self) -> tuple:
-        return (self.assess_rule, classification_information.VARIANT_CLINVAR)
+    """
+    PS1: Same amino accid change has been identified as pathogenic in ClinVar
+    """
+    arguments = [classification_information.VARIANT_CLINVAR]
+
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
 
     def assess_rule(self, variant: Variant_annotated) -> RuleResult:
-        """
-        PS1: Same amino accid change has been identified as pathogenic in ClinVar
-        """
         if variant.same_aa_change_clinvar.pathogenic:
-            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {variant.clinvar.associated_ids}."
+            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {variant.same_aa_change_clinvar.ids}."
             result = RuleResult("PS1", True, "strong", comment)
         else:
             comment = "No matches found for variant."
@@ -241,13 +170,16 @@ class ps1(abstract_rule):
 
 
 class pm1(abstract_rule):
-    def get_assess_rule(self) -> tuple:
-        return (self.assess_rule, "variant_hotspot")
+    """
+    PM1: Variant located in mutational hot spot or citical protein region
+    """
+    arguments = [classification_information.VARIANT_HOTSPOT]
+
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
 
     def assess_rule(self, variant: Variant_annotated) -> RuleResult:
-        """
-        PM1: Variant located in mutational hot spot or citical protein region
-        """
         if variant.affected_region.critical_region:
             comment = f"Variant in mutational hotspot. {variant.affected_region.critical_region_type}"
             result = RuleResult("PM1", True, "moderate", comment)
@@ -262,16 +194,15 @@ class pm2(abstract_rule):
     PM2: Varinat is absent from control population
     In case of recessive disorders: Variant occurres less than expected carrier rate
     """
+    arguments = [classification_information.VARIANT_ANNOT, classification_information.THRESHOLD_PM2]
 
-    def get_assess_rule(self):
-        return (
-            self.assess_rule,
-            classification_information.VARIANT_ANNOT,
-            classification_information.THRESHOLD_BA1,
-        )
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
 
-    def assess_rule(self, variant: Variant_annotated) -> RuleResult:
-        if variant.gnomad.frequency > variant.thresholds["PM2"]:
+
+    def assess_rule(self, variant: Variant_annotated, threshold_pm2: float) -> RuleResult:
+        if variant.gnomad.frequency > threshold_pm2:
             comment = f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
             result = RuleResult("PM2", False, "moderate", comment)
         else:
@@ -284,59 +215,33 @@ class pm4(abstract_rule):
     """
     PM4: Protein length change caused by variant is above 10% threshold
     """
-<<<<<<< HEAD
-    results = []
-    for transcript in variant.transcript_info:
-        if not transcript.is_truncated_region_disease_relevant:
-            comment = f"Transcript {transcript.transcript_id} is not disease relevant."
-            result = RuleResult("PM4", False, "moderate", comment)
-        elif (
-            transcript.diff_len_protein_percent
-            > Variant.thresholds["diff_len_protein_percent"]
-            and transcript.is_truncated_region_disease_relevant
-            and not transcript.len_change_in_repetitive_region
-        ):
-            comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region does not overlap repetitive region."
-            result = RuleResult("PM4", True, "moderate", comment)
-        elif (
-            transcript.diff_len_protein_percent > 0.1
-            and transcript.is_truncated_region_disease_relevant
-            and transcript.len_change_in_repetitive_region
-        ):
-            comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
-            result = RuleResult("PM4", False, "moderate", comment)
-        else:
-            comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}"
-            result = RuleResult("PM4", False, "moderate", comment)
-        results.append(result)
-    final_result = summarise_results_per_transcript(results)
-    return final_result
-=======
+    arguments = [classification_information.ANNOTATED_TRANSCRIPT_LIST, classification_information.THRESHOLD_DIFF_LEN_PROT_PERCENT]
 
-    def get_assess_rule(self) -> tuple:
-        return (self.assess_rule, classification_information.ANNOTATED_TRANSCRIPT_LIST)
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
 
     def assess_rule(
-        self, annotated_transcript_list: list[TranscriptInfo]
+            self, annotated_transcript_list: list[TranscriptInfo_annot], threshold_diff_len_prot_percent: float
     ) -> RuleResult:
         results = []
         for transcript in annotated_transcript_list:
-            if not transcript.transcript_disease_relevant:
+            if not transcript.is_truncated_region_disease_relevant:
                 comment = (
                     f"Transcript {transcript.transcript_id} is not disease relevant."
                 )
                 result = RuleResult("PM4", False, "moderate", comment)
             elif (
                 transcript.diff_len_protein_percent
-                > variant.thresholds["diff_len_protein_percent"]
-                and transcript.transcript_disease_relevant
+                > threshold_diff_len_prot_percent
+                and transcript.is_truncated_region_disease_relevant
                 and not transcript.len_change_in_repetitive_region
             ):
                 comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region does not overlap repetitive region."
                 result = RuleResult("PM4", True, "moderate", comment)
             elif (
                 transcript.diff_len_protein_percent > 0.1
-                and transcript.transcript_disease_relevant
+                and transcript.is_truncated_region_disease_relevant
                 and transcript.len_change_in_repetitive_region
             ):
                 comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
@@ -347,20 +252,21 @@ class pm4(abstract_rule):
             results.append(result)
         final_result = summarise_results_per_transcript(results)
         return final_result
->>>>>>> 0c947af (Start implementation configuration)
 
 
 class pm5(abstract_rule):
     """
     PM5: Pathogenic missense variant to different amino acid in same position classified as pathogenic in ClinVar
     """
+    arguments = [classification_information.VARIANT_CLINVAR]
 
-    def get_assess_rule(self) -> tuple:
-        return (self.assess_rule, classification_information.VARIANT_CLINVAR)
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
 
     def assess_rule(self, variant: Variant_annotated) -> RuleResult:
         if variant.diff_aa_change_clinvar.pathogenic:
-            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {variant.clinvar.different_amino_acid_change_in_same_position_pathogenic_list}."
+            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {variant.diff_aa_change_clinvar.pathogenic}."
             result = RuleResult("PM5", True, "moderate", comment)
         else:
             comment = "No matches found for variant."
@@ -372,14 +278,11 @@ class bp4_pp3(abstract_rule):
     """
     BP4 and PP3: Assess results of prediction programs
     """
+    arguments = [classification_information.VARIANT_ANNOT, classification_information.THRESHOLD_PATHOGENICITY_PREDICTION, classification_information.THRESHOLD_SPLICING_PREDICTION]
 
-    def get_assess_rule(self) -> tuple:
-        return (
-            self.assess_rule,
-            classification_information.VARIANT_ANNOT,
-            classification_information.THRESHOLD_PATHOGENICITY_PREDICTION,
-            classification_information.THRESHOLD_SPLICING_PREDICTION,
-        )
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
 
     def assess_rule(self, variant: Variant_annotated) -> RuleResult:
         splicing_prediction = []
@@ -444,16 +347,14 @@ class ba1(abstract_rule):
     """
     BA1: High frequency of variant in healthy population (e.g. gnomAD)
     """
+    arguments = [classification_information.VARIANT_ANNOT, classification_information.THRESHOLD_BA1]
 
-    def get_assess_rule(self) -> tuple:
-        return (
-            self.assess_rule,
-            classification_information.VARIANT_ANNOT,
-            classification_information.THRESHOLD_BA1,
-        )
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
 
-    def assess_rule(self, variant: Variant_annotated) -> RuleResult:
-        if variant.gnomad.frequency > variant.thresholds["BA1"]:
+    def assess_rule(self, variant: Variant_annotated, threshold_ba1: float) -> RuleResult:
+        if variant.gnomad.frequency > threshold_ba1:
             comment = f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
             result = RuleResult("BA1", False, "stand_alone", comment)
         else:
@@ -466,16 +367,14 @@ class bs1(abstract_rule):
     """
     BS1: Frequency of variant higher in population than expected based on disease frequency
     """
+    arguments = [classification_information.VARIANT_ANNOT, classification_information.THRESHOLD_BS1]
 
-    def get_assess_rule(self) -> tuple:
-        return (
-            self.assess_rule,
-            classification_information.VARIANT_ANNOT,
-            classification_information.THRESHOLD_BS1,
-        )
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
 
-    def assess_bs1(self, variant: Variant_annotated) -> RuleResult:
-        if variant.gnomad.frequency > variant.thresholds["BS1"]:
+    def assess_bs1(self, variant: Variant_annotated, threshold_bs1: float) -> RuleResult:
+        if variant.gnomad.frequency > threshold_bs1:
             comment = f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
             result = RuleResult("BS1", False, "strong", comment)
         else:
@@ -488,16 +387,14 @@ class bs2(abstract_rule):
     """
     BS2: Mutation found in healthy individuals
     """
+    arguments = [classification_information.VARIANT_ANNOT, classification_information.THRESHOLD_BS2]
 
-    def get_assess_rule(self) -> tuple:
-        return (
-            self.assess_rule,
-            classification_information.VARIANT_ANNOT,
-            classification_information.THRESHOLD_BS2,
-        )
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
 
-    def assess_rule(self, variant: Variant_annotated) -> RuleResult:
-        if variant.flossies.frequency == 0:
+    def assess_rule(self, variant: Variant_annotated, threshold_bs2: float) -> RuleResult:
+        if variant.flossies.frequency == threshold_bs2:
             comment = "Something"
             result = RuleResult("BS2", True, "strong", comment)
         else:
@@ -510,13 +407,15 @@ class bp3(abstract_rule):
     """
     BP3: Protein length change in repetitive region
     """
+    arguments = [classification_information.ANNOTATED_TRANSCRIPT_LIST, classification_information.THRESHOLD_DIFF_LEN_PROT_PERCENT]
 
-    def get_assess_rule(self) -> tuple:
-        return (self.assess_rule, classification_information.ANNOTATED_TRANSCRIPT_LIST)
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
 
-    def assess_bp3(self, variant: Variant_annotated) -> RuleResult:
+    def assess_bp3(self, annotated_transcripts: list[TranscriptInfo], threshold_diff_len_prot_percent: float) -> RuleResult:
         results = []
-        for transcript in variant.transcript_info:
+        for transcript in annotated_transcripts:
             if (
                 type(transcript) != TranscriptInfo_exonic
                 or type(transcript) != TranscriptInfo_intronic
@@ -529,7 +428,7 @@ class bp3(abstract_rule):
                 result = RuleResult("BP3", False, "supporting", comment)
             elif (
                 transcript.diff_len_protein_percent
-                <= variant.thresholds["diff_len_protein_percent"]
+                <= threshold_diff_len_prot_percent
                 and transcript.len_change_in_repetitive_region
             ):
                 comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
@@ -546,13 +445,11 @@ class bp7(abstract_rule):
     """
     BP7: Silent missense variant is predicted to have effect on splicing
     """
+    arguments = [classification_information.VARIANT_ANNOT, classification_information.THRESHOLD_SPLICING_PREDICTION]
 
-    def get_assess_rule(self) -> tuple:
-        return (
-            self.assess_rule,
-            classification_information.VARIANT_ANNOT,
-            classification_information.THRESHOLD_SPLICING_PREDICTION,
-        )
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
 
     def assess_bp7(self, variant: Variant_annotated) -> RuleResult:
         splicing_prediction = []

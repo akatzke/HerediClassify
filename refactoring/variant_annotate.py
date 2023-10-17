@@ -42,7 +42,6 @@ class Variant_annotated(VariantInfo):
     gnomad: PopulationDatabases
     flossies: PopulationDatabases
     affected_region: AffectedRegion
-    clinvar: ClinVar
     thresholds: dict
 
     @classmethod
