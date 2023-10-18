@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from refactoring.variant import VariantInfo, TranscriptInfo
+from refactoring.variant import VariantInfo, TranscriptInfo, VARTYPE
 
 import hgvs.parser
 import hgvs.posedit
@@ -16,7 +16,7 @@ def create_example_snv_syn() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.1740C>T".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["synonymous_variant"],
+        [VARTYPE.SYNONYMOUS_VARIANT],
         hgvs,
         4986,
         4986,
@@ -25,7 +25,7 @@ def create_example_snv_syn() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA1", ["synonymous_variant"], "17", 41245808, 4125808, "some_id", "G", "A"
+        "BRCA1", [VARTYPE.SYNONYMOUS_VARIANT], "17", 41245808, 4125808, "some_id", "G", "A"
     )
     return (transcript, variant)
 
@@ -38,7 +38,7 @@ def create_start_lost() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.2T>G".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000345365",
-        ["start_lost"],
+        [VARTYPE.START_LOST],
         hgvs,
         2,
         2,
@@ -47,6 +47,6 @@ def create_start_lost() -> tuple:
         var_protein="p.Met1?",
     )
     variant = VariantInfo(
-        "RAD51D", ["start_lost"], "17", 33446631, 33446631, "some_id", "A", "C"
+        "RAD51D", [VARTYPE.START_LOST], "17", 33446631, 33446631, "some_id", "A", "C"
     )
     return (transcript, variant)

@@ -3,15 +3,36 @@
 import logging
 import pathlib
 import pandas as pd
-from typing import Generator
+from typing import Generator, Optional
+from dataclasses import dataclass, field
+from enum import Enum
 from collections.abc import Iterable
 
-from refactoring.variant import VARTYPE_GROUPS, TranscriptInfo, VARTYPE
-from refactoring.variant_annotate import ClinVar, CLINVAR_STATUS, CLINVAR_TYPE
+from refactoring.variant import VARTYPE_GROUPS, TranscriptInfo
 
 logger = logging.getLogger("GenOtoScope_Classify.genotoscope_clinvar")
 
 path_clinvar = pathlib.Path("/home/katzkean/clinvar/clinvar_20230730.vcf.gz")
+
+
+class CLINVAR_TYPE(Enum):
+    SAME_AA_CHANGE = "same_aa_change"
+    DIFF_AA_CHANGE = "diff_aa_change"
+    SAME_NUCLEOTIDE = "same_nucleotide"
+    SAME_SPLICE_SITE = "same_splice_site"
+    REGION = "region"
+
+class CLINVAR_STATUS(Enum):
+    PATHOGENIC = "Pathogenic"
+    LIKELY_PATHOGENIC = "Likely pathogenic"
+
+@dataclass
+class ClinVar:
+    pathogenic: bool
+    type: CLINVAR_TYPE
+    highest_classification: Optional[CLINVAR_STATUS]
+    ids: list[str] = field(default_factory=list)
+    associated_ids: list[str] = field(default_factory=list)
 
 
 def get_affected_transcript(

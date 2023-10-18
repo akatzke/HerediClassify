@@ -13,11 +13,12 @@ import hgvs.parser
 import hgvs.posedit
 
 from refactoring.variant import VARTYPE_GROUPS, VariantInfo, TranscriptInfo
-from refactoring.variant_annotate import ClinVar, CLINVAR_TYPE
 from refactoring.genotoscope_exon_skipping import (
     is_transcript_in_positive_strand,
 )
 from refactoring.clinvar_utils import (
+    ClinVar,
+    CLINVAR_TYPE,
     filter_gene,
     create_ClinVar,
     convert_vcf_gen_to_df,

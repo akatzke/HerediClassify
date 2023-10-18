@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from refactoring.variant import VariantInfo, TranscriptInfo
+from refactoring.variant import VariantInfo, TranscriptInfo, VARTYPE
 
 import hgvs.parser
 import hgvs.posedit
@@ -17,7 +17,7 @@ def create_example_mis() -> tuple:
     hgvs_1 = hgvs_parser.parse_c_posedit("c.5219T>G".split("c.")[1])
     transcript_1 = TranscriptInfo(
         "ENST00000357654",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         hgvs_1,
         5219,
         5219,
@@ -28,7 +28,7 @@ def create_example_mis() -> tuple:
     hgvs_2 = hgvs_parser.parse_c_posedit("c.5282T>G".split("c.")[1])
     transcript_2 = TranscriptInfo(
         "ENST00000471181",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         hgvs_2,
         5282,
         5282,
@@ -38,7 +38,7 @@ def create_example_mis() -> tuple:
     )
     transcripts = [transcript_1, transcript_2]
     variant = VariantInfo(
-        "BRCA1", ["missense_variant"], "17", 41209127, 41209127, "some_id", "A", "C"
+        "BRCA1", [VARTYPE.MISSENSE_VARIANT], "17", 41209127, 41209127, "some_id", "A", "C"
     )
     return (transcripts, variant)
 
@@ -51,7 +51,7 @@ def create_example_mis_first_base() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.5218G>C".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         hgvs,
         5218,
         5218,
@@ -60,7 +60,7 @@ def create_example_mis_first_base() -> tuple:
         var_protein="p.Val1740Leu",
     )
     variant = VariantInfo(
-        "BRCA1", ["missense_variant"], "17", 41209128, 41209128, "some_id", "C", "G"
+        "BRCA1", [VARTYPE.MISSENSE_VARIANT], "17", 41209128, 41209128, "some_id", "C", "G"
     )
     return (transcript, variant)
 
@@ -74,7 +74,7 @@ def create_example_mis_BRCA1_2() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.4232T>C".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         hgvs,
         4232,
         4232,
@@ -83,7 +83,7 @@ def create_example_mis_BRCA1_2() -> tuple:
         var_protein="p.Met1411Thr",
     )
     variant = VariantInfo(
-        "BRCA1", ["missense_variant"], "17", 41234546, 41234546, "some_id", "A", "G"
+        "BRCA1", [VARTYPE.MISSENSE_VARIANT], "17", 41234546, 41234546, "some_id", "A", "G"
     )
     return (transcript, variant)
 
@@ -97,7 +97,7 @@ def create_example_mis_BRCA1_1() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.4231A>G".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         hgvs,
         4231,
         4231,
@@ -106,7 +106,7 @@ def create_example_mis_BRCA1_1() -> tuple:
         var_protein="p.Met1411Thr",
     )
     variant = VariantInfo(
-        "BRCA1", ["missense_variant"], "17", 41234547, 41234547, "some_id", "T", "C"
+        "BRCA1", [VARTYPE.MISSENSE_VARIANT], "17", 41234547, 41234547, "some_id", "T", "C"
     )
     return (transcript, variant)
 
@@ -120,7 +120,7 @@ def create_example_mis_BRCA1_3() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.4233G>A".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         hgvs,
         4233,
         4233,
@@ -129,7 +129,7 @@ def create_example_mis_BRCA1_3() -> tuple:
         var_protein="p.Met1411Ile",
     )
     variant = VariantInfo(
-        "BRCA1", ["missense_variant"], "17", 41234545, 41234545, "some_id", "C", "T"
+        "BRCA1", [VARTYPE.MISSENSE_VARIANT], "17", 41234545, 41234545, "some_id", "C", "T"
     )
     return (transcript, variant)
 
@@ -146,7 +146,7 @@ def create_example_mis_BRCA1_2_exons() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.4097G>A".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         hgvs,
         4097,
         4097,
@@ -155,7 +155,7 @@ def create_example_mis_BRCA1_2_exons() -> tuple:
         var_protein="p.Gly1366Asp",
     )
     variant = VariantInfo(
-        "BRCA1", ["missense_variant"], "17", 41243049, 41243049, "some_id", "C", "T"
+        "BRCA1", [VARTYPE.MISSENSE_VARIANT], "17", 41243049, 41243049, "some_id", "C", "T"
     )
     return (transcript, variant)
 
@@ -169,7 +169,7 @@ def create_example_mis_BRCA2_1() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.6886A>T".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000380152",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         hgvs,
         6886,
         6886,
@@ -178,7 +178,7 @@ def create_example_mis_BRCA2_1() -> tuple:
         var_protein="p.Ile2296Leu",
     )
     variant = VariantInfo(
-        "BRCA2", ["missense_variant"], "13", 32918739, 32918739, "some_id", "A", "T"
+        "BRCA2", [VARTYPE.MISSENSE_VARIANT], "13", 32918739, 32918739, "some_id", "A", "T"
     )
     return (transcript, variant)
 
@@ -192,7 +192,7 @@ def create_example_mis_BRCA2_2() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.6887T>A".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000380152",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         hgvs,
         6887,
         6887,
@@ -201,7 +201,7 @@ def create_example_mis_BRCA2_2() -> tuple:
         var_protein="p.Ile2296Lys",
     )
     variant = VariantInfo(
-        "BRCA2", ["missense_variant"], "13", 32918740, 32918740, "some_id", "T", "A"
+        "BRCA2", [VARTYPE.MISSENSE_VARIANT], "13", 32918740, 32918740, "some_id", "T", "A"
     )
     return (transcript, variant)
 
@@ -215,7 +215,7 @@ def create_example_mis_BRCA2_3() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.6888A>G".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000380152",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         hgvs,
         6888,
         6888,
@@ -224,7 +224,7 @@ def create_example_mis_BRCA2_3() -> tuple:
         var_protein="p.Ile2296Met",
     )
     variant = VariantInfo(
-        "BRCA2", ["missense_variant"], "13", 32918741, 32918741, "some_id", "A", "G"
+        "BRCA2", [VARTYPE.MISSENSE_VARIANT], "13", 32918741, 32918741, "some_id", "A", "G"
     )
     return (transcript, variant)
 
@@ -241,7 +241,7 @@ def create_example_mis_BRCA2_2_exons() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.7976G>A".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000380152",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         hgvs,
         7976,
         7976,
@@ -250,6 +250,6 @@ def create_example_mis_BRCA2_2_exons() -> tuple:
         var_protein="p.Arg2659Lys",
     )
     variant = VariantInfo(
-        "BRCA2", ["missense_variant"], "13", 32936830, 32936830, "some_id", "G", "A"
+        "BRCA2", [VARTYPE.MISSENSE_VARIANT], "13", 32936830, 32936830, "some_id", "G", "A"
     )
     return (transcript, variant)

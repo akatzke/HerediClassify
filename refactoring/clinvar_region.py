@@ -6,13 +6,14 @@ from cyvcf2 import VCF
 import pyensembl
 
 from refactoring.clinvar_utils import (
+    ClinVar,
+    CLINVAR_TYPE,
     convert_vcf_gen_to_df,
     filter_gene,
     create_ClinVar,
     summarise_ClinVars,
 )
 from refactoring.variant import VariantInfo
-from refactoring.variant_annotate import CLINVAR_TYPE, ClinVar
 
 
 def check_clinvar_start_alt_start(

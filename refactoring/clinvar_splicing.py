@@ -9,8 +9,9 @@ import pyensembl
 from cyvcf2 import VCF
 
 from refactoring.variant import VARTYPE_GROUPS, VariantInfo, TranscriptInfo
-from refactoring.variant_annotate import ClinVar, CLINVAR_TYPE
 from refactoring.clinvar_utils import (
+    ClinVar,
+    CLINVAR_TYPE,
     convert_vcf_gen_to_df,
     create_ClinVar,
     get_affected_transcript,

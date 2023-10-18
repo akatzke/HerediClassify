@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from refactoring.variant import VariantInfo, TranscriptInfo
+from refactoring.variant import VariantInfo, TranscriptInfo, VARTYPE
 
 import hgvs.parser
 import hgvs.posedit
@@ -16,7 +16,7 @@ def create_example_dup() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.1831dup".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000265849",
-        ["frameshift_variant"],
+        [VARTYPE.FRAMESHIFT_VARIANT],
         hgvs,
         1831,
         1832,
@@ -26,7 +26,7 @@ def create_example_dup() -> tuple:
     )
     variant = VariantInfo(
         "PMS2",
-        ["frameshift_variant"],
+        [VARTYPE.FRAMESHIFT_VARIANT],
         "7",
         6026564,
         6026565,
@@ -45,7 +45,7 @@ def create_example_ins() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.330_331insA".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["frameshift_variant"],
+        [VARTYPE.FRAMESHIFT_VARIANT],
         hgvs,
         330,
         331,
@@ -54,7 +54,7 @@ def create_example_ins() -> tuple:
         var_protein="p.Glu111fs",
     )
     variant = VariantInfo(
-        "BRCA1", ["frameshift_variant"], "17", 41256249, 41256250, "some_id", "", "T"
+        "BRCA1", [VARTYPE.FRAMESHIFT_VARIANT], "17", 41256249, 41256250, "some_id", "", "T"
     )
     return (transcript, variant)
 
@@ -67,7 +67,7 @@ def create_example_ins_no_frameshift() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.330_331insAAA".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["frameshift_variant"],
+        [VARTYPE.FRAMESHIFT_VARIANT],
         hgvs,
         330,
         331,
@@ -76,7 +76,7 @@ def create_example_ins_no_frameshift() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA1", ["frameshift_variant"], "17", 41256249, 41256250, "some_id", "", "TTT"
+        "BRCA1", [VARTYPE.FRAMESHIFT_VARIANT], "17", 41256249, 41256250, "some_id", "", "TTT"
     )
     return (transcript, variant)
 
@@ -89,7 +89,7 @@ def create_example_del() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.286_288del".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000269305",
-        ["inframe_deletion"],
+        [VARTYPE.INFRAME_DELETION],
         hgvs,
         286,
         288,
@@ -98,7 +98,7 @@ def create_example_del() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "TP53", ["inframe_deletion"], "17", 7579399, 7579401, "some_id", "CAGA", "C"
+        "TP53", [VARTYPE.INFRAME_DELETION], "17", 7579399, 7579401, "some_id", "CAGA", "C"
     )
     return (transcript, variant)
 
@@ -111,7 +111,7 @@ def create_example_indel() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.4391_4393delinsTT".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["frameshift_variant"],
+        [VARTYPE.FRAMESHIFT_VARIANT],
         hgvs,
         4391,
         4393,
@@ -121,7 +121,7 @@ def create_example_indel() -> tuple:
     )
     variant = VariantInfo(
         "BRCA1",
-        ["frameshift_variant"],
+        [VARTYPE.FRAMESHIFT_VARIANT],
         "17",
         41228596,
         41228598,

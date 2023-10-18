@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from refactoring.variant import VariantInfo, TranscriptInfo
+from refactoring.variant import VariantInfo, TranscriptInfo, VARTYPE
 
 import hgvs.parser
 import hgvs.posedit
@@ -15,7 +15,7 @@ def create_brca2_missense() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.3073A>G".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000380152",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         hgvs,
         3073,
         3073,
@@ -25,7 +25,7 @@ def create_brca2_missense() -> tuple:
     )
     variant = VariantInfo(
         "BRCA2",
-        ["missense_variant"],
+        [VARTYPE.MISSENSE_VARIANT],
         "13",
         32911565,
         32911565,
@@ -43,7 +43,7 @@ def create_myo6_frameshift() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.2854dup".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000369975",
-        ["frameshift_variant"],
+        [VARTYPE.FRAMESHIFT_VARIANT],
         hgvs,
         2854,
         2854,
@@ -53,7 +53,7 @@ def create_myo6_frameshift() -> tuple:
     )
     variant = VariantInfo(
         "MYO6",
-        ["frameshift_variant"],
+        [VARTYPE.FRAMESHIFT_VARIANT],
         "6",
         76599967,
         76599967,
@@ -71,7 +71,7 @@ def create_diaph1_frameshift() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.3627_3628del".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000253811",
-        ["frameshift_variant"],
+        [VARTYPE.FRAMESHIFT_VARIANT],
         hgvs,
         3627,
         3628,
@@ -81,7 +81,7 @@ def create_diaph1_frameshift() -> tuple:
     )
     variant = VariantInfo(
         "DIAPH1",
-        ["frameshift_variant"],
+        [VARTYPE.FRAMESHIFT_VARIANT],
         "5",
         140903745,
         140903745,

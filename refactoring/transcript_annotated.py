@@ -8,8 +8,7 @@ import pathlib
 
 from refactoring.genotoscope_protein_len_diff import calculate_prot_len_diff
 
-from refactoring.variant import VARTYPE_GROUPS, VariantInfo, TranscriptInfo
-from refactoring.variant_annotate import Variant_annotated
+from refactoring.variant import VARTYPE_GROUPS, VariantInfo, TranscriptInfo, Variant
 from refactoring.genotoscope_exon_skipping import assess_exon_skipping
 from refactoring.genotoscope_assess_NMD import (
     assess_NMD_exonic_variant,
@@ -56,15 +55,15 @@ class TranscriptInfo_annot(TranscriptInfo):
     pathogenic_variants_truncated_region: list[str] = field(default_factory = list)
 
 
-def annotate_transcripts(variant: Variant_annotated) -> list[TranscriptInfo_annot]:
+def annotate_transcripts(variant: Variant) -> list[TranscriptInfo_annot]:
     annotated_transcripts = []
     for transcript in variant.transcript_info:
-        if transcript.var_type in VARTYPE_GROUPS.EXONIC.value:
-            annotated_transcript = TranscriptInfo_exonic.annotate(variant, transcript)
-        elif transcript.var_type in VARTYPE_GROUPS.INTRONIC.value:
-            annotated_transcript = TranscriptInfo_intronic.annotate(variant, transcript)
-        elif transcript.var_type in VARTYPE_GROUPS.START_LOST.value:
-            annotated_transcript = TranscriptInfo_start_loss.annotate(variant, transcript)
+        if any(var_type in VARTYPE_GROUPS.EXONIC.value for var_type in transcript.var_type):
+            annotated_transcript = TranscriptInfo_exonic.annotate(variant.variant_info, transcript)
+        elif any(var_type in VARTYPE_GROUPS.INTRONIC.value for var_type in transcript.var_type):
+            annotated_transcript = TranscriptInfo_intronic.annotate(variant.variant_info, transcript)
+        elif any(var_type in VARTYPE_GROUPS.START_LOST.value for var_type in transcript.var_type):
+            annotated_transcript = TranscriptInfo_start_loss.annotate(variant.variant_info, transcript)
         else:
             break
         annotated_transcripts.append(annotated_transcript)
@@ -73,7 +72,7 @@ def annotate_transcripts(variant: Variant_annotated) -> list[TranscriptInfo_anno
     return annotated_transcripts
 
 
-def annotate_transcripts_acmg_specification(variant: Variant_annotated) -> list[TranscriptInfo_annot]:
+def annotate_transcripts_acmg_specification(variant: Variant) -> list[TranscriptInfo_annot]:
     """
     Check if ACMG classification is sufficient to define complete variant interpretation
     """
@@ -81,19 +80,19 @@ def annotate_transcripts_acmg_specification(variant: Variant_annotated) -> list[
     for transcript in variant.transcript_info:
         if transcript.var_type in VARTYPE_GROUPS.EXONIC.value:
             try:
-                annotated_transcript = TranscriptInfo_exonic.annotate_acmg_specification(variant, transcript)
+                annotated_transcript = TranscriptInfo_exonic.annotate_acmg_specification(variant.variant_info, transcript)
             except:
-                annotated_transcript = TranscriptInfo_exonic.annotate(variant, transcript)
+                annotated_transcript = TranscriptInfo_exonic.annotate(variant.variant_info, transcript)
         elif transcript.var_type in VARTYPE_GROUPS.INTRONIC.value:
             try:
-                annotated_transcript = TranscriptInfo_intronic.annotate_acmg_specification(variant, transcript)
+                annotated_transcript = TranscriptInfo_intronic.annotate_acmg_specification(variant.variant_info, transcript)
             except:
-                annotated_transcript = TranscriptInfo_intronic.annotate(variant, transcript)
+                annotated_transcript = TranscriptInfo_intronic.annotate(variant.variant_info, transcript)
         elif transcript.var_type in VARTYPE_GROUPS.START_LOST.value:
             try:
-                annotated_transcript = TranscriptInfo_start_loss.annotate_acmg_specification(variant, transcript)
+                annotated_transcript = TranscriptInfo_start_loss.annotate_acmg_specification(variant.variant_info, transcript)
             except:
-                annotated_transcript = TranscriptInfo_start_loss.annotate(variant, transcript)
+                annotated_transcript = TranscriptInfo_start_loss.annotate(variant.variant_info, transcript)
         else:
             break
         annotated_transcripts.append(annotated_transcript)

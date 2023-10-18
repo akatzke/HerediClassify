@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from typing import Callable
 
 from refactoring.variant_annotate import Variant_annotated
-from refactoring.variant import RuleResult
 from refactoring.transcript_annotated import *
 from refactoring.rule_utils import (
     Prediction_result,
@@ -13,6 +12,14 @@ from refactoring.rule_utils import (
     summarise_results_per_transcript,
 )
 from refactoring.config_annotation import classification_information
+
+
+@dataclass
+class RuleResult:
+    name: str
+    status: bool
+    strength: str
+    comment: str
 
 
 class abstract_rule(ABC):
@@ -173,7 +180,7 @@ class pm1(abstract_rule):
     """
     PM1: Variant located in mutational hot spot or citical protein region
     """
-    arguments = [classification_information.VARIANT_HOTSPOT]
+    arguments = [classification_information.VARIANT_ANNOT]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:

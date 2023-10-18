@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Protocol
+from typing import Literal, Protocol
 from enum import Enum
 
 from refactoring.variant_annotate import Variant_annotated
@@ -11,7 +11,6 @@ class classification_information(Enum):
     ANNOTATED_TRANSCRIPT_LIST = "annotated_transcript_list"
     ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec = "annotated_transcript_list_ACMG_spec"
     VARIANT_CLINVAR = "variant_clinvar"
-    VARIANT_HOTSPOT = "variant_hotspot"
     VARIANT_ANNOT = "variant_annot"
     THRESHOLD_PATHOGENICITY_PREDICTION = "threshold_pathogenicity_prediction"
     THRESHOLD_SPLICING_PREDICTION = "threshold_splicing_prediction"
@@ -47,6 +46,24 @@ def from_annotations_list_get_annotation_function(annotation_list: list[classifi
         annot_information_list.append(annot_info)
     return annot_information_list
 
+class THRESHOLD_DIRECTION(Enum):
+    HIGHER = "higher"
+    LOWER = "lower"
+
+
+@dataclass
+class Threshold():
+    name: str
+
+class One_threshold(Threshold):
+    threshold: float
+    direction: THRESHOLD_DIRECTION
+
+class Two_threshold(Threshold):
+    threshold_benign: float
+    direction_benign: THRESHOLD_DIRECTION
+    threshold_pathogenic: float
+    direction_pathogenic: THRESHOLD_DIRECTION
 
 class Annotation(Protocol):
     """

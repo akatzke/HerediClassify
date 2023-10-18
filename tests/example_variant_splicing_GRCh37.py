@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
 
-from refactoring.variant import VariantInfo, TranscriptInfo
+from refactoring.variant import VariantInfo, TranscriptInfo, Variant, PopulationDatabases, AffectedRegion, VARTYPE
 
 import hgvs.parser
 import hgvs.posedit
 
 hgvs_parser = hgvs.parser.Parser()
+
+def create_test_variant() -> Variant:
+    transinfo, varinfo = create_example_splice_acceptor_BRCA1()
+    region = AffectedRegion(True, False, "Codon")
+    flossies = PopulationDatabases("Flossies", 0.5)
+    gnomad = PopulationDatabases("gnomAd", 0.5)
+    prediction = {"SpliceAI" : 0.5, "REVEL": 0.5}
+    return Variant(varinfo, [transinfo], prediction, gnomad, flossies, region)
+
 
 
 def create_example_splice_acceptor_BRCA1() -> tuple:
@@ -17,7 +26,7 @@ def create_example_splice_acceptor_BRCA1() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.5278-1G>A".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["splice_acceptor"],
+        [VARTYPE.SPLICE_ACCEPTOR],
         hgvs,
         5278,
         5278,
@@ -27,7 +36,7 @@ def create_example_splice_acceptor_BRCA1() -> tuple:
     )
     variant = VariantInfo(
         "BRCA1",
-        ["splice_acceptor"],
+        [VARTYPE.SPLICE_ACCEPTOR],
         "17",
         41203135,
         41203135,
@@ -47,7 +56,7 @@ def create_example_splice_donor_BRCA1() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.5332+2T>C".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         hgvs,
         5332,
         5332,
@@ -57,7 +66,7 @@ def create_example_splice_donor_BRCA1() -> tuple:
     )
     variant = VariantInfo(
         "BRCA1",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         "17",
         41203078,
         41203078,
@@ -77,7 +86,7 @@ def create_example_splice_donor_exonic_BRCA1() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.4484G>C".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         hgvs,
         4484,
         4484,
@@ -87,7 +96,7 @@ def create_example_splice_donor_exonic_BRCA1() -> tuple:
     )
     variant = VariantInfo(
         "BRCA1",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         "17",
         41228505,
         41228505,
@@ -107,7 +116,7 @@ def create_example_splice_acceptor_exonic_BRCA1() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.4484G>C".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         hgvs,
         4484,
         4484,
@@ -117,7 +126,7 @@ def create_example_splice_acceptor_exonic_BRCA1() -> tuple:
     )
     variant = VariantInfo(
         "BRCA1",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         "17",
         41228505,
         41228505,
@@ -136,7 +145,7 @@ def create_example_splice_donor_BRCA1_2() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.4986+1G>T".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         hgvs,
         4986,
         4986,
@@ -146,7 +155,7 @@ def create_example_splice_donor_BRCA1_2() -> tuple:
     )
     variant = VariantInfo(
         "BRCA1",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         "17",
         41222944,
         41222944,
@@ -166,7 +175,7 @@ def create_example_minus_BRCA1() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.5278-6T>C".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         hgvs,
         5278,
         5278,
@@ -176,7 +185,7 @@ def create_example_minus_BRCA1() -> tuple:
     )
     variant = VariantInfo(
         "BRCA1",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         "17",
         41203140,
         41203140,
@@ -196,7 +205,7 @@ def create_example_plus_BRCA1() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.5332+4A>G".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000357654",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         hgvs,
         5332,
         5332,
@@ -206,7 +215,7 @@ def create_example_plus_BRCA1() -> tuple:
     )
     variant = VariantInfo(
         "BRCA1",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         "17",
         41203140,
         41203140,
@@ -227,9 +236,9 @@ def create_example_splice_BARD1() -> tuple:
     transcript = TranscriptInfo(
         "ENST00000260947",
         [
-            "splice_region_variant",
-            "splice_polypyrimidine_tract_variant",
-            "intron_variant",
+            VARTYPE.SPLICE_REGION_VARIANT,
+            VARTYPE.SPLICE_POLYPYRIMIDINE_TRACT_VARIANT,
+            VARTYPE.INTRON_VARIANT,
         ],
         hgvs,
         1569,
@@ -241,9 +250,9 @@ def create_example_splice_BARD1() -> tuple:
     variant = VariantInfo(
         "BARD1",
         [
-            "splice_region_variant",
-            "splice_polypyrimidine_tract_variant",
-            "intron_variant",
+            VARTYPE.SPLICE_REGION_VARIANT,
+            VARTYPE.SPLICE_POLYPYRIMIDINE_TRACT_VARIANT,
+            VARTYPE.INTRON_VARIANT,
         ],
         "2",
         215617286,
@@ -264,7 +273,7 @@ def create_example_splice_donor_TP53() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.357+5G>A".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000269305",
-        ["intron_variant", "splice_donor_5th_base_variant"],
+        [VARTYPE.INTRON_VARIANT, VARTYPE.SPLICE_DONOR_5TH_BASE_VARIANT],
         hgvs,
         375,
         375,
@@ -274,7 +283,7 @@ def create_example_splice_donor_TP53() -> tuple:
     )
     variant = VariantInfo(
         "TP53",
-        ["intron_variant", "splice_donor_5th_base_variant"],
+        [VARTYPE.INTRON_VARIANT, VARTYPE.SPLICE_DONOR_5TH_BASE_VARIANT],
         "17",
         7579307,
         7579307,
@@ -294,7 +303,7 @@ def create_example_splice_acceptor_BRCA2() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.7977-1G>C".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000380152",
-        ["splice_acceptor"],
+        [VARTYPE.SPLICE_ACCEPTOR],
         hgvs,
         7977,
         7977,
@@ -304,7 +313,7 @@ def create_example_splice_acceptor_BRCA2() -> tuple:
     )
     variant = VariantInfo(
         "BRCA2",
-        ["splice_acceptor"],
+        [VARTYPE.SPLICE_ACCEPTOR],
         "13",
         32937315,
         32937315,
@@ -324,7 +333,7 @@ def create_example_splice_acceptor_exonic_BRCA2() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.7978T>G".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000380152",
-        ["splice_acceptor", "missense_variant"],
+        [VARTYPE.SPLICE_ACCEPTOR, VARTYPE.MISSENSE_VARIANT],
         hgvs,
         7978,
         7978,
@@ -334,7 +343,7 @@ def create_example_splice_acceptor_exonic_BRCA2() -> tuple:
     )
     variant = VariantInfo(
         "BRCA2",
-        ["splice_acceptor", "missense_variant"],
+        [VARTYPE.SPLICE_ACCEPTOR, VARTYPE.MISSENSE_VARIANT],
         "13",
         32937317,
         32937317,
@@ -354,7 +363,7 @@ def create_example_splice_donor_BRCA2() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.8331+2T>C".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000380152",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         hgvs,
         8331,
         8331,
@@ -364,7 +373,7 @@ def create_example_splice_donor_BRCA2() -> tuple:
     )
     variant = VariantInfo(
         "BRCA2",
-        ["splice_donor"],
+        [VARTYPE.SPLICE_DONOR],
         "13",
         32937672,
         32937672,
@@ -384,7 +393,7 @@ def create_example_splice_donor_exonic_BRCA2() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.8331G>A".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000380152",
-        ["splice_donor", "synonymous_variant"],
+        [VARTYPE.SPLICE_DONOR, VARTYPE.SYNONYMOUS_VARIANT],
         hgvs,
         8331,
         8331,
@@ -394,7 +403,7 @@ def create_example_splice_donor_exonic_BRCA2() -> tuple:
     )
     variant = VariantInfo(
         "BRCA2",
-        ["splice_donor", "synonymous_variant"],
+        [VARTYPE.SPLICE_DONOR, VARTYPE.SYNONYMOUS_VARIANT],
         "13",
         32937670,
         32937670,
@@ -414,7 +423,7 @@ def create_example_splice_variant_BRCA2_minus() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.7618-10T>G".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000380152",
-        ["splice_region_variant", "intron_variant"],
+        [VARTYPE.SPLICE_REGION_VARIANT, VARTYPE.INTRON_VARIANT],
         hgvs,
         7618,
         7618,
@@ -424,7 +433,7 @@ def create_example_splice_variant_BRCA2_minus() -> tuple:
     )
     variant = VariantInfo(
         "BRCA2",
-        ["splice_region_variant", "intron_variant"],
+        [VARTYPE.SPLICE_REGION_VARIANT, VARTYPE.INTRON_VARIANT],
         "13",
         32931869,
         32931869,
@@ -444,7 +453,7 @@ def create_example_splice_variant_BRCA2_plus() -> tuple:
     hgvs = hgvs_parser.parse_c_posedit("c.7805+8A>C".split("c.")[1])
     transcript = TranscriptInfo(
         "ENST00000380152",
-        ["splice_region_variant", "intron_variant"],
+        [VARTYPE.SPLICE_REGION_VARIANT, VARTYPE.INTRON_VARIANT],
         hgvs,
         7805,
         7805,
@@ -454,7 +463,7 @@ def create_example_splice_variant_BRCA2_plus() -> tuple:
     )
     variant = VariantInfo(
         "BRCA2",
-        ["splice_region_variant", "intron_variant"],
+        [VARTYPE.SPLICE_REGION_VARIANT, VARTYPE.INTRON_VARIANT],
         "13",
         32932074,
         32932074,

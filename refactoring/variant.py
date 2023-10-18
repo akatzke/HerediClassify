@@ -113,18 +113,10 @@ class VariantInfo:
 
 
 @dataclass
-class Variant_import:
+class Variant:
     variant_info: VariantInfo
     transcript_info: list[TranscriptInfo]
     prediction_tools: dict
     gnomad: PopulationDatabases
     flossies: PopulationDatabases
     affected_region: AffectedRegion
-
-
-@dataclass
-class RuleResult:
-    name: str
-    status: bool
-    strength: str
-    comment: str
