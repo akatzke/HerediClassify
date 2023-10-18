@@ -12,7 +12,7 @@ from refactoring.clinvar_utils import (
     summarise_ClinVars,
 )
 from refactoring.variant import VariantInfo
-from refactoring.variant_annotate import ClinVar
+from refactoring.variant_annotate import CLINVAR_TYPE, ClinVar
 
 
 def check_clinvar_start_alt_start(
@@ -61,11 +61,11 @@ def check_clinvar_NMD_exon(
                 variant, exon["exon_start"], exon["exon_end"]
             )
             ClinVar_exons.append(ClinVar_exon)
-        ClinVar_exon_summary = summarise_ClinVars(ClinVar_exons, type="region")
+        ClinVar_exon_summary = summarise_ClinVars(ClinVar_exons, type= CLINVAR_TYPE.REGION)
         return ClinVar_exon_summary
     else:
         ClinVar_exon = ClinVar(
-            pathogenic=False, type="region", highest_classification=None
+            pathogenic=False, type= CLINVAR_TYPE.REGION, highest_classification=None
         )
         return ClinVar_exon
 
@@ -79,7 +79,7 @@ def check_clinvar_region(variant_info: VariantInfo, start: int, end: int) -> Cli
     clinvar_region = clinvar(f"{variant_info.chr}:{start}-{end}")
     clinvar_region_df = convert_vcf_gen_to_df(clinvar_region)
     clinvar_region_filter = filter_gene(clinvar_region_df, variant_info.gene_name)
-    ClinVar_region = create_ClinVar(clinvar_region_filter, "region")
+    ClinVar_region = create_ClinVar(clinvar_region_filter, CLINVAR_TYPE.REGION)
     return ClinVar_region
 
 

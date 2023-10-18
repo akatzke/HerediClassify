@@ -12,8 +12,8 @@ import pyensembl
 import hgvs.parser
 import hgvs.posedit
 
-from refactoring.variant import VariantInfo, TranscriptInfo
-from refactoring.variant_annotate import ClinVar
+from refactoring.variant import VARTYPE_GROUPS, VariantInfo, TranscriptInfo
+from refactoring.variant_annotate import ClinVar, CLINVAR_TYPE
 from refactoring.genotoscope_exon_skipping import (
     is_transcript_in_positive_strand,
 )
@@ -35,7 +35,7 @@ def check_clinvar_missense(
     """
     Check ClinVar for entries supporting pathogenicity of missense variant
     """
-    affected_transcript = get_affected_transcript(transcripts, ["missense_variant"])
+    affected_transcript = get_affected_transcript(transcripts, VARTYPE_GROUPS.MISSENSE)
     var_codon_info = extract_var_codon_info(variant, affected_transcript)
     print(var_codon_info)
     clinvar_same_codon = extract_clinvar_entries_missense(
@@ -59,12 +59,12 @@ def check_clinvar_missense(
     clinvar_same_aa_df = clinvar_same_codon_aa_filtered[
         clinvar_same_codon_aa_filtered.prot_alt == var_codon_info["prot_alt"]
     ]
-    ClinVar_same_aa = create_ClinVar(clinvar_same_aa_df, "same_aa_change")
+    ClinVar_same_aa = create_ClinVar(clinvar_same_aa_df, CLINVAR_TYPE.SAME_AA_CHANGE)
 
     clinvar_diff_aa = clinvar_same_codon_aa_filtered[
         clinvar_same_codon_aa_filtered.prot_alt != var_codon_info["prot_alt"]
     ]
-    ClinVar_diff_aa = create_ClinVar(clinvar_diff_aa, "diff_aa_change")
+    ClinVar_diff_aa = create_ClinVar(clinvar_diff_aa, CLINVAR_TYPE.DIFF_AA_CHANGE)
 
     return (ClinVar_same_aa, ClinVar_diff_aa)
 
@@ -158,25 +158,15 @@ def get_variant_position_in_codon(var_start: int) -> int:
     codon_index = var_start // 3
     var_pos_in_codon = var_start % 3
 
-    try:
-        var_start == codon_index * 3 + var_pos_in_codon
-    except AssertionError:
-        logger.error(
-            f"AssertionError: codon_index * 3 + var_pos_in_codon should be equal to codon index\n=> variant position: {var_start}",
-            exc_info=True,
-        )
+    if not var_start == codon_index * 3 + var_pos_in_codon:
+        raise AssertionError(f"AssertionError: codon_index * 3 + var_pos_in_codon should be equal to codon index\n=> variant position: {var_start}")
     if var_pos_in_codon == 0:
         var_pos_in_codon = 3
     logger.debug(
         f"Var start pos: {var_start} is at codon index: {codon_index} and variant is the codon position of {var_pos_in_codon}"
     )
-    try:
-        var_start >= var_pos_in_codon
-    except AssertionError:
-        logger.error(
-            f"Variant can't be at position {var_pos_in_codon} of codon and not be at least at the coding position {var_pos_in_codon}\n=> variant position: {var_start}",
-            exc_info=True,
-        )
+    if not var_start >= var_pos_in_codon:
+        raise AssertionError(f"Variant can't be at position {var_pos_in_codon} of codon and not be at least at the coding position {var_pos_in_codon}\n=> variant position: {var_start}")
     return var_pos_in_codon
 
 
@@ -378,7 +368,6 @@ def normalize_codon_exonic_pos(
             coding_seq_positions.append(
                 [exon.to_dict()["end"], exon.to_dict()["start"]]
             )
-    num_coding_sequences = len(coding_seq_positions)
 
     ### ### ### ### ### ### ### ### ### ### ### ### ###
     # find at which exon (or between which two exons) #
@@ -482,6 +471,8 @@ def normalize_codon_exonic_pos(
             codon_intersects_intron_at = 0
             codon_pos_corrected = sum(codon_pos_corrected_tmp, [])
             break
+        else:
+            raise AssertionError("Codon not in exon or intron inveral")
     logger.debug(f"normalized positions: {codon_pos_corrected}")
     logger.debug(f"codon intersects intron at: {codon_intersects_intron_at}")
     try:

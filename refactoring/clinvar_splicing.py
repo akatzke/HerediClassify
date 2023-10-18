@@ -2,15 +2,14 @@
 
 import logging
 import pathlib
-import pandas as pd
 from collections.abc import Iterable
 
 import hgvs.parser
 import pyensembl
 from cyvcf2 import VCF
 
-from refactoring.variant import VariantInfo, TranscriptInfo
-from refactoring.variant_annotate import ClinVar
+from refactoring.variant import VARTYPE_GROUPS, VariantInfo, TranscriptInfo
+from refactoring.variant_annotate import ClinVar, CLINVAR_TYPE
 from refactoring.clinvar_utils import (
     convert_vcf_gen_to_df,
     create_ClinVar,
@@ -42,12 +41,12 @@ def check_clinvar_splicing(
         f"{variant.chr}:{variant.genomic_start}-{variant.genomic_end}"
     )
     clinvar_same_pos_df = convert_vcf_gen_to_df(clinvar_same_pos)
-    ClinVar_same_pos = create_ClinVar(clinvar_same_pos_df, "same_nucleotide")
+    ClinVar_same_pos = create_ClinVar(clinvar_same_pos_df, CLINVAR_TYPE.SAME_NUCLEOTIDE)
     print(clinvar_same_pos_df[["pos", "id", "ref", "alt", "CLNSIG"]])
 
     ### Check ClinVar for pathogenic variant in same / closest splice site
     affected_transcript = get_affected_transcript(
-        transcripts, ["splice_donor", "splice_acceptor", "splice_region_variant"]
+        transcripts, VARTYPE_GROUPS.INTRONIC
     )
     (start_splice_site, end_splice_site) = find_corresponding_splice_site(
         affected_transcript, variant
@@ -57,7 +56,7 @@ def check_clinvar_splicing(
     )
     clinvar_splice_site_df = convert_vcf_gen_to_df(clinvar_splice_site)
     print(clinvar_splice_site_df[["pos", "id", "ref", "alt", "CLNSIG"]])
-    ClinVar_splice_site = create_ClinVar(clinvar_splice_site_df, "same_splice_site")
+    ClinVar_splice_site = create_ClinVar(clinvar_splice_site_df, CLINVAR_TYPE.SAME_SPLICE_SITE)
     return (ClinVar_same_pos, ClinVar_splice_site)
 
 

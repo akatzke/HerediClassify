@@ -9,7 +9,7 @@ import pathlib
 from refactoring.genotoscope_protein_len_diff import calculate_prot_len_diff
 
 from refactoring.variant import VARTYPE_GROUPS, VariantInfo, TranscriptInfo
-from refactoring.variant_annotate import ClinVar, Variant_annotated
+from refactoring.variant_annotate import Variant_annotated
 from refactoring.genotoscope_exon_skipping import assess_exon_skipping
 from refactoring.genotoscope_assess_NMD import (
     assess_NMD_exonic_variant,
@@ -22,7 +22,6 @@ from refactoring.genotoscope_construct_variant_sequence import (
 from refactoring.genotoscope_assess_NMD import (
     assess_NMD_exonic_variant,
     assess_NMD_intronic_variant,
-    assess_NMD_threshold
 )
 from refactoring.genotoscope_reading_frame_preservation import (
     assess_reading_frame_preservation,
@@ -40,7 +39,6 @@ from refactoring.genotoscope_protein_len_diff_repetitive_region import (
 from refactoring.clinvar_region import (
     check_clinvar_NMD_exon,
     check_clinvar_start_alt_start,
-    check_clinvar_truncated_region,
 )
 
 
@@ -165,6 +163,17 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             pathogenic_variants_truncated_region = comment_truncated_exon_relevant
         )
 
+    @classmethod
+    def annotate_acmg_specification(cls, variant: VariantInfo, transcript: TranscriptInfo):
+        """
+        This function implements gene specifications from ACMG for frameshift and other variants
+        - NMD threshold
+        - Functionally important regions
+        """
+        variant = variant
+        transcript = transcript
+        pass
+
 
 @dataclass
 class TranscriptInfo_intronic(TranscriptInfo_annot):
@@ -245,6 +254,16 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             is_reading_frame_preserved=is_reading_frame_preserved,
         )
 
+    @classmethod
+    def annotate_acmg_specification(cls, variant: VariantInfo, transcript: TranscriptInfo):
+        """
+        This function implements gene specifications from ACMG for frameshift and other variants
+        - Preimplemented splice decision trees
+        """
+        variant = variant
+        transcript = transcript
+        pass
+
 
 @dataclass
 class TranscriptInfo_start_loss(TranscriptInfo_annot):
@@ -258,7 +277,7 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
     @classmethod
     def annotate(
         cls, variant: VariantInfo, transcript: TranscriptInfo
-    ) -> TranscriptInfo_exonic:
+    ) -> TranscriptInfo_start_loss:
         ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
             transcript.transcript_id
         )
@@ -294,3 +313,13 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
             diff_len_protein_percent=diff_len_protein_percent,
             len_change_in_repetitive_region=len_change_in_repetitive_region
         )
+
+
+    @classmethod
+    def annotate_acmg_specification(cls, variant: VariantInfo, transcript: TranscriptInfo):
+        """
+        This function implements gene specifications from ACMG for start loss variants
+        """
+        variant = variant
+        transcript = transcript
+        pass

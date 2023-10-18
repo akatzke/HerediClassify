@@ -6,7 +6,7 @@ import pyensembl
 import hgvs.parser
 import hgvs.posedit
 
-from refactoring.variant import VariantInfo, TranscriptInfo, VarType
+from refactoring.variant import VariantInfo, TranscriptInfo, VARTYPE, VARTYPE_GROUPS
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.exon_skipping")
 hgvs_parser = hgvs.parser.Parser()
@@ -296,34 +296,11 @@ def extract_codons(sequence: str) -> list[str]:
     return codons
 
 
-def is_transcript_type_splice_acceptor_donor(transcript_type: list[VarType]) -> bool:
+def is_transcript_type_splice_acceptor_donor(transcript_type: list[VARTYPE]) -> bool:
     """
     Examine if transcript type is splice acceptor or splice donor
     """
-    intron_variant_types = {
-        "splice_acceptor_variant",
-        "splice_acceptor",
-        "splice_donor_variant",
-        "splice_donor",
-    }
-    exon_variant_types = {
-        "stop_gained",
-        "stop_lost",
-        "frameshift",
-        "frameshift_variant",
-        "inframe_insertion",
-        "inframe_deletion",
-        "disruptive_inframe_insertion",
-        "disruptive_inframe_deletion",
-        "conservative_inframe_insertion",
-        "conservative_inframe_deletion",
-    }
-
-    if any(
-        intron_var_type in transcript_type for intron_var_type in intron_variant_types
-    ) and not any(
-        exon_var_type in transcript_type for exon_var_type in exon_variant_types
-    ):
+    if any(vartype in VARTYPE_GROUPS.INTRONIC.value for vartype in transcript_type) and not any (vartype in VARTYPE_GROUPS.EXONIC.value for vartype in transcript_type):
         return True
     else:
         return False

@@ -9,6 +9,7 @@ from refactoring.acmg_rules import *
 
 class classification_information(Enum):
     ANNOTATED_TRANSCRIPT_LIST = "annotated_transcript_list"
+    ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec = "annotated_transcript_list_ACMG_spec"
     VARIANT_CLINVAR = "variant_clinvar"
     VARIANT_HOTSPOT = "variant_hotspot"
     VARIANT_ANNOT = "variant_annot"
@@ -20,6 +21,8 @@ class classification_information(Enum):
     THRESHOLD_BS2 = "threshold_bs2"
     THRESHOLD_DIFF_LEN_PROT_PERCENT = "threshold_diff_len_prot_percent"
 
+class annotation_input(Enum):
+    NMD_THRESHOLD = "nmd_threshold"
 
 def from_rule_list_get_annotations_needed(rule_list: list[str]) -> list[classification_information]:
     annotations_needed = []
@@ -35,10 +38,14 @@ def from_rule_list_get_annotations_needed(rule_list: list[str]) -> list[classifi
     return annotations_list
 
 
-def from_annotations_list_get_annotation_function(annotation_list = list[classification_information]) -> list[str]:
+def from_annotations_list_get_annotation_function(annotation_list: list[classification_information]) -> list[str]:
     set_annot = set(annotation_list)
-    ANNOTATION_DICTIONARY = {classification_information.ANNOTATED_TRANSCRIPT_LIST: }
-    return
+    ANNOTATION_DICTIONARY = {classification_information.ANNOTATED_TRANSCRIPT_LIST: annotate_transcripts, classification_information.ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec: annotate_transcripts_acmg_specification}
+    annot_information_list= []
+    for annot in set_annot:
+        annot_info = ANNOTATION_DICTIONARY[annot]
+        annot_information_list.append(annot_info)
+    return annot_information_list
 
 
 class Annotation(Protocol):
