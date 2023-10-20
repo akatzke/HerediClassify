@@ -1,77 +1,152 @@
 #!/usr/bin/env python3
 
-from typing import Literal, Protocol
+from collections.abc import Callable, Collection
+import yaml
+import pathlib
+from dataclasses import dataclass
+from jsonschema import validate
 from enum import Enum
 
-from refactoring.variant_annotate import Variant_annotated
-from refactoring.acmg_rules import *
+import refactoring.acmg_rules as rules
+import refactoring.information as info
+from refactoring.transcript_annotated import (
+    annotate_transcripts,
+    annotate_transcripts_acmg_specification,
+)
+from refactoring.clinvar_annot import annotate_clinvar
+from refactoring.variant import VariantInfo
 
 
-class classification_information(Enum):
-    ANNOTATED_TRANSCRIPT_LIST = "annotated_transcript_list"
-    ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec = "annotated_transcript_list_ACMG_spec"
-    VARIANT_CLINVAR = "variant_clinvar"
-    VARIANT_ANNOT = "variant_annot"
-    THRESHOLD_PATHOGENICITY_PREDICTION = "threshold_pathogenicity_prediction"
-    THRESHOLD_SPLICING_PREDICTION = "threshold_splicing_prediction"
-    THRESHOLD_PM2 = "threshold_pm2"
-    THRESHOLD_BA1 = "threshold_ba1"
-    THRESHOLD_BS1 = "threshold_ps1"
-    THRESHOLD_BS2 = "threshold_bs2"
-    THRESHOLD_DIFF_LEN_PROT_PERCENT = "threshold_diff_len_prot_percent"
+def import_config(path_config: pathlib.Path) -> dict:
+    """
+    Import configuration
+    """
+    with open(path_config) as f:
+        config = yaml.load(f, Loader=yaml.SafeLoader)
+    if not validate_yaml(config):
+        raise ValueError(
+            "YAML configuratino could not be validated. Plwase recheck YAML"
+        )
+    return config
 
-class annotation_input(Enum):
-    NMD_THRESHOLD = "nmd_threshold"
 
-def from_rule_list_get_annotations_needed(rule_list: list[str]) -> list[classification_information]:
-    annotations_needed = []
-    RULE_DICTIONARY = {"pvs1" : pvs1, "pm1" : pm1, "pm2" : pm2, "pm4" : pm4, "pm5": pm5, "pp3": bp4_pp3, "ba1" : ba1, "bs1": bs1, "bp3" : bp3, "bp4": bp4_pp3, "bp7": bp7}
+def create_complete_file_paths(config: dict) -> dict:
+    """
+    Paths are given in roots and subfolders etc
+    Here should be documented how to create complete paths from these partial files
+    """
+    return config
+
+
+def select_gene_specific_functions_if_applicable(config: dict, variant: VariantInfo):
+    """
+    Check if config has gene_specific_annotations_defined
+    If not defined simple use standrad config
+    If gene specific configs are listed here, check if gene has gene_specific config
+    Replace config with gene_specific config
+    """
+    pass
+
+
+def get_annotatins(config: dict):
+    """
+    Based on the annotation and loaded variant information
+    This functions
+    """
+    annotations_needed = from_rule_list_get_annotations_needed(config["rules"])
+    for annotation in annotations_needed:
+        # Update python to current version in order for match to work
+        fun = None
+        match annotation:
+            case info.classification_information.ANNOTATED_TRANSCRIPT_LIST:
+                ...
+                # here goes partial definition of calulating function
+                fun = lambda: ""
+
+        annotation.value.compute_function = fun
+
+
+def validate_yaml(config: dict) -> bool:
+    """
+    Validate yaml using a predefine json schema
+    """
+    json_schema_path = pathlib.Path(
+        "/home/katzkean/variant_classification/refactoring/config_schema.json"
+    )
+    with open(json_schema_path) as f:
+        json_schema = yaml.load(f, Loader=yaml.SafeLoader)
+    try:
+        validate(config, json_schema)
+    except:
+        return False
+    return True
+
+
+def from_rule_list_get_annotations_needed(
+    rule_list: list[str],
+) -> set[info.classification_information]:
+    RULE_DICTIONARY: dict[str, rules.abstract_rule] = {
+        "pvs1": rules.pvs1,
+        "ps1": rules.ps1,
+        "pm1": rules.pm1,
+        "pm2": rules.pm2,
+        "pm4": rules.pm4,
+        "pm5": rules.pm5,
+        "pp3": rules.bp4_pp3,
+        "ba1": rules.ba1,
+        "bs1": rules.bs1,
+        "bp3": rules.bp3,
+        "bp4": rules.bp4_pp3,
+        "bp7": rules.bp7,
+    }
+    annotations_needed = set()
     for rule in rule_list:
         try:
             rule_class = RULE_DICTIONARY[rule.lower()]
         except:
-            print(f"{rule.upper()} not valid rule. Valid rules are {RULE_DICTIONARY.keys()}")
+            print(
+                f"{rule.upper()} not valid rule. Valid rules are {RULE_DICTIONARY.keys()}"
+            )
             break
-        annotations_needed.append(rule_class.arguments)
-    annotations_list = [item for sublist in annotations_needed for item in sublist]
-    return annotations_list
+        annotations_needed.update(rule_class.arguments)
+    return annotations_needed
 
 
-def from_annotations_list_get_annotation_function(annotation_list: list[classification_information]) -> list[str]:
-    set_annot = set(annotation_list)
-    ANNOTATION_DICTIONARY = {classification_information.ANNOTATED_TRANSCRIPT_LIST: annotate_transcripts, classification_information.ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec: annotate_transcripts_acmg_specification}
-    annot_information_list= []
-    for annot in set_annot:
-        annot_info = ANNOTATION_DICTIONARY[annot]
-        annot_information_list.append(annot_info)
+def from_annotations_list_get_annotation_function(
+    annotation_list: Collection[info.classification_information],
+) -> set[str]:
+    ANNOTATION_DICTIONARY: dict[info.classification_information, Callable] = {
+        info.classification_information.ANNOTATED_TRANSCRIPT_LIST: annotate_transcripts,
+        info.classification_information.ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec: annotate_transcripts_acmg_specification,
+        info.classification_information.VARIANT_CLINVAR: annotate_clinvar,
+    }
+    annot_information_list = set()
+    for annot in annotation_list:
+        try:
+            annot_info = ANNOTATION_DICTIONARY[annot]
+        except:
+            continue
+        annot_information_list.add(annot_info)
     return annot_information_list
+
+
+@dataclass
+class Threshold:
+    name: str
+
 
 class THRESHOLD_DIRECTION(Enum):
     HIGHER = "higher"
     LOWER = "lower"
 
 
-@dataclass
-class Threshold():
-    name: str
-
 class One_threshold(Threshold):
     threshold: float
     direction: THRESHOLD_DIRECTION
+
 
 class Two_threshold(Threshold):
     threshold_benign: float
     direction_benign: THRESHOLD_DIRECTION
     threshold_pathogenic: float
     direction_pathogenic: THRESHOLD_DIRECTION
-
-class Annotation(Protocol):
-    """
-    Function that annotates a Variant_annotated object
-    """
-
-    def __call__(self, variant: Variant_annotated) -> Variant_annotated:
-        """
-        Return a further annotated Variant_annotated object
-        """
-        ...

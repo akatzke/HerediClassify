@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 
-from typing import List
 from enum import Enum
 import warnings
 
-from refactoring.variant import *
-
-
-def summarise_results_per_transcript(results: List[RuleResult]) -> RuleResult:
-    return results[0]
+from refactoring.variant import PredictionTools
 
 
 class Prediction_result(Enum):
@@ -17,7 +12,7 @@ class Prediction_result(Enum):
     BENIGN = 0
 
 
-def assess_prediction_tool(prediction: PredictionTools, threshold: List[float]):
+def assess_prediction_tool(prediction: PredictionTools, threshold: list[float]):
     if len(threshold) == 2:
         return assess_two_thresholds(prediction.value, threshold)
     elif len(threshold) == 1:
@@ -26,7 +21,7 @@ def assess_prediction_tool(prediction: PredictionTools, threshold: List[float]):
         warnings.warn(f"Number of thresholds supplied for {PredictionTools} wrong")
 
 
-def assess_two_thresholds(data: float, thresholds: List[float]) -> Prediction_result:
+def assess_two_thresholds(data: float, thresholds: list[float]) -> Prediction_result:
     """ """
     if data <= thresholds[0]:
         return Prediction_result.BENIGN

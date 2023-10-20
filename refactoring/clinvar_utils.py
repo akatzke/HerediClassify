@@ -8,7 +8,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from collections.abc import Iterable
 
-from refactoring.variant import VARTYPE_GROUPS, TranscriptInfo
+from refactoring.variant import TranscriptInfo
+from refactoring.var_type import VARTYPE_GROUPS
 
 logger = logging.getLogger("GenOtoScope_Classify.genotoscope_clinvar")
 
@@ -22,9 +23,11 @@ class CLINVAR_TYPE(Enum):
     SAME_SPLICE_SITE = "same_splice_site"
     REGION = "region"
 
+
 class CLINVAR_STATUS(Enum):
     PATHOGENIC = "Pathogenic"
     LIKELY_PATHOGENIC = "Likely pathogenic"
+
 
 @dataclass
 class ClinVar:

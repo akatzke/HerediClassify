@@ -1,0 +1,172 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome9",
+    "definitions": {
+        "Welcome9": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "rules": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "prediction_tool_threshold": {
+                    "$ref": "#/definitions/PredictionToolThreshold"
+                },
+                "allele_frequency_threshold": {
+                    "$ref": "#/definitions/AlleleFrequencyThreshold"
+                },
+                "annotation_files": {
+                    "$ref": "#/definitions/AnnotationFiles"
+                },
+                "gene_specific_configs": {
+                    "$ref": "#/definitions/GeneSpecificConfigs"
+                }
+            },
+            "required": [
+                "allele_frequency_threshold",
+                "annotation_files",
+                "gene_specific_configs",
+                "prediction_tool_threshold",
+                "rules"
+            ],
+            "title": "Welcome9"
+        },
+        "AlleleFrequencyThreshold": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "threshold_ba1": {
+                    "type": "number"
+                },
+                "threshold_bs1": {
+                    "type": "number"
+                },
+                "threshold_bs2": {
+                    "type": "number"
+                },
+                "threshold_pm2": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "threshold_ba1",
+                "threshold_bs1",
+                "threshold_bs2",
+                "threshold_pm2"
+            ],
+            "title": "AlleleFrequencyThreshold"
+        },
+        "AnnotationFiles": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "root": {
+                    "type": "string"
+                },
+                "clinvar_root": {
+                    "type": "string"
+                },
+                "clinvar_snv": {
+                    "type": "string"
+                },
+                "clinvar_small_indel": {
+                    "type": "string"
+                },
+                "uniport_root": {
+                    "type": "string"
+                },
+                "uniprot_version": {
+                    "type": "string"
+                },
+                "uniprot_rep": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "clinvar_root",
+                "clinvar_small_indel",
+                "clinvar_snv",
+                "root",
+                "uniport_root",
+                "uniprot_rep",
+                "uniprot_version"
+            ],
+            "title": "AnnotationFiles"
+        },
+        "GeneSpecificConfigs": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "root": {
+                    "type": "string"
+                },
+                "brca1": {
+                    "type": "string"
+                },
+                "brca2": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "brca1",
+                "brca2",
+                "root"
+            ],
+            "title": "GeneSpecificConfigs"
+        },
+        "PredictionToolThreshold": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "pathogenicity_prediction": {
+                    "$ref": "#/definitions/PathogenicityPrediction"
+                },
+                "splicing_prediction": {
+                    "$ref": "#/definitions/SplicingPrediction"
+                }
+            },
+            "required": [
+                "pathogenicity_prediction",
+                "splicing_prediction"
+            ],
+            "title": "PredictionToolThreshold"
+        },
+        "PathogenicityPrediction": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "revel_benign": {
+                    "type": "number"
+                },
+                "revel_pathogenic": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "revel_benign",
+                "revel_pathogenic"
+            ],
+            "title": "PathogenicityPrediction"
+        },
+        "SplicingPrediction": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "SpliceAI_benign": {
+                    "type": "number"
+                },
+                "SpliceAI_pathogenic": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "SpliceAI_benign",
+                "SpliceAI_pathogenic"
+            ],
+            "title": "SplicingPrediction"
+        }
+    }
+}

@@ -3,15 +3,14 @@
 from abc import ABC, abstractmethod
 from typing import Callable
 
+import refactoring.information as info
 from refactoring.variant_annotate import Variant_annotated
 from refactoring.transcript_annotated import *
 from refactoring.rule_utils import (
     Prediction_result,
     aggregate_prediction_results,
     assess_prediction_tool,
-    summarise_results_per_transcript,
 )
-from refactoring.config_annotation import classification_information
 
 
 @dataclass
@@ -22,15 +21,17 @@ class RuleResult:
     comment: str
 
 
-class abstract_rule(ABC):
+def summarise_results_per_transcript(results: list[RuleResult]) -> RuleResult:
+    return results[0]
 
+
+class abstract_rule(ABC):
     @abstractmethod
     def get_assess_rule(cls) -> Callable:
         """
         Get function that assess rule
         """
         pass
-
 
     @abstractmethod
     def assess_rule(self, args) -> RuleResult:
@@ -39,17 +40,18 @@ class abstract_rule(ABC):
         """
         pass
 
+
 class pvs1(abstract_rule):
     """
     PVS1: Loss of function
     Devided into three separate parts: Frameshift, splice and start_loss
     """
-    arguments = [classification_information.ANNOTATED_TRANSCRIPT_LIST]
+
+    arguments = [info.classification_information.ANNOTATED_TRANSCRIPT_LIST]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
-
 
     def assess_rule(self, annotated_transcripts: list[TranscriptInfo]) -> RuleResult:
         results = []
@@ -160,7 +162,8 @@ class ps1(abstract_rule):
     """
     PS1: Same amino accid change has been identified as pathogenic in ClinVar
     """
-    arguments = [classification_information.VARIANT_CLINVAR]
+
+    arguments = [info.classification_information.VARIANT_CLINVAR]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:
@@ -180,7 +183,8 @@ class pm1(abstract_rule):
     """
     PM1: Variant located in mutational hot spot or citical protein region
     """
-    arguments = [classification_information.VARIANT_ANNOT]
+
+    arguments = [info.classification_information.VARIANT_ANNOT]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:
@@ -201,14 +205,19 @@ class pm2(abstract_rule):
     PM2: Varinat is absent from control population
     In case of recessive disorders: Variant occurres less than expected carrier rate
     """
-    arguments = [classification_information.VARIANT_ANNOT, classification_information.THRESHOLD_PM2]
+
+    arguments = [
+        info.classification_information.VARIANT_ANNOT,
+        info.classification_information.THRESHOLD_PM2,
+    ]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-
-    def assess_rule(self, variant: Variant_annotated, threshold_pm2: float) -> RuleResult:
+    def assess_rule(
+        self, variant: Variant_annotated, threshold_pm2: float
+    ) -> RuleResult:
         if variant.gnomad.frequency > threshold_pm2:
             comment = f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
             result = RuleResult("PM2", False, "moderate", comment)
@@ -222,14 +231,20 @@ class pm4(abstract_rule):
     """
     PM4: Protein length change caused by variant is above 10% threshold
     """
-    arguments = [classification_information.ANNOTATED_TRANSCRIPT_LIST, classification_information.THRESHOLD_DIFF_LEN_PROT_PERCENT]
+
+    arguments = [
+        info.classification_information.ANNOTATED_TRANSCRIPT_LIST,
+        info.classification_information.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+    ]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
     def assess_rule(
-            self, annotated_transcript_list: list[TranscriptInfo_annot], threshold_diff_len_prot_percent: float
+        self,
+        annotated_transcript_list: list[TranscriptInfo_annot],
+        threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
         results = []
         for transcript in annotated_transcript_list:
@@ -239,8 +254,7 @@ class pm4(abstract_rule):
                 )
                 result = RuleResult("PM4", False, "moderate", comment)
             elif (
-                transcript.diff_len_protein_percent
-                > threshold_diff_len_prot_percent
+                transcript.diff_len_protein_percent > threshold_diff_len_prot_percent
                 and transcript.is_truncated_region_disease_relevant
                 and not transcript.len_change_in_repetitive_region
             ):
@@ -265,7 +279,8 @@ class pm5(abstract_rule):
     """
     PM5: Pathogenic missense variant to different amino acid in same position classified as pathogenic in ClinVar
     """
-    arguments = [classification_information.VARIANT_CLINVAR]
+
+    arguments = [info.classification_information.VARIANT_CLINVAR]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:
@@ -285,7 +300,12 @@ class bp4_pp3(abstract_rule):
     """
     BP4 and PP3: Assess results of prediction programs
     """
-    arguments = [classification_information.VARIANT_ANNOT, classification_information.THRESHOLD_PATHOGENICITY_PREDICTION, classification_information.THRESHOLD_SPLICING_PREDICTION]
+
+    arguments = [
+        info.classification_information.VARIANT_ANNOT,
+        info.classification_information.THRESHOLD_PATHOGENICITY_PREDICTION,
+        info.classification_information.THRESHOLD_SPLICING_PREDICTION,
+    ]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:
@@ -354,13 +374,19 @@ class ba1(abstract_rule):
     """
     BA1: High frequency of variant in healthy population (e.g. gnomAD)
     """
-    arguments = [classification_information.VARIANT_ANNOT, classification_information.THRESHOLD_BA1]
+
+    arguments = [
+        info.classification_information.VARIANT_ANNOT,
+        info.classification_information.THRESHOLD_BA1,
+    ]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_rule(self, variant: Variant_annotated, threshold_ba1: float) -> RuleResult:
+    def assess_rule(
+        self, variant: Variant_annotated, threshold_ba1: float
+    ) -> RuleResult:
         if variant.gnomad.frequency > threshold_ba1:
             comment = f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
             result = RuleResult("BA1", False, "stand_alone", comment)
@@ -374,13 +400,19 @@ class bs1(abstract_rule):
     """
     BS1: Frequency of variant higher in population than expected based on disease frequency
     """
-    arguments = [classification_information.VARIANT_ANNOT, classification_information.THRESHOLD_BS1]
+
+    arguments = [
+        info.classification_information.VARIANT_ANNOT,
+        info.classification_information.THRESHOLD_BS1,
+    ]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_bs1(self, variant: Variant_annotated, threshold_bs1: float) -> RuleResult:
+    def assess_bs1(
+        self, variant: Variant_annotated, threshold_bs1: float
+    ) -> RuleResult:
         if variant.gnomad.frequency > threshold_bs1:
             comment = f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
             result = RuleResult("BS1", False, "strong", comment)
@@ -394,13 +426,19 @@ class bs2(abstract_rule):
     """
     BS2: Mutation found in healthy individuals
     """
-    arguments = [classification_information.VARIANT_ANNOT, classification_information.THRESHOLD_BS2]
+
+    arguments = [
+        info.classification_information.VARIANT_ANNOT,
+        info.classification_information.THRESHOLD_BS2,
+    ]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_rule(self, variant: Variant_annotated, threshold_bs2: float) -> RuleResult:
+    def assess_rule(
+        self, variant: Variant_annotated, threshold_bs2: float
+    ) -> RuleResult:
         if variant.flossies.frequency == threshold_bs2:
             comment = "Something"
             result = RuleResult("BS2", True, "strong", comment)
@@ -414,13 +452,21 @@ class bp3(abstract_rule):
     """
     BP3: Protein length change in repetitive region
     """
-    arguments = [classification_information.ANNOTATED_TRANSCRIPT_LIST, classification_information.THRESHOLD_DIFF_LEN_PROT_PERCENT]
+
+    arguments = [
+        info.classification_information.ANNOTATED_TRANSCRIPT_LIST,
+        info.classification_information.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+    ]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_bp3(self, annotated_transcripts: list[TranscriptInfo], threshold_diff_len_prot_percent: float) -> RuleResult:
+    def assess_bp3(
+        self,
+        annotated_transcripts: list[TranscriptInfo],
+        threshold_diff_len_prot_percent: float,
+    ) -> RuleResult:
         results = []
         for transcript in annotated_transcripts:
             if (
@@ -434,8 +480,7 @@ class bp3(abstract_rule):
                 )
                 result = RuleResult("BP3", False, "supporting", comment)
             elif (
-                transcript.diff_len_protein_percent
-                <= threshold_diff_len_prot_percent
+                transcript.diff_len_protein_percent <= threshold_diff_len_prot_percent
                 and transcript.len_change_in_repetitive_region
             ):
                 comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
@@ -452,7 +497,11 @@ class bp7(abstract_rule):
     """
     BP7: Silent missense variant is predicted to have effect on splicing
     """
-    arguments = [classification_information.VARIANT_ANNOT, classification_information.THRESHOLD_SPLICING_PREDICTION]
+
+    arguments = [
+        info.classification_information.VARIANT_ANNOT,
+        info.classification_information.THRESHOLD_SPLICING_PREDICTION,
+    ]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:

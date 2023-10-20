@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
+from __future__ import annotations
+
 from typing import Callable
 from dataclasses import dataclass
 
 from refactoring.transcript_annotated import TranscriptInfo_annot
-from clinvar_utils import ClinVar
+from refactoring.clinvar_utils import ClinVar
 from refactoring.variant import (
     VariantInfo,
     PopulationDatabases,
@@ -30,7 +32,11 @@ class Variant_annotated(VariantInfo):
     affected_region: AffectedRegion
 
     @classmethod
-    def annotate(cls, annotations: list[Callable], variant: VariantInfo) -> Variant_annotated:
+    def annotate(
+        cls, annotations: list[Callable], variant: VariantInfo
+    ) -> Variant_annotated:
+        if len(annotations) == 0:
+            raise ValueError("List of annotations is empty.")
         for annotation in annotations:
             variant = annotation(variant)
         return variant

@@ -20,6 +20,7 @@ def check_clinvar_start_alt_start(
     ref_transcript: pyensembl.transcript.Transcript,
     variant_info: VariantInfo,
     alt_start_codon: list[int],
+    path_clinvar: pathlib.Path,
 ) -> ClinVar:
     """
     Get ClinVar entries between start codon and closest alternative start_codon
@@ -32,7 +33,7 @@ def check_clinvar_start_alt_start(
         region_start = ref_start_codon[0]
         region_stop = alt_start_codon[0] - 1
     ClinVar_start_alt_start = check_clinvar_region(
-        variant_info, region_start, region_stop
+        variant_info, region_start, region_stop, path_clinvar
     )
     return ClinVar_start_alt_start
 
@@ -40,17 +41,18 @@ def check_clinvar_start_alt_start(
 def check_clinvar_truncated_region(
     variant: VariantInfo,
     ref_transcript: pyensembl.transcript.Transcript,
+    path_clinvar: pathlib.Path,
 ) -> ClinVar:
     """
     For exonic pvs1 variant coordinate appropriate clinvar entries
     """
     start, stop = define_range_truncation(ref_transcript, variant)
-    clinvar_exonic = check_clinvar_region(variant, start, stop)
+    clinvar_exonic = check_clinvar_region(variant, start, stop, path_clinvar)
     return clinvar_exonic
 
 
 def check_clinvar_NMD_exon(
-    variant: VariantInfo, NMD_affected_exons: list[dict]
+    variant: VariantInfo, NMD_affected_exons: list[dict], path_clinvar: pathlib.Path
 ) -> ClinVar:
     """
     Check if exon contains any pathogenic variants
@@ -59,23 +61,26 @@ def check_clinvar_NMD_exon(
         ClinVar_exons = []
         for exon in NMD_affected_exons:
             ClinVar_exon = check_clinvar_region(
-                variant, exon["exon_start"], exon["exon_end"]
+                variant, exon["exon_start"], exon["exon_end"], path_clinvar
             )
             ClinVar_exons.append(ClinVar_exon)
-        ClinVar_exon_summary = summarise_ClinVars(ClinVar_exons, type= CLINVAR_TYPE.REGION)
+        ClinVar_exon_summary = summarise_ClinVars(
+            ClinVar_exons, type=CLINVAR_TYPE.REGION
+        )
         return ClinVar_exon_summary
     else:
         ClinVar_exon = ClinVar(
-            pathogenic=False, type= CLINVAR_TYPE.REGION, highest_classification=None
+            pathogenic=False, type=CLINVAR_TYPE.REGION, highest_classification=None
         )
         return ClinVar_exon
 
 
-def check_clinvar_region(variant_info: VariantInfo, start: int, end: int) -> ClinVar:
+def check_clinvar_region(
+    variant_info: VariantInfo, start: int, end: int, path_clinvar: pathlib.Path
+) -> ClinVar:
     """
     Get ClinVar entries in region
     """
-    path_clinvar = pathlib.Path("/home/katzkean/clinvar/clinvar_20230730_snv.vcf.gz")
     clinvar = VCF(path_clinvar)
     clinvar_region = clinvar(f"{variant_info.chr}:{start}-{end}")
     clinvar_region_df = convert_vcf_gen_to_df(clinvar_region)
