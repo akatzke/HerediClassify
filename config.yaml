@@ -1,13 +1,3 @@
-### Thresholds splicing and pathogenicity prediction tools ###
-prediction_tool_threshold:
-    revel_benign: 0.37
-    revel_pathogenic: 0.65
-    CADD: 20.0
-    phylop: 1.6
-    SpliceAI: 0.5
-    MaxEntScan: 0.3
-    Hbond: 2.0
-
 ### Rules ###
 rules:
     - pvs1
@@ -23,17 +13,35 @@ rules:
     - bp4
     - bp7
 
+### Thresholds splicing and pathogenicity prediction tools ###
+prediction_tool_threshold:
+    pathogenicity_prediction:
+        revel_benign: 0.183
+        revel_pathogenic: 0.644
+    splicing_prediction:
+        SpliceAI_benign: 0.1
+        SpliceAI_pathogenic: 0.2
+
 ### Allelee frequency threshold for each gene ###
 allele_frequency_threshold:
-    BRCA1: 0.1
-    BRCA2: 0.1
-    BARD1: 0.1
-    BRIP1: 0.1
-    CDH1: 0.1
-    CHEK2: 0.1
-    ATM: 0.1
-    PALB2: 0.1
-    PTEN: 0.1
-    RAD51C: 0.1
-    RAD51D: 0.1
-    P53: 0.1
+    threshold_ba1: 0.1
+    threshold_bs1: 0.01
+    threshold_bs2: 0.01
+    threshold_pm2: 0
+
+### Annotation filesitems
+annotation_files:
+    root: "/home/katzkean/"
+    clinvar_root: "clinvar"
+    clinvar_snv: "clinvar_20230730_quality_filter_snv.vcf.gz"
+    clinvar_small_indel: "clinvar_20230730_quality_filter_small_indel.vcf.gz"
+    uniport_root: "variant_classification/genotoscope_data/uniprot/"
+    uniprot_version: "uniprot_feb_2021"
+    uniprot_rep: "UP000005640_9606_repeat_hg19_16columns.bed"
+
+### Variant specific annotations
+### Define respective gene specific configuration in the given location
+gene_specific_configs:
+    root: "/home/katzkean/variant_classification/gene_specific/"
+    brca1: "acmg_brca1.yaml"
+    brca2: "acmg_brca2.yaml"

@@ -1,0 +1,93 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "type": "object",
+    "properties": {
+        "rules": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "prediction_tool_threshold" :{
+            "properties":{
+                "pathogenicity_prediction": {
+                    "properties": {
+                        "revel_benign": {
+                            "type": "number"
+                        },
+                        "revel_pathogenic": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "splicing_prediction" :{
+                    "properties": {
+                        "SpliceAI_benign":{
+                            "type": "number"
+                        },
+                        "SpliceAI_pathogenic":{
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        },
+        "allele_frequency_threshold" :{
+            "properties":{
+                "threshold_ba1": {
+                    "type": "number"
+                },
+                "threshold_bs1": {
+                    "type": "number"
+                },
+                "threshold_bs2": {
+                    "type": "number"
+                },
+                "threshold_pm2": {
+                    "type": "integer"
+                }
+            }
+        },
+        "annotation_files" :{
+            "properties":{
+                "root": {
+                    "type": "string"
+                },
+                "clinvar_root": {
+                    "type": "string"
+                },
+                "clinvar_snv": {
+                    "type": "string"
+                },
+                "clinvar_small_indel": {
+                    "type": "string"
+                },
+                "uniport_root": {
+                    "type": "string"
+                },
+                "uniprot_version": {
+                    "type": "string"
+                },
+                "uniprot_rep": {
+                    "type": "string"
+                }
+            }
+        },
+        "gene_specific_config": {
+            "properties":{
+                "root": {
+                    "type": "string"
+                },
+                "brca1": {
+                    "type": "string"
+                },
+                "brca2": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "required": [
+        "rules"
+    ]
+}

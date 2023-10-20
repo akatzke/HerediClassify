@@ -3,7 +3,7 @@
   "type": "object",
   "properties": {
     "chr": {
-      "type": "string",
+      "type": "string"
     },
     "pos": {
       "type": "integer"
@@ -197,7 +197,7 @@
             "effect_strength",
             "comment"
           ]
-        },
+        }
       ]
     },
     "prior": {
