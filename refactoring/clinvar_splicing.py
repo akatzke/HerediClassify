@@ -8,7 +8,8 @@ import hgvs.parser
 import pyensembl
 from cyvcf2 import VCF
 
-from refactoring.variant import VARTYPE_GROUPS, VariantInfo, TranscriptInfo
+from refactoring.variant import VariantInfo, TranscriptInfo
+from refactoring.var_type import VARTYPE_GROUPS
 from refactoring.clinvar_utils import (
     ClinVar,
     CLINVAR_TYPE,

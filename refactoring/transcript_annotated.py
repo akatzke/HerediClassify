@@ -38,7 +38,7 @@ from refactoring.clinvar_region import (
     check_clinvar_start_alt_start,
 )
 from refactoring.var_type import VARTYPE_GROUPS
-from refactoring.information import annotation_information
+from refactoring.information import classification_information
 
 
 @dataclass
@@ -144,14 +144,14 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
     is_reading_frame_preserved: bool = True
 
     @classmethod
-    def get_annotate(cls) -> tuple[Callable, tuple[annotation_information, ...]]:
+    def get_annotate(cls) -> tuple[Callable, tuple[classification_information, ...]]:
         return (
             cls.annotate,
             (
-                annotation_information.VARIANT,
-                annotation_information.TRANSCRIPT,
-                annotation_information.CLINVAR_PATH,
-                annotation_information.UNIPROT_REP_REGION_PATH,
+                classification_information.VARIANT,
+                classification_information.TRANSCRIPT,
+                classification_information.CLINVAR_PATH,
+                classification_information.UNIPROT_REP_REGION_PATH,
             ),
         )
 
@@ -244,14 +244,14 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
     is_reading_frame_preserved: bool = False
 
     @classmethod
-    def get_annotate(cls) -> tuple[Callable, tuple[annotation_information, ...]]:
+    def get_annotate(cls) -> tuple[Callable, tuple[classification_information, ...]]:
         return (
             cls.annotate,
             (
-                annotation_information.VARIANT,
-                annotation_information.TRANSCRIPT,
-                annotation_information.CLINVAR_PATH,
-                annotation_information.UNIPROT_REP_REGION_PATH,
+                classification_information.VARIANT,
+                classification_information.TRANSCRIPT,
+                classification_information.CLINVAR_PATH,
+                classification_information.UNIPROT_REP_REGION_PATH,
             ),
         )
 
@@ -356,14 +356,14 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
     position_alternative_start_codon: list[int] = field(default_factory=list)
 
     @classmethod
-    def get_annotate(cls) -> tuple[Callable, tuple[annotation_information, ...]]:
+    def get_annotate(cls) -> tuple[Callable, tuple[classification_information, ...]]:
         return (
             cls.annotate,
             (
-                annotation_information.VARIANT,
-                annotation_information.TRANSCRIPT,
-                annotation_information.CLINVAR_PATH,
-                annotation_information.UNIPROT_REP_REGION_PATH,
+                classification_information.VARIANT,
+                classification_information.TRANSCRIPT,
+                classification_information.CLINVAR_PATH,
+                classification_information.UNIPROT_REP_REGION_PATH,
             ),
         )
 

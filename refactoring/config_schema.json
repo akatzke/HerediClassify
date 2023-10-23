@@ -48,28 +48,46 @@
                 }
             }
         },
+        "functional_thresholds": {
+            "properties": {
+                "threshold_nmd": {
+                    "type": "integer"
+                },
+                "threshold_diff_len_prot_percent": {
+                    "type": "number"
+                }
+            }
+        },
         "annotation_files" :{
             "properties":{
                 "root": {
                     "type": "string"
                 },
-                "clinvar_root": {
-                    "type": "string"
+                "clinvar" :{
+                    "properties" : {
+                        "clinvar_root": {
+                            "type": "string"
+                        },
+                        "clinvar_snv": {
+                            "type": "string"
+                        },
+                        "clinvar_small_indel": {
+                            "type": "string"
+                        }
+                    }
                 },
-                "clinvar_snv": {
-                    "type": "string"
-                },
-                "clinvar_small_indel": {
-                    "type": "string"
-                },
-                "uniport_root": {
-                    "type": "string"
-                },
-                "uniprot_version": {
-                    "type": "string"
-                },
-                "uniprot_rep": {
-                    "type": "string"
+                "uniprot":{
+                    "properties" :{
+                        "uniport_root": {
+                            "type": "string"
+                        },
+                        "uniprot_version": {
+                            "type": "string"
+                        },
+                        "uniprot_rep": {
+                            "type": "string"
+                        }
+                    }
                 }
             }
         },

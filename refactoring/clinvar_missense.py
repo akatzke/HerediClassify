@@ -12,7 +12,8 @@ import pyensembl
 import hgvs.parser
 import hgvs.posedit
 
-from refactoring.variant import VARTYPE_GROUPS, VariantInfo, TranscriptInfo
+from refactoring.variant import VariantInfo, TranscriptInfo
+from refactoring.var_type import VARTYPE_GROUPS
 from refactoring.genotoscope_exon_skipping import (
     is_transcript_in_positive_strand,
 )

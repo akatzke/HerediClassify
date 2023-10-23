@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Callable
 
 import refactoring.information as info
+
 from refactoring.variant_annotate import Variant_annotated
 from refactoring.transcript_annotated import *
 from refactoring.rule_utils import (
@@ -26,6 +27,8 @@ def summarise_results_per_transcript(results: list[RuleResult]) -> RuleResult:
 
 
 class abstract_rule(ABC):
+    arguments: list[info.classification_information]
+
     @abstractmethod
     def get_assess_rule(cls) -> Callable:
         """
