@@ -31,7 +31,7 @@
     "gnomAD":
         {"AF": 0.007,
          "popmax": "EAS",
-         "popmax AF" : 0.009},
+         "popmax_AF" : 0.009},
     "FLOSSIES":
         {"AFR" : 9,
          "EUR" : 130},
