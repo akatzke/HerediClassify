@@ -18,7 +18,10 @@ class classification_information(Enum):
     ANNOTATED_TRANSCRIPT_LIST = classification("annotated_transcript_list")
     ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec = classification("annotated_transcript_list_acmg")
     VARIANT_CLINVAR = classification("variant_clinvar")
-    VARIANT_ANNOT = classification("variant_annot")
+    VARIANT_HOTSPOT = classification("variant_hotspot")
+    VARIANT_GNOMAD = classification("variant_gnomad")
+    VARIANT_FLOSSIES = classification("variant_flossies")
+    VARIANT_PREDICTION = classification("variant_prediction")
     THRESHOLD_PATHOGENICITY_PREDICTION = classification("prediction_pathogenicity",
         config_location=("prediction_tool_threshold", "pathogenicity_prediction"),
     )

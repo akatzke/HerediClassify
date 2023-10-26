@@ -1,21 +1,26 @@
 #!/usr/bin/env python3
 
-from cyvcf2 import Variant
 import yaml
 import pathlib
 from jsonschema import validate
 from functools import reduce
 import operator as op
 from dataclasses import dataclass
+from typing import Union
 from enum import Enum
 from functools import partial
+from cyvcf2 import Variant
 
 import refactoring.acmg_rules as rules
+from refactoring.clinvar_annot import get_annotate_clinvar
 from refactoring.information import classification_information, classification_information_groups
 from refactoring.variant import Variant
 
 
 def perform_annotation(path_config: pathlib.Path, variant: Variant):
+    """
+    Handle all configuration and annotation steps
+    """
     config = import_config(path_config)
     final_config = select_gene_specific_functions_if_applicable(config, variant.variant_info.gene_name)
     annotations_needed = from_rule_list_get_annotations_needed(final_config["rules"])
@@ -24,7 +29,7 @@ def perform_annotation(path_config: pathlib.Path, variant: Variant):
 
 def import_config(path_config: pathlib.Path) -> dict:
     """
-    Import configuration
+    Import configuration and validate it
     """
     with open(path_config) as f:
         config = yaml.load(f, Loader=yaml.SafeLoader)
@@ -110,28 +115,41 @@ def set_up_annotations(annotations_needed: list[classification_information], var
         if annotation is classification_information.VARIANT:
             classification_information.VARIANT.value.value = variant.variant_info
         elif annotation is classification_information.TRANSCRIPT:
-            print("Hello from Transcript")
             classification_information.TRANSCRIPT.value.value = variant.transcript_info
+        elif annotation is classification_information.VARIANT_HOTSPOT:
+            classification_information.VARIANT_HOTSPOT.value = variant.affected_region.critical_region
+        elif annotation is classification_information.VARIANT_GNOMAD:
+            classification_information.VARIANT_GNOMAD.value = variant.gnomad
+        elif annotation is classification_information.VARIANT_FLOSSIES:
+            classification_information.VARIANT_FLOSSIES.value = variant.flossies
+        elif annotation is classification_information.VARIANT_PREDICTION:
+            classification_information.VARIANT_PREDICTION.value = variant.prediction_tools
         elif annotation is classification_information.ANNOTATED_TRANSCRIPT_LIST:
-            print("Hello from Annotated transcript")
             fun = lambda: ""
+            annotation.value.compute_function = fun
         elif annotation is classification_information.ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec:
-            print("Hello from ACMG transcript")
             fun = lambda: ""
+            annotation.value.compute_function = fun
         elif classification_information.VARIANT_CLINVAR:
-            print("Hello from ClinVar")
+            fun_clinvar_annot, args_clinvar_annot = get_annotate_clinvar()
+            set_args = set_up_annotations(list(args_clinvar_annot), variant, config)
+            execute_args = execute_annotation(set_args)
             fun = lambda: ""
+            annotation.value.compute_function = fun
         elif annotation in classification_information_groups.PATH.value:
-            print("Hello from Path")
             fun = partial(create_path_from_config, annotation.value.config_location, config)
+            annotation.value.compute_function = fun
         elif annotation in classification_information_groups.THRESHOLDS_SINGLE.value:
-            print("This is threshold BA1")
             fun = partial(get_threshold_from_config, annotation.value.config_location, config)
+            annotation.value.compute_function = fun
         elif annotation in classification_information_groups.THRESHOLD_PREDICTION.value:
-            fun = parital()
+            fun = partial(get_threshold_prediction_from_config, annotation.value.config_location, config)
+            annotation.value.compute_function = fun
+        else:
+            raise TypeError(f"{annotation} is not defined and can not be calculated")
 
 
-def create_path_from_config(config_location: tuple[str, ...], config: dict) -> pathlib.Path:
+def create_path_from_config(config_location: Union[tuple[str, ...], None], config: dict) -> pathlib.Path:
     """
     From config reconstruct full path
     """
@@ -144,7 +162,7 @@ def create_path_from_config(config_location: tuple[str, ...], config: dict) -> p
         raise ValueError("Accessing configuration not possible, location in configuration not specified")
 
 
-def get_threshold_from_config(config_location: tuple[str, ...], config: dict) -> float:
+def get_threshold_from_config(config_location: Union[tuple[str, ...], None], config: dict) -> float:
     """
     Get threshold from config
     """
@@ -153,6 +171,29 @@ def get_threshold_from_config(config_location: tuple[str, ...], config: dict) ->
         return float(config_value)
     else:
         raise ValueError("Accessing configuration not possible, location in configuration not specified.")
+
+
+def get_threshold_prediction_from_config(config_location: Union[tuple[str, ...], None], config: dict):
+    """
+    Get threshold for prediction tools
+    """
+    if config_location is not None:
+        config_prediction_tool = reduce(op.getitem, config_location , config)
+        name = config_prediction_tool["name"]
+        thr_benign = config_prediction_tool["benign"]
+        thr_pathogenic = config_prediction_tool["pathogenic"]
+        if thr_benign < thr_pathogenic:
+            return Two_threshold(name, thr_benign, THRESHOLD_DIRECTION.LOWER, thr_pathogenic, THRESHOLD_DIRECTION.HIGHER)
+        else:
+            return Two_threshold(name, thr_benign, THRESHOLD_DIRECTION.HIGHER, thr_pathogenic, THRESHOLD_DIRECTION.LOWER)
+    else:
+        raise ValueError("Accessing configuration not possible, location in configuration not specified.")
+
+def set_variable(variable: Any) -> Any:
+    """
+    Set existing variable for definition of classification_information object
+    """
+
 
 
 @dataclass
@@ -165,11 +206,13 @@ class THRESHOLD_DIRECTION(Enum):
     LOWER = "lower"
 
 
+@dataclass
 class One_threshold(Threshold):
     threshold: float
     direction: THRESHOLD_DIRECTION
 
 
+@dataclass
 class Two_threshold(Threshold):
     threshold_benign: float
     direction_benign: THRESHOLD_DIRECTION

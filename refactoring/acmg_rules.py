@@ -187,7 +187,7 @@ class pm1(abstract_rule):
     PM1: Variant located in mutational hot spot or citical protein region
     """
 
-    arguments = [info.classification_information.VARIANT_ANNOT]
+    arguments = [info.classification_information.VARIANT_HOTSPOT]
 
     @classmethod
     def get_assess_rule(cls) -> Callable:
@@ -210,7 +210,7 @@ class pm2(abstract_rule):
     """
 
     arguments = [
-        info.classification_information.VARIANT_ANNOT,
+        info.classification_information.VARIANT_GNOMAD,
         info.classification_information.THRESHOLD_PM2,
     ]
 
@@ -305,7 +305,7 @@ class bp4_pp3(abstract_rule):
     """
 
     arguments = [
-        info.classification_information.VARIANT_ANNOT,
+        info.classification_information.VARIANT_PREDICTION,
         info.classification_information.THRESHOLD_PATHOGENICITY_PREDICTION,
         info.classification_information.THRESHOLD_SPLICING_PREDICTION,
     ]
@@ -379,7 +379,7 @@ class ba1(abstract_rule):
     """
 
     arguments = [
-        info.classification_information.VARIANT_ANNOT,
+        info.classification_information.VARIANT_GNOMAD,
         info.classification_information.THRESHOLD_BA1,
     ]
 
@@ -405,7 +405,7 @@ class bs1(abstract_rule):
     """
 
     arguments = [
-        info.classification_information.VARIANT_ANNOT,
+        info.classification_information.VARIANT_GNOMAD,
         info.classification_information.THRESHOLD_BS1,
     ]
 
@@ -431,7 +431,7 @@ class bs2(abstract_rule):
     """
 
     arguments = [
-        info.classification_information.VARIANT_ANNOT,
+        info.classification_information.VARIANT_FLOSSIES,
         info.classification_information.THRESHOLD_BS2,
     ]
 
@@ -502,7 +502,7 @@ class bp7(abstract_rule):
     """
 
     arguments = [
-        info.classification_information.VARIANT_ANNOT,
+        info.classification_information.VARIANT_PREDICTION,
         info.classification_information.THRESHOLD_SPLICING_PREDICTION,
     ]
 
@@ -531,7 +531,7 @@ class bp7(abstract_rule):
             )
             result = RuleResult("BP4", True, "supporting", comment)
         elif splicing_result == Prediction_result.BENIGN and is_conserved:
-            comment = "Variant is predicted to not affect splicing, but is coserved."
+            comment = "Variant is predicted to not affect splicing, but is conserved."
             result = RuleResult("BP4", False, "supporting", comment)
         else:
             comment = "No conclusive evidence regarding the prediction of splicing."
