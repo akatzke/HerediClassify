@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from typing import Callable
+from refactoring.clinvar_utils import CLINVAR_TYPE, ClinVar
 
 import refactoring.information as info
 
@@ -172,9 +173,10 @@ class ps1(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_rule(self, variant: Variant_annotated) -> RuleResult:
-        if variant.same_aa_change_clinvar.pathogenic:
-            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {variant.same_aa_change_clinvar.ids}."
+    def assess_rule(self, clinvar_result: dict[CLINVAR_TYPE, ClinVar]) -> RuleResult:
+        clinvar_same_aa = clinvar_result[CLINVAR_TYPE.SAME_AA_CHANGE]
+        if clinvar_same_aa.pathogenic:
+            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
             result = RuleResult("PS1", True, "strong", comment)
         else:
             comment = "No matches found for variant."
@@ -289,9 +291,10 @@ class pm5(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_rule(self, variant: Variant_annotated) -> RuleResult:
-        if variant.diff_aa_change_clinvar.pathogenic:
-            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {variant.diff_aa_change_clinvar.pathogenic}."
+    def assess_rule(self, clinvar_results: dict[CLINVAR_TYPE, ClinVar]) -> RuleResult:
+        clinvar_diff_aa = clinvar_results[CLINVAR_TYPE.DIFF_AA_CHANGE]
+        if clinvar_diff_aa.pathogenic:
+            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_diff_aa.pathogenic}."
             result = RuleResult("PM5", True, "moderate", comment)
         else:
             comment = "No matches found for variant."
