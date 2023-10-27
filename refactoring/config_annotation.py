@@ -6,14 +6,24 @@ from jsonschema import validate
 from functools import reduce
 import operator as op
 from dataclasses import dataclass
-from typing import Union
+from typing import Callable, Union, Any
 from enum import Enum
 from functools import partial
 from cyvcf2 import Variant
 
 import refactoring.acmg_rules as rules
 from refactoring.clinvar_annot import get_annotate_clinvar
-from refactoring.information import classification_information, classification_information_groups
+from refactoring.information import (
+    classification_information,
+    classification_information_groups,
+)
+from refactoring.transcript_annotated import (
+    TranscriptInfo_exonic,
+    TranscriptInfo_intronic,
+    TranscriptInfo_start_loss,
+    annotate_transcripts,
+)
+from refactoring.var_type import VARTYPE_GROUPS
 from refactoring.variant import Variant
 
 
@@ -22,9 +32,15 @@ def perform_annotation(path_config: pathlib.Path, variant: Variant):
     Handle all configuration and annotation steps
     """
     config = import_config(path_config)
-    final_config = select_gene_specific_functions_if_applicable(config, variant.variant_info.gene_name)
+    final_config = select_gene_specific_functions_if_applicable(
+        config, variant.variant_info.gene_name
+    )
     annotations_needed = from_rule_list_get_annotations_needed(final_config["rules"])
-    return annotations_needed
+    annotations_set_up = get_annotation_functions(
+        list(annotations_needed), variant, final_config
+    )
+    annotations = execute_annotation(annotations_set_up)
+    return annotations
 
 
 def import_config(path_config: pathlib.Path) -> dict:
@@ -93,7 +109,6 @@ def from_rule_list_get_annotations_needed(
     }
     annotations_needed = set()
     for rule in rule_list:
-        print(rule)
         try:
             rule_class = RULE_DICTIONARY[rule.lower()]
         except:
@@ -105,95 +120,227 @@ def from_rule_list_get_annotations_needed(
     return annotations_needed
 
 
+dict_annotation = {
+    classification_information.VARIANT: lambda variant, config: variant.variant_info,
+    classification_information.TRANSCRIPT: lambda variant, config: variant.transcript_info,
+    classification_information.VARIANT_HOTSPOT: lambda variant, config: variant.affected_region.critical_region,
+    classification_information.VARIANT_GNOMAD: lambda variant, config: variant.gnomad,
+    classification_information.VARIANT_FLOSSIES: lambda variant, config: variant.flossies,
+    classification_information.VARIANT_PREDICTION: lambda variant, config: variant.prediction_tools,
+    classification_information.ANNOTATED_TRANSCRIPT_LIST: lambda variant, config: get_annotation_function_annotated_transcript(
+        variant, config
+    ),
+    classification_information.ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec: lambda variant, config: get_annotation_function_annotated_transcript_acmg(
+        variant, config
+    ),
+    classification_information.VARIANT_CLINVAR: lambda variant, config: get_annotation_function_variant_clinvar(
+        variant, config
+    ),
+}
 
-def set_up_annotations(annotations_needed: list[classification_information], variant: Variant, config: dict):
+dict_annotation_groups = {
+    classification_information_groups.PATH: lambda annot, config: partial(
+        get_threshold_from_config, annot.value.config_location, config
+    ),
+    classification_information_groups.THRESHOLDS_SINGLE: lambda annot, config: partial(
+        get_threshold_from_config, annot.value.config_location, config
+    ),
+    classification_information_groups.THRESHOLD_PREDICTION: lambda annot, config: partial(
+        get_threshold_prediction_from_config, annot.value.config_location, config
+    ),
+}
+
+
+def get_annotation_functions(
+    annotations_needed: list[classification_information], variant: Variant, config: dict
+) -> list[classification_information]:
     """
     Based on needed annotations perform annotation
     """
     for annotation in annotations_needed:
-        # Update python to current version in order for match to work
-        if annotation is classification_information.VARIANT:
-            classification_information.VARIANT.value.value = variant.variant_info
-        elif annotation is classification_information.TRANSCRIPT:
-            classification_information.TRANSCRIPT.value.value = variant.transcript_info
-        elif annotation is classification_information.VARIANT_HOTSPOT:
-            classification_information.VARIANT_HOTSPOT.value = variant.affected_region.critical_region
-        elif annotation is classification_information.VARIANT_GNOMAD:
-            classification_information.VARIANT_GNOMAD.value = variant.gnomad
-        elif annotation is classification_information.VARIANT_FLOSSIES:
-            classification_information.VARIANT_FLOSSIES.value = variant.flossies
-        elif annotation is classification_information.VARIANT_PREDICTION:
-            classification_information.VARIANT_PREDICTION.value = variant.prediction_tools
-        elif annotation is classification_information.ANNOTATED_TRANSCRIPT_LIST:
-            fun = lambda: ""
-            annotation.value.compute_function = fun
-        elif annotation is classification_information.ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec:
-            fun = lambda: ""
-            annotation.value.compute_function = fun
-        elif classification_information.VARIANT_CLINVAR:
-            fun_clinvar_annot, args_clinvar_annot = get_annotate_clinvar()
-            set_args = set_up_annotations(list(args_clinvar_annot), variant, config)
-            execute_args = execute_annotation(set_args)
-            fun = lambda: ""
-            annotation.value.compute_function = fun
-        elif annotation in classification_information_groups.PATH.value:
-            fun = partial(create_path_from_config, annotation.value.config_location, config)
-            annotation.value.compute_function = fun
-        elif annotation in classification_information_groups.THRESHOLDS_SINGLE.value:
-            fun = partial(get_threshold_from_config, annotation.value.config_location, config)
-            annotation.value.compute_function = fun
-        elif annotation in classification_information_groups.THRESHOLD_PREDICTION.value:
-            fun = partial(get_threshold_prediction_from_config, annotation.value.config_location, config)
-            annotation.value.compute_function = fun
+        print(annotation)
+        if annotation in dict_annotation.keys():
+            annotation.value.compute_function = dict_annotation[annotation](
+                variant, config
+            )
         else:
-            raise TypeError(f"{annotation} is not defined and can not be calculated")
+            if annotation in classification_information_groups.PATH.value:
+                annotation.value.compute_function = dict_annotation_groups[
+                    classification_information_groups.PATH
+                ](annotation, config)
+            elif (
+                annotation in classification_information_groups.THRESHOLDS_SINGLE.value
+            ):
+                annotation.value.compute_function = dict_annotation_groups[
+                    classification_information_groups.THRESHOLDS_SINGLE
+                ](annotation, config)
+            elif (
+                annotation
+                in classification_information_groups.THRESHOLD_PREDICTION.value
+            ):
+                annotation.value.compute_function = dict_annotation_groups[
+                    classification_information_groups.THRESHOLD_PREDICTION
+                ](annotation, config)
+            else:
+                raise ValueError(f"No annotation function defined for {annotation}.")
+    return annotations_needed
 
 
-def create_path_from_config(config_location: Union[tuple[str, ...], None], config: dict) -> pathlib.Path:
+def get_annotation_function_annotated_transcript(
+    variant: Variant, config: dict
+) -> Callable[[], Any]:
+    """
+    Create annotation function for construction of classification_information.ANNOTATED_TRANSCIPT_LIST
+    """
+    relevant_classes = {
+        VARTYPE_GROUPS.EXONIC: TranscriptInfo_exonic,
+        VARTYPE_GROUPS.INTRONIC: TranscriptInfo_intronic,
+        VARTYPE_GROUPS.START_LOST: TranscriptInfo_start_loss,
+    }
+    fun_dict = {}
+    for name, entry in relevant_classes.items():
+        fun_annot = prepare_function_for_annotation(entry.get_annotate, variant, config)
+        fun_dict[name] = fun_annot
+    fun = partial(annotate_transcripts, variant, fun_dict)
+    return fun
+
+
+def get_annotation_function_annotated_transcript_acmg(
+    variant: Variant, config: dict
+) -> Callable[[], Any]:
+    """
+    Create annotation function for construction of classification_information.ANNOTATED_TRANSCIPT_LIST_ACMG_Spec
+    """
+    relevant_classes = {
+        VARTYPE_GROUPS.EXONIC: TranscriptInfo_exonic,
+        VARTYPE_GROUPS.INTRONIC: TranscriptInfo_intronic,
+        VARTYPE_GROUPS.START_LOST: TranscriptInfo_start_loss,
+    }
+    fun_dict = {}
+    for name, entry in relevant_classes.items():
+        fun_annot = prepare_function_for_annotation(entry.get_annotate, variant, config)
+        fun_dict[name]["general"] = fun_annot
+        fun_acmg = prepare_function_for_annotation(
+            entry.get_annotation_acmg, variant, config
+        )
+        fun_dict[name]["acmg"] = fun_acmg
+    fun = partial(annotate_transcripts, variant, fun_dict)
+    return fun
+
+
+def get_annotation_function_variant_clinvar(
+    variant: Variant, config: dict
+) -> Callable[[], Any]:
+    """
+    Create annotation function for construction of classification_information.VARIANT_CLINVAR
+    """
+    fun = prepare_function_for_annotation(get_annotate_clinvar, variant, config)
+    return fun
+
+
+def prepare_function_for_annotation(
+    fun: Callable[[], tuple[Callable, tuple[classification_information, ...]]],
+    variant: Variant,
+    config: dict,
+) -> Callable[[], Any]:
+    """
+    Prepare annotation function
+    """
+    annot_fun, annot_fun_args = fun()
+    set_args = get_annotation_functions(list(annot_fun_args), variant, config)
+    args = execute_annotation(set_args)
+    fun_annot = partial(annot_fun, *[argument.value.value for argument in args])
+    return fun_annot
+
+
+def execute_annotation(
+    annotations_to_execute: list[classification_information],
+) -> list[classification_information]:
+    """
+    Perform annotation for entrys in list
+    """
+    for annotation in annotations_to_execute:
+        print("execute")
+        print(annotation)
+        if annotation.value.compute_function is not None:
+            try:
+                annotation.value.value = annotation.value.compute_function()
+            except Exception:
+                raise ValueError(
+                    f"{annotation} function does not execute. Please check that all necessary information is available"
+                )
+    return annotations_to_execute
+
+
+def create_path_from_config(
+    config_location: Union[tuple[str, ...], None], config: dict
+) -> pathlib.Path:
     """
     From config reconstruct full path
     """
     if config_location is not None:
         root_files = pathlib.Path(config[config_location[0]]["root"])
-        dir_files = root_files / pathlib.Path(config[config_location[0]][config_location[1]]) / pathlib.Path(config[config_location[0]][config[config_location[1]]]["version"])
-        file_path = dir_files / pathlib.Path(config[config_location[0]][config_location[1]][config_location[2]])
+        dir_files = (
+            root_files
+            / pathlib.Path(config[config_location[0]][config_location[1]]["root"])
+            / pathlib.Path(config[config_location[0]][config_location[1]]["version"])
+        )
+        file_path = dir_files / pathlib.Path(
+            config[config_location[0]][config_location[1]][config_location[2]]
+        )
         return file_path
     else:
-        raise ValueError("Accessing configuration not possible, location in configuration not specified")
+        raise ValueError(
+            "Accessing configuration not possible, location in configuration not specified"
+        )
 
 
-def get_threshold_from_config(config_location: Union[tuple[str, ...], None], config: dict) -> float:
+def get_threshold_from_config(
+    config_location: Union[tuple[str, ...], None], config: dict
+) -> float:
     """
     Get threshold from config
     """
     if config_location is not None:
-        config_value = reduce(op.getitem, config_location , config)
+        config_value = reduce(op.getitem, config_location, config)
         return float(config_value)
     else:
-        raise ValueError("Accessing configuration not possible, location in configuration not specified.")
+        raise ValueError(
+            "Accessing configuration not possible, location in configuration not specified."
+        )
 
 
-def get_threshold_prediction_from_config(config_location: Union[tuple[str, ...], None], config: dict):
+def get_threshold_prediction_from_config(
+    config_location: Union[tuple[str, ...], None], config: dict
+):
     """
     Get threshold for prediction tools
     """
     if config_location is not None:
-        config_prediction_tool = reduce(op.getitem, config_location , config)
+        config_prediction_tool = reduce(op.getitem, config_location, config)
         name = config_prediction_tool["name"]
         thr_benign = config_prediction_tool["benign"]
         thr_pathogenic = config_prediction_tool["pathogenic"]
         if thr_benign < thr_pathogenic:
-            return Two_threshold(name, thr_benign, THRESHOLD_DIRECTION.LOWER, thr_pathogenic, THRESHOLD_DIRECTION.HIGHER)
+            return Two_threshold(
+                name,
+                thr_benign,
+                THRESHOLD_DIRECTION.LOWER,
+                thr_pathogenic,
+                THRESHOLD_DIRECTION.HIGHER,
+            )
         else:
-            return Two_threshold(name, thr_benign, THRESHOLD_DIRECTION.HIGHER, thr_pathogenic, THRESHOLD_DIRECTION.LOWER)
+            return Two_threshold(
+                name,
+                thr_benign,
+                THRESHOLD_DIRECTION.HIGHER,
+                thr_pathogenic,
+                THRESHOLD_DIRECTION.LOWER,
+            )
     else:
-        raise ValueError("Accessing configuration not possible, location in configuration not specified.")
-
-def set_variable(variable: Any) -> Any:
-    """
-    Set existing variable for definition of classification_information object
-    """
-
+        raise ValueError(
+            "Accessing configuration not possible, location in configuration not specified."
+        )
 
 
 @dataclass

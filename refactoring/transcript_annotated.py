@@ -54,31 +54,28 @@ class TranscriptInfo_annot(TranscriptInfo):
     pathogenic_variants_truncated_region: list[str] = field(default_factory=list)
 
 
-def annotate_transcripts(variant: Variant) -> list[TranscriptInfo_annot]:
+def annotate_transcripts(
+    variant: Variant, fun_dict: dict[VARTYPE_GROUPS, Callable[[], TranscriptInfo_annot]]
+) -> list[TranscriptInfo_annot]:
     annotated_transcripts = []
     for transcript in variant.transcript_info:
         if any(
             var_type in VARTYPE_GROUPS.EXONIC.value for var_type in transcript.var_type
         ):
-            annotated_transcript = TranscriptInfo_exonic.annotate(
-                variant.variant_info, transcript
-            )
+            annot_fun = fun_dict[VARTYPE_GROUPS.EXONIC]
         elif any(
             var_type in VARTYPE_GROUPS.INTRONIC.value
             for var_type in transcript.var_type
         ):
-            annotated_transcript = TranscriptInfo_intronic.annotate(
-                variant.variant_info, transcript
-            )
+            annot_fun = fun_dict[VARTYPE_GROUPS.INTRONIC]
         elif any(
             var_type in VARTYPE_GROUPS.START_LOST.value
             for var_type in transcript.var_type
         ):
-            annotated_transcript = TranscriptInfo_start_loss.annotate(
-                variant.variant_info, transcript
-            )
+            annot_fun = fun_dict[VARTYPE_GROUPS.INTRONIC]
         else:
             break
+        annotated_transcript = annot_fun()
         annotated_transcripts.append(annotated_transcript)
     if len(annotated_transcripts) == 0:
         raise TypeError("No annotated transcripts created")
@@ -87,6 +84,7 @@ def annotate_transcripts(variant: Variant) -> list[TranscriptInfo_annot]:
 
 def annotate_transcripts_acmg_specification(
     variant: Variant,
+    fun_dict: dict[VARTYPE_GROUPS, dict[str, Callable[[], TranscriptInfo_annot]]],
 ) -> list[TranscriptInfo_annot]:
     """
     Check if ACMG classification is sufficient to define complete variant interpretation
@@ -95,37 +93,25 @@ def annotate_transcripts_acmg_specification(
     for transcript in variant.transcript_info:
         if transcript.var_type in VARTYPE_GROUPS.EXONIC.value:
             try:
-                annotated_transcript = (
-                    TranscriptInfo_exonic.annotate_acmg_specification(
-                        variant.variant_info, transcript
-                    )
-                )
+                annot_fun = fun_dict[VARTYPE_GROUPS.EXONIC]["acmg"]
+                annotated_transcript = annot_fun()
             except Exception:
-                annotated_transcript = TranscriptInfo_exonic.annotate(
-                    variant.variant_info, transcript
-                )
+                annot_fun = fun_dict[VARTYPE_GROUPS.EXONIC]["general"]
+                annotated_transcript = annot_fun()
         elif transcript.var_type in VARTYPE_GROUPS.INTRONIC.value:
             try:
-                annotated_transcript = (
-                    TranscriptInfo_intronic.annotate_acmg_specification(
-                        variant.variant_info, transcript
-                    )
-                )
+                annot_fun = fun_dict[VARTYPE_GROUPS.INTRONIC]["acmg"]
+                annotated_transcript = annot_fun()
             except Exception:
-                annotated_transcript = TranscriptInfo_intronic.annotate(
-                    variant.variant_info, transcript
-                )
+                annot_fun = fun_dict[VARTYPE_GROUPS.INTRONIC]["general"]
+                annotated_transcript = annot_fun()
         elif transcript.var_type in VARTYPE_GROUPS.START_LOST.value:
             try:
-                annotated_transcript = (
-                    TranscriptInfo_start_loss.annotate_acmg_specification(
-                        variant.variant_info, transcript
-                    )
-                )
+                annot_fun = fun_dict[VARTYPE_GROUPS.START_LOST]["acmg"]
+                annotated_transcript = annot_fun()
             except Exception:
-                annotated_transcript = TranscriptInfo_start_loss.annotate(
-                    variant.variant_info, transcript
-                )
+                annot_fun = fun_dict[VARTYPE_GROUPS.START_LOST]["general"]
+                annotated_transcript = annot_fun()
         else:
             break
         annotated_transcripts.append(annotated_transcript)
@@ -218,6 +204,10 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             is_truncated_region_disease_relevant=is_truncated_exon_relevant,
             pathogenic_variants_truncated_region=comment_truncated_exon_relevant,
         )
+
+    @classmethod
+    def get_annotate_acmg(cls):
+        pass
 
     @classmethod
     def annotate_acmg_specification(
@@ -334,6 +324,10 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
         )
 
     @classmethod
+    def get_annotate_acmg(cls):
+        pass
+
+    @classmethod
     def annotate_acmg_specification(
         cls, variant: VariantInfo, transcript: TranscriptInfo
     ):
@@ -417,6 +411,10 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
             diff_len_protein_percent=diff_len_protein_percent,
             len_change_in_repetitive_region=len_change_in_repetitive_region,
         )
+
+    @classmethod
+    def get_annotate_acmg(cls):
+        pass
 
     @classmethod
     def annotate_acmg_specification(

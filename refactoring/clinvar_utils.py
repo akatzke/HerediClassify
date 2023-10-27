@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import logging
-import pathlib
 import pandas as pd
 from typing import Generator, Optional
 from dataclasses import dataclass, field
@@ -13,7 +12,7 @@ from refactoring.var_type import VARTYPE_GROUPS
 
 logger = logging.getLogger("GenOtoScope_Classify.genotoscope_clinvar")
 
-path_clinvar = pathlib.Path("/home/katzkean/clinvar/clinvar_20230730.vcf.gz")
+# path_clinvar = pathlib.Path("/home/katzkean/clinvar/clinvar_20230730.vcf.gz")
 
 
 class CLINVAR_TYPE(Enum):
