@@ -30,31 +30,31 @@ class classification_information(Enum):
     VARIANT_PREDICTION = classification("variant_prediction")
     THRESHOLD_PATHOGENICITY_PREDICTION = classification(
         "prediction_pathogenicity",
-        config_location=("prediction_tool_threshold", "pathogenicity_prediction"),
+        config_location=("prediction_tool_thresholds", "pathogenicity_prediction"),
     )
     THRESHOLD_SPLICING_PREDICTION = classification(
         "prediction_splicing",
-        config_location=("prediction_tool_threshold", "splicing_prediction"),
+        config_location=("prediction_tool_thresholds", "splicing_prediction"),
     )
     THRESHOLD_PM2 = classification(
         "threshold_pm2",
-        config_location=("allele_frequency_threshold", "threshold_pm2"),
+        config_location=("allele_frequency_thresholds", "threshold_pm2"),
     )
     THRESHOLD_BA1 = classification(
         "threshold_ba1",
-        config_location=("allele_frequency_threshold", "threshold_ba1"),
+        config_location=("allele_frequency_thresholds", "threshold_ba1"),
     )
     THRESHOLD_BS1 = classification(
         "threshold_bs1",
-        config_location=("allele_frequency_threshold", "threshold_bs1"),
+        config_location=("allele_frequency_thresholds", "threshold_bs1"),
     )
     THRESHOLD_BS2 = classification(
         "threshold_bs2",
-        config_location=("allele_frequency_threshold", "threshold_bs2"),
+        config_location=("allele_frequency_thresholds", "threshold_bs2"),
     )
     THRESHOLD_DIFF_LEN_PROT_PERCENT = classification(
         "threshold_diff_len_prot_percent",
-        config_location=("functional_threshold", "threshold_diff_len_prot_percent"),
+        config_location=("functional_thresholds", "threshold_diff_len_prot_percent"),
     )
     VARIANT = classification("variant")
     TRANSCRIPT = classification("transcript")
@@ -67,7 +67,7 @@ class classification_information(Enum):
     )
     UNIPROT_REP_REGION_PATH = classification(
         "uniprot_rep_region_path",
-        config_location=("annotation_files", "uniport", "rep"),
+        config_location=("annotation_files", "uniprot", "rep"),
     )
 
 

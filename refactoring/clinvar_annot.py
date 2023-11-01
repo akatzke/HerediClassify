@@ -42,12 +42,14 @@ def annotate_clinvar(
 
 
 def get_annotate_clinvar() -> tuple[Callable, tuple[classification_information, ...]]:
-    """ """
+    """
+    Get function for clinvar annotation and needed classification_information objects
+    """
     return (
         annotate_clinvar,
-        [
+        (
             classification_information.VARIANT,
             classification_information.TRANSCRIPT,
             classification_information.CLINVAR_PATH,
-        ],
+        ),
     )

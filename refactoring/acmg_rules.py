@@ -5,6 +5,7 @@ from typing import Callable
 from refactoring.clinvar_utils import CLINVAR_TYPE, ClinVar
 
 import refactoring.information as info
+from refactoring.variant import AffectedRegion, PopulationDatabases
 
 from refactoring.variant_annotate import Variant_annotated
 from refactoring.transcript_annotated import *
@@ -28,7 +29,7 @@ def summarise_results_per_transcript(results: list[RuleResult]) -> RuleResult:
 
 
 class abstract_rule(ABC):
-    arguments: list[info.classification_information]
+    arguments = list[info.classification_information]
 
     @abstractmethod
     def get_assess_rule(cls) -> Callable:
@@ -38,7 +39,7 @@ class abstract_rule(ABC):
         pass
 
     @abstractmethod
-    def assess_rule(self, args) -> RuleResult:
+    def assess_rule(cls, args) -> RuleResult:
         """
         Assess rule
         """
@@ -57,23 +58,29 @@ class pvs1(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_rule(self, annotated_transcripts: list[TranscriptInfo]) -> RuleResult:
+    #@classmethod
+    #def get_assess_rule_args(cls) -> tuple[Callable, tuple[info.classification_information, ...]]:
+    #    return (cls.assess_rule, (info.classification_information.ANNOTATED_TRANSCRIPT_LIST))
+
+    @classmethod
+    def assess_rule(cls, annotated_transcripts: list[TranscriptInfo]) -> RuleResult:
         results = []
         for transcript in annotated_transcripts:
             if type(transcript) is TranscriptInfo_exonic:
-                result_frameshift = self.assess_pvs1_frameshift_PTC(transcript)
+                result_frameshift = cls.assess_pvs1_frameshift_PTC(transcript)
                 results.append(result_frameshift)
             elif type(transcript) is TranscriptInfo_intronic:
-                result_splice = self.assess_pvs1_splice(transcript)
+                result_splice = cls.assess_pvs1_splice(transcript)
                 results.append(result_splice)
             elif type(transcript) is TranscriptInfo_start_loss:
-                result_start_loss = self.assess_pvs1_start_loss(transcript)
+                result_start_loss = cls.assess_pvs1_start_loss(transcript)
                 results.append(result_start_loss)
         result = summarise_results_per_transcript(results)
         return result
 
+    @classmethod
     def assess_pvs1_start_loss(
-        self, transcript: TranscriptInfo_start_loss
+            cls, transcript: TranscriptInfo_start_loss
     ) -> RuleResult:
         """
         Assess PVS1 for start lost variants
@@ -91,7 +98,8 @@ class pvs1(abstract_rule):
                 result = RuleResult("PVS1_start_loss", True, "supporting", comment)
         return result
 
-    def assess_pvs1_splice(self, transcript: TranscriptInfo_intronic) -> RuleResult:
+    @classmethod
+    def assess_pvs1_splice(cls, transcript: TranscriptInfo_intronic) -> RuleResult:
         """
         Assess PVS1 for splice variants
         """
@@ -135,8 +143,9 @@ class pvs1(abstract_rule):
             result = RuleResult("PVS1_splice", False, "very_strong", comment)
         return result
 
+    @classmethod
     def assess_pvs1_frameshift_PTC(
-        self, transcript: TranscriptInfo_exonic
+        cls, transcript: TranscriptInfo_exonic
     ) -> RuleResult:
         """
         Assess PVS1 for frameshift variants
@@ -162,9 +171,10 @@ class pvs1(abstract_rule):
         return result
 
 
-class ps1(abstract_rule):
+
+class ps1_protein(abstract_rule):
     """
-    PS1: Same amino accid change has been identified as pathogenic in ClinVar
+    PS1: Position is classified as pathogenic
     """
 
     arguments = [info.classification_information.VARIANT_CLINVAR]
@@ -173,14 +183,37 @@ class ps1(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_rule(self, clinvar_result: dict[CLINVAR_TYPE, ClinVar]) -> RuleResult:
+    @classmethod
+    def assess_rule(cls, clinvar_result: dict[CLINVAR_TYPE, ClinVar]) -> RuleResult:
         clinvar_same_aa = clinvar_result[CLINVAR_TYPE.SAME_AA_CHANGE]
         if clinvar_same_aa.pathogenic:
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
-            result = RuleResult("PS1", True, "strong", comment)
+            result = RuleResult("PS1_protein", True, "strong", comment)
         else:
             comment = "No matches found for variant."
-            result = RuleResult("PS1", False, "strong", comment)
+            result = RuleResult("PS1_protein", False, "strong", comment)
+        return result
+
+class ps1_splicing(abstract_rule):
+    """
+    PS1 for splicing: Splice variant in same position has been show to be pathogenic
+    """
+
+    arguments = [info.classification_information.VARIANT_CLINVAR]
+
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
+
+    @classmethod
+    def assess_rule(cls, clinvar_result: dict[CLINVAR_TYPE, ClinVar]) -> RuleResult:
+        clinvar_same_nucleotide = clinvar_result[CLINVAR_TYPE.SAME_NUCLEOTIDE]
+        if clinvar_same_nucleotide.pathogenic:
+            comment = f"The following ClinVar entries show splice variants at the same nucleotide position to be pathogenic: {clinvar_same_nucleotide.ids}."
+            result = RuleResult("PS1_strong", True, "strong", comment)
+        else:
+            comment = "No matches found for variant."
+            result = RuleResult("PS1_splicing", False, "strong", comment)
         return result
 
 
@@ -195,9 +228,10 @@ class pm1(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_rule(self, variant: Variant_annotated) -> RuleResult:
-        if variant.affected_region.critical_region:
-            comment = f"Variant in mutational hotspot. {variant.affected_region.critical_region_type}"
+    @classmethod
+    def assess_rule(cls, variant_in_hotspot: AffectedRegion) -> RuleResult:
+        if variant_in_hotspot:
+            comment = f"Variant in mutational hotspot."
             result = RuleResult("PM1", True, "moderate", comment)
         else:
             comment = "Variant not in mutational hotspot"
@@ -220,14 +254,15 @@ class pm2(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
+    @classmethod
     def assess_rule(
-        self, variant: Variant_annotated, threshold_pm2: float
+        cls, gnomad: PopulationDatabases, threshold_pm2: float
     ) -> RuleResult:
-        if variant.gnomad.frequency > threshold_pm2:
-            comment = f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
+        if gnomad.frequency > threshold_pm2:
+            comment = f"Variant occures with {gnomad.frequency} in {gnomad.name}."
             result = RuleResult("PM2", False, "moderate", comment)
         else:
-            comment = f"Variant occurs with {variant.gnomad.frequency} in {variant.gnomad.name}."
+            comment = f"Variant occurs with {gnomad.frequency} in {gnomad.name}."
             result = RuleResult("PM2", True, "moderate", comment)
         return result
 
@@ -246,8 +281,9 @@ class pm4(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
+    @classmethod
     def assess_rule(
-        self,
+        cls,
         annotated_transcript_list: list[TranscriptInfo_annot],
         threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
@@ -280,7 +316,7 @@ class pm4(abstract_rule):
         return final_result
 
 
-class pm5(abstract_rule):
+class pm5_protein(abstract_rule):
     """
     PM5: Pathogenic missense variant to different amino acid in same position classified as pathogenic in ClinVar
     """
@@ -291,14 +327,38 @@ class pm5(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_rule(self, clinvar_results: dict[CLINVAR_TYPE, ClinVar]) -> RuleResult:
+    @classmethod
+    def assess_rule(cls, clinvar_results: dict[CLINVAR_TYPE, ClinVar]) -> RuleResult:
         clinvar_diff_aa = clinvar_results[CLINVAR_TYPE.DIFF_AA_CHANGE]
         if clinvar_diff_aa.pathogenic:
-            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_diff_aa.pathogenic}."
-            result = RuleResult("PM5", True, "moderate", comment)
+            comment = f"The following ClinVar entries show an amino acid change in the same position as pathogenic: {clinvar_diff_aa.pathogenic}."
+            result = RuleResult("PM5_protein", True, "moderate", comment)
         else:
             comment = "No matches found for variant."
-            result = RuleResult("PM5", False, "moderate", comment)
+            result = RuleResult("PM5_protein", False, "moderate", comment)
+        return result
+
+
+class pm5_splicing(abstract_rule):
+    """
+    PM5: Pathogenic missense variant to different amino acid in same position classified as pathogenic in ClinVar
+    """
+
+    arguments = [info.classification_information.VARIANT_CLINVAR]
+
+    @classmethod
+    def get_assess_rule(cls) -> Callable:
+        return cls.assess_rule
+
+    @classmethod
+    def assess_rule(cls, clinvar_results: dict[CLINVAR_TYPE, ClinVar]) -> RuleResult:
+        clinvar_same_splice_site = clinvar_results[CLINVAR_TYPE.SAME_SPLICE_SITE]
+        if clinvar_same_splice_site.pathogenic:
+            comment = f"The following ClinVar entries show the variants in the same splice site as pathogenic: {clinvar_same_splice_site.pathogenic}."
+            result = RuleResult("PM5_splicing", True, "moderate", comment)
+        else:
+            comment = "No matches found for variant."
+            result = RuleResult("PM5_splicing", False, "moderate", comment)
         return result
 
 
@@ -317,7 +377,8 @@ class bp4_pp3(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_rule(self, variant: Variant_annotated) -> RuleResult:
+    @classmethod
+    def assess_rule(cls, variant: Variant_annotated) -> RuleResult:
         splicing_prediction = []
         pathogenicity_prediction = []
         conservation_prediction = []
@@ -390,15 +451,16 @@ class ba1(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
+    @classmethod
     def assess_rule(
-        self, variant: Variant_annotated, threshold_ba1: float
+        cls, gnomad: PopulationDatabases, threshold_ba1: float
     ) -> RuleResult:
-        if variant.gnomad.frequency > threshold_ba1:
-            comment = f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
-            result = RuleResult("BA1", False, "stand_alone", comment)
-        else:
-            comment = f"Variant occurs with {variant.gnomad.frequency} in {variant.gnomad.name}."
+        if gnomad.frequency > threshold_ba1:
+            comment = f"Variant occures with {gnomad.frequency} in {gnomad.name}."
             result = RuleResult("BA1", True, "stand_alone", comment)
+        else:
+            comment = f"Variant occurs with {gnomad.frequency} in {gnomad.name}."
+            result = RuleResult("BA1", False, "stand_alone", comment)
         return result
 
 
@@ -416,15 +478,16 @@ class bs1(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_bs1(
-        self, variant: Variant_annotated, threshold_bs1: float
+    @classmethod
+    def assess_rule(
+        cls, gnomad: PopulationDatabases, threshold_bs1: float
     ) -> RuleResult:
-        if variant.gnomad.frequency > threshold_bs1:
-            comment = f"Variant occures with {variant.gnomad.frequency} in {variant.gnomad.name}."
-            result = RuleResult("BS1", False, "strong", comment)
-        else:
-            comment = f"Variant occurs with {variant.gnomad.frequency} in {variant.gnomad.name}."
+        if gnomad.frequency > threshold_bs1:
+            comment = f"Variant occures with {gnomad.frequency} in {gnomad.name}."
             result = RuleResult("BS1", True, "strong", comment)
+        else:
+            comment = f"Variant occurs with {gnomad.frequency} in {gnomad.name}."
+            result = RuleResult("BS1", False, "strong", comment)
         return result
 
 
@@ -442,10 +505,11 @@ class bs2(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
+    @classmethod
     def assess_rule(
-        self, variant: Variant_annotated, threshold_bs2: float
+        cls, flossies: PopulationDatabases, threshold_bs2: float
     ) -> RuleResult:
-        if variant.flossies.frequency == threshold_bs2:
+        if flossies.frequency > threshold_bs2:
             comment = "Something"
             result = RuleResult("BS2", True, "strong", comment)
         else:
@@ -468,8 +532,9 @@ class bp3(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_bp3(
-        self,
+    @classmethod
+    def assess_rule(
+        cls,
         annotated_transcripts: list[TranscriptInfo],
         threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
@@ -479,6 +544,9 @@ class bp3(abstract_rule):
                 type(transcript) != TranscriptInfo_exonic
                 or type(transcript) != TranscriptInfo_intronic
             ):
+                comment = (f"Transcript {transcript.transcript_id} does not carry variant of exonic or intronic variant type.")
+                result = RuleResult("BP3", False, "supporting", comment)
+                results.append(result)
                 break
             if not transcript.transcript_disease_relevant:
                 comment = (
@@ -513,7 +581,8 @@ class bp7(abstract_rule):
     def get_assess_rule(cls) -> Callable:
         return cls.assess_rule
 
-    def assess_bp7(self, variant: Variant_annotated) -> RuleResult:
+    @classmethod
+    def assess_bp7(cls, variant: Variant_annotated) -> RuleResult:
         splicing_prediction = []
         conservation_prediction = []
         for entry in variant.prediction_tools:

@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from typing import Callable, Union, Any
 from enum import Enum
 from functools import partial
-from cyvcf2 import Variant
 
 import refactoring.acmg_rules as rules
 from refactoring.clinvar_annot import get_annotate_clinvar
@@ -93,6 +92,9 @@ def select_gene_specific_functions_if_applicable(config: dict, gene_name: str) -
 def from_rule_list_get_annotations_needed(
     rule_list: list[str],
 ) -> set[classification_information]:
+    """
+    Based on rule get classification_information objects required to apply the rules
+    """
     RULE_DICTIONARY = {
         "pvs1": rules.pvs1,
         "ps1": rules.ps1,
@@ -112,43 +114,13 @@ def from_rule_list_get_annotations_needed(
         try:
             rule_class = RULE_DICTIONARY[rule.lower()]
         except:
-            print(
+            ValueError(
                 f"{rule.upper()} not valid rule. Valid rules are {RULE_DICTIONARY.keys()}"
             )
             break
         annotations_needed.update(rule_class.arguments)
     return annotations_needed
 
-
-dict_annotation = {
-    classification_information.VARIANT: lambda variant, config: variant.variant_info,
-    classification_information.TRANSCRIPT: lambda variant, config: variant.transcript_info,
-    classification_information.VARIANT_HOTSPOT: lambda variant, config: variant.affected_region.critical_region,
-    classification_information.VARIANT_GNOMAD: lambda variant, config: variant.gnomad,
-    classification_information.VARIANT_FLOSSIES: lambda variant, config: variant.flossies,
-    classification_information.VARIANT_PREDICTION: lambda variant, config: variant.prediction_tools,
-    classification_information.ANNOTATED_TRANSCRIPT_LIST: lambda variant, config: get_annotation_function_annotated_transcript(
-        variant, config
-    ),
-    classification_information.ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec: lambda variant, config: get_annotation_function_annotated_transcript_acmg(
-        variant, config
-    ),
-    classification_information.VARIANT_CLINVAR: lambda variant, config: get_annotation_function_variant_clinvar(
-        variant, config
-    ),
-}
-
-dict_annotation_groups = {
-    classification_information_groups.PATH: lambda annot, config: partial(
-        get_threshold_from_config, annot.value.config_location, config
-    ),
-    classification_information_groups.THRESHOLDS_SINGLE: lambda annot, config: partial(
-        get_threshold_from_config, annot.value.config_location, config
-    ),
-    classification_information_groups.THRESHOLD_PREDICTION: lambda annot, config: partial(
-        get_threshold_prediction_from_config, annot.value.config_location, config
-    ),
-}
 
 
 def get_annotation_functions(
@@ -157,9 +129,47 @@ def get_annotation_functions(
     """
     Based on needed annotations perform annotation
     """
+    ### Dictionary for all classification_information objects that are defined in the Variant object
+    ### For definition Variant object see variant.py
+    dict_annotation_variant = {
+        classification_information.VARIANT: partial(lambda variant: variant.variant_info, variant),
+        classification_information.TRANSCRIPT: partial(lambda variant, : variant.transcript_info, variant),
+        classification_information.VARIANT_HOTSPOT: partial(lambda variant : variant.affected_region.critical_region, variant),
+        classification_information.VARIANT_GNOMAD: partial(lambda variant : variant.gnomad, variant),
+        classification_information.VARIANT_FLOSSIES: partial(lambda variant : variant.flossies, variant),
+        classification_information.VARIANT_PREDICTION: partial(lambda variant : variant.prediction_tools, variant),
+    }
+
+    ### Dictionary for all classification_information objects that have a get_annotation_function
+    dict_annotation = {
+        classification_information.ANNOTATED_TRANSCRIPT_LIST: lambda variant, config: get_annotation_function_annotated_transcript(
+            variant, config
+        ),
+        classification_information.ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec: lambda variant, config: get_annotation_function_annotated_transcript_acmg(
+            variant, config
+        ),
+        classification_information.VARIANT_CLINVAR: lambda variant, config: get_annotation_function_variant_clinvar(
+            variant, config
+        ),
+    }
+
+    ### Dictionary for all classification_information that belong to a classification_information_groups
+    dict_annotation_groups = {
+        classification_information_groups.PATH: lambda annot, config: partial(
+            get_path_from_config, annot.value.config_location, config
+        ),
+        classification_information_groups.THRESHOLDS_SINGLE: lambda annot, config: partial(
+            get_threshold_from_config, annot.value.config_location, config
+        ),
+        classification_information_groups.THRESHOLD_PREDICTION: lambda annot, config: partial(
+            get_threshold_prediction_from_config, annot.value.config_location, config
+        ),
+    }
+
     for annotation in annotations_needed:
-        print(annotation)
-        if annotation in dict_annotation.keys():
+        if annotation in dict_annotation_variant.keys():
+            annotation.value.compute_function = dict_annotation_variant[annotation]
+        elif annotation in dict_annotation.keys():
             annotation.value.compute_function = dict_annotation[annotation](
                 variant, config
             )
@@ -260,8 +270,6 @@ def execute_annotation(
     Perform annotation for entrys in list
     """
     for annotation in annotations_to_execute:
-        print("execute")
-        print(annotation)
         if annotation.value.compute_function is not None:
             try:
                 annotation.value.value = annotation.value.compute_function()
@@ -272,7 +280,7 @@ def execute_annotation(
     return annotations_to_execute
 
 
-def create_path_from_config(
+def get_path_from_config(
     config_location: Union[tuple[str, ...], None], config: dict
 ) -> pathlib.Path:
     """

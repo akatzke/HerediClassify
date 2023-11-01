@@ -18,7 +18,9 @@ def calculate_prot_len_diff(
     ref_prot_len = len(ref_transcript.protein_sequence)
     codon_position_ptc = get_position_ptc(ref_transcript, var_coding_seq)
     # Substract one from postion of ptc, as ptc does not code for amino acid
-    return abs(codon_position_ptc - 1) / ref_prot_len
+    rel_len_protein = abs(codon_position_ptc - 1) / ref_prot_len
+    diff_len_protein_percent = 1 - rel_len_protein
+    return diff_len_protein_percent
 
 
 def get_position_ptc(

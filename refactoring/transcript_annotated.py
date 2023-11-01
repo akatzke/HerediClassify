@@ -55,7 +55,7 @@ class TranscriptInfo_annot(TranscriptInfo):
 
 
 def annotate_transcripts(
-    variant: Variant, fun_dict: dict[VARTYPE_GROUPS, Callable[[], TranscriptInfo_annot]]
+    variant: Variant, fun_dict: dict[VARTYPE_GROUPS, Callable[[TranscriptInfo], TranscriptInfo_annot]]
 ) -> list[TranscriptInfo_annot]:
     annotated_transcripts = []
     for transcript in variant.transcript_info:
@@ -75,7 +75,7 @@ def annotate_transcripts(
             annot_fun = fun_dict[VARTYPE_GROUPS.INTRONIC]
         else:
             break
-        annotated_transcript = annot_fun()
+        annotated_transcript = annot_fun(transcript)
         annotated_transcripts.append(annotated_transcript)
     if len(annotated_transcripts) == 0:
         raise TypeError("No annotated transcripts created")
@@ -135,7 +135,6 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             cls.annotate,
             (
                 classification_information.VARIANT,
-                classification_information.TRANSCRIPT,
                 classification_information.CLINVAR_PATH,
                 classification_information.UNIPROT_REP_REGION_PATH,
             ),
@@ -145,9 +144,9 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
     def annotate(
         cls,
         variant: VariantInfo,
-        transcript: TranscriptInfo,
         path_clinvar: pathlib.Path,
         path_uniprot_rep: pathlib.Path,
+        transcript: TranscriptInfo,
     ) -> TranscriptInfo_exonic:
         """
         Perform annotation for exonic variants
@@ -239,7 +238,6 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             cls.annotate,
             (
                 classification_information.VARIANT,
-                classification_information.TRANSCRIPT,
                 classification_information.CLINVAR_PATH,
                 classification_information.UNIPROT_REP_REGION_PATH,
             ),
@@ -249,9 +247,9 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
     def annotate(
         cls,
         variant: VariantInfo,
-        transcript: TranscriptInfo,
         path_clinvar: pathlib.Path,
         path_uniprot_rep: pathlib.Path,
+        transcript: TranscriptInfo,
     ) -> TranscriptInfo_intronic:
         """
         Perform annotation specific for intronic variants
@@ -355,7 +353,6 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
             cls.annotate,
             (
                 classification_information.VARIANT,
-                classification_information.TRANSCRIPT,
                 classification_information.CLINVAR_PATH,
                 classification_information.UNIPROT_REP_REGION_PATH,
             ),
@@ -365,9 +362,9 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
     def annotate(
         cls,
         variant: VariantInfo,
-        transcript: TranscriptInfo,
         path_clinvar: pathlib.Path,
         path_uniprot_rep: pathlib.Path,
+        transcript: TranscriptInfo,
     ) -> TranscriptInfo_start_loss:
         ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
             transcript.transcript_id
