@@ -9,12 +9,13 @@ rules:
     - pp3
     - ba1
     - bs1
+    - bs2
     - bp3
     - bp4
     - bp7
 
 ### Thresholds splicing and pathogenicity prediction tools ###
-prediction_tool_threshold:
+prediction_tool_thresholds:
     pathogenicity_prediction:
         name: "REVEL"
         benign: 0.183
@@ -25,7 +26,7 @@ prediction_tool_threshold:
         pathogenic: 0.2
 
 ### Allelee frequency threshold for each gene ###
-allele_frequency_threshold:
+allele_frequency_thresholds:
     threshold_ba1: 0.1
     threshold_bs1: 0.01
     threshold_bs2: 0.01
@@ -43,7 +44,7 @@ annotation_files:
     clinvar:
         root: "clinvar"
         version: "clinvar_july_2023"
-        clinvar_snv: "clinvar_20230730_quality_filter_snv.vcf.gz"
+        clinvar_snv: "clinvar_20230730_snv.vcf.gz"
         clinvar_small_indel: "clinvar_20230730_quality_filter_small_indel.vcf.gz"
     uniprot:
         root: "variant_classification/genotoscope_data/uniprot/"
