@@ -21,7 +21,9 @@
       "type": "string"
     },
     "variant_type": {
-      "type": "string"
+      "type": "array",
+      "minItems" : 1,
+      "items": {"type" : "string"}
     },
     "variant_effect": {
       "type": "array",
@@ -43,7 +45,7 @@
             },
             "variant_type": {
               "type": "array",
-              "minItems": 2,
+              "minItems": 1,
               "items": {"type" : "string"}
             },
             "exon": {
@@ -65,9 +67,6 @@
         }
       ]
     },
-    "VUS_task_force_domain": {
-      "type": "boolean"
-    },
     "splicing_prediction_tools": {
       "type": "object",
       "properties": {
@@ -75,20 +74,10 @@
           "type": "number",
           "minimum" : 0,
           "maximum" : 1
-        },
-        "MaxEntScan": {
-          "type": "number",
-          "minimum" : 0,
-          "maximum" : 1
-        },
-        "HBondScore": {
-          "type": "number"
         }
       },
       "required": [
-        "SpliceAI",
-        "MaxEntScan",
-        "HBondScore"
+        "SpliceAI"
       ]
     },
     "pathogenicity_prediction_tools": {
@@ -99,16 +88,12 @@
           "minimum" : 0,
           "maximum" : 1
         },
-        "pyhloP": {
+        "BayesDel": {
           "type": "number",
-          "minimum" : -20,
-          "maximum" : 30
+          "minimum" : -1.29334,
+          "maximum" : 0.75731
         }
-      },
-      "required": [
-        "REVEL",
-        "pyhloP"
-      ]
+      }
     },
     "gnomAD": {
       "type": "object",
@@ -118,14 +103,22 @@
           "minimum" : 0,
           "maximum" : 1
         },
+        "AC": {
+          "type": "integer",
+          "minimum" : 0
+        },
         "popmax": {
           "type": "string",
           "pattern" : "[A-Z]{3}"
         },
-        "popmax AF": {
+        "popmax_AF": {
           "type": "number",
           "minimum" : 0,
           "maximum" : 1
+        },
+        "popmax_AC": {
+          "type" : "integer",
+          "minimum": 0
         }
       },
       "required": [
@@ -150,67 +143,47 @@
       ]
     },
     "mRNA_analysis": {
-      "type": "object",
-      "properties": {
-        "performed": {
+      "type" : "object",
+      "properties" : {
+        "performed":{
           "type": "boolean"
         },
-        "result": {
+        "pathogenic": {
           "type": "boolean"
-        },
-        "effect_strength": {
-          "type": "number"
-        },
-        "affected_region": {
-          "type": "string"
-        },
-        "comment": {
-          "type": "string"
         }
-      },
-      "required": [
-        "performed"
-      ]
+      }
     },
     "functional_data": {
-      "type": "array",
-      "items": [
-        {
-          "type": "object",
-          "properties": {
-            "assay": {
-              "type": "string"
-            },
-            "result": {
-              "type": "boolean"
-            },
-            "effect_strength": {
-              "type": "number"
-            },
-            "comment": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "assay",
-            "result",
-            "effect_strength",
-            "comment"
-          ]
+      "type": "object",
+      "properties" : {
+        "performed" : {
+          "type": "boolean"
+        },
+        "pathogenic": {
+          "type": "boolean"
         }
-      ]
+      }
     },
     "prior": {
       "type": "number"
     },
-    "co-occurrence_in_trans": {
+    "co-occurrence": {
+      "type": "number"
+    },
+    "segregation": {
+      "type": "number"
+    },
+    "multifactorial_log-likelihood": {
+      "type": "number"
+    },
+    "VUS_task_force_domain": {
       "type": "boolean"
     },
     "cancer_hotspot" : {
       "type": "boolean"
     },
-    "segregation" : {
-      "type":  "number"
+    "cold_spot" :{
+      "type" : "boolean"
     }
   },
   "required": [
@@ -222,15 +195,17 @@
     "alt",
     "variant_type",
     "variant_effect",
-    "VUS_task_force_domain",
     "splicing_prediction_tools",
     "pathogenicity_prediction_tools",
     "gnomAD",
     "FLOSSIES",
     "mRNA_analysis",
     "prior",
-    "co-occurrence_in_trans",
+    "co-occurrence",
     "segregation",
-    "cancer_hotspot"
+    "multifactorial_log-likelihood",
+    "VUS_task_force_domain",
+    "cancer_hotspot",
+    "cold_spot"
   ]
 }
