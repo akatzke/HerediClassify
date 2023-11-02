@@ -2,11 +2,11 @@
 
 from abc import ABC, abstractmethod
 from typing import Callable
-from refactoring.clinvar_utils import CLINVAR_TYPE, ClinVar
 
+from refactoring.clinvar_utils import CLINVAR_TYPE, ClinVar
+from refactoring.config_annotation import Two_threshold
 import refactoring.information as info
 from refactoring.variant import AffectedRegion, PopulationDatabases
-
 from refactoring.variant_annotate import Variant_annotated
 from refactoring.transcript_annotated import *
 from refactoring.rule_utils import (
@@ -378,23 +378,19 @@ class bp4_pp3(abstract_rule):
         return cls.assess_rule
 
     @classmethod
-    def assess_rule(cls, variant: Variant_annotated) -> RuleResult:
+    def assess_rule(cls, prediction_dict: dict[str, float], threshold_pathogenic: Two_threshold, threshold_splicing: Two_threshold) -> RuleResult:
         splicing_prediction = []
         pathogenicity_prediction = []
         conservation_prediction = []
-        for entry in variant.prediction_tools:
-            if entry.type == "pathogenicity":
-                result = assess_prediction_tool(entry, variant.thresholds[entry.name])
+        for name, value in prediction_dict.items():
+            if name  == threshold_pathogenic.name:
+                result = assess_prediction_tool(threshold_pathogenic)
                 pathogenicity_prediction.append(result)
-            elif entry.type == "splcing":
-                result = assess_prediction_tool(entry, variant.thresholds[entry.name])
+            elif name.type == "splcing":
+                result = assess_prediction_tool(value, variant.thresholds[entry.name])
                 splicing_prediction.append(result)
-            elif entry.type == "conservation":
-                result = assess_prediction_tool(entry, variant.thresholds[entry.name])
-                conservation_prediction.append(result)
             else:
-                print("There is an error here")
-                break
+                raise ValueError ("")
         splicing_result = aggregate_prediction_results(splicing_prediction)
         pathogenicity_result = aggregate_prediction_results(pathogenicity_prediction)
         is_conserved = all(conservation_prediction)
