@@ -28,13 +28,33 @@ class classification_information(Enum):
     VARIANT_GNOMAD = classification("variant_gnomad")
     VARIANT_FLOSSIES = classification("variant_flossies")
     VARIANT_PREDICTION = classification("variant_prediction")
-    THRESHOLD_PATHOGENICITY_PREDICTION = classification(
+    THRESHOLD_PATHOGENICITY_PREDICTION_BENIGN = classification(
         "prediction_pathogenicity",
-        config_location=("prediction_tool_thresholds", "pathogenicity_prediction"),
+        config_location=(
+            "prediction_tool_thresholds",
+            "pathogenicity_prediction",
+            "benign",
+        ),
     )
-    THRESHOLD_SPLICING_PREDICTION = classification(
+    THRESHOLD_PATHOGENICITY_PREDICTION_PATHOGENIC = classification(
+        "prediction_pathogenicity",
+        config_location=(
+            "prediction_tool_thresholds",
+            "pathogenicity_prediction",
+            "pathogenic",
+        ),
+    )
+    THRESHOLD_SPLICING_PREDICTION_BENIGN = classification(
         "prediction_splicing",
-        config_location=("prediction_tool_thresholds", "splicing_prediction"),
+        config_location=("prediction_tool_thresholds", "splicing_prediction", "benign"),
+    )
+    THRESHOLD_SPLICING_PREDICTION_PATHOGENIC = classification(
+        "prediction_splicing",
+        config_location=(
+            "prediction_tool_thresholds",
+            "splicing_prediction",
+            "pathogenic",
+        ),
     )
     THRESHOLD_PM2 = classification(
         "threshold_pm2",
@@ -81,8 +101,10 @@ class classification_information_groups(Enum):
         classification_information.THRESHOLD_NMD,
     }
     THRESHOLD_PREDICTION = {
-        classification_information.THRESHOLD_PATHOGENICITY_PREDICTION,
-        classification_information.THRESHOLD_SPLICING_PREDICTION,
+        classification_information.THRESHOLD_PATHOGENICITY_PREDICTION_BENIGN,
+        classification_information.THRESHOLD_PATHOGENICITY_PREDICTION_PATHOGENIC,
+        classification_information.THRESHOLD_SPLICING_PREDICTION_BENIGN,
+        classification_information.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
     }
     PATH = {
         classification_information.CLINVAR_PATH,

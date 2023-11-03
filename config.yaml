@@ -1,11 +1,13 @@
 ### Rules ###
 rules:
     - pvs1
-    - ps1
+    - ps1_protein
+    - ps1_splicing
     - pm1
     - pm2
     - pm4
-    - pm5
+    - pm5_protein
+    - pm5_splicing
     - pp3
     - ba1
     - bs1

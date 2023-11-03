@@ -27,16 +27,17 @@ class TranscriptInfo:
 
 
 @dataclass
-class PredictionTools:
-    name: str
-    type: str
-    value: float
-
-
-@dataclass
 class PopulationDatabases:
     name: str
     frequency: float
+
+
+@dataclass
+class PopulationDatabases_gnomAD(PopulationDatabases):
+    allele_count: int
+    popmax: str
+    popmax_frequency: float
+    popmax_allele_count: int
 
 
 @dataclass
@@ -65,7 +66,7 @@ class VariantInfo:
 class Variant:
     variant_info: VariantInfo
     transcript_info: list[TranscriptInfo]
-    prediction_tools: dict
-    gnomad: PopulationDatabases
+    prediction_tools: dict[str, float]
+    gnomad: PopulationDatabases_gnomAD
     flossies: PopulationDatabases
     affected_region: AffectedRegion

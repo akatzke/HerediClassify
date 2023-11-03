@@ -5,12 +5,15 @@ import pathlib
 from jsonschema import validate
 from functools import reduce
 import operator as op
-from dataclasses import dataclass
 from typing import Callable, Union, Any
-from enum import Enum
 from functools import partial
 
 import refactoring.acmg_rules as rules
+from refactoring.acmg_rules.computation_evidence_utils import (
+    Threshold,
+    THRESHOLD_DIRECTION,
+)
+from refactoring.acmg_rules.utils import RuleResult
 from refactoring.clinvar_annot import get_annotate_clinvar
 from refactoring.information import (
     classification_information,
@@ -34,11 +37,13 @@ def perform_annotation(path_config: pathlib.Path, variant: Variant):
     final_config = select_gene_specific_functions_if_applicable(
         config, variant.variant_info.gene_name
     )
-    annotations_needed = from_rule_list_get_annotations_needed(final_config["rules"])
+    fun_info_dict = from_rule_list_get_fun_info_dict(final_config["rules"])
+    annotations_needed = from_fun_info_dict_get_informations_needed(fun_info_dict)
     annotations_set_up = get_annotation_functions(
-        list(annotations_needed), variant, final_config
+        annotations_needed, variant, final_config
     )
     annotations = execute_annotation(annotations_set_up)
+    rule_results = execute_rules(fun_info_dict)
     return annotations
 
 
@@ -89,38 +94,52 @@ def select_gene_specific_functions_if_applicable(config: dict, gene_name: str) -
         return config
 
 
-def from_rule_list_get_annotations_needed(
+def from_rule_list_get_fun_info_dict(
     rule_list: list[str],
-) -> set[classification_information]:
+) -> dict[Callable, tuple[classification_information, ...]]:
     """
     Based on rule get classification_information objects required to apply the rules
     """
     RULE_DICTIONARY = {
         "pvs1": rules.pvs1,
-        "ps1": rules.ps1,
+        "ps1_protein": rules.ps1_protein,
+        "ps1_splicing": rules.ps1_splicing,
         "pm1": rules.pm1,
         "pm2": rules.pm2,
         "pm4": rules.pm4,
-        "pm5": rules.pm5,
+        "pm5_protein": rules.pm5_protein,
+        "pm5_splicing": rules.pm5_splicing,
         "pp3": rules.bp4_pp3,
         "ba1": rules.ba1,
         "bs1": rules.bs1,
+        "bs2": rules.bs2,
         "bp3": rules.bp3,
         "bp4": rules.bp4_pp3,
         "bp7": rules.bp7,
     }
-    annotations_needed = set()
+    rule_info_dict = {}
     for rule in rule_list:
         try:
             rule_class = RULE_DICTIONARY[rule.lower()]
-        except:
-            ValueError(
-                f"{rule.upper()} not valid rule. Valid rules are {RULE_DICTIONARY.keys()}"
+        except KeyError:
+            raise KeyError(
+                f"{rule.lower()} not valid rule. \n Valid rules are {RULE_DICTIONARY.keys()}"
             )
-            break
-        annotations_needed.update(rule_class.arguments)
-    return annotations_needed
+        rule_fun, rule_args = rule_class.get_assess_rule()
+        rule_info_dict[rule_fun] = rule_args
+    return rule_info_dict
 
+
+def from_fun_info_dict_get_informations_needed(
+    fun_info_dict: dict[Callable, tuple[classification_information, ...]]
+) -> list[classification_information]:
+    """
+    From dictionary mapping rules functions to their needed classification_information object
+    """
+    annot_set = set()
+    for rule_args in fun_info_dict.values():
+        annot_set.update(rule_args)
+    return list(annot_set)
 
 
 def get_annotation_functions(
@@ -132,12 +151,24 @@ def get_annotation_functions(
     ### Dictionary for all classification_information objects that are defined in the Variant object
     ### For definition Variant object see variant.py
     dict_annotation_variant = {
-        classification_information.VARIANT: partial(lambda variant: variant.variant_info, variant),
-        classification_information.TRANSCRIPT: partial(lambda variant, : variant.transcript_info, variant),
-        classification_information.VARIANT_HOTSPOT: partial(lambda variant : variant.affected_region.critical_region, variant),
-        classification_information.VARIANT_GNOMAD: partial(lambda variant : variant.gnomad, variant),
-        classification_information.VARIANT_FLOSSIES: partial(lambda variant : variant.flossies, variant),
-        classification_information.VARIANT_PREDICTION: partial(lambda variant : variant.prediction_tools, variant),
+        classification_information.VARIANT: partial(
+            lambda variant: variant.variant_info, variant
+        ),
+        classification_information.TRANSCRIPT: partial(
+            lambda variant,: variant.transcript_info, variant
+        ),
+        classification_information.VARIANT_HOTSPOT: partial(
+            lambda variant: variant.affected_region.critical_region, variant
+        ),
+        classification_information.VARIANT_GNOMAD: partial(
+            lambda variant: variant.gnomad, variant
+        ),
+        classification_information.VARIANT_FLOSSIES: partial(
+            lambda variant: variant.flossies, variant
+        ),
+        classification_information.VARIANT_PREDICTION: partial(
+            lambda variant: variant.prediction_tools, variant
+        ),
     }
 
     ### Dictionary for all classification_information objects that have a get_annotation_function
@@ -280,6 +311,20 @@ def execute_annotation(
     return annotations_to_execute
 
 
+def execute_rules(
+    fun_info_dict: dict[Callable, tuple[classification_information, ...]]
+) -> list[RuleResult]:
+    """
+    Execute all of the rules
+    """
+    rule_results = []
+    for rule_fun, rule_args in fun_info_dict.items():
+        rule_exec_fun = partial(rule_fun, *[arg.value for arg in rule_args])
+        rule_result = rule_exec_fun()
+        rule_results.append(rule_result)
+    return rule_results
+
+
 def get_path_from_config(
     config_location: Union[tuple[str, ...], None], config: dict
 ) -> pathlib.Path:
@@ -330,46 +375,22 @@ def get_threshold_prediction_from_config(
         thr_benign = config_prediction_tool["benign"]
         thr_pathogenic = config_prediction_tool["pathogenic"]
         if thr_benign < thr_pathogenic:
-            return Two_threshold(
-                name,
-                thr_benign,
-                THRESHOLD_DIRECTION.LOWER,
-                thr_pathogenic,
-                THRESHOLD_DIRECTION.HIGHER,
-            )
+            if config_location[-1] == "benign":
+                return Threshold(
+                    name,
+                    thr_benign,
+                    THRESHOLD_DIRECTION.LOWER,
+                )
+            else:
+                return Threshold(name, thr_pathogenic, THRESHOLD_DIRECTION.HIGHER)
         else:
-            return Two_threshold(
-                name,
-                thr_benign,
-                THRESHOLD_DIRECTION.HIGHER,
-                thr_pathogenic,
-                THRESHOLD_DIRECTION.LOWER,
-            )
+            if config_location[-1] == "benign":
+                return Threshold(
+                    name,
+                    thr_benign,
+                    THRESHOLD_DIRECTION.HIGHER,
+                )
+            else:
+                return Threshold(name, thr_pathogenic, THRESHOLD_DIRECTION.LOWER)
     else:
-        raise ValueError(
-            "Accessing configuration not possible, location in configuration not specified."
-        )
-
-
-@dataclass
-class Threshold:
-    name: str
-
-
-class THRESHOLD_DIRECTION(Enum):
-    HIGHER = "higher"
-    LOWER = "lower"
-
-
-@dataclass
-class One_threshold(Threshold):
-    threshold: float
-    direction: THRESHOLD_DIRECTION
-
-
-@dataclass
-class Two_threshold(Threshold):
-    threshold_benign: float
-    direction_benign: THRESHOLD_DIRECTION
-    threshold_pathogenic: float
-    direction_pathogenic: THRESHOLD_DIRECTION
+        raise ValueError(f"Accessing configuration not possible.")
