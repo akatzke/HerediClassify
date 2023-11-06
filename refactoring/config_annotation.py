@@ -55,7 +55,7 @@ def import_config(path_config: pathlib.Path) -> dict:
         config = yaml.load(f, Loader=yaml.SafeLoader)
     if not validate_yaml(config):
         raise ValueError(
-            "YAML configuratino could not be validated. Plwase recheck YAML"
+            "YAML configuration could not be validated. Plwase recheck YAML"
         )
     return config
 
@@ -109,12 +109,14 @@ def from_rule_list_get_fun_info_dict(
         "pm4": rules.pm4,
         "pm5_protein": rules.pm5_protein,
         "pm5_splicing": rules.pm5_splicing,
-        "pp3": rules.bp4_pp3,
+        "pp3_splicing": rules.pp3_splicing,
+        "pp3_protein": rules.pp3_protein,
         "ba1": rules.ba1,
         "bs1": rules.bs1,
         "bs2": rules.bs2,
         "bp3": rules.bp3,
-        "bp4": rules.bp4_pp3,
+        "bp4_splicing": rules.bp4_splicing,
+        "bp4_protein": rules.bp4_protein,
         "bp7": rules.bp7,
     }
     rule_info_dict = {}
@@ -319,7 +321,7 @@ def execute_rules(
     """
     rule_results = []
     for rule_fun, rule_args in fun_info_dict.items():
-        rule_exec_fun = partial(rule_fun, *[arg.value for arg in rule_args])
+        rule_exec_fun = partial(rule_fun, *[arg.value.value for arg in rule_args])
         rule_result = rule_exec_fun()
         rule_results.append(rule_result)
     return rule_results
@@ -370,7 +372,7 @@ def get_threshold_prediction_from_config(
     Get threshold for prediction tools
     """
     if config_location is not None:
-        config_prediction_tool = reduce(op.getitem, config_location, config)
+        config_prediction_tool = reduce(op.getitem, config_location[:-1], config)
         name = config_prediction_tool["name"]
         thr_benign = config_prediction_tool["benign"]
         thr_pathogenic = config_prediction_tool["pathogenic"]

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from refactoring.variant import VariantInfo, TranscriptInfo, Variant, PopulationDatabases, AffectedRegion, VARTYPE
+from refactoring.variant import PopulationDatabases_gnomAD, VariantInfo, TranscriptInfo, Variant, PopulationDatabases, AffectedRegion, VARTYPE
 
 import hgvs.parser
 import hgvs.posedit
@@ -11,7 +11,7 @@ def create_test_variant() -> Variant:
     transinfo, varinfo = create_example_splice_acceptor_BRCA1()
     region = AffectedRegion(True, False, "Codon")
     flossies = PopulationDatabases("Flossies", 0.5)
-    gnomad = PopulationDatabases("gnomAd", 0.5)
+    gnomad = PopulationDatabases_gnomAD("gnomAd", 0.05, 20, "AES", 0.06, 10)
     prediction = {"SpliceAI" : 0.5, "REVEL": 0.5}
     return Variant(varinfo, [transinfo], prediction, gnomad, flossies, region)
 
