@@ -4,3 +4,5 @@ genotoscope/__pycache__/
 genotoscope/*.ini
 genotoscope/*.yaml
 *.pyc
+__pycache__
+.pyc
