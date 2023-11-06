@@ -1,7 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env
 
 import yaml
 import pathlib
+import logging
 from jsonschema import validate
 from functools import reduce
 import operator as op
@@ -28,8 +29,10 @@ from refactoring.transcript_annotated import (
 from refactoring.var_type import VARTYPE_GROUPS
 from refactoring.variant import Variant
 
+logger = logging.getLogger("GenOtoScope_Classify.config_annotation")
 
-def perform_annotation(path_config: pathlib.Path, variant: Variant):
+
+def perform_annotation(path_config: pathlib.Path, variant: Variant) -> list[RuleResult]:
     """
     Handle all configuration and annotation steps
     """
@@ -43,8 +46,9 @@ def perform_annotation(path_config: pathlib.Path, variant: Variant):
         annotations_needed, variant, final_config
     )
     annotations = execute_annotation(annotations_set_up)
-    rule_results = execute_rules(fun_info_dict)
-    return annotations
+    fun_info_dict_filtered = remove_rules_with_missing_annotation(fun_info_dict)
+    rule_results = execute_rules(fun_info_dict_filtered)
+    return rule_results
 
 
 def import_config(path_config: pathlib.Path) -> dict:
@@ -301,16 +305,33 @@ def execute_annotation(
 ) -> list[classification_information]:
     """
     Perform annotation for entrys in list
+    If annotation does not execute, remove all rules that require that annotation from the fun_info_dict
     """
     for annotation in annotations_to_execute:
         if annotation.value.compute_function is not None:
             try:
                 annotation.value.value = annotation.value.compute_function()
             except Exception:
-                raise ValueError(
-                    f"{annotation} function does not execute. Please check that all necessary information is available"
+                logger.debug(
+                    f"Whilst executing the annotation for {annotation.name} an otherwise uncaught error occurred."
                 )
     return annotations_to_execute
+
+
+def remove_rules_with_missing_annotation(
+    fun_info_dict: dict[Callable, tuple[classification_information, ...]]
+) -> dict[Callable, tuple[classification_information, ...]]:
+    """
+    Remove all rules that would try to access an information without a set value
+    """
+    original_dict = fun_info_dict.copy()
+    for rule_fun, rule_args in original_dict.items():
+        for annotation in rule_args:
+            if annotation.value.value is None:
+                del fun_info_dict[rule_fun]
+                logger.info(f"Removed {rule_fun} from rules that will be assessed.")
+                break
+    return fun_info_dict
 
 
 def execute_rules(
@@ -329,45 +350,67 @@ def execute_rules(
 
 def get_path_from_config(
     config_location: Union[tuple[str, ...], None], config: dict
-) -> pathlib.Path:
+) -> Union[pathlib.Path, None]:
     """
     From config reconstruct full path
     """
     if config_location is not None:
-        root_files = pathlib.Path(config[config_location[0]]["root"])
-        dir_files = (
-            root_files
-            / pathlib.Path(config[config_location[0]][config_location[1]]["root"])
-            / pathlib.Path(config[config_location[0]][config_location[1]]["version"])
-        )
-        file_path = dir_files / pathlib.Path(
-            config[config_location[0]][config_location[1]][config_location[2]]
-        )
+        try:
+            root_files = pathlib.Path(config[config_location[0]]["root"])
+            dir_files = (
+                root_files
+                / pathlib.Path(config[config_location[0]][config_location[1]]["root"])
+                / pathlib.Path(
+                    config[config_location[0]][config_location[1]]["version"]
+                )
+            )
+            file_path = dir_files / pathlib.Path(
+                config[config_location[0]][config_location[1]][config_location[2]]
+            )
+        except KeyError:
+            logger.debug(
+                f"The location {config_location} could not be found in the configuration file."
+            )
+            return None
+        if not file_path.exists():
+            logger.debug(
+                f"The file {file_path} does not exist. Please make sure the file path is correct."
+            )
+            return None
         return file_path
     else:
-        raise ValueError(
-            "Accessing configuration not possible, location in configuration not specified"
+        logger.debug(
+            f"The location {config_location} could not be found in the configuration file."
         )
+        return None
 
 
 def get_threshold_from_config(
     config_location: Union[tuple[str, ...], None], config: dict
-) -> float:
+) -> Union[float, None]:
     """
     Get threshold from config
     """
-    if config_location is not None:
+    try:
         config_value = reduce(op.getitem, config_location, config)
-        return float(config_value)
-    else:
-        raise ValueError(
-            "Accessing configuration not possible, location in configuration not specified."
+        try:
+            config_value_float = float(config_value)
+            return config_value_float
+        except ValueError:
+            logger.debug(
+                f"The value at {config_location} is not a number. Please check your configuration."
+            )
+    except KeyError:
+        logger.debug(
+            f"The location {config_location} could not be found in the configuration file."
         )
+    finally:
+        return None
 
 
 def get_threshold_prediction_from_config(
     config_location: Union[tuple[str, ...], None], config: dict
-):
+) -> Union[Threshold, None]:
     """
     Get threshold for prediction tools
     """
@@ -376,6 +419,14 @@ def get_threshold_prediction_from_config(
         name = config_prediction_tool["name"]
         thr_benign = config_prediction_tool["benign"]
         thr_pathogenic = config_prediction_tool["pathogenic"]
+        try:
+            float(thr_benign)
+            float(thr_pathogenic)
+        except ValueError:
+            logger.debug(
+                f"The value at {config_location} is not a number. Please check your configuration."
+            )
+            return None
         if thr_benign < thr_pathogenic:
             if config_location[-1] == "benign":
                 return Threshold(
@@ -395,4 +446,7 @@ def get_threshold_prediction_from_config(
             else:
                 return Threshold(name, thr_pathogenic, THRESHOLD_DIRECTION.LOWER)
     else:
-        raise ValueError(f"Accessing configuration not possible.")
+        logger.debug(
+            f"The Location {config_location} could not be found in the configuration file."
+        )
+        return None

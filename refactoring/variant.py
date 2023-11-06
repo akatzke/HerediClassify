@@ -66,7 +66,7 @@ class VariantInfo:
 class Variant:
     variant_info: VariantInfo
     transcript_info: list[TranscriptInfo]
-    prediction_tools: dict[str, float]
-    gnomad: PopulationDatabases_gnomAD
-    flossies: PopulationDatabases
-    affected_region: AffectedRegion
+    prediction_tools: Optional[dict[str, float]]
+    gnomad: Optional[PopulationDatabases_gnomAD]
+    flossies: Optional[PopulationDatabases]
+    affected_region: Optional[AffectedRegion]
