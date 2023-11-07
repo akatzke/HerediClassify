@@ -9,24 +9,24 @@ from refactoring.acmg_rules.utils import (
     rule_type,
     summarise_results_per_transcript,
 )
-import refactoring.information as info
+from refactoring.information import Info, Classification_Info
 from refactoring.transcript_annotated import TranscriptInfo_annot
 
 
-class pm4(abstract_rule):
+class Pm4(abstract_rule):
     """
     PM4: Protein length change caused by variant is above 10% threshold
     """
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
             (
-                info.classification_information.ANNOTATED_TRANSCRIPT_LIST,
-                info.classification_information.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+                class_info.ANNOTATED_TRANSCRIPT_LIST,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
             ),
         )
 

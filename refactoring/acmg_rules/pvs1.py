@@ -10,7 +10,7 @@ from refactoring.acmg_rules.utils import (
     rule_type,
     summarise_results_per_transcript,
 )
-import refactoring.information as info
+from refactoring.information import Classification_Info, Info
 from refactoring.variant import TranscriptInfo
 from refactoring.transcript_annotated import (
     TranscriptInfo_exonic,
@@ -19,7 +19,7 @@ from refactoring.transcript_annotated import (
 )
 
 
-class pvs1(abstract_rule):
+class Pvs1(abstract_rule):
     """
     PVS1: Loss of function
     Devided into three separate parts: Frameshift, splice and start_loss
@@ -27,20 +27,11 @@ class pvs1(abstract_rule):
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info]]:
         return (
             cls.assess_rule,
-            (info.classification_information.ANNOTATED_TRANSCRIPT_LIST,),
-        )
-
-    @classmethod
-    def get_assess_rule_args(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
-        return (
-            cls.assess_rule,
-            (info.classification_information.ANNOTATED_TRANSCRIPT_LIST,),
+            (class_info.ANNOTATED_TRANSCRIPT_LIST,),
         )
 
     @classmethod

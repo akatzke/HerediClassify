@@ -42,9 +42,8 @@ class PopulationDatabases_gnomAD(PopulationDatabases):
 
 @dataclass
 class AffectedRegion:
-    repetitive_region: bool
-    critical_region: bool
-    critical_region_type: str
+    repetitive_region: Optional[bool] = None
+    critical_region: Optional[bool] = None
 
 
 @dataclass
@@ -66,7 +65,7 @@ class VariantInfo:
 class Variant:
     variant_info: VariantInfo
     transcript_info: list[TranscriptInfo]
-    prediction_tools: Optional[dict[str, float]]
-    gnomad: Optional[PopulationDatabases_gnomAD]
-    flossies: Optional[PopulationDatabases]
-    affected_region: Optional[AffectedRegion]
+    prediction_tools: Optional[dict[str, float]] = None
+    gnomad: Optional[PopulationDatabases_gnomAD] = None
+    flossies: Optional[PopulationDatabases] = None
+    affected_region: Optional[AffectedRegion] = None

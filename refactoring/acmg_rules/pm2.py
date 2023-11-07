@@ -9,11 +9,11 @@ from refactoring.acmg_rules.utils import (
     rule_type,
     evidence_type,
 )
-import refactoring.information as info
-from refactoring.variant import PopulationDatabases
+from refactoring.information import Classification_Info, Info
+from refactoring.variant import PopulationDatabases_gnomAD
 
 
-class pm2(abstract_rule):
+class Pm2(abstract_rule):
     """
     PM2: Varinat is absent from control population
     In case of recessive disorders: Variant occurres less than expected carrier rate
@@ -21,19 +21,19 @@ class pm2(abstract_rule):
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
             (
-                info.classification_information.VARIANT_GNOMAD,
-                info.classification_information.THRESHOLD_PM2,
+                class_info.VARIANT_GNOMAD,
+                class_info.THRESHOLD_PM2,
             ),
         )
 
     @classmethod
     def assess_rule(
-        cls, gnomad: PopulationDatabases, threshold_pm2: float
+        cls, gnomad: PopulationDatabases_gnomAD, threshold_pm2: float
     ) -> RuleResult:
         if gnomad.frequency > threshold_pm2:
             comment = f"Variant occures with {gnomad.frequency} in {gnomad.name}."

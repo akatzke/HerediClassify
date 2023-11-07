@@ -13,23 +13,23 @@ from refactoring.acmg_rules.computation_evidence_utils import (
     Threshold,
     assess_prediction_tool,
 )
-import refactoring.information as info
+from refactoring.information import Classification_Info, Info
 
 
-class pp3_protein(abstract_rule):
+class Pp3_protein(abstract_rule):
     """
     PP3: Assess results of prediction programs
     """
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
             (
-                info.classification_information.VARIANT_PREDICTION,
-                info.classification_information.THRESHOLD_PATHOGENICITY_PREDICTION_PATHOGENIC,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_PATHOGENICITY_PREDICTION_PATHOGENIC,
             ),
         )
 
@@ -62,20 +62,20 @@ class pp3_protein(abstract_rule):
         )
 
 
-class pp3_splicing(abstract_rule):
+class Pp3_splicing(abstract_rule):
     """
     PP3: Assess results of prediction programs
     """
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
             (
-                info.classification_information.VARIANT_PREDICTION,
-                info.classification_information.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
             ),
         )
 

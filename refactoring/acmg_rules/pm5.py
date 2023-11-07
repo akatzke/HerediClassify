@@ -9,27 +9,27 @@ from refactoring.acmg_rules.utils import (
     evidence_type,
     rule_type,
 )
-import refactoring.information as info
-from refactoring.clinvar_utils import CLINVAR_TYPE, ClinVar
+from refactoring.information import Info, Classification_Info
+from refactoring.clinvar_utils import ClinVar_Type, ClinVar
 
 
-class pm5_protein(abstract_rule):
+class Pm5_protein(abstract_rule):
     """
     PM5: Pathogenic missense variant to different amino acid in same position classified as pathogenic in ClinVar
     """
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (info.classification_information.VARIANT_CLINVAR,),
+            (class_info.VARIANT_CLINVAR,),
         )
 
     @classmethod
-    def assess_rule(cls, clinvar_results: dict[CLINVAR_TYPE, ClinVar]) -> RuleResult:
-        clinvar_diff_aa = clinvar_results[CLINVAR_TYPE.DIFF_AA_CHANGE]
+    def assess_rule(cls, clinvar_results: dict[ClinVar_Type, ClinVar]) -> RuleResult:
+        clinvar_diff_aa = clinvar_results[ClinVar_Type.DIFF_AA_CHANGE]
         if clinvar_diff_aa.pathogenic:
             comment = f"The following ClinVar entries show an amino acid change in the same position as pathogenic: {clinvar_diff_aa.pathogenic}."
             result = True
@@ -46,23 +46,23 @@ class pm5_protein(abstract_rule):
         )
 
 
-class pm5_splicing(abstract_rule):
+class Pm5_splicing(abstract_rule):
     """
     PM5: Pathogenic missense variant to different amino acid in same position classified as pathogenic in ClinVar
     """
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (info.classification_information.VARIANT_CLINVAR,),
+            (class_info.VARIANT_CLINVAR,),
         )
 
     @classmethod
-    def assess_rule(cls, clinvar_results: dict[CLINVAR_TYPE, ClinVar]) -> RuleResult:
-        clinvar_same_splice_site = clinvar_results[CLINVAR_TYPE.SAME_SPLICE_SITE]
+    def assess_rule(cls, clinvar_results: dict[ClinVar_Type, ClinVar]) -> RuleResult:
+        clinvar_same_splice_site = clinvar_results[ClinVar_Type.SAME_SPLICE_SITE]
         if clinvar_same_splice_site.pathogenic:
             comment = f"The following ClinVar entries show the variants in the same splice site as pathogenic: {clinvar_same_splice_site.pathogenic}."
             result = True

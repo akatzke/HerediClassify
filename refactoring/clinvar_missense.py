@@ -19,7 +19,7 @@ from refactoring.genotoscope_exon_skipping import (
 )
 from refactoring.clinvar_utils import (
     ClinVar,
-    CLINVAR_TYPE,
+    ClinVar_Type,
     filter_gene,
     create_ClinVar,
     convert_vcf_gen_to_df,
@@ -61,12 +61,12 @@ def check_clinvar_missense(
     clinvar_same_aa_df = clinvar_same_codon_aa_filtered[
         clinvar_same_codon_aa_filtered.prot_alt == var_codon_info["prot_alt"]
     ]
-    ClinVar_same_aa = create_ClinVar(clinvar_same_aa_df, CLINVAR_TYPE.SAME_AA_CHANGE)
+    ClinVar_same_aa = create_ClinVar(clinvar_same_aa_df, ClinVar_Type.SAME_AA_CHANGE)
 
     clinvar_diff_aa = clinvar_same_codon_aa_filtered[
         clinvar_same_codon_aa_filtered.prot_alt != var_codon_info["prot_alt"]
     ]
-    ClinVar_diff_aa = create_ClinVar(clinvar_diff_aa, CLINVAR_TYPE.DIFF_AA_CHANGE)
+    ClinVar_diff_aa = create_ClinVar(clinvar_diff_aa, ClinVar_Type.DIFF_AA_CHANGE)
 
     return (ClinVar_same_aa, ClinVar_diff_aa)
 
@@ -161,14 +161,18 @@ def get_variant_position_in_codon(var_start: int) -> int:
     var_pos_in_codon = var_start % 3
 
     if not var_start == codon_index * 3 + var_pos_in_codon:
-        raise AssertionError(f"AssertionError: codon_index * 3 + var_pos_in_codon should be equal to codon index\n=> variant position: {var_start}")
+        raise AssertionError(
+            f"AssertionError: codon_index * 3 + var_pos_in_codon should be equal to codon index\n=> variant position: {var_start}"
+        )
     if var_pos_in_codon == 0:
         var_pos_in_codon = 3
     logger.debug(
         f"Var start pos: {var_start} is at codon index: {codon_index} and variant is the codon position of {var_pos_in_codon}"
     )
     if not var_start >= var_pos_in_codon:
-        raise AssertionError(f"Variant can't be at position {var_pos_in_codon} of codon and not be at least at the coding position {var_pos_in_codon}\n=> variant position: {var_start}")
+        raise AssertionError(
+            f"Variant can't be at position {var_pos_in_codon} of codon and not be at least at the coding position {var_pos_in_codon}\n=> variant position: {var_start}"
+        )
     return var_pos_in_codon
 
 

@@ -15,7 +15,7 @@ logger = logging.getLogger("GenOtoScope_Classify.genotoscope_clinvar")
 # path_clinvar = pathlib.Path("/home/katzkean/clinvar/clinvar_20230730.vcf.gz")
 
 
-class CLINVAR_TYPE(Enum):
+class ClinVar_Type(Enum):
     SAME_AA_CHANGE = "same_aa_change"
     DIFF_AA_CHANGE = "diff_aa_change"
     SAME_NUCLEOTIDE = "same_nucleotide"
@@ -23,7 +23,7 @@ class CLINVAR_TYPE(Enum):
     REGION = "region"
 
 
-class CLINVAR_STATUS(Enum):
+class ClinVar_Status(Enum):
     PATHOGENIC = "Pathogenic"
     LIKELY_PATHOGENIC = "Likely pathogenic"
 
@@ -31,8 +31,8 @@ class CLINVAR_STATUS(Enum):
 @dataclass
 class ClinVar:
     pathogenic: bool
-    type: CLINVAR_TYPE
-    highest_classification: Optional[CLINVAR_STATUS]
+    type: ClinVar_Type
+    highest_classification: Optional[ClinVar_Status]
     ids: list[str] = field(default_factory=list)
     associated_ids: list[str] = field(default_factory=list)
 
@@ -75,7 +75,7 @@ def format_info(data: pd.DataFrame) -> pd.DataFrame:
     return pd.concat([data, pd.DataFrame(dict_info)], axis=1)
 
 
-def create_ClinVar(clinvar: pd.DataFrame, type: CLINVAR_TYPE) -> ClinVar:
+def create_ClinVar(clinvar: pd.DataFrame, type: ClinVar_Type) -> ClinVar:
     """
     From clinvar entries, get highest classification and IDs of ClinVar entries with that classification
     """
@@ -85,13 +85,13 @@ def create_ClinVar(clinvar: pd.DataFrame, type: CLINVAR_TYPE) -> ClinVar:
     if not clinvar.empty:
         if any(clinvar.CLNSIG == "Pathogenic"):
             is_pathogenic = True
-            highest_classification = CLINVAR_STATUS.PATHOGENIC
+            highest_classification = ClinVar_Status.PATHOGENIC
             clinvar_ids = list(clinvar[clinvar.CLNSIG == "Pathogenic"].id)
         elif any(clinvar.CLNSIG == "Likely_pathogenic") or any(
             clinvar.CLNSIG == "Pathogenic/Likely_pathogenic"
         ):
             is_pathogenic = True
-            highest_classification = CLINVAR_STATUS.LIKELY_PATHOGENIC
+            highest_classification = ClinVar_Status.LIKELY_PATHOGENIC
             clinvar_ids = list(
                 clinvar[clinvar.CLNSIG.str.contains("Likely_pathogenic")].id
             )
@@ -106,7 +106,7 @@ def filter_gene(clinvar: pd.DataFrame, gene: str) -> pd.DataFrame:
     return clinvar_filtered
 
 
-def summarise_ClinVars(clinvars: list[ClinVar], type: CLINVAR_TYPE) -> ClinVar:
+def summarise_ClinVars(clinvars: list[ClinVar], type: ClinVar_Type) -> ClinVar:
     """
     Summarise a list of ClinVars into one ClinVar object
     """

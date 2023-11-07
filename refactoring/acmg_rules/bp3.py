@@ -9,7 +9,7 @@ from refactoring.acmg_rules.utils import (
     rule_type,
     summarise_results_per_transcript,
 )
-import refactoring.information as info
+from refactoring.information import Info, Classification_Info
 from refactoring.variant import TranscriptInfo
 from refactoring.transcript_annotated import (
     TranscriptInfo_exonic,
@@ -17,20 +17,20 @@ from refactoring.transcript_annotated import (
 )
 
 
-class bp3(abstract_rule):
+class Bp3(abstract_rule):
     """
     BP3: Protein length change in repetitive region
     """
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
             (
-                info.classification_information.ANNOTATED_TRANSCRIPT_LIST,
-                info.classification_information.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+                class_info.ANNOTATED_TRANSCRIPT_LIST,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
             ),
         )
 

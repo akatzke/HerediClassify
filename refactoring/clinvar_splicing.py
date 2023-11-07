@@ -12,7 +12,7 @@ from refactoring.variant import VariantInfo, TranscriptInfo
 from refactoring.var_type import VARTYPE_GROUPS
 from refactoring.clinvar_utils import (
     ClinVar,
-    CLINVAR_TYPE,
+    ClinVar_Type,
     convert_vcf_gen_to_df,
     create_ClinVar,
     get_affected_transcript,
@@ -43,7 +43,7 @@ def check_clinvar_splicing(
         f"{variant.chr}:{variant.genomic_start}-{variant.genomic_end}"
     )
     clinvar_same_pos_df = convert_vcf_gen_to_df(clinvar_same_pos)
-    ClinVar_same_pos = create_ClinVar(clinvar_same_pos_df, CLINVAR_TYPE.SAME_NUCLEOTIDE)
+    ClinVar_same_pos = create_ClinVar(clinvar_same_pos_df, ClinVar_Type.SAME_NUCLEOTIDE)
     ### Check ClinVar for pathogenic variant in same / closest splice site
     affected_transcript = get_affected_transcript(transcripts, VARTYPE_GROUPS.INTRONIC)
     (start_splice_site, end_splice_site) = find_corresponding_splice_site(
@@ -54,7 +54,7 @@ def check_clinvar_splicing(
     )
     clinvar_splice_site_df = convert_vcf_gen_to_df(clinvar_splice_site)
     ClinVar_splice_site = create_ClinVar(
-        clinvar_splice_site_df, CLINVAR_TYPE.SAME_SPLICE_SITE
+        clinvar_splice_site_df, ClinVar_Type.SAME_SPLICE_SITE
     )
     return (ClinVar_same_pos, ClinVar_splice_site)
 

@@ -9,22 +9,22 @@ from refactoring.acmg_rules.utils import (
     evidence_type,
     rule_type,
 )
-import refactoring.information as info
+from refactoring.information import Classification_Info, Info
 from refactoring.variant import AffectedRegion
 
 
-class pm1(abstract_rule):
+class Pm1(abstract_rule):
     """
     PM1: Variant located in mutational hot spot or citical protein region
     """
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (info.classification_information.VARIANT_HOTSPOT,),
+            (class_info.VARIANT_HOTSPOT,),
         )
 
     @classmethod

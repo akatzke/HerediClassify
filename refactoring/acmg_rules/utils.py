@@ -5,7 +5,7 @@ from typing import Callable
 from dataclasses import dataclass
 from enum import Enum
 
-import refactoring.information as info
+from refactoring.information import Classification_Info, Info
 
 
 class evidence_strength(Enum):
@@ -40,8 +40,8 @@ class RuleResult:
 class abstract_rule(ABC):
     @abstractmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         """
         Get function that assess rule
         """

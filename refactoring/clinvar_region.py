@@ -7,7 +7,7 @@ import pyensembl
 
 from refactoring.clinvar_utils import (
     ClinVar,
-    CLINVAR_TYPE,
+    ClinVar_Type,
     convert_vcf_gen_to_df,
     filter_gene,
     create_ClinVar,
@@ -65,12 +65,12 @@ def check_clinvar_NMD_exon(
             )
             ClinVar_exons.append(ClinVar_exon)
         ClinVar_exon_summary = summarise_ClinVars(
-            ClinVar_exons, type=CLINVAR_TYPE.REGION
+            ClinVar_exons, type=ClinVar_Type.REGION
         )
         return ClinVar_exon_summary
     else:
         ClinVar_exon = ClinVar(
-            pathogenic=False, type=CLINVAR_TYPE.REGION, highest_classification=None
+            pathogenic=False, type=ClinVar_Type.REGION, highest_classification=None
         )
         return ClinVar_exon
 
@@ -85,7 +85,7 @@ def check_clinvar_region(
     clinvar_region = clinvar(f"{variant_info.chr}:{start}-{end}")
     clinvar_region_df = convert_vcf_gen_to_df(clinvar_region)
     clinvar_region_filter = filter_gene(clinvar_region_df, variant_info.gene_name)
-    ClinVar_region = create_ClinVar(clinvar_region_filter, CLINVAR_TYPE.REGION)
+    ClinVar_region = create_ClinVar(clinvar_region_filter, ClinVar_Type.REGION)
     return ClinVar_region
 
 

@@ -9,24 +9,24 @@ from refactoring.acmg_rules.utils import (
     rule_type,
     evidence_type,
 )
-import refactoring.information as info
+from refactoring.information import Classification_Info, Info
 from refactoring.variant import PopulationDatabases
 
 
-class bs2(abstract_rule):
+class Bs2(abstract_rule):
     """
     BS2: Mutation found in healthy individuals
     """
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
             (
-                info.classification_information.VARIANT_FLOSSIES,
-                info.classification_information.THRESHOLD_BS1,
+                class_info.VARIANT_FLOSSIES,
+                class_info.THRESHOLD_BS2,
             ),
         )
 

@@ -9,27 +9,27 @@ from refactoring.acmg_rules.utils import (
     evidence_type,
     rule_type,
 )
-import refactoring.information as info
+from refactoring.information import Info, Classification_Info
 from refactoring.acmg_rules.computation_evidence_utils import (
     assess_prediction_tool,
     Threshold,
 )
 
 
-class bp7(abstract_rule):
+class Bp7(abstract_rule):
     """
     BP7: Silent missense variant is predicted to have effect on splicing
     """
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
             (
-                info.classification_information.VARIANT_PREDICTION,
-                info.classification_information.THRESHOLD_SPLICING_PREDICTION_BENIGN,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
             ),
         )
 

@@ -9,30 +9,30 @@ from refactoring.acmg_rules.utils import (
     rule_type,
     evidence_type,
 )
-import refactoring.information as info
-from refactoring.variant import PopulationDatabases
+from refactoring.information import Classification_Info, Info
+from refactoring.variant import PopulationDatabases_gnomAD
 
 
-class ba1(abstract_rule):
+class Ba1(abstract_rule):
     """
     BA1: High frequency of variant in healthy population (e.g. gnomAD)
     """
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
             (
-                info.classification_information.VARIANT_GNOMAD,
-                info.classification_information.THRESHOLD_BA1,
+                class_info.VARIANT_GNOMAD,
+                class_info.THRESHOLD_BA1,
             ),
         )
 
     @classmethod
     def assess_rule(
-        cls, gnomad: PopulationDatabases, threshold_ba1: float
+        cls, gnomad: PopulationDatabases_gnomAD, threshold_ba1: float
     ) -> RuleResult:
         if gnomad.frequency > threshold_ba1:
             comment = f"Variant occures with {gnomad.frequency} in {gnomad.name}."

@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import pyensembl
-from dataclasses import dataclass, field
 import pathlib
+import logging
+from dataclasses import dataclass, field
 from collections.abc import Callable
 
 from refactoring.variant import VariantInfo, TranscriptInfo, Variant
@@ -38,7 +39,10 @@ from refactoring.clinvar_region import (
     check_clinvar_start_alt_start,
 )
 from refactoring.var_type import VARTYPE_GROUPS
-from refactoring.information import classification_information
+from refactoring.information import Classification_Info, Info
+
+
+logger = logging.getLogger("GenOtoScope_Classify.config_annotation")
 
 
 @dataclass
@@ -55,7 +59,8 @@ class TranscriptInfo_annot(TranscriptInfo):
 
 
 def annotate_transcripts(
-    variant: Variant, fun_dict: dict[VARTYPE_GROUPS, Callable[[TranscriptInfo], TranscriptInfo_annot]]
+    variant: Variant,
+    fun_dict: dict[VARTYPE_GROUPS, Callable[[TranscriptInfo], TranscriptInfo_annot]],
 ) -> list[TranscriptInfo_annot]:
     annotated_transcripts = []
     for transcript in variant.transcript_info:
@@ -75,10 +80,11 @@ def annotate_transcripts(
             annot_fun = fun_dict[VARTYPE_GROUPS.INTRONIC]
         else:
             break
-        annotated_transcript = annot_fun(transcript)
-        annotated_transcripts.append(annotated_transcript)
-    if len(annotated_transcripts) == 0:
-        raise TypeError("No annotated transcripts created")
+        try:
+            annotated_transcript = annot_fun(transcript)
+            annotated_transcripts.append(annotated_transcript)
+        except Exception:
+            logger.warning(f"Annotation function {annot_fun.func} did not execute.")
     return annotated_transcripts
 
 
@@ -130,13 +136,15 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
     is_reading_frame_preserved: bool = True
 
     @classmethod
-    def get_annotate(cls) -> tuple[Callable, tuple[classification_information, ...]]:
+    def get_annotate(
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.annotate,
             (
-                classification_information.VARIANT,
-                classification_information.CLINVAR_PATH,
-                classification_information.UNIPROT_REP_REGION_PATH,
+                class_info.VARIANT,
+                class_info.CLINVAR_PATH,
+                class_info.UNIPROT_REP_REGION_PATH,
             ),
         )
 
@@ -205,7 +213,8 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         )
 
     @classmethod
-    def get_annotate_acmg(cls):
+    def get_annotate_acmg(cls, class_info: Classification_Info):
+        class_info = class_info
         pass
 
     @classmethod
@@ -233,13 +242,15 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
     is_reading_frame_preserved: bool = False
 
     @classmethod
-    def get_annotate(cls) -> tuple[Callable, tuple[classification_information, ...]]:
+    def get_annotate(
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.annotate,
             (
-                classification_information.VARIANT,
-                classification_information.CLINVAR_PATH,
-                classification_information.UNIPROT_REP_REGION_PATH,
+                class_info.VARIANT,
+                class_info.CLINVAR_PATH,
+                class_info.UNIPROT_REP_REGION_PATH,
             ),
         )
 
@@ -348,13 +359,15 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
     position_alternative_start_codon: list[int] = field(default_factory=list)
 
     @classmethod
-    def get_annotate(cls) -> tuple[Callable, tuple[classification_information, ...]]:
+    def get_annotate(
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.annotate,
             (
-                classification_information.VARIANT,
-                classification_information.CLINVAR_PATH,
-                classification_information.UNIPROT_REP_REGION_PATH,
+                class_info.VARIANT,
+                class_info.CLINVAR_PATH,
+                class_info.UNIPROT_REP_REGION_PATH,
             ),
         )
 
@@ -410,7 +423,8 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
         )
 
     @classmethod
-    def get_annotate_acmg(cls):
+    def get_annotate_acmg(cls, class_info: Classification_Info):
+        class_info = class_info
         pass
 
     @classmethod

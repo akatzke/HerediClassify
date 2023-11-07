@@ -9,27 +9,27 @@ from refactoring.acmg_rules.utils import (
     rule_type,
     evidence_type,
 )
-import refactoring.information as info
+from refactoring.information import Classification_Info, Info
 from refactoring.acmg_rules.computation_evidence_utils import (
     assess_prediction_tool,
     Threshold,
 )
 
 
-class bp4_protein(abstract_rule):
+class Bp4_protein(abstract_rule):
     """
     BP4: Assess results of prediction programs
     """
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
             (
-                info.classification_information.VARIANT_PREDICTION,
-                info.classification_information.THRESHOLD_PATHOGENICITY_PREDICTION_BENIGN,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_PATHOGENICITY_PREDICTION_BENIGN,
             ),
         )
 
@@ -62,20 +62,20 @@ class bp4_protein(abstract_rule):
         )
 
 
-class bp4_splicing(abstract_rule):
+class Bp4_splicing(abstract_rule):
     """
     BP4: Assess results of prediction programs
     """
 
     @classmethod
     def get_assess_rule(
-        cls,
-    ) -> tuple[Callable, tuple[info.classification_information, ...]]:
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
             (
-                info.classification_information.VARIANT_PREDICTION,
-                info.classification_information.THRESHOLD_SPLICING_PREDICTION_BENIGN,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
             ),
         )
 
