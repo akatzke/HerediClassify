@@ -7,4 +7,9 @@ pip install pyensemble
 pyensembl install --release 75 76 --species human
 pip install hgvs
 pip install cyvcf2
+pip install pybedtools
 #+end_src
+Further non python dependencies:
+- bcftools
+- bedtools
+- bgzip
