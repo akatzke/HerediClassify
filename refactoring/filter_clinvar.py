@@ -1,34 +1,45 @@
 #!/usr/bin/env python3
 
+import datetime
 import pathlib
 import logging
 import os
 from cyvcf2 import VCF, Writer
+from datetime import date
 
 
 logger = logging.getLogger("GenOtoScope_Annotate.filter_clinvar")
-path_clinvar_filter = pathlib.Path(
-    "/home/katzkean/clinvar/clinvar_20230730_quality_filter.vcf.gz"
-)
-quality = "reviewed_by_expert_panel"
 
 
-def testing(path):
-    vcf = VCF(path)
-    i = 0
-    for entry in vcf:
-        if len(entry.ALT) == 0:
-            print(entry.INFO.get("MC"))
-            print(entry.ID)
-            print(entry.REF)
-            print(entry.ALT)
-            print(entry.POS)
-            i += 1
-    return i
+def prepare_clinvar_file() -> None:
+    clinvar_path = download_clinvar()
+    quality = ["reviewed_by_expert_panel"]
+    clinvar_quality_path = filter_clinvar_quality(clinvar_path, quality)
+    clinvar_quality_snv_path = filter_clinvar_snv(clinvar_quality_path)
+
+
+def download_clinvar() -> pathlib.Path:
+    cwd = pathlib.Path.cwd()
+    os.system("mkdir clinvar")
+    dir_name = create_clinvar_dir_name()
+    clinvar_path = cwd / "clinvar" / dir_name / "clinvar.vcf.gz"
+    command_download_clinvar = f"wget -O {clinvar_path} https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz"
+    os.system(command_download_clinvar)
+    return clinvar_path
+
+
+def create_clinvar_dir_name() -> str:
+    """
+    Create clinvar dir name
+    Schema: clinvar_month_year
+    """
+    today = date.today()
+    dir_name = f"clinvar_{today.year}_{today.month}_{today.day}"
+    return dir_name
 
 
 def filter_clinvar_quality(
-    clinvar_path: pathlib.Path, quality_filter=list[str]
+    clinvar_path: pathlib.Path, quality_filter: list[str]
 ) -> pathlib.Path:
     """
     Filter clinvar for quality metric

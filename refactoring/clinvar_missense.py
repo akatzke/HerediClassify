@@ -86,7 +86,7 @@ def extract_var_codon_info(
     """
     logger.debug("Extract codon information from variant-affected genomic position")
     logger.debug(f"=== New transcript id = {transcript.transcript_id} ===")
-    ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
+    ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
         transcript.transcript_id
     )
     var_start = int(transcript.var_hgvs.pos.start.base)

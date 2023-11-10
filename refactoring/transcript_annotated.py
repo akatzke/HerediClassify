@@ -159,7 +159,7 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         """
         Perform annotation for exonic variants
         """
-        ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
+        ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
             transcript.transcript_id
         )
         var_seq, diff_len = construct_variant_coding_seq_exonic_variant(
@@ -265,7 +265,7 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
         """
         Perform annotation specific for intronic variants
         """
-        ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
+        ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
             transcript.transcript_id
         )
         (
@@ -379,7 +379,7 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
         path_uniprot_rep: pathlib.Path,
         transcript: TranscriptInfo,
     ) -> TranscriptInfo_start_loss:
-        ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
+        ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
             transcript.transcript_id
         )
         var_seq, diff_len = construct_variant_coding_seq_exonic_variant(

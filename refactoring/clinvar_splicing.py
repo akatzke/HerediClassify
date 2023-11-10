@@ -66,7 +66,7 @@ def find_corresponding_splice_site(
     Reconstruct splice site
     Splice site is defined as +/- 1,2 as only for these locations varinat is clearly defines as a splice variant
     """
-    ref_transcript = pyensembl.EnsemblRelease(75).transcript_by_id(
+    ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
         transcript.transcript_id
     )
     if "+" in str(transcript.var_hgvs) or "-" in str(transcript.var_hgvs):
