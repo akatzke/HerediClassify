@@ -2,7 +2,6 @@
     "chr" : "22",
     "pos" : 12596,
     "gene":  "BRCA1",
-    "id" : "rs13265",
     "ref" : "A",
     "alt" : "T",
     "variant_type" : ["missense", "splice_donor"],
@@ -10,15 +9,15 @@
         {"transcript" : "ENST000001",
          "hgvs_c" : "c.1972C>T",
          "hgvs_p" : "p.Trp23Cys",
-         "consequence" : ["missense"],
-         "exon" : 10,
-         "protein_domain" : "Zink finger"},
+         "variant_type" : ["missense"],
+         "exon" : 10
+         },
         {"transcript" : "ENST000002",
          "hgvs_c" : "c.1969-1C>T",
          "hgvs_p" : "",
-         "consequence" : ["missense", "splice_donor"],
-         "intron" : 10,
-         "protein_domain" : "Zink finger"}
+         "variant_type" : ["missense", "splice_donor"],
+         "intron" : 10
+        }
     ],
     "splicing_prediction_tools":
         {"SpliceAI": 0.5},

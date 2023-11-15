@@ -42,18 +42,18 @@ class PopulationDatabases_gnomAD(PopulationDatabases):
 
 @dataclass
 class AffectedRegion:
-    repetitive_region: Optional[bool] = None
     critical_region: Optional[bool] = None
+    cancer_hotspot: Optional[bool] = None
+    cold_spot: Optional[bool] = None
 
 
 @dataclass
 class VariantInfo:
-    gene_name: str
-    var_type: list[VARTYPE]
     chr: str
     genomic_start: int
     genomic_end: int
-    var_id: str
+    gene_name: str
+    var_type: list[VARTYPE]
     var_ref: str
     var_obs: str
 

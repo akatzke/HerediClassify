@@ -11,9 +11,6 @@
     "gene": {
       "type": "string"
     },
-    "id": {
-      "type": "string"
-    },
     "ref": {
       "type": "string"
     },
@@ -53,16 +50,12 @@
             },
             "intron": {
               "type" : ["integer", "null"]
-            },
-            "protein_domain": {
-              "type" : ["string", "null"]
             }
           },
           "required": [
             "transcript",
             "hgvs_c",
-            "consequence",
-            "protein_domain"
+            "variant_type"
           ]
         }
       ]
@@ -190,7 +183,6 @@
     "chr",
     "pos",
     "gene",
-    "id",
     "ref",
     "alt",
     "variant_type",
