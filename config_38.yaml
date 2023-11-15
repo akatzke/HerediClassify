@@ -44,16 +44,14 @@ functional_thresholds:
 
 ### Annotation filesitems
 annotation_files:
-    root: "/home/katzkean/"
+    root: "/home/katzkean/databases"
     clinvar:
-        root: "clinvar"
-        version: "clinvar_november_2023"
+        root: "Clinvar"
         clinvar_snv: "clinvar_snv.vcf.gz"
-        clinvar_small_indel: "clinvar_20230730_quality_filter_small_indel.vcf.gz"
+        clinvar_small_indel: "clinvar_small_indel.vcf.gz"
     uniprot:
-        root: "clinvar"
-        version: "uniprot_november_2023"
-        rep: "Uniprot_repeats_GRCh38_16columns.bed"
+        root: "Uniprot"
+        rep: "repeats_hg38_uniprot.bed"
 
 ### Variant specific annotations
 ### Define respective gene specific configuration in the given location

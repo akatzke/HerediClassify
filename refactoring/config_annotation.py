@@ -4,10 +4,9 @@ import yaml
 import pathlib
 import logging
 from jsonschema import validate
-from functools import reduce
+from functools import reduce, partial
 import operator as op
 from typing import Callable, Union, Any, Optional
-from functools import partial
 
 import refactoring.acmg_rules as Rules
 from refactoring.acmg_rules.computation_evidence_utils import (
@@ -30,7 +29,7 @@ from refactoring.transcript_annotated import (
 from refactoring.var_type import VARTYPE_GROUPS
 from refactoring.variant import Variant
 
-logger = logging.getLogger("GenOtoScope_Classify.config_annotation")
+logger = logging.getLogger("Classify.config_annotation")
 
 
 def perform_annotation(path_config: pathlib.Path, variant: Variant) -> list[RuleResult]:
@@ -393,10 +392,8 @@ def get_path_from_config(
         return None
     try:
         root_files = pathlib.Path(config[config_location[0]]["root"])
-        dir_files = (
-            root_files
-            / pathlib.Path(config[config_location[0]][config_location[1]]["root"])
-            / pathlib.Path(config[config_location[0]][config_location[1]]["version"])
+        dir_files = root_files / pathlib.Path(
+            config[config_location[0]][config_location[1]]["root"]
         )
         file_path = dir_files / pathlib.Path(
             config[config_location[0]][config_location[1]][config_location[2]]

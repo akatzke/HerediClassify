@@ -1,0 +1,7 @@
+pandas==2.1.1
+pyyaml==6.0.1
+cyvcf2==0.30.22
+biopython==1.81
+pyensembl==2.2.9
+hgvs==1.5.4
+pybedtools==0.9.1
