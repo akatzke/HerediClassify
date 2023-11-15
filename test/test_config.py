@@ -9,7 +9,7 @@ mylogger = logging.getLogger()
 os.chdir("/home/katzkean/variant_classification")
 
 from refactoring.config_annotation import perform_annotation
-from test.example_variant_splicing_GRCh37 import (
+from test.example_variant_splicing_GRCh38 import (
     create_test_variant,
     create_test_variant_no_flossies,
     create_test_variant_no_hotspot,
@@ -25,7 +25,7 @@ def test_perform_complete_annotation():
 def test_perform_annotation_no_path():
     test_var = create_test_variant()
     path_config = pathlib.Path(
-        "/home/katzkean/variant_classification/config_no_path.yaml"
+        "/home/katzkean/variant_classification/test/config_no_path.yaml"
     )
     rules_list = perform_annotation(path_config, test_var)
 
@@ -33,7 +33,7 @@ def test_perform_annotation_no_path():
 def test_perform_annotation_no_prediction():
     test_var = create_test_variant()
     path_config = pathlib.Path(
-        "/home/katzkean/variant_classification/config_no_prediction.yaml"
+        "/home/katzkean/variant_classification/test/config_no_prediction.yaml"
     )
     rule_list = perform_annotation(path_config, test_var)
 
@@ -41,7 +41,7 @@ def test_perform_annotation_no_prediction():
 def test_perform_annotation_no_threshold():
     test_var = create_test_variant()
     path_config = pathlib.Path(
-        "/home/katzkean/variant_classification/config_no_threshold.yaml"
+        "/home/katzkean/variant_classification/test/config_no_threshold.yaml"
     )
     rule_list = perform_annotation(path_config, test_var)
 
@@ -49,7 +49,7 @@ def test_perform_annotation_no_threshold():
 def test_perform_annotation_wrong_path():
     test_var = create_test_variant()
     path_config = pathlib.Path(
-        "/home/katzkean/variant_classification/config_wrong_path.yaml"
+        "/home/katzkean/variant_classification/test/config_wrong_path.yaml"
     )
     rule_list = perform_annotation(path_config, test_var)
 

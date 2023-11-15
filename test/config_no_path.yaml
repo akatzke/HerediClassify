@@ -44,11 +44,10 @@ functional_thresholds:
 
 ### Annotation filesitems
 annotation_files:
-    root: "/home/katzkean/"
+    root: "/home/katzkean/databases"
     uniprot:
-        root: "variant_classification/genotoscope_data/uniprot/"
-        version: "uniprot_feb_2021"
-        rep: "UP000005640_9606_repeat_hg19_16columns.bed"
+        root: "Uniprot"
+        rep: "repeats_hg38_uniprot.bed"
 
 ### Variant specific annotations
 ### Define respective gene specific configuration in the given location
