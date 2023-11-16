@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
-    "PVS1": {
+    "PVS1_protein": {
       "type": "object",
       "properties": {
         "rule_type": {
@@ -29,7 +29,61 @@
         "comment"
       ]
     },
-    "PS1": {
+    "PVS1_splicing": {
+      "type": "object",
+      "properties": {
+        "rule_type": {
+          "type": "string"
+        },
+        "evidence_type": {
+          "type" : "string"
+        },
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_type",
+        "evidence_type",
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PS1_protein": {
+      "type": "object",
+      "properties": {
+        "rule_type": {
+          "type": "string"
+        },
+        "evidence_type": {
+          "type" : "string"
+        },
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_type",
+        "evidence_type",
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PS1_splicing": {
       "type": "object",
       "properties": {
         "rule_type": {
@@ -191,7 +245,34 @@
         "comment"
       ]
     },
-    "PM5": {
+    "PM5_protein": {
+      "type": "object",
+      "properties": {
+        "rule_type": {
+          "type": "string"
+        },
+        "evidence_type": {
+          "type" : "string"
+        },
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_type",
+        "evidence_type",
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PM5_splicing": {
       "type": "object",
       "properties": {
         "rule_type": {
@@ -272,7 +353,34 @@
         "comment"
       ]
     },
-    "PP3": {
+    "PP3_protein": {
+      "type": "object",
+      "properties": {
+        "rule_type": {
+          "type": "string"
+        },
+        "evidence_type": {
+          "type" : "string"
+        },
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_type",
+        "evidence_type",
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "PP3_splicing": {
       "type": "object",
       "properties": {
         "rule_type": {
@@ -380,7 +488,34 @@
         "comment"
       ]
     },
-    "BP4": {
+    "BP4_protein": {
+      "type": "object",
+      "properties": {
+        "rule_type": {
+          "type": "string"
+        },
+        "evidence_type": {
+          "type" : "string"
+        },
+        "status": {
+          "type": "boolean"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_type",
+        "evidence_type",
+        "status",
+        "strength",
+        "comment"
+      ]
+    },
+    "BP4_splicing": {
       "type": "object",
       "properties": {
         "rule_type": {

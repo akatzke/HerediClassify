@@ -115,7 +115,11 @@
         }
       },
       "required": [
-        "AF"
+        "AF",
+        "AC",
+        "popmax",
+        "popmax_AF",
+        "popmax_AC"
       ]
     },
     "FLOSSIES": {
@@ -143,8 +147,16 @@
         },
         "pathogenic": {
           "type": "boolean"
+        },
+        "benign": {
+          "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "performed",
+        "pathogenic",
+        "benign"
+      ]
     },
     "functional_data": {
       "type": "object",
@@ -154,8 +166,16 @@
         },
         "pathogenic": {
           "type": "boolean"
+        },
+        "benign": {
+          "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "performed",
+        "pathogenic",
+        "benign"
+      ]
     },
     "prior": {
       "type": "number"
@@ -186,18 +206,6 @@
     "ref",
     "alt",
     "variant_type",
-    "variant_effect",
-    "splicing_prediction_tools",
-    "pathogenicity_prediction_tools",
-    "gnomAD",
-    "FLOSSIES",
-    "mRNA_analysis",
-    "prior",
-    "co-occurrence",
-    "segregation",
-    "multifactorial_log-likelihood",
-    "VUS_task_force_domain",
-    "cancer_hotspot",
-    "cold_spot"
+    "variant_effect"
   ]
 }
