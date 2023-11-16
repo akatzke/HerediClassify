@@ -48,9 +48,7 @@ class Bp3(abstract_rule):
             ):
                 comment = f"Transcript {transcript.transcript_id} does not carry variant of exonic or intronic variant type."
                 result = False
-                results.append(result)
-                break
-            if not transcript.transcript_disease_relevant:
+            elif not transcript.transcript_disease_relevant:
                 comment = (
                     f"Transcript {transcript.transcript_id} is not disease relevant."
                 )

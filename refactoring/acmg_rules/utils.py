@@ -36,6 +36,23 @@ class RuleResult:
     strength: evidence_strength
     comment: str
 
+    def create_dict(self) -> dict:
+        """
+        Create a dictionary from the RuleResult object
+        """
+        rule_dict = {
+            "rule_type": self.type.value,
+            "evidence_type": self.evidence_type.value,
+            "status": self.status,
+            "strength": self.strength.value,
+            "comment": self.comment,
+        }
+        rule_name = self.name.upper()
+        if self.type is rule_type.PROTEIN or self.type is rule_type.SPLICING:
+            rule_name = rule_name + f"_{self.type.value}"
+        out_dict = {rule_name: rule_dict}
+        return out_dict
+
 
 class abstract_rule(ABC):
     @abstractmethod

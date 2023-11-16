@@ -29,12 +29,19 @@ class TranscriptInfo:
 @dataclass
 class PopulationDatabases:
     name: str
-    frequency: float
+    frequency: Optional[float]
+    count: Optional[float]
+
+    def __post_init__(self):
+        "Ensure that"
+        if self.frequency is None and self.count is None:
+            raise ValueError(
+                f"Both frequency and count of population database {self.name} were not given. Please give either frequency of count."
+            )
 
 
 @dataclass
 class PopulationDatabases_gnomAD(PopulationDatabases):
-    allele_count: int
     popmax: str
     popmax_frequency: float
     popmax_allele_count: int
@@ -62,6 +69,21 @@ class VariantInfo:
 
 
 @dataclass
+class MultifactorialLikelihood:
+    prior: Optional[float] = None
+    multifactorial_likelihood: Optional[float] = None
+    co_occurrence: Optional[float] = None
+    co_segregation: Optional[float] = None
+
+
+@dataclass
+class FunctionalData:
+    performed: bool
+    pathogenic: bool
+    benign: bool
+
+
+@dataclass
 class Variant:
     variant_info: VariantInfo
     transcript_info: list[TranscriptInfo]
@@ -69,3 +91,6 @@ class Variant:
     gnomad: Optional[PopulationDatabases_gnomAD] = None
     flossies: Optional[PopulationDatabases] = None
     affected_region: Optional[AffectedRegion] = None
+    multifactorial_likelihood: Optional[MultifactorialLikelihood] = None
+    functional_assay: Optional[FunctionalData] = None
+    splicing_assay: Optional[FunctionalData] = None

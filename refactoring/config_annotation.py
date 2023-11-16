@@ -1,9 +1,7 @@
 #!/usr/bin/env
 
-import yaml
 import pathlib
 import logging
-from jsonschema import validate
 from functools import reduce, partial
 import operator as op
 from typing import Callable, Union, Any, Optional
@@ -32,74 +30,7 @@ from refactoring.variant import Variant
 logger = logging.getLogger("Classify.config_annotation")
 
 
-def perform_annotation(path_config: pathlib.Path, variant: Variant) -> list[RuleResult]:
-    """
-    Handle all configuration and annotation steps
-    """
-    config = import_config(path_config)
-    final_config = select_gene_specific_functions_if_applicable(
-        config, variant.variant_info.gene_name
-    )
-    class_info = Classification_Info()
-    fun_info_dict = from_rule_list_get_fun_info_dict(final_config["rules"], class_info)
-    annotations_needed = from_fun_info_dict_get_informations_needed(fun_info_dict)
-    annotations_set_up = get_annotation_functions(
-        annotations_needed, variant, final_config, class_info
-    )
-    annotations = execute_annotation(annotations_set_up)
-    fun_info_dict_filtered = remove_rules_with_missing_annotation(fun_info_dict)
-    rule_results = execute_rules(fun_info_dict_filtered)
-    return rule_results
-
-
-def import_config(path_config: pathlib.Path) -> dict:
-    """
-    Import configuration and validate it
-    """
-    with open(path_config) as f:
-        config = yaml.load(f, Loader=yaml.SafeLoader)
-    if not validate_yaml(config):
-        raise ValueError(
-            "YAML configuration could not be validated. Please recheck YAML"
-        )
-    return config
-
-
-def validate_yaml(config: dict) -> bool:
-    """
-    Validate yaml using a predefine json schema
-    """
-    json_schema_path = pathlib.Path(
-        "/home/katzkean/variant_classification/refactoring/config_schema.json"
-    )
-    with open(json_schema_path) as f:
-        json_schema = yaml.load(f, Loader=yaml.SafeLoader)
-    try:
-        validate(config, json_schema)
-    except:
-        return False
-    return True
-
-
-def select_gene_specific_functions_if_applicable(config: dict, gene_name: str) -> dict:
-    """
-    Check if gene_specific_configs are available for gene_name
-    If available return gene specific configuration otherwise return standard configuration
-    """
-    if "gene_specific_configs" in config.keys():
-        if gene_name.lower in config["gene_specific_configs"].keys():
-            dir_gene_config = pathlib.Path(config["gene_specific_configs"]["root"])
-            file_gene_config = config["gene_specific_configs"][gene_name.lower]
-            path_gene_config = dir_gene_config / file_gene_config
-            gene_config = import_config(path_gene_config)
-            return gene_config
-        else:
-            return config
-    else:
-        return config
-
-
-def from_rule_list_get_fun_info_dict(
+def get_annotations_needed_from_rules(
     rule_list: list[str], class_info: Classification_Info
 ) -> dict[Callable, tuple[Info, ...]]:
     """
@@ -137,7 +68,7 @@ def from_rule_list_get_fun_info_dict(
     return rule_info_dict
 
 
-def from_fun_info_dict_get_informations_needed(
+def get_unique_annotations_needed(
     fun_info_dict: dict[Callable, tuple[Info, ...]]
 ) -> list[Info]:
     """
@@ -357,7 +288,7 @@ def remove_rules_with_missing_annotation(
     return fun_info_dict
 
 
-def execute_rules(fun_info_dict: dict[Callable, tuple[Info, ...]]) -> list[RuleResult]:
+def apply_rules(fun_info_dict: dict[Callable, tuple[Info, ...]]) -> list[RuleResult]:
     """
     Execute all of the rules
     """

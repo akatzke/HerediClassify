@@ -29,7 +29,7 @@ def validate_config(config: dict) -> bool:
         json_schema = yaml.load(f, Loader=yaml.SafeLoader)
     try:
         validate(config, json_schema)
-    except:
+    except Exception:
         return False
     return True
 

@@ -301,7 +301,11 @@ def is_transcript_type_splice_acceptor_donor(transcript_type: list[VARTYPE]) -> 
     """
     Examine if transcript type is splice acceptor or splice donor
     """
-    if any(vartype in VARTYPE_GROUPS.INTRONIC.value for vartype in transcript_type) and not any (vartype in VARTYPE_GROUPS.EXONIC.value for vartype in transcript_type):
+    if any(
+        vartype in VARTYPE_GROUPS.INTRONIC.value for vartype in transcript_type
+    ) and not any(
+        vartype in VARTYPE_GROUPS.EXONIC.value for vartype in transcript_type
+    ):
         return True
     else:
         return False
@@ -466,7 +470,7 @@ def find_exon_by_var_pos(
             var_start = 0
         if var_end < 0:
             if diff_len > 0:
-                var_end = var_start + transcript.diff_len
+                var_end = var_start + diff_len
             else:
                 # deletion case
                 var_end = var_start

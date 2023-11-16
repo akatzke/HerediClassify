@@ -34,7 +34,7 @@ class Bs2(abstract_rule):
     def assess_rule(
         cls, flossies: PopulationDatabases, threshold_bs2: float
     ) -> RuleResult:
-        if flossies.frequency > threshold_bs2:
+        if flossies.count > threshold_bs2:
             comment = "Something"
             result = True
         else:
