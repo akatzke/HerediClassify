@@ -25,12 +25,11 @@ def create_example_dup() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "PMS2",
-        [VARTYPE.FRAMESHIFT_VARIANT],
         "7",
         5986933,
         5986934,
-        "some_id",
+        "PMS2",
+        [VARTYPE.FRAMESHIFT_VARIANT],
         "A",
         "AT",
     )
@@ -54,12 +53,11 @@ def create_example_ins() -> tuple:
         var_protein="p.Glu111fs",
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.FRAMESHIFT_VARIANT],
         "17",
         43104232,
         43104233,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.FRAMESHIFT_VARIANT],
         "",
         "T",
     )
@@ -83,12 +81,11 @@ def create_example_ins_no_frameshift() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.FRAMESHIFT_VARIANT],
         "17",
         43104232,
         43104233,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.FRAMESHIFT_VARIANT],
         "",
         "TTT",
     )
@@ -112,12 +109,11 @@ def create_example_del() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "TP53",
-        [VARTYPE.INFRAME_DELETION],
         "17",
         7676080,
         7676082
-        "some_id",
+        "TP53",
+        [VARTYPE.INFRAME_DELETION],
         "CAGA",
         "C",
     )
@@ -141,13 +137,12 @@ def create_example_indel() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.FRAMESHIFT_VARIANT],
         "17",
         43076579,
         43076581,
+        "BRCA1",
+        [VARTYPE.FRAMESHIFT_VARIANT],
         "some_id",
         "TAG",
-        "AA",
     )
     return (transcript, variant)

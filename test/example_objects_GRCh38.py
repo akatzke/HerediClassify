@@ -26,12 +26,11 @@ def create_example_snv_syn() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
+        "17",
+        43093791,
+        43093791,
         "BRCA1",
         [VARTYPE.SYNONYMOUS_VARIANT],
-        "17",
-        43093791.
-        43093791.
-        "some_id",
         "G",
         "A",
     )
@@ -56,6 +55,6 @@ def create_start_lost() -> tuple:
         var_protein="p.Met1?",
     )
     variant = VariantInfo(
-        "RAD51D", [VARTYPE.START_LOST], "17", 35119612, 35119612, "some_id", "A", "C"
+        "17", 35119612, 35119612, "RAD51D", [VARTYPE.START_LOST], "A", "C"
     )
     return (transcript, variant)

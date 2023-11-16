@@ -19,7 +19,7 @@ hgvs_parser = hgvs.parser.Parser()
 def create_test_variant() -> Variant:
     transinfo, varinfo = create_example_splice_acceptor_BRCA1()
     region = AffectedRegion(True, False)
-    flossies = PopulationDatabases("Flossies", 0.5)
+    flossies = PopulationDatabases("Flossies", 0.5, None)
     gnomad = PopulationDatabases_gnomAD("gnomAd", 0.05, 20, "AES", 0.06, 10)
     prediction = {"SpliceAI": 0.5, "REVEL": 0.5}
     return Variant(varinfo, [transinfo], prediction, gnomad, flossies, region)
@@ -41,9 +41,9 @@ def create_test_variant_no_flossies() -> Variant:
 
 def create_test_variant_no_hotspot() -> Variant:
     transinfo, varinfo = create_example_splice_acceptor_BRCA1()
-    region = AffectedRegion(repetitive_region=True)
+    region = AffectedRegion(critical_region=True, cancer_hotspot=None, cold_spot=None)
     gnomad = PopulationDatabases_gnomAD("gnomAd", 0.05, 20, "AES", 0.06, 10)
-    flossies = PopulationDatabases("Flossies", 0.5)
+    flossies = PopulationDatabases("Flossies", 0.5, None)
     prediction = {"SpliceAI": 0.5, "REVEL": 0.5}
     return Variant(
         variant_info=varinfo,
@@ -74,12 +74,11 @@ def create_example_splice_acceptor_BRCA1() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.SPLICE_ACCEPTOR],
         "17",
         43051118,
         43051118,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.SPLICE_ACCEPTOR],
         "C",
         "T",
     )
@@ -105,12 +104,11 @@ def create_example_splice_donor_BRCA1() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.SPLICE_DONOR],
         "17",
         43051062,
         43051062,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.SPLICE_DONOR],
         "C",
         "G",
     )
@@ -135,12 +133,11 @@ def create_example_splice_donor_exonic_BRCA1() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.SPLICE_DONOR],
         "17",
         43076488,
         43076488,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.SPLICE_DONOR],
         "C",
         "A",
     )
@@ -166,12 +163,11 @@ def create_example_splice_acceptor_exonic_BRCA1() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.SPLICE_DONOR],
         "17",
         41228505,
         41228505,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.SPLICE_DONOR],
         "C",
         "G",
     )
@@ -196,12 +192,11 @@ def create_example_splice_donor_BRCA1_2() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.SPLICE_DONOR],
         "17",
         43070927,
         43070927,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.SPLICE_DONOR],
         "C",
         "T",
     )
@@ -226,12 +221,11 @@ def create_example_minus_BRCA1() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.SPLICE_DONOR],
         "17",
         43051123,
         43051123,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.SPLICE_DONOR],
         "A",
         "G",
     )
@@ -256,12 +250,11 @@ def create_example_plus_BRCA1() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.SPLICE_DONOR],
         "17",
         43051059,
         43051059,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.SPLICE_DONOR],
         "T",
         "C",
     )
@@ -290,16 +283,15 @@ def create_example_splice_BARD1() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
+        "2",
+        214752562,
+        214752562,
         "BARD1",
         [
             VARTYPE.SPLICE_REGION_VARIANT,
             VARTYPE.SPLICE_POLYPYRIMIDINE_TRACT_VARIANT,
             VARTYPE.INTRON_VARIANT,
         ],
-        "2",
-        214752562,
-        214752562,
-        "some_id",
         "A",
         "G",
     )
@@ -324,12 +316,11 @@ def create_example_splice_donor_TP53() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "TP53",
-        [VARTYPE.INTRON_VARIANT, VARTYPE.SPLICE_DONOR_5TH_BASE_VARIANT],
         "17",
         7675989,
         7675989,
-        "some_id",
+        "TP53",
+        [VARTYPE.INTRON_VARIANT, VARTYPE.SPLICE_DONOR_5TH_BASE_VARIANT],
         "C",
         "T",
     )
@@ -354,12 +345,11 @@ def create_example_splice_acceptor_BRCA2() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA2",
-        [VARTYPE.SPLICE_ACCEPTOR],
         "13",
         32363178,
         32363178,
-        "some_id",
+        "BRCA2",
+        [VARTYPE.SPLICE_ACCEPTOR],
         "G",
         "C",
     )
@@ -384,12 +374,11 @@ def create_example_splice_acceptor_exonic_BRCA2() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA2",
-        [VARTYPE.SPLICE_ACCEPTOR, VARTYPE.MISSENSE_VARIANT],
         "13",
         32363180,
         32363180,
-        "some_id",
+        "BRCA2",
+        [VARTYPE.SPLICE_ACCEPTOR, VARTYPE.MISSENSE_VARIANT],
         "T",
         "G",
     )
@@ -414,12 +403,11 @@ def create_example_splice_donor_BRCA2() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA2",
-        [VARTYPE.SPLICE_DONOR],
         "13",
         32363535,
         32363535,
-        "some_id",
+        "BRCA2",
+        [VARTYPE.SPLICE_DONOR],
         "T",
         "C",
     )
@@ -444,12 +432,11 @@ def create_example_splice_donor_exonic_BRCA2() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA2",
-        [VARTYPE.SPLICE_DONOR, VARTYPE.SYNONYMOUS_VARIANT],
         "13",
         32363533,
         32363533,
-        "some_id",
+        "BRCA2",
+        [VARTYPE.SPLICE_DONOR, VARTYPE.SYNONYMOUS_VARIANT],
         "G",
         "A",
     )
@@ -474,12 +461,11 @@ def create_example_splice_variant_BRCA2_minus() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA2",
-        [VARTYPE.SPLICE_REGION_VARIANT, VARTYPE.INTRON_VARIANT],
         "13",
         32357735,
         32357735,
-        "some_id",
+        "BRCA2",
+        [VARTYPE.SPLICE_REGION_VARIANT, VARTYPE.INTRON_VARIANT],
         "T",
         "G",
     )
@@ -504,12 +490,11 @@ def create_example_splice_variant_BRCA2_plus() -> tuple:
         var_protein=None,
     )
     variant = VariantInfo(
-        "BRCA2",
-        [VARTYPE.SPLICE_REGION_VARIANT, VARTYPE.INTRON_VARIANT],
         "13",
         32357937,
         32357937,
-        "some_id",
+        "BRCA2",
+        [VARTYPE.SPLICE_REGION_VARIANT, VARTYPE.INTRON_VARIANT],
         "A",
         "C",
     )

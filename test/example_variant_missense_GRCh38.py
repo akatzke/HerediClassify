@@ -38,12 +38,11 @@ def create_example_mis() -> tuple:
     )
     transcripts = [transcript_1, transcript_2]
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.MISSENSE_VARIANT],
         "17",
         43057110,
         43057110,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.MISSENSE_VARIANT],
         "A",
         "C",
     )
@@ -67,12 +66,11 @@ def create_example_mis_first_base() -> tuple:
         var_protein="p.Val1740Leu",
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.MISSENSE_VARIANT],
         "17",
         43057111,
         43057111,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.MISSENSE_VARIANT],
         "C",
         "G",
     )
@@ -98,12 +96,11 @@ def create_example_mis_BRCA1_2() -> tuple:
         var_protein="p.Met1411Thr",
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.MISSENSE_VARIANT],
         "17",
         43082529,
         43082529,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.MISSENSE_VARIANT],
         "A",
         "G",
     )
@@ -128,12 +125,11 @@ def create_example_mis_BRCA1_1() -> tuple:
         var_protein="p.Met1411Thr",
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.MISSENSE_VARIANT],
         "17",
         43082530,
         43082530,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.MISSENSE_VARIANT],
         "T",
         "C",
     )
@@ -158,12 +154,11 @@ def create_example_mis_BRCA1_3() -> tuple:
         var_protein="p.Met1411Ile",
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.MISSENSE_VARIANT],
         "17",
         43082528,
         43082528,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.MISSENSE_VARIANT],
         "C",
         "T",
     )
@@ -191,12 +186,11 @@ def create_example_mis_BRCA1_2_exons() -> tuple:
         var_protein="p.Gly1366Asp",
     )
     variant = VariantInfo(
-        "BRCA1",
-        [VARTYPE.MISSENSE_VARIANT],
         "17",
         43091032,
         43091032,
-        "some_id",
+        "BRCA1",
+        [VARTYPE.MISSENSE_VARIANT],
         "C",
         "T",
     )
@@ -221,12 +215,11 @@ def create_example_mis_BRCA2_1() -> tuple:
         var_protein="p.Ile2296Leu",
     )
     variant = VariantInfo(
-        "BRCA2",
-        [VARTYPE.MISSENSE_VARIANT],
         "13",
         32344602,
         32344602,
-        "some_id",
+        "BRCA2",
+        [VARTYPE.MISSENSE_VARIANT],
         "A",
         "T",
     )
@@ -251,12 +244,11 @@ def create_example_mis_BRCA2_2() -> tuple:
         var_protein="p.Ile2296Lys",
     )
     variant = VariantInfo(
-        "BRCA2",
-        [VARTYPE.MISSENSE_VARIANT],
         "13",
         32344603,
         32344603,
-        "some_id",
+        "BRCA2",
+        [VARTYPE.MISSENSE_VARIANT],
         "T",
         "A",
     )
@@ -281,12 +273,11 @@ def create_example_mis_BRCA2_3() -> tuple:
         var_protein="p.Ile2296Met",
     )
     variant = VariantInfo(
-        "BRCA2",
-        [VARTYPE.MISSENSE_VARIANT],
         "13",
         32344604,
         32344604,
-        "some_id",
+        "BRCA2",
+        [VARTYPE.MISSENSE_VARIANT],
         "A",
         "G",
     )
@@ -314,12 +305,11 @@ def create_example_mis_BRCA2_2_exons() -> tuple:
         var_protein="p.Arg2659Lys",
     )
     variant = VariantInfo(
-        "BRCA2",
-        [VARTYPE.MISSENSE_VARIANT],
         "13",
         32362693,
         32362693,
-        "some_id",
+        "BRCA2",
+        [VARTYPE.MISSENSE_VARIANT],
         "G",
         "A",
     )
