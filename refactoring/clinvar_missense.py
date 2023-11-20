@@ -39,7 +39,6 @@ def check_clinvar_missense(
     """
     affected_transcript = get_affected_transcript(transcripts, VARTYPE_GROUPS.MISSENSE)
     var_codon_info = extract_var_codon_info(variant, affected_transcript)
-    print(var_codon_info)
     clinvar_same_codon = extract_clinvar_entries_missense(
         path_clinvar,
         variant.chr,
@@ -49,15 +48,9 @@ def check_clinvar_missense(
     clinvar_same_codon_aa = clinvar_same_codon.apply(
         construct_clinvar_prot_change, var_codon_info=var_codon_info, axis=1
     )
-    print(
-        clinvar_same_codon_aa[
-            ["pos", "id", "ref", "alt", "prot_ref", "prot_alt", "CLNSIG"]
-        ]
-    )
     clinvar_same_codon_aa_filtered = filter_gene(
         clinvar_same_codon_aa, variant.gene_name
     )
-    print(var_codon_info["prot_alt"])
     clinvar_same_aa_df = clinvar_same_codon_aa_filtered[
         clinvar_same_codon_aa_filtered.prot_alt == var_codon_info["prot_alt"]
     ]
@@ -478,7 +471,7 @@ def normalize_codon_exonic_pos(
             codon_pos_corrected = sum(codon_pos_corrected_tmp, [])
             break
         else:
-            raise AssertionError("Codon not in exon or intron inveral")
+            continue
     logger.debug(f"normalized positions: {codon_pos_corrected}")
     logger.debug(f"codon intersects intron at: {codon_intersects_intron_at}")
     try:
