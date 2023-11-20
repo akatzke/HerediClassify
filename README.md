@@ -42,7 +42,10 @@ bash install_dependencies/download_data.sh -p PATH
 The file paths in the configuration file (config.yaml) need to be changed for the new install.
 Under annotation_files the root directory for the database folders created under 5. in the install instructions.
 
+## Testing
+Tests are implemented using pytest. To test general functionality execute pytest.
+
 ## Execution
 ```sh
-python bin/classify.py -c config.yaml -p 
+python bin/classify.py -c config.yaml -p json_string
 ```
