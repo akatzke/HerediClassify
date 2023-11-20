@@ -22,9 +22,7 @@ def validate_config(config: dict) -> bool:
     """
     Validate yaml using a predefine json schema
     """
-    json_schema_path = pathlib.Path(
-        "/home/katzkean/variant_classification/refactoring/config_schema.json"
-    )
+    json_schema_path = pathlib.Path("./refactoring/config_schema.json")
     with open(json_schema_path) as f:
         json_schema = yaml.load(f, Loader=yaml.SafeLoader)
     try:

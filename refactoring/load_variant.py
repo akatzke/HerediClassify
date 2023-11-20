@@ -42,9 +42,7 @@ def validate_variant(var_dict: dict) -> bool:
     """
     Validate variant input
     """
-    json_schema_path = pathlib.Path(
-        "/home/katzkean/variant_classification/API/schema_input.json"
-    )
+    json_schema_path = pathlib.Path("./API/schema_input.json")
     with open(json_schema_path) as f:
         json_schema = json.load(f)
     try:
