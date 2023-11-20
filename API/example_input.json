@@ -1,22 +1,22 @@
 {
-    "chr" : "22",
-    "pos" : 12596,
+    "chr" : "17",
+    "pos" : 43057110,
     "gene":  "BRCA1",
     "ref" : "A",
-    "alt" : "T",
-    "variant_type" : ["missense", "splice_donor"],
+    "alt" : "C",
+    "variant_type" : ["missense"],
     "variant_effect" : [
-        {"transcript" : "ENST000001",
-         "hgvs_c" : "c.1972C>T",
-         "hgvs_p" : "p.Trp23Cys",
+        {"transcript" : "ENST00000357654",
+         "hgvs_c" : "c.5219T>G",
+         "hgvs_p" : "p.Val1740Gly",
          "variant_type" : ["missense"],
-         "exon" : 10
+         "exon" : 19
          },
-        {"transcript" : "ENST000002",
-         "hgvs_c" : "c.1969-1C>T",
-         "hgvs_p" : "",
-         "variant_type" : ["missense", "splice_donor"],
-         "intron" : 10
+        {"transcript" : "ENST00000471181",
+         "hgvs_c" : "c.5282T>G",
+         "hgvs_p" : "p.Val1761Gly",
+         "variant_type" : ["missense"],
+         "intron" : 19
         }
     ],
     "splicing_prediction_tools":
