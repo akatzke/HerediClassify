@@ -28,11 +28,10 @@ class Pvs1(abstract_rule):
     @classmethod
     def get_assess_rule(
         cls, class_info: Classification_Info
-    ) -> tuple[Callable, tuple[Info]]:
+    ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (class_info.ANNOTATED_TRANSCRIPT_LIST,),
-            (class_info.VARIANT),
+            (class_info.ANNOTATED_TRANSCRIPT_LIST, class_info.VARIANT),
         )
 
     @classmethod
