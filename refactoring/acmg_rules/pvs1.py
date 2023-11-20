@@ -11,7 +11,7 @@ from refactoring.acmg_rules.utils import (
     summarise_results_per_transcript,
 )
 from refactoring.information import Classification_Info, Info
-from refactoring.variant import TranscriptInfo
+from refactoring.variant import TranscriptInfo, VariantInfo
 from refactoring.transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
@@ -32,10 +32,13 @@ class Pvs1(abstract_rule):
         return (
             cls.assess_rule,
             (class_info.ANNOTATED_TRANSCRIPT_LIST,),
+            (class_info.VARIANT),
         )
 
     @classmethod
-    def assess_rule(cls, annotated_transcripts: list[TranscriptInfo]) -> RuleResult:
+    def assess_rule(
+        cls, annotated_transcripts: list[TranscriptInfo], variant: VariantInfo
+    ) -> RuleResult:
         results = []
         for transcript in annotated_transcripts:
             if type(transcript) is TranscriptInfo_exonic:
@@ -47,7 +50,18 @@ class Pvs1(abstract_rule):
             elif type(transcript) is TranscriptInfo_start_loss:
                 result_start_loss = cls.assess_pvs1_start_loss(transcript)
                 results.append(result_start_loss)
-        result = summarise_results_per_transcript(results)
+        if len(results) == 0:
+            comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {variant.var_type}."
+            result = RuleResult(
+                "PVS1",
+                rule_type.GENERAL,
+                evidence_type.PATHOGENIC,
+                False,
+                evidence_strength.VERY_STRONG,
+                comment,
+            )
+        else:
+            result = summarise_results_per_transcript(results)
         return result
 
     @classmethod

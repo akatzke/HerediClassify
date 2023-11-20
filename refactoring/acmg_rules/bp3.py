@@ -10,7 +10,7 @@ from refactoring.acmg_rules.utils import (
     summarise_results_per_transcript,
 )
 from refactoring.information import Info, Classification_Info
-from refactoring.variant import TranscriptInfo
+from refactoring.variant import TranscriptInfo, VariantInfo
 from refactoring.transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
@@ -31,6 +31,7 @@ class Bp3(abstract_rule):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+                class_info.VARIANT,
             ),
         )
 
@@ -39,6 +40,7 @@ class Bp3(abstract_rule):
         cls,
         annotated_transcripts: list[TranscriptInfo],
         threshold_diff_len_prot_percent: float,
+        variant: VariantInfo,
     ) -> RuleResult:
         results = []
         for transcript in annotated_transcripts:
@@ -71,5 +73,16 @@ class Bp3(abstract_rule):
                 comment,
             )
             results.append(rule_result)
-        final_result = summarise_results_per_transcript(results)
+        if len(results) == 0:
+            comment = f"BP3 does not apply to this variant, as BP3 does not apply to variant types {variant.var_type}."
+            final_result = RuleResult(
+                "BP3",
+                rule_type.GENERAL,
+                evidence_type.BENIGN,
+                False,
+                evidence_strength.SUPPORTING,
+                comment,
+            )
+        else:
+            final_result = summarise_results_per_transcript(results)
         return final_result

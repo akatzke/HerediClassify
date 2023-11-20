@@ -11,6 +11,7 @@ from refactoring.acmg_rules.utils import (
 )
 from refactoring.information import Info, Classification_Info
 from refactoring.transcript_annotated import TranscriptInfo_annot
+from refactoring.variant import VariantInfo
 
 
 class Pm4(abstract_rule):
@@ -27,6 +28,7 @@ class Pm4(abstract_rule):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+                class_info.VARIANT,
             ),
         )
 
@@ -35,6 +37,7 @@ class Pm4(abstract_rule):
         cls,
         annotated_transcript_list: list[TranscriptInfo_annot],
         threshold_diff_len_prot_percent: float,
+        variant: VariantInfo,
     ) -> RuleResult:
         results = []
         for transcript in annotated_transcript_list:
@@ -69,5 +72,16 @@ class Pm4(abstract_rule):
                 comment,
             )
             results.append(rule_result)
-        final_result = summarise_results_per_transcript(results)
+        if len(results) == 0:
+            comment = f"PM4 does not apply to this variant, as PVS1 does not apply to variant types {variant.var_type}."
+            final_result = RuleResult(
+                "PM4",
+                rule_type.GENERAL,
+                evidence_type.PATHOGENIC,
+                False,
+                evidence_strength.MODERATE,
+                comment,
+            )
+        else:
+            final_result = summarise_results_per_transcript(results)
         return final_result

@@ -73,4 +73,32 @@ class abstract_rule(ABC):
 
 
 def summarise_results_per_transcript(results: list[RuleResult]) -> RuleResult:
-    return results[0]
+    strength_values = {
+        evidence_strength.STAND_ALONE.value: 5,
+        evidence_strength.VERY_STRONG.value: 4,
+        evidence_strength.STRONG.value: 3,
+        evidence_strength.MODERATE.value: 2,
+        evidence_strength.SUPPORTING.value: 1,
+    }
+    final_result = None
+    max_strength = 0
+    for result in results:
+        if not result.status:
+            continue
+        current_strength = strength_values[result.strength.value]
+        if current_strength > max_strength:
+            max_strength = current_strength
+            final_result = result
+    if final_result is None:
+        final_comment = ""
+        for result in results:
+            final_result = final_comment + ", " + result.comment
+        final_result = RuleResult(
+            results[0].name,
+            rule_type.GENERAL,
+            results[0].evidence_type,
+            False,
+            results[0].strength,
+            final_comment,
+        )
+    return final_result
