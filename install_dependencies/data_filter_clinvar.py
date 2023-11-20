@@ -28,8 +28,8 @@ def prepare_clinvar_file(clinvar_path: pathlib.Path) -> None:
     Filter Clinvar for SNVs, indels and quality
     """
     quality = ["reviewed_by_expert_panel"]
-    clinvar_quality_path = filter_clinvar_quality(clinvar_path, quality)
-    clinvar_quality_snv_path = filter_clinvar_snv(clinvar_quality_path)
+    clinvar_snv_path = filter_clinvar_snv(clinvar_path)
+    clinvar_quality_path = filter_clinvar_quality(clinvar_snv_path, quality)
 
 
 def filter_clinvar_quality(
