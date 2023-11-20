@@ -4,19 +4,19 @@
     "gene":  "BRCA1",
     "ref" : "A",
     "alt" : "C",
-    "variant_type" : ["missense"],
+    "variant_type" : ["missense_variant"],
     "variant_effect" : [
         {"transcript" : "ENST00000357654",
          "hgvs_c" : "c.5219T>G",
          "hgvs_p" : "p.Val1740Gly",
-         "variant_type" : ["missense"],
+         "variant_type" : ["missense_variant"],
          "exon" : 19
          },
         {"transcript" : "ENST00000471181",
          "hgvs_c" : "c.5282T>G",
          "hgvs_p" : "p.Val1761Gly",
-         "variant_type" : ["missense"],
-         "intron" : 19
+         "variant_type" : ["missense_variant"],
+         "exon" : 20
         }
     ],
     "splicing_prediction_tools":
