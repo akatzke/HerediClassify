@@ -105,7 +105,7 @@ def index_vcf(path: pathlib.Path) -> None:
     """
     Index compressed vcf file
     """
-    cmd_index = f"bcftools index -t {path}"
+    cmd_index = f"tabix {path}"
     os.system(cmd_index)
 
 
