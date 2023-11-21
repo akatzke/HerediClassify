@@ -32,7 +32,7 @@ def format_uniprot_rep(path: pathlib.Path, out_path: pathlib.Path) -> None:
 
 def main():
     if args.input == "":
-        raise ValueError(f"No input file provided.")
+        raise ValueError("No input file provided.")
     input_path = pathlib.Path(args.input)
     if args.output == "":
         file_name = f"{input_path.stem}.bed"

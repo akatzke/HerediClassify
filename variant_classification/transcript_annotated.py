@@ -19,10 +19,6 @@ from variant_classification.genotoscope_construct_variant_sequence import (
     construct_variant_coding_seq_exonic_variant,
     construct_variant_coding_seq_intronic_variant,
 )
-from variant_classification.genotoscope_assess_NMD import (
-    assess_NMD_exonic_variant,
-    assess_NMD_intronic_variant,
-)
 from variant_classification.genotoscope_reading_frame_preservation import (
     assess_reading_frame_preservation,
 )
@@ -30,7 +26,6 @@ from variant_classification.genotoscope_exists_alternative_start_codon import (
     assess_alternative_start_codon,
 )
 from variant_classification.genotoscope_protein_len_diff_repetitive_region import (
-    check_prot_len_change_in_repetitive_region,
     check_prot_len_change_in_repetitive_region_start_loss,
     check_prot_len_change_in_repetitive_region_exon,
 )
@@ -38,6 +33,7 @@ from variant_classification.clinvar_region import (
     check_clinvar_NMD_exon,
     check_clinvar_start_alt_start,
 )
+from variant_classification.utils import check_intersection_with_bed
 from variant_classification.var_type import VARTYPE_GROUPS
 from variant_classification.information import Classification_Info, Info
 
@@ -183,14 +179,12 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
         diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
         if diff_len_protein_percent != 0:
-            len_change_in_repetitive_region = (
-                check_prot_len_change_in_repetitive_region(
-                    variant,
-                    variant.genomic_start,
-                    variant.genomic_end,
-                    ref_transcript,
-                    path_uniprot_rep,
-                )
+            len_change_in_repetitive_region = check_intersection_with_bed(
+                variant,
+                variant.genomic_start,
+                variant.genomic_end,
+                ref_transcript,
+                path_uniprot_rep,
             )
         else:
             len_change_in_repetitive_region = False
