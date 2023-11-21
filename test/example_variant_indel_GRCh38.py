@@ -111,7 +111,7 @@ def create_example_del() -> tuple:
     variant = VariantInfo(
         "17",
         7676080,
-        7676082
+        7676082,
         "TP53",
         [VARTYPE.INFRAME_DELETION],
         "CAGA",
