@@ -6,3 +6,4 @@ pyensembl==2.2.9
 hgvs==1.5.4
 pybedtools==0.9.1
 jsonschema==4.17.3
+openpyxl==3.1.2
