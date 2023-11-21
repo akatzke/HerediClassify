@@ -266,7 +266,7 @@ def execute_annotation(
                 annotation.value = annotation.compute_function()
             except Exception:
                 logger.warning(
-                    f"Whilst executing the annotation for {annotation.name} an input was not defined."
+                    f"Whilst executing the annotation for {annotation.name} an error occurred."
                 )
                 annotation.value = None
     return annotations_to_execute

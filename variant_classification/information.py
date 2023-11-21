@@ -50,6 +50,7 @@ class Classification_Info:
     THRESHOLD_NMD: Info
     CLINVAR_PATH: Info
     UNIPROT_REP_REGION_PATH: Info
+    CRITICAL_REGION_PATH: Info
 
     def __init__(self):
         self.ANNOTATED_TRANSCRIPT_LIST = Info("annotated_transcript_list")
@@ -140,5 +141,10 @@ class Classification_Info:
         self.UNIPROT_REP_REGION_PATH = Info(
             "uniprot_rep_region_path",
             config_location=("annotation_files", "uniprot", "rep"),
+            group=Classification_Info_Groups.PATH,
+        )
+        self.CRITICAL_REGION_PATH = Info(
+            "critical_region_path",
+            config_location=("annotation_files", "critical_region", "file"),
             group=Classification_Info_Groups.PATH,
         )

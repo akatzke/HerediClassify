@@ -1,0 +1,86 @@
+#chr	start	end	gene	domain_name	strand	prot_start	prot_end	source
+chr11	108229263	108229283	ATM	Substrate binding	+	91	97	BWRL
+chr11	108249020	108249031	ATM	NLS	+	385	388	BWRL
+chr11	108282785	108282847	ATM	Leucine zipper	+	1218	1238	BWRL
+chr11	108288984	108289013	ATM	Proline rich	+	1373	1382	BWRL
+chr11	108307899	108365505	ATM	FATKIN	+	1893	3056	BWRL
+chr2	214792346	214809449	BARD1	RING	-	41	105	PMID: 32726901
+chr2	214752552	214780595	BARD1	ANK	-	427	524	PMID: 32726901
+chr2	214728709	214745830	BARD1	BRCT Domains	-	568	767	PMID: 32726901
+chr17	43104260	43124096	BRCA1	RING	-	1	101	BWRL/ENIGMA
+chr17	41256889	43104928	BRCA1	NES	-	81	99	BWRL/ENIGMA
+chr17	41246024	41246041	BRCA1	NLS1	-	503	508	BWRL/ENIGMA
+chr17	41245706	41245729	BRCA1	NLS2	-	607	614	BWRL/ENIGMA
+chr17	41245580	41245597	BRCA1	NLS3	-	651	656	BWRL/ENIGMA
+chr17	41234506	41242975	BRCA1	COILED-COIL	-	1391	1424	BWRL/ENIGMA
+chr17	41197698	41222983	BRCA1	BRCT DOMAINS	-	1650	1863	BWRL/ENIGMA
+chr13	32316488	32319129	BRCA2	PALB2 Binding	+	10	40	BWRL/ENIGMA
+chr13	32337362	32340601	BRCA2	Interaction with RAD51 (BRC-1 bis BRC-8)	+	1003	2082	Uniprot
+chr13	32354901	32357757	BRCA2	Interaction with FANCD2	+	2350	2545	Uniprot
+chr13	32356433	32396954	BRCA2	DBD (DNA/DSS1 binding domain- helical OB1, OB2, OB3)	+	2481	3186	BWRL/ENIGMA
+chr13	32363246	32363296	BRCA2	Nuclear export signal; masked by interaction with SEM1	+	2682	2698	Uniprot
+chr13	32298300	32398506	BRCA2	C-terminal RAD51 binding domain (inkl. NLS1 und BRC-) 	+	3263	3331	BWRL/ENIGMA
+chr17	61686080	61861539	BRIP1	ATPase/Helicase domain	-	1	887	PMID: 33619228
+chr17	61683857	61686079	BRIP1	BRCA1 Interaction	-	888	1063	PMID: 33619228
+chr1	68737416	68833496	CDH1	Bisher bekannten pathogenen CDH1-Varianten sind über den gesamten Locus verteilt und es kann daher keine klinisch relevante funktionelle Proteindomäne definiert werden.	+	1	882	BWRL
+chr22	28734515	28734667	CHEK2	SQ/TQ-rich	-	19	69	BWRL
+chr22	28719463	28734448	CHEK2	FHA	-	92	205	BWRL
+chr22	28689174	28719444	CHEK2	Kinase	-	212	501	BWRL
+chr22	28687915	28687986	CHEK2	NLS	-	515	538	BWRL
+chr16	23637932	23641133	PALB2	BRCA1 interaction domain	-	9	43	BWRL
+chr16	23635827	23641157	PALB2	DNA binding and Interaction with BRCA1	-	1	319	https://pubmed.ncbi.nlm.nih.gov/19369211/
+chr16	23635994	23636245	PALB2	RAD51 binding site	-	101	184	BWRL
+chr16	23634863	23635432	PALB2	DNA binding site	-	372	561	BWRL
+chr16	23629862	23630323	PALB2	MRG15 (MORF4L1) interaction domain	-	611	764	BWRL
+chr16	23603462	23629233	PALB2	WD40 repeat	-	853	1186	BWRL
+chr17	58692644	58694983	RAD51C	N-terminal region	+	1	66	BWRL
+chr17	58695020	58734219	RAD51C	ATPase domain and RAD51B, XRCC3, and RAD51D binding	+	79	376	BWRL
+chr17	58734187	58734201	RAD51C	Nuclear localization signal	+	366	370	BWRL
+chr17	35118515	35119613	RAD51D	N-terminal region	-	1	83	BWRL https://www.sciencedirect.com/science/article/abs/pii/S1357272510003924
+chr17	35118530	35118586	RAD51D	Linker	-	60	78	BWRL
+chr17	35101282	35107416	RAD51D	ATPase domain and RAD51B, RAD51C, and XRCC2 binding	-	78	328	BWRL (PMID 10749867, 14704354, 19327148)
+chr17	7676204	7676594	TP53	Transcription activation (TAD1+TAD2)	-	1	61	https://pubmed.ncbi.nlm.nih.gov/27145840/
+chr17	7676087	7676188	TP53	Proline rich domain	-	62	94	BWRL
+chr17	7673744	7676065	TP53	DNA binding region 	-	102	292	BWRL
+chr17	7673559	7673719	TP53	NLS 	-	301	323	https://pubmed.ncbi.nlm.nih.gov/10321742/
+chr17	7670641	7673555	TP53	Oligomerization region	-	325	355	BWRL
+chr17	7669612	7670643	TP53	CTD (repression of DNA-binding region)	-	356	393	https://pubmed.ncbi.nlm.nih.gov/27145840/
+chr3	36993548	37020439	MLH1	N-terminal domain (MutSa interaction)	+	1	338	Insight Richtlinien und PMID: 26249686
+chr3	36993605	37007051	MLH1	ATPase domain	+	20	147	Insight Richtlinien und PMID: 26249686
+chr3	37025826	37048570	MLH1	EXO1 interaction	+	410	650	Insight Richtlinien und PMID: 28765196
+chr3	37028848	37050611	MLH1	PMS2/MLH3/PMS1 interaction	+	492	743	Insight Richtlinien und PMID: 28765196
+chr3	37026003	37028808	MLH1	NLS 	+	469	478	Insight Richtlinien und PMID: 28765196
+chr3	37047540	37047572	MLH1	NES1	+	585	595	Insight Richtlinien
+chr3	37048568	37048609	MLH1	NES2	+	650	663	Insight Richtlinien
+chr2	47403192	47410099	MSH2	DNA mismatch binding domain	+	1	124	Insight Richtlinien und PMID: 23391514
+chr2	47410100	47414367	MSH2	Connector domain	+	125	297	Insight Richtlinien und PMID: 28765196
+chr2	47410337	47412443	MSH2	MutLa interaction	+	204	225	Insight Richtlinien
+chr2	47414374	47445639	MSH2	Lever domain	+	300	456	Insight Richtlinien und PMID: 28765196
+chr2	47466807	47475122	MSH2	Lever domain	+	554	619	Insight Richtlinien und PMID: 28765196
+chr2	47445640	47466806	MSH2	Clamp domain	+	457	553	Insight Richtlinien und PMID: 28765196 PMID: 28765196
+chr2	47475123	47482946	MSH2	ATPase and  Helix-Turn-Helix	+	620	934	Insight Richtinien und PMID: 23391514;PMID: 28765196
+chr2	47429797	47475140	MSH2	MSH6/MSH3 interaction	+	378	625	Insight Richtlinien und PMID: 28765196
+chr2	47463061	47476419	MSH2	MutLa interaction	+	673	686	InSiGHT Richtlinien
+chr2	47480860	47482946	MSH2	MSH6/MSH3 interaction	+	875	934	Insight Richtlinien und PMID: 28765196
+chr2	47414272	47476374	MSH2	EXO1 stabilisation and interaction	+	266	671	InSiGHT Richtlinien und PMID: 28765196 PMID: 28765196
+chr2	47783243	47783266	MSH6	PCNA binding domain	+	4	11	PMID: 23391514; PMID: 28765196; InSiGHT-Richtlinien
+chr2	47790931	47796018	MSH6	PWWP domain	+	89	194	PMID: 23391514; PMID: 28765196; InSiGHT-Richtlinien
+chr2	47799067	47799540	MSH6	DNA mismatch /MMR binding domain	+	362	519	PMID: 23391514;PMID: 28765196
+chr2	47799499	47800134	MSH6	Connector domain	+	405	717	Insight Richtlinien;PMID: 23391514; PMID: 28765196
+chr2	47800135	47800785	MSH6	Lever domain	+	718	934	PMID: 23391514; PMID: 28765196
+chr2	47801008	47803472	MSH6	Lever domain	+	1009	1075	PMID: 23391514; PMID: 28765196
+chr2	47800786	47801007	MSH6	Clamp domain	+	935	1008	PMID: 23391514; PMID: 28765196
+chr2	47803473	47806857	MSH6	ATPase/ATP binding	+	1076	1360	Insight und PMID: 23391514; PMID: 28765196
+chr2	47806554	47806857	MSH6	MSH2 interaction	+	1302	1360	Insight Richtlinien
+chr7	5969849	6009019	PMS2	ATPase/ATP binding	-	1	365	InSiGHT Richtlinien
+chr7	5973423	5982975	PMS2	Dimerisation/MLH1 interaction	-	675	855	P54278 (P54278) - protein - InterPro (ebi.ac.uk); PMID: 28765196; InSiGHT-Richtlinien
+chr7	5982853	5982906	PMS2	Exonuclease active site	-	698	715	PMID: 28765196
+chr7	5986869	5986892	PMS2	NLS 	-	625	632	Insight Richtlinien
+chr19	1207076	1207102	STK11	Nucleotide binding ATP	+	55	63	STK11 - Serine/threonine-protein kinase STK11 precursor - Homo sapiens (Human) - STK11 gene & protein (uniprot.org)
+chr19	1207058	1222991	STK11	Protein kinase domain	+	49	309	STK11 - Serine/threonine-protein kinase STK11 precursor - Homo sapiens (Human) - STK11 gene & protein (uniprot.org)
+chr19	1207046	1207183	STK11	SIRT1 interaction	+	45	90	STK11 - Serine/threonine-protein kinase STK11 precursor - Homo sapiens (Human) - STK11 gene & protein (uniprot.org)
+chr10	87864470	87864511	PTEN	N-terminal phosphatidylinositol (Ptdlnsf4, 5) P2-binding domain (PBD)	+	1	14	PMID: 24656806, PMID: 34140896
+chr10	87864512	87952177	PTEN	phosphatase domain	+	15	184	PMID: 24656806, PMID: 34140896
+chr10	87952178	87965310	PTEN	C2 lipid or membrane-binding domain	+	185	350	PMID: 24656806, PMID: 34140896
+chr10	87965311	87965469	PTEN	carboxy-terminal tail	+	351	400	PMID: 24656806, PMID: 34140896
+chr10	87965461	87965469	PTEN	class I PDZ-binding (PDZ-BD) motif	+	401	403	PMID: 24656806, PMID: 34140896
