@@ -179,6 +179,7 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             is_truncated_exon_relevant = check_variant_in_critical_region_exon(
                 variant, ref_transcript, NMD_affected_exons, path_critical_region
             )
+            comment_truncated_exon_relevant = ""
         else:
             truncated_exon_ClinVar = check_clinvar_NMD_exon(
                 variant, NMD_affected_exons, path_clinvar

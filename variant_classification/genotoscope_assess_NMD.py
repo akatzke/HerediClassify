@@ -10,12 +10,15 @@ from variant_classification.genotoscope_exon_skipping import (
     find_exon_by_var_pos,
 )
 from variant_classification.variant import TranscriptInfo, VariantInfo
+from variant_classification.var_type import VARTYPE_GROUPS
 
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.assess_NMD")
 
 
-def assess_NMD_threshold(transcript: TranscriptInfo, threshold: int, clin_transcript: str) -> tuple:
+def assess_NMD_threshold(
+    transcript: TranscriptInfo, threshold: int, clin_transcript: str
+) -> tuple:
     """
     Examine if position of variant is located before or after given threshold for NMD
     """
@@ -27,7 +30,6 @@ def assess_NMD_threshold(transcript: TranscriptInfo, threshold: int, clin_transc
             return False, []
     else:
         return True, []
-
 
 
 def assess_NMD_intronic_variant(
@@ -200,20 +202,11 @@ def assess_NMD_exonic_variant(
 
     NMD_comment = "NMD is not predicted"
 
-    exon_var_types = {
-        "stop_gained",
-        "stop_lost",
-        "frameshift",
-        "frameshift_variant",
-        "inframe_insertion",
-        "inframe_deletion",
-        "disruptive_inframe_insertion",
-        "disruptive_inframe_deletion",
-        "conservative_inframe_insertion",
-        "conservative_inframe_deletion",
-    }
-
-    if any(var_type in transcript.var_type for var_type in exon_var_types):
+    if any(
+        var_type_exonic.value == var_type.value
+        for var_type_exonic in VARTYPE_GROUPS.EXONIC.value
+        for var_type in transcript.var_type
+    ):
         logger.debug("Variant applicable for stop codon searching")
         logger.debug(
             "Update exon positions for variant that skips both start and stop exons or does not skip start codon exon"
