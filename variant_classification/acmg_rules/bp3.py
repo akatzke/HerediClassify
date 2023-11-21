@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from typing import Callable
 
-from refactoring.acmg_rules.utils import (
+from variant_classification.acmg_rules.utils import (
     RuleResult,
     evidence_strength,
     evidence_type,
@@ -9,9 +9,9 @@ from refactoring.acmg_rules.utils import (
     rule_type,
     summarise_results_per_transcript,
 )
-from refactoring.information import Info, Classification_Info
-from refactoring.variant import TranscriptInfo, VariantInfo
-from refactoring.transcript_annotated import (
+from variant_classification.information import Info, Classification_Info
+from variant_classification.variant import TranscriptInfo, VariantInfo
+from variant_classification.transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
 )

@@ -4,12 +4,12 @@ import pathlib
 import logging
 from collections.abc import Callable
 
-from refactoring.information import Classification_Info, Info
-from refactoring.var_type import VARTYPE_GROUPS
-from refactoring.clinvar_missense import check_clinvar_missense
-from refactoring.clinvar_splicing import check_clinvar_splicing
-from refactoring.variant import VariantInfo, TranscriptInfo
-from refactoring.clinvar_utils import ClinVar_Type, ClinVar
+from variant_classification.information import Classification_Info, Info
+from variant_classification.var_type import VARTYPE_GROUPS
+from variant_classification.clinvar_missense import check_clinvar_missense
+from variant_classification.clinvar_splicing import check_clinvar_splicing
+from variant_classification.variant import VariantInfo, TranscriptInfo
+from variant_classification.clinvar_utils import ClinVar_Type, ClinVar
 
 logger = logging.getLogger("annotate_clinvar")
 

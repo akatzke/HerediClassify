@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-from refactoring.variant import VariantInfo, TranscriptInfo, VARTYPE
+from variant_classification.variant import VariantInfo, TranscriptInfo, VARTYPE
 
 import hgvs.parser
 import hgvs.posedit

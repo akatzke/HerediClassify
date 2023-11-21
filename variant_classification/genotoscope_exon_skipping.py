@@ -6,8 +6,8 @@ import pyensembl
 import hgvs.parser
 import hgvs.posedit
 
-from refactoring.variant import VariantInfo, TranscriptInfo
-from refactoring.var_type import VARTYPE, VARTYPE_GROUPS
+from variant_classification.variant import VariantInfo, TranscriptInfo
+from variant_classification.var_type import VARTYPE, VARTYPE_GROUPS
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.exon_skipping")
 hgvs_parser = hgvs.parser.Parser()

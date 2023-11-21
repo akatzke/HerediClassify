@@ -3,7 +3,7 @@
 import logging
 import pyensembl
 
-from refactoring.genotoscope_assess_NMD import search_termination_codon, extract_codons
+from variant_classification.genotoscope_assess_NMD import search_termination_codon, extract_codons
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.prot_len_diff")
 

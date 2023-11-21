@@ -2,7 +2,7 @@
 
 import pathlib
 
-from refactoring.classify import classify
+from variant_classification.classify import classify
 from test.test_import_variant import create_json_string_from_variant
 
 

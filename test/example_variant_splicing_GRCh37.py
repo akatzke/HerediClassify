@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from refactoring.variant import (
+from variant_classification.variant import (
     PopulationDatabases_gnomAD,
     VariantInfo,
     TranscriptInfo,

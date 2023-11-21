@@ -8,16 +8,16 @@ import hgvs.parser
 import pyensembl
 from cyvcf2 import VCF
 
-from refactoring.variant import VariantInfo, TranscriptInfo
-from refactoring.var_type import VARTYPE_GROUPS
-from refactoring.clinvar_utils import (
+from variant_classification.variant import VariantInfo, TranscriptInfo
+from variant_classification.var_type import VARTYPE_GROUPS
+from variant_classification.clinvar_utils import (
     ClinVar,
     ClinVar_Type,
     convert_vcf_gen_to_df,
     create_ClinVar,
     get_affected_transcript,
 )
-from refactoring.genotoscope_exon_skipping import (
+from variant_classification.genotoscope_exon_skipping import (
     parse_variant_intron_pos,
     find_exon_by_ref_pos,
 )

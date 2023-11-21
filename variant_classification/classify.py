@@ -3,10 +3,10 @@
 import pathlib
 import argparse
 
-from refactoring.load_config import load_config, get_gene_specific_config
-from refactoring.load_variant import load_variant
-from refactoring.information import Classification_Info
-from refactoring.config_annotation import (
+from variant_classification.load_config import load_config, get_gene_specific_config
+from variant_classification.load_variant import load_variant
+from variant_classification.information import Classification_Info
+from variant_classification.config_annotation import (
     get_annotations_needed_from_rules,
     get_annotation_functions,
     get_unique_annotations_needed,
@@ -14,7 +14,7 @@ from refactoring.config_annotation import (
     remove_rules_with_missing_annotation,
     apply_rules,
 )
-from refactoring.create_output import create_output
+from variant_classification.create_output import create_output
 
 parser = argparse = argparse.ArgumentParser()
 

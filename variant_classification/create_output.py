@@ -2,7 +2,7 @@
 
 import json
 
-from refactoring.acmg_rules.utils import RuleResult
+from variant_classification.acmg_rules.utils import RuleResult
 
 
 def create_output(rule_results: list[RuleResult]) -> str:

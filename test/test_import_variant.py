@@ -4,7 +4,7 @@ import pathlib
 import json
 import pytest
 
-from refactoring.load_variant import load_variant
+from variant_classification.load_variant import load_variant
 
 
 def create_json_string_from_variant(path: pathlib.Path) -> str:

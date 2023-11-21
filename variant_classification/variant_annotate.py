@@ -5,9 +5,9 @@ from __future__ import annotations
 from typing import Callable
 from dataclasses import dataclass
 
-from refactoring.transcript_annotated import TranscriptInfo_annot
-from refactoring.clinvar_utils import ClinVar
-from refactoring.variant import (
+from variant_classification.transcript_annotated import TranscriptInfo_annot
+from variant_classification.clinvar_utils import ClinVar
+from variant_classification.variant import (
     VariantInfo,
     PopulationDatabases,
     AffectedRegion,

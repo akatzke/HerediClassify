@@ -3,13 +3,13 @@
 import logging
 import pyensembl
 
-from refactoring.genotoscope_exon_skipping import (
+from variant_classification.genotoscope_exon_skipping import (
     get_transcript_exon_offsets,
     is_transcript_in_positive_strand,
     find_exon_by_ref_pos,
     find_exon_by_var_pos,
 )
-from refactoring.variant import TranscriptInfo, VariantInfo
+from variant_classification.variant import TranscriptInfo, VariantInfo
 
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.assess_NMD")

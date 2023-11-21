@@ -8,8 +8,8 @@ from typing import Optional
 from jsonschema import validate
 import hgvs.parser
 import hgvs.posedit
-from refactoring.var_type import VARTYPE
-from refactoring.variant import (
+from variant_classification.var_type import VARTYPE
+from variant_classification.variant import (
     FunctionalData,
     MultifactorialLikelihood,
     Variant,

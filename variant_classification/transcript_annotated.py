@@ -8,38 +8,38 @@ import logging
 from dataclasses import dataclass, field
 from collections.abc import Callable
 
-from refactoring.variant import VariantInfo, TranscriptInfo, Variant
-from refactoring.genotoscope_protein_len_diff import calculate_prot_len_diff
-from refactoring.genotoscope_exon_skipping import assess_exon_skipping
-from refactoring.genotoscope_assess_NMD import (
+from variant_classification.variant import VariantInfo, TranscriptInfo, Variant
+from variant_classification.genotoscope_protein_len_diff import calculate_prot_len_diff
+from variant_classification.genotoscope_exon_skipping import assess_exon_skipping
+from variant_classification.genotoscope_assess_NMD import (
     assess_NMD_exonic_variant,
     assess_NMD_intronic_variant,
 )
-from refactoring.genotoscope_construct_variant_sequence import (
+from variant_classification.genotoscope_construct_variant_sequence import (
     construct_variant_coding_seq_exonic_variant,
     construct_variant_coding_seq_intronic_variant,
 )
-from refactoring.genotoscope_assess_NMD import (
+from variant_classification.genotoscope_assess_NMD import (
     assess_NMD_exonic_variant,
     assess_NMD_intronic_variant,
 )
-from refactoring.genotoscope_reading_frame_preservation import (
+from variant_classification.genotoscope_reading_frame_preservation import (
     assess_reading_frame_preservation,
 )
-from refactoring.genotoscope_exists_alternative_start_codon import (
+from variant_classification.genotoscope_exists_alternative_start_codon import (
     assess_alternative_start_codon,
 )
-from refactoring.genotoscope_protein_len_diff_repetitive_region import (
+from variant_classification.genotoscope_protein_len_diff_repetitive_region import (
     check_prot_len_change_in_repetitive_region,
     check_prot_len_change_in_repetitive_region_start_loss,
     check_prot_len_change_in_repetitive_region_exon,
 )
-from refactoring.clinvar_region import (
+from variant_classification.clinvar_region import (
     check_clinvar_NMD_exon,
     check_clinvar_start_alt_start,
 )
-from refactoring.var_type import VARTYPE_GROUPS
-from refactoring.information import Classification_Info, Info
+from variant_classification.var_type import VARTYPE_GROUPS
+from variant_classification.information import Classification_Info, Info
 
 
 logger = logging.getLogger("GenOtoScope_Classify.config_annotation")

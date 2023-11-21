@@ -4,8 +4,8 @@ import pyensembl
 import logging
 import pandas as pd
 
-from refactoring.variant import VariantInfo
-from refactoring.genotoscope_exon_skipping import (
+from variant_classification.variant import VariantInfo
+from variant_classification.genotoscope_exon_skipping import (
     is_transcript_in_positive_strand,
 )
 

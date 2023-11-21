@@ -5,7 +5,7 @@ from typing import Optional
 import hgvs.posedit
 import hgvs.parser
 
-from refactoring.var_type import VARTYPE
+from variant_classification.var_type import VARTYPE
 
 hgvs_parser = hgvs.parser.Parser()
 

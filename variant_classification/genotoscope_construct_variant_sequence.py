@@ -3,11 +3,11 @@
 import logging
 import pyensembl
 
-from refactoring.genotoscope_exon_skipping import (
+from variant_classification.genotoscope_exon_skipping import (
     is_transcript_type_splice_acceptor_donor,
 )
-from refactoring.genotoscope_assess_NMD import is_genomic_pos_in_coding_exon
-from refactoring.variant import TranscriptInfo, VariantInfo
+from variant_classification.genotoscope_assess_NMD import is_genomic_pos_in_coding_exon
+from variant_classification.variant import TranscriptInfo, VariantInfo
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.construct_variant_coding_seq")
 

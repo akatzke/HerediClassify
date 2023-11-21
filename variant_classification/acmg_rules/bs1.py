@@ -2,15 +2,15 @@
 
 from typing import Callable
 
-from refactoring.acmg_rules.utils import (
+from variant_classification.acmg_rules.utils import (
     RuleResult,
     evidence_strength,
     abstract_rule,
     rule_type,
     evidence_type,
 )
-from refactoring.information import Info, Classification_Info
-from refactoring.variant import PopulationDatabases_gnomAD
+from variant_classification.information import Info, Classification_Info
+from variant_classification.variant import PopulationDatabases_gnomAD
 
 
 class Bs1(abstract_rule):

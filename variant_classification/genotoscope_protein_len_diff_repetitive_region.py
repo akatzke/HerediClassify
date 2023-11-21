@@ -6,7 +6,7 @@ import pathlib
 
 from pybedtools import BedTool
 
-from refactoring.variant import VariantInfo
+from variant_classification.variant import VariantInfo
 
 logger = logging.getLogger("GenOtoScope_Classify.protein_len_diff_repetitive_region")
 

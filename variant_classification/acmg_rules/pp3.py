@@ -2,18 +2,18 @@
 
 from typing import Callable
 
-from refactoring.acmg_rules.utils import (
+from variant_classification.acmg_rules.utils import (
     RuleResult,
     evidence_strength,
     evidence_type,
     abstract_rule,
     rule_type,
 )
-from refactoring.acmg_rules.computation_evidence_utils import (
+from variant_classification.acmg_rules.computation_evidence_utils import (
     Threshold,
     assess_prediction_tool,
 )
-from refactoring.information import Classification_Info, Info
+from variant_classification.information import Classification_Info, Info
 
 
 class Pp3_protein(abstract_rule):
