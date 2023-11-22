@@ -38,9 +38,9 @@ def get_gene_specific_config(config: dict, gene_name: str) -> dict:
     If available return gene specific configuration otherwise return standard configuration
     """
     if "gene_specific_configs" in config.keys():
-        if gene_name.lower in config["gene_specific_configs"].keys():
+        if gene_name.lower() in config["gene_specific_configs"].keys():
             dir_gene_config = pathlib.Path(config["gene_specific_configs"]["root"])
-            file_gene_config = config["gene_specific_configs"][gene_name.lower]
+            file_gene_config = config["gene_specific_configs"][gene_name.lower()]
             path_gene_config = dir_gene_config / file_gene_config
             gene_config = load_config(path_gene_config)
             return gene_config
