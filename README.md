@@ -25,10 +25,10 @@ The versions indicated have been tested with the tool
 bash install_dependencies/install_bedtools.sh -p PATH -v 2.29.1
 ```
 ```sh
-bash install_dependencies/install_htslib.sh -p PATH -v 
+bash install_dependencies/install_htslib.sh -p PATH -v 1.18
 ```
 ```sh
-bash install_dependencies/install_samtools.sh -p PATH -v
+bash install_dependencies/install_samtools.sh -p PATH -v 1.11
 ```
 
 5. Download and format databases
@@ -39,13 +39,12 @@ bash install_dependencies/download_data.sh -p PATH
 ```
 
 ## Configuration
-The file paths in the configuration file (config.yaml) need to be changed for the new install.
-Under annotation_files the root directory for the database folders created under 5. in the install instructions.
+The file paths in the configuration file (config.yaml) need to be changed. Changing the root directory under annotation_files should suffice.
 
 ## Testing
 Tests are implemented using pytest. To test general functionality execute pytest.
 
 ## Execution
 ```sh
-python bin/classify.py -c config.yaml -p json_string
+python variant_classification/classify.py -c config.yaml -p json_string
 ```
