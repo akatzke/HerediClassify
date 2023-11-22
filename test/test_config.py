@@ -3,10 +3,19 @@
 import pathlib
 import logging
 
+from variant_classification.load_config import get_gene_specific_config
+
 mylogger = logging.getLogger()
 
-from variant_classification.classify import classify
+from variant_classification.classify import classify, load_config
 from test.test_import_variant import create_json_string_from_variant
+
+
+def test_loading_gene_specific_config():
+    path_config = pathlib.Path("./test/config_no_path.yaml")
+    config = load_config(path_config)
+    gene_config = get_gene_specific_config(config, "BRCA1")
+    assert config != gene_config
 
 
 def test_classify_no_path():
