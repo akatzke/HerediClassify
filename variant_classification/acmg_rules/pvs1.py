@@ -71,13 +71,13 @@ class Pvs1(abstract_rule):
         Assess PVS1 for start lost variants
         """
         if not transcript.exists_alternative_start_codon:
-            comment = f"An alternative start code in transcript {transcript.transcript_id} at {transcript.position_alternative_start_codon} detected."
-            result = False
-            strength = evidence_strength.VERY_STRONG
+            comment = f"No alternative start codons were detected in transcript {transcript.transcript_id}."
+            result = True
+            strength = evidence_strength.MODERATE
         else:
             comment = f"No alternative start codon detected for transcript {transcript.transcript_id}."
             if transcript.is_truncated_region_disease_relevant:
-                comment = f"Pathogenic variants detected between start codon and alternative start codon detected. \n ClinVar ID: {transcript.pathogenic_variants_truncated_region}"
+                comment = f"Pathogenic variants detected between start codon and alternative start codon detected. \n ClinVar ID: {transcript.comment_truncated_region}"
                 result = True
                 strength = evidence_strength.MODERATE
             else:
@@ -101,7 +101,7 @@ class Pvs1(abstract_rule):
         if transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} undergoes NMD."
             if transcript.is_truncated_region_disease_relevant:
-                comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considexoneredexon to be disease relevant. \n ClinVar ID: {transcript.pathogenic_variants_truncated_region}"
+                comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considexoneredexon to be disease relevant. \n ClinVar ID: {transcript.comment_truncated_region}"
                 result = True
             else:
                 comment = "Skipped exon contains no (likely) pathogenic variants and is therefore not considered disease relevant."
@@ -114,7 +114,7 @@ class Pvs1(abstract_rule):
         ):
             comment = f"Transcript {transcript.transcript_id} does not undergo NMD."
             if transcript.is_truncated_region_disease_relevant:
-                comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant. \n ClinVar ID: {transcript.pathogenic_variants_truncated_region}"
+                comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant. \n ClinVar ID: {transcript.comment_truncated_region}"
                 result = True
                 strength = evidence_strength.STRONG
             else:
