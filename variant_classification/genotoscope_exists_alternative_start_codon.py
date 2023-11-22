@@ -17,46 +17,48 @@ def assess_alternative_start_codon(
     variant: VariantInfo,
     ref_transcript: pyensembl.transcript.Transcript,
     var_coding_seq: str,
-) -> tuple[bool, list[int]]:
-    alternative_start_codons = find_alternative_start_codons(
-        variant, ref_transcript, var_coding_seq
-    )
-    if len(alternative_start_codons) == 0:
-        return False, [0, 0, 0]
+) -> tuple[bool, list[int], list[int]]:
+    (
+        alternative_start_codons_cDNA,
+        alternative_start_codons_genomic,
+    ) = find_alternative_start_codons(variant, ref_transcript, var_coding_seq)
+    if alternative_start_codons_genomic == [0, 0, 0]:
+        return False, [0, 0, 0], [0, 0, 0]
     else:
-        alternative_start_codons.sort()
-        return True, alternative_start_codons
+        alternative_start_codons_genomic.sort()
+        return True, alternative_start_codons_genomic, alternative_start_codons_cDNA
 
 
 def find_alternative_start_codons(
     variant: VariantInfo,
     ref_transcript: pyensembl.transcript.Transcript,
     var_coding_seq: str,
-) -> list[int]:
+) -> tuple[list[int], list[int]]:
     """
     First seach for alternative start codon in other reference transcripts
     If no start codon is found, search in sequence for other start codons
     First seach in the first 200 codons, then search in whole sequence
     Return genomic positions of start codon
     """
-    alternative_start_codon = examine_start_codon_other_transcripts(ref_transcript)
-    if not alternative_start_codon:
-        downstream_codons = get_codons_downstream_start(var_coding_seq, 201)
-        cdna_alternative_start_codon = search_closest_start_codon(
-            downstream_codons, variant
+    downstream_codons = get_codons_downstream_start(var_coding_seq, 201)
+    codon_position_start_codon = search_closest_start_codon(downstream_codons, variant)
+    if 0 > codon_position_start_codon:
+        all_downstream_codons = get_codons_downstream_start(
+            var_coding_seq, len(var_coding_seq)
         )
-        if 0 > cdna_alternative_start_codon:
-            all_downstream_codons = get_codons_downstream_start(
-                var_coding_seq, len(var_coding_seq)
-            )
-            cdna_alternative_start_codon = search_closest_start_codon(
-                all_downstream_codons, variant
-            )
-        if cdna_alternative_start_codon >= 0:
-            alternative_start_codon = convert_cdna_to_genomic_position(
-                ref_transcript, cdna_alternative_start_codon
-            )
-    return alternative_start_codon
+        cdna_alternative_start_codon = search_closest_start_codon(
+            all_downstream_codons, variant
+        )
+    if codon_position_start_codon >= 0:
+        alternative_start_codon = covnert_codon_position_to_genomic_position(
+            ref_transcript, codon_position_start_codon
+        )
+        cdna_alternative_start_codon = get_nucleotide_positions_from_codon_position(
+            codon_position_start_codon
+        )
+        return cdna_alternative_start_codon, alternative_start_codon
+    else:
+        return [0, 0, 0], [0, 0, 0]
 
 
 def examine_start_codon_other_transcripts(ref_transcript) -> list[int]:
@@ -136,7 +138,7 @@ def search_closest_start_codon(codons: list[str], variant: VariantInfo) -> int:
         return -1
 
 
-def convert_cdna_to_genomic_position(
+def covnert_codon_position_to_genomic_position(
     ref_transcript: pyensembl.transcript.Transcript, alt_start_codon_index: int
 ) -> list[int]:
     """
@@ -145,7 +147,7 @@ def convert_cdna_to_genomic_position(
 
     # print("Extract pathogenic variants in upstream of the closest codon")
     is_genomic = False
-    closest_start_codon_pos = (alt_start_codon_index + 1) * 3
+    closest_start_codon_pos = (alt_start_codon_index) * 3
     (
         closest_start_codon_exon_index,
         closest_start_codon_exon_offset,
@@ -190,3 +192,13 @@ def convert_exon_pos2genomic_pos(
         exon_end = overlap_exon.to_dict()["end"]
         overlap_genomic_pos = exon_end - overlap_exon_offset
     return overlap_genomic_pos
+
+
+def get_nucleotide_positions_from_codon_position(codon_pos: int) -> list[int]:
+    """
+    From the codon position get the position of all nucleotides in the codon
+    """
+    start_nuc = codon_pos * 3
+    mid_nuc = start_nuc + 1
+    end_nuc = start_nuc + 2
+    return [start_nuc, mid_nuc, end_nuc]
