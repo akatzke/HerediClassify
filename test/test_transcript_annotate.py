@@ -153,7 +153,7 @@ def test_start_loss():
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
-    # path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
+    path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
         config["annotation_files"]["critical_region"]["root"]
     )
