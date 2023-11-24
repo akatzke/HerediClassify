@@ -27,11 +27,8 @@ then
    helpFunction
 fi
 
-dbs=$basedir/databases
-if ! [[ -d $dbs ]];then
-	echo "Directory doesn't exist. Creating directory"
-	mkdir $dbs
-fi
+dbs=$basedir/variant_classification/databases
+mkdir -p $dbs
 
 # Begin script in case all parameters are correct
 echo "Downloading data to $dbs..."
