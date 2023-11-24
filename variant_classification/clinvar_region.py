@@ -5,7 +5,7 @@ import pathlib
 from cyvcf2 import VCF
 import pyensembl
 
-from variant_classification.clinvar_utils import (
+from clinvar_utils import (
     ClinVar,
     ClinVar_Type,
     convert_vcf_gen_to_df,
@@ -13,7 +13,7 @@ from variant_classification.clinvar_utils import (
     create_ClinVar,
     summarise_ClinVars,
 )
-from variant_classification.variant import VariantInfo
+from variant import VariantInfo
 
 
 def check_clinvar_start_alt_start(

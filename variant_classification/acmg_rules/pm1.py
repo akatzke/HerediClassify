@@ -2,15 +2,15 @@
 
 from typing import Callable
 
-from variant_classification.acmg_rules.utils import (
+from acmg_rules.utils import (
     RuleResult,
     evidence_strength,
     abstract_rule,
     evidence_type,
     rule_type,
 )
-from variant_classification.information import Classification_Info, Info
-from variant_classification.variant import AffectedRegion
+from information import Classification_Info, Info
+from variant import AffectedRegion
 
 
 class Pm1(abstract_rule):

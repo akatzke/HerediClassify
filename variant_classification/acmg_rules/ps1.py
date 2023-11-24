@@ -2,15 +2,15 @@
 
 from typing import Callable
 
-from variant_classification.acmg_rules.utils import (
+from acmg_rules.utils import (
     RuleResult,
     evidence_strength,
     abstract_rule,
     evidence_type,
     rule_type,
 )
-from variant_classification.information import Classification_Info, Info
-from variant_classification.clinvar_utils import ClinVar_Type, ClinVar
+from information import Classification_Info, Info
+from clinvar_utils import ClinVar_Type, ClinVar
 
 
 class Ps1_protein(abstract_rule):

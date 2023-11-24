@@ -5,8 +5,8 @@ import logging
 
 import pyensembl
 
-from variant_classification.variant import VariantInfo
-from variant_classification.utils import check_intersection_with_bed
+from variant import VariantInfo
+from utils import check_intersection_with_bed
 
 
 logger = logging.getLogger("GenOtoScope_Classify.protein_len_diff_repetitive_region")

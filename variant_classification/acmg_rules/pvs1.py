@@ -2,7 +2,7 @@
 
 from typing import Callable
 
-from variant_classification.acmg_rules.utils import (
+from acmg_rules.utils import (
     RuleResult,
     evidence_strength,
     abstract_rule,
@@ -10,9 +10,9 @@ from variant_classification.acmg_rules.utils import (
     rule_type,
     summarise_results_per_transcript,
 )
-from variant_classification.information import Classification_Info, Info
-from variant_classification.variant import TranscriptInfo, VariantInfo
-from variant_classification.transcript_annotated import (
+from information import Classification_Info, Info
+from variant import TranscriptInfo, VariantInfo
+from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
