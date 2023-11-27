@@ -94,6 +94,20 @@ class Pvs1(abstract_rule):
         )
 
     @classmethod
+    def assess_pvs1_start_loss_pathogenic(cls) -> RuleResult:
+        """
+        Assess PVS1 for start loss variants, that are automatically classified as pathogenic
+        """
+        return RuleResult(
+            "PVS1",
+            rule_type.PROTEIN,
+            evidence_type.PATHOGENIC,
+            True,
+            evidence_strength.VERY_STRONG,
+            "For this gene, start loss variants automatically give PVS1 with very strong evidence strength.",
+        )
+
+    @classmethod
     def assess_pvs1_splice(cls, transcript: TranscriptInfo_intronic) -> RuleResult:
         """
         Assess PVS1 for splice variants
