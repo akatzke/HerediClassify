@@ -2,15 +2,15 @@
 
 from typing import Callable
 
-from variant_classification.acmg_rules.utils import (
+from acmg_rules.utils import (
     RuleResult,
     evidence_strength,
     abstract_rule,
     rule_type,
     evidence_type,
 )
-from variant_classification.information import Classification_Info, Info
-from variant_classification.acmg_rules.computation_evidence_utils import (
+from information import Classification_Info, Info
+from acmg_rules.computation_evidence_utils import (
     assess_prediction_tool,
     Threshold,
 )

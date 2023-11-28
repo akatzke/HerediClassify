@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from typing import Callable
 
-from variant_classification.acmg_rules.utils import (
+from acmg_rules.utils import (
     RuleResult,
     evidence_strength,
     evidence_type,
@@ -9,9 +9,9 @@ from variant_classification.acmg_rules.utils import (
     rule_type,
     summarise_results_per_transcript,
 )
-from variant_classification.information import Info, Classification_Info
-from variant_classification.transcript_annotated import TranscriptInfo_annot
-from variant_classification.variant import VariantInfo
+from information import Info, Classification_Info
+from transcript_annotated import TranscriptInfo_annot
+from variant import VariantInfo
 
 
 class Pm4(abstract_rule):

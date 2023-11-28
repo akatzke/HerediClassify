@@ -7,8 +7,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from collections.abc import Iterable
 
-from variant_classification.variant import TranscriptInfo
-from variant_classification.var_type import VARTYPE_GROUPS
+from variant import TranscriptInfo
+from var_type import VARTYPE_GROUPS
 
 logger = logging.getLogger("GenOtoScope_Classify.genotoscope_clinvar")
 

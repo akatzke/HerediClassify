@@ -8,8 +8,8 @@ from typing import Optional
 from jsonschema import validate
 import hgvs.parser
 import hgvs.posedit
-from variant_classification.var_type import VARTYPE
-from variant_classification.variant import (
+from var_type import VARTYPE
+from variant import (
     FunctionalData,
     MultifactorialLikelihood,
     Variant,
@@ -19,6 +19,7 @@ from variant_classification.variant import (
     PopulationDatabases,
     AffectedRegion,
 )
+from os import path
 
 
 logger = logging.getLogger("HerediClass.load_variant")
@@ -42,7 +43,8 @@ def validate_variant(var_dict: dict) -> bool:
     """
     Validate variant input
     """
-    json_schema_path = pathlib.Path("./API/schema_input.json")
+    base_path =  path.dirname(path.dirname(path.abspath(__file__)))
+    json_schema_path = pathlib.Path(path.join(base_path, "API/schema_input.json"))
     with open(json_schema_path) as f:
         json_schema = json.load(f)
     try:

@@ -2,15 +2,15 @@
 
 from typing import Callable
 
-from variant_classification.acmg_rules.utils import (
+from acmg_rules.utils import (
     RuleResult,
     evidence_strength,
     abstract_rule,
     rule_type,
     evidence_type,
 )
-from variant_classification.information import Classification_Info, Info
-from variant_classification.variant import PopulationDatabases
+from information import Classification_Info, Info
+from variant import PopulationDatabases
 
 
 class Bs2(abstract_rule):

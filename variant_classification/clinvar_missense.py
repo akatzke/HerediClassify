@@ -12,12 +12,12 @@ import pyensembl
 import hgvs.parser
 import hgvs.posedit
 
-from variant_classification.variant import VariantInfo, TranscriptInfo
-from variant_classification.var_type import VARTYPE_GROUPS
-from variant_classification.genotoscope_exon_skipping import (
+from variant import VariantInfo, TranscriptInfo
+from var_type import VARTYPE_GROUPS
+from genotoscope_exon_skipping import (
     is_transcript_in_positive_strand,
 )
-from variant_classification.clinvar_utils import (
+from clinvar_utils import (
     ClinVar,
     ClinVar_Type,
     filter_gene,

@@ -3,6 +3,7 @@
 import yaml
 import pathlib
 from jsonschema import validate
+from os import path
 
 
 def load_config(path_config: pathlib.Path) -> dict:
@@ -22,7 +23,8 @@ def validate_config(config: dict) -> bool:
     """
     Validate yaml using a predefine json schema
     """
-    json_schema_path = pathlib.Path("./variant_classification/config_schema.json")
+    src_path = path.dirname(path.abspath(__file__))
+    json_schema_path = pathlib.Path(path.join(src_path, "config_schema.json"))
     with open(json_schema_path) as f:
         json_schema = yaml.load(f, Loader=yaml.SafeLoader)
     try:

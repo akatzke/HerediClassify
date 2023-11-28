@@ -5,7 +5,9 @@ import pathlib
 
 from jsonschema import validate
 
-from variant_classification.acmg_rules.utils import RuleResult
+from acmg_rules.utils import RuleResult
+
+from os import path
 
 
 def create_output(rule_results: list[RuleResult]) -> str:
@@ -26,7 +28,8 @@ def validate_output(out_dict: dict) -> bool:
     """
     Validate output
     """
-    json_schema_path = pathlib.Path("./API/schema_output_acmg.json")
+    src_path = path.dirname(path.dirname(path.abspath(__file__)))
+    json_schema_path = pathlib.Path(path.join(src_path, "API/schema_output_acmg.json"))
     with open(json_schema_path) as f:
         json_schema = json.load(f)
     try:

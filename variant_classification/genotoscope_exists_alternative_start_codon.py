@@ -3,8 +3,8 @@
 import logging
 import pyensembl
 
-from variant_classification.variant import VariantInfo
-from variant_classification.genotoscope_exon_skipping import (
+from variant import VariantInfo
+from genotoscope_exon_skipping import (
     extract_codons,
     is_transcript_in_positive_strand,
     find_exon_by_ref_pos,
