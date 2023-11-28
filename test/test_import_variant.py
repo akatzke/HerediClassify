@@ -5,6 +5,7 @@ import json
 import pytest
 
 from variant_classification.load_variant import load_variant
+import test.paths as paths
 
 
 def create_json_string_from_variant(path: pathlib.Path) -> str:
@@ -18,25 +19,25 @@ def create_json_string_from_variant(path: pathlib.Path) -> str:
 
 
 def test_variant_import():
-    path_variant = pathlib.Path("./API/example_input.json")
+    path_variant = paths.API / "example_input.json"
     variant_str = create_json_string_from_variant(path_variant)
     variant = load_variant(variant_str)
 
 
 def test_variant_import_missing_flossies():
-    path_variant = pathlib.Path("./test/test_variants/test_var_no_flossies.json")
+    path_variant = paths.TEST / "test_variants" / "test_var_no_flossies.json"
     variant_str = create_json_string_from_variant(path_variant)
     variant = load_variant(variant_str)
 
 
 def test_variant_import_missing_cancer_hotspot():
-    path_variant = pathlib.Path("./test/test_variants/test_var_no_cancer_hotspot.json")
+    path_variant = paths.TEST / "test_variants" / "test_var_no_cancer_hotspot.json"
     variant_str = create_json_string_from_variant(path_variant)
     variant = load_variant(variant_str)
 
 
 def test_variant_import_missing_chr():
-    path_variant = pathlib.Path("./test/test_variants/test_var_no_chr.json")
+    path_variant = paths.TEST / "test_variants" / "test_var_no_chr.json"
     variant_str = create_json_string_from_variant(path_variant)
     with pytest.raises(ValueError):
         variant = load_variant(variant_str)

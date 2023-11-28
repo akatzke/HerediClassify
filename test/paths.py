@@ -1,6 +1,6 @@
-from os import path
-import sys
+# from os import path
+import pathlib
 
-ROOT = path.dirname(path.dirname(path.abspath(__file__)))
-API = path.join(ROOT, "API")
-TEST = path.join(ROOT, "test")
+ROOT = pathlib.Path(__file__).parent.parent.resolve()
+API = ROOT / "API"
+TEST = ROOT / "test"
