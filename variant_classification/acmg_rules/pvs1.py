@@ -50,7 +50,7 @@ class Pvs1(abstract_rule):
                 result_start_loss = cls.assess_pvs1_start_loss(transcript)
                 results.append(result_start_loss)
         if len(results) == 0:
-            comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {variant.var_type}."
+            comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             result = RuleResult(
                 "PVS1",
                 rule_type.GENERAL,
@@ -75,13 +75,19 @@ class Pvs1(abstract_rule):
             result = True
             strength = evidence_strength.MODERATE
         else:
-            comment = f"No alternative start codon detected for transcript {transcript.transcript_id}."
+            comment = f"Alternative start codon observed."
             if transcript.is_truncated_region_disease_relevant:
-                comment = f"Pathogenic variants detected between start codon and alternative start codon detected. \n ClinVar ID: {transcript.comment_truncated_region}"
+                comment = (
+                    comment
+                    + f" Alternative start codon leads to the exclusion of a disease relevant protein region."
+                )
                 result = True
                 strength = evidence_strength.MODERATE
             else:
-                comment = "No pathogenic variant detected between start codon and alternative start codon."
+                comment = (
+                    comment
+                    + f"No pathogenic variant detected between start codon and alternative start codon."
+                )
                 result = True
                 strength = evidence_strength.SUPPORTING
         return RuleResult(
@@ -101,10 +107,12 @@ class Pvs1(abstract_rule):
         if transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} undergoes NMD."
             if transcript.is_truncated_region_disease_relevant:
-                comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considexoneredexon to be disease relevant. \n ClinVar ID: {transcript.comment_truncated_region}"
+                comment = comment + f"Skipped exon is disease relevant."
                 result = True
             else:
-                comment = "Skipped exon contains no (likely) pathogenic variants and is therefore not considered disease relevant."
+                comment = (
+                    comment + " Skipped exon is not considered to be disease relevant."
+                )
                 result = False
             strength = evidence_strength.VERY_STRONG
         elif (
@@ -112,36 +120,49 @@ class Pvs1(abstract_rule):
             and not transcript.is_NMD
             and not transcript.is_reading_frame_preserved
         ):
-            comment = f"Transcript {transcript.transcript_id} does not undergo NMD."
+            comment = f"Transcript {transcript.transcript_id} does not undergo NMD and reading frame is not preserved."
             if transcript.is_truncated_region_disease_relevant:
-                comment = f"Skipped exon contais (likely) pathogenic variants and can therefore be considered to be disease relevant. \n ClinVar ID: {transcript.comment_truncated_region}"
+                comment = comment + f" Skipped exon is considered disease relevant."
                 result = True
                 strength = evidence_strength.STRONG
             else:
                 if transcript.diff_len_protein_percent > 0.1:
-                    comment = "Protein length change of"
+                    comment = (
+                        comment
+                        + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                    )
                     result = True
                     strength = evidence_strength.STRONG
                 else:
-                    comment = "Something"
+                    comment = (
+                        comment
+                        + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                    )
                     result = True
                     strength = evidence_strength.MODERATE
         elif transcript.are_exons_skipped and transcript.is_reading_frame_preserved:
+            comment = f"Transcript {transcript.transcript_id} does not undergo NMD and reading frame is preserved."
             if transcript.is_truncated_region_disease_relevant:
-                comment = "Something"
+                comment = comment + f" Skipped exon is disease relevant."
                 result = True
                 strength = evidence_strength.STRONG
             else:
                 if transcript.diff_len_protein_percent > 0.1:
-                    comment = "Something"
+                    comment = (
+                        comment
+                        + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                    )
                     result = True
                     strength = evidence_strength.STRONG
                 else:
-                    comment = "Something"
+                    comment = (
+                        comment
+                        + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                    )
                     result = True
                     strength = evidence_strength.MODERATE
         else:
-            comment = "Something"
+            comment = f"Transcript {transcript.transcript_id} does not fulfill any PVS1 splicing."
             result = False
             strength = evidence_strength.VERY_STRONG
         return RuleResult(
@@ -161,25 +182,35 @@ class Pvs1(abstract_rule):
         Assess PVS1 for frameshift variants
         """
         if transcript.is_NMD:
+            comment = (
+                f"Transcript {transcript.transcript_id} is predicted to undergo NMD."
+            )
             if transcript.is_truncated_region_disease_relevant:
-                comment = "Something"
+                comment = comment + "Truncated region is disease relevant."
                 result = True
             else:
-                comment = "Something"
+                comment = comment + "Truncated region is not disease relevant."
                 result = False
             strength = evidence_strength.VERY_STRONG
         else:
+            comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD."
             if transcript.is_truncated_region_disease_relevant:
-                comment = "Something"
+                comment = "Truncated region is disease relevant."
                 result = True
                 strength = evidence_strength.STRONG
             else:
                 if transcript.diff_len_protein_percent > 0.1:
-                    comment = "Something"
+                    comment = (
+                        comment
+                        + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                    )
                     result = True
                     strength = evidence_strength.STRONG
                 else:
-                    comment = "Something"
+                    comment = (
+                        comment
+                        + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                    )
                     result = True
                     strength = evidence_strength.MODERATE
         return RuleResult(

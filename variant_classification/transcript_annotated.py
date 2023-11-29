@@ -205,6 +205,9 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
                 truncated_exon_ClinVar = check_clinvar_region(
                     variant, variant.genomic_start, variant.genomic_end, path_clinvar
                 )
+                is_truncated_exon_relevant = truncated_exon_ClinVar.pathogenic
+                comment_truncated_exon_relevant = f"The following relevant ClinVar are (likely) pathogenic: {truncated_exon_ClinVar.ids}"
+
         is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
         diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
         if diff_len_protein_percent != 0:

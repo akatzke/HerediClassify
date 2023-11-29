@@ -50,11 +50,6 @@ class Bp3(abstract_rule):
             ):
                 comment = f"Transcript {transcript.transcript_id} does not carry variant of exonic or intronic variant type."
                 result = False
-            elif not transcript.transcript_disease_relevant:
-                comment = (
-                    f"Transcript {transcript.transcript_id} is not disease relevant."
-                )
-                result = False
             elif (
                 transcript.diff_len_protein_percent <= threshold_diff_len_prot_percent
                 and transcript.len_change_in_repetitive_region
@@ -62,7 +57,7 @@ class Bp3(abstract_rule):
                 comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
                 result = True
             else:
-                comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}."
+                comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}. Deleted region does not overlap repetitive region."
                 result = False
             rule_result = RuleResult(
                 "BP3",
@@ -74,7 +69,7 @@ class Bp3(abstract_rule):
             )
             results.append(rule_result)
         if len(results) == 0:
-            comment = f"BP3 does not apply to this variant, as BP3 does not apply to variant types {variant.var_type}."
+            comment = f"BP3 does not apply to this variant, as BP3 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             final_result = RuleResult(
                 "BP3",
                 rule_type.GENERAL,

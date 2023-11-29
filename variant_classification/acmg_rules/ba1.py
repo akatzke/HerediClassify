@@ -34,7 +34,11 @@ class Ba1(abstract_rule):
     def assess_rule(
         cls, gnomad: PopulationDatabases_gnomAD, threshold_ba1: float
     ) -> RuleResult:
-        if gnomad.frequency > threshold_ba1:
+        if gnomad.frequency is None:
+            raise ValueError(
+                f"The gnomAD allele frequency is None. Please check variant import."
+            )
+        elif gnomad.frequency > threshold_ba1:
             comment = f"Variant occures with {gnomad.frequency} in {gnomad.name}."
             result = True
         else:

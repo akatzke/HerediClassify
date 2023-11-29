@@ -34,11 +34,15 @@ class Bs2(abstract_rule):
     def assess_rule(
         cls, flossies: PopulationDatabases, threshold_bs2: float
     ) -> RuleResult:
+        if flossies.count is None:
+            raise ValueError(
+                f"The FLOSSIES allele count is None. Please check variant import."
+            )
         if flossies.count > threshold_bs2:
-            comment = "Something"
+            comment = f"The variant occures {flossies.count} in FLOSSIES."
             result = True
         else:
-            comment = "Something"
+            comment = f"The variant occures {flossies.count} in FLOSSIES."
             result = False
         return RuleResult(
             "BS2",

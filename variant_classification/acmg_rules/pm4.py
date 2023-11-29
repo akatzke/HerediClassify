@@ -41,12 +41,7 @@ class Pm4(abstract_rule):
     ) -> RuleResult:
         results = []
         for transcript in annotated_transcript_list:
-            if not transcript.is_truncated_region_disease_relevant:
-                comment = (
-                    f"Transcript {transcript.transcript_id} is not disease relevant."
-                )
-                result = False
-            elif (
+            if (
                 transcript.diff_len_protein_percent > threshold_diff_len_prot_percent
                 and transcript.is_truncated_region_disease_relevant
                 and not transcript.len_change_in_repetitive_region
@@ -73,7 +68,7 @@ class Pm4(abstract_rule):
             )
             results.append(rule_result)
         if len(results) == 0:
-            comment = f"PM4 does not apply to this variant, as PVS1 does not apply to variant types {variant.var_type}."
+            comment = f"PM4 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             final_result = RuleResult(
                 "PM4",
                 rule_type.GENERAL,

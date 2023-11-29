@@ -43,14 +43,14 @@ class Bp7(abstract_rule):
             prediction_value = prediction_dict[threshold.name]
         except KeyError:
             raise KeyError(
-                f"For {threshold.name} no prediction value was found in {prediction_dict}"
+                f"For {threshold.name} no prediction value was found in configuration."
             )
         prediction = assess_prediction_tool(threshold, prediction_value)
         if prediction:
-            comment = "Varinat is predicted to be pathogenic."
+            comment = "Varinat is predicted to be benign."
             result = True
         else:
-            comment = "Varinat is not predicted to be pathogenic."
+            comment = "Varinat is not predicted to be benign."
             result = False
         return RuleResult(
             "BP7",
