@@ -34,15 +34,15 @@ class Bs1(abstract_rule):
     def assess_rule(
         cls, gnomad: PopulationDatabases_gnomAD, threshold_bs1: float
     ) -> RuleResult:
-        if gnomad.frequency is None:
+        if gnomad.popmax_frequency is None:
             raise ValueError(
                 f"The gnomAD allele frequency is None. Please check variant import."
             )
-        elif gnomad.frequency > threshold_bs1:
-            comment = f"Variant occures with {gnomad.frequency} in {gnomad.name}."
+        elif gnomad.popmax_frequency > threshold_bs1:
+            comment = f"Variant occures with {gnomad.popmax_frequency} in GnomAD subpopulation {gnomad.popmax}."
             result = True
         else:
-            comment = f"Variant occurs with {gnomad.frequency} in {gnomad.name}."
+            comment = f"Variant occures with {gnomad.popmax_frequency} in GnomAD subpopulation {gnomad.popmax}."
             result = False
         return RuleResult(
             "BS1",
