@@ -9,7 +9,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from classify import classify
-from _version import __version_
+from _version import __version__
 
 app = FastAPI()
 
@@ -23,7 +23,11 @@ class Result(BaseModel):
     result: str
     config: str
     date: str
-    version: str == __version__
+    version: str
+
+
+class Variant(BaseModel):
+    variant: str
 
 
 @app.get("_ping")
@@ -65,16 +69,21 @@ async def classify_variant(input: Input) -> Result:
     """
     Execute classification of variant
     """
-    variant_json = input.variant_json
+    variant_str = input.variant_json
     config_path = pathlib.Path(input.config_path)
     if not config_path.exists():
         raise HTTPException(
             status_code=404,
             detail=f"The config path {input.config_path} does not exist.",
         )
-    classification_result = classify(config_path, variant_json)
+    classification_result = classify(config_path, variant_str)
     date = datetime.date.today().isoformat()
-    return Result(classification_result, config_path.name, date)
+    return Result(
+        result=classification_result,
+        config=config_path.name,
+        date=date,
+        version=__version__,
+    )
 
 
 def main():
