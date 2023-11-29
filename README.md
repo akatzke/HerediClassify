@@ -16,7 +16,7 @@ pip install -r requirements.txt
 
 3. Install pyensembl database
 ```sh
-bash install_dependencies/pyensebmle_install.sh
+bash install_dependencies/install_pyensembl.sh
 ```
 
 4. Install non-python dependencies
