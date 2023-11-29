@@ -41,16 +41,19 @@ class Bp7(abstract_rule):
     ) -> RuleResult:
         try:
             prediction_value = prediction_dict[threshold.name]
+            prediction = assess_prediction_tool(threshold, prediction_value)
         except KeyError:
-            raise KeyError(
-                f"For {threshold.name} no prediction value was found in configuration."
-            )
-        prediction = assess_prediction_tool(threshold, prediction_value)
+            prediction = None
+        if prediction is None:
+            comment = f"No score was provided for {threshold.name}"
+            result = False
         if prediction:
-            comment = "Varinat is predicted to be benign."
+            comment = (
+                f"Variant is predicted to have no splicing effect by {threshold.name}."
+            )
             result = True
         else:
-            comment = "Varinat is not predicted to be benign."
+            comment = f"Variant is not predicted to have no splicing effect by {threshold.name}."
             result = False
         return RuleResult(
             "BP7",

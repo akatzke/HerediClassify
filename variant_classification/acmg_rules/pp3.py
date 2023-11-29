@@ -41,16 +41,17 @@ class Pp3_protein(abstract_rule):
     ) -> RuleResult:
         try:
             prediction_value = prediction_dict[threshold.name]
+            prediction = assess_prediction_tool(threshold, prediction_value)
         except KeyError:
-            raise KeyError(
-                f"For {threshold.name} no prediction value was found in {prediction_dict}"
-            )
-        prediction = assess_prediction_tool(threshold, prediction_value)
-        if prediction:
-            comment = "Variant is predicted to be pathogenic."
+            prediction = None
+        if prediction is None:
+            comment = f"No score was provided for {threshold.name}"
+            result = False
+        elif prediction:
+            comment = f"Variant is predicted to be pathogenic by {threshold.name}."
             result = True
         else:
-            comment = "Variant is not predicted to be pathogenic."
+            comment = f"Variant is not predicted to be pathogenic by {threshold.name}."
             result = False
         return RuleResult(
             "PP3",
@@ -87,16 +88,21 @@ class Pp3_splicing(abstract_rule):
     ) -> RuleResult:
         try:
             prediction_value = prediction_dict[threshold.name]
+            prediction = assess_prediction_tool(threshold, prediction_value)
         except KeyError:
-            raise KeyError(
-                f"For {threshold.name} no prediction value was found in {prediction_dict}"
+            prediction = None
+        if prediction is None:
+            comment = f"No score was provided for {threshold.name}"
+            result = False
+        elif prediction:
+            comment = (
+                f"Variant is predicted to have a splice effect by {threshold.name}."
             )
-        prediction = assess_prediction_tool(threshold, prediction_value)
-        if prediction:
-            comment = "Variant is predicted to be pathogenic."
             result = True
         else:
-            comment = "Variant is not predicted to be pathogenic."
+            comment = (
+                f"Variant is not predicted to have a splice effect by {threshold.name}."
+            )
             result = False
         return RuleResult(
             "PP3",
