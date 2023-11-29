@@ -55,7 +55,9 @@ python variant_classification/classify.py -c config.yaml -p json_string
 python webservice.py
 ```
 This will start a uvicorn server running on http://0.0.0.0:8080
+
 2. Execute classify on server
+
 Send a curl request using the following command to the server
 ```sh
 curl -X 'POST' \
