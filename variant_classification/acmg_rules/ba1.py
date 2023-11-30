@@ -2,15 +2,15 @@
 
 from typing import Callable
 
-from variant_classification.acmg_rules.utils import (
+from acmg_rules.utils import (
     RuleResult,
     evidence_strength,
     abstract_rule,
     rule_type,
     evidence_type,
 )
-from variant_classification.information import Classification_Info, Info
-from variant_classification.variant import PopulationDatabases_gnomAD
+from information import Classification_Info, Info
+from variant import PopulationDatabases_gnomAD
 
 
 class Ba1(abstract_rule):
@@ -34,11 +34,15 @@ class Ba1(abstract_rule):
     def assess_rule(
         cls, gnomad: PopulationDatabases_gnomAD, threshold_ba1: float
     ) -> RuleResult:
-        if gnomad.frequency > threshold_ba1:
-            comment = f"Variant occures with {gnomad.frequency} in {gnomad.name}."
+        if gnomad.popmax_frequency is None:
+            raise ValueError(
+                f"The gnomAD allele frequency is None. Please check variant import."
+            )
+        elif gnomad.popmax_frequency > threshold_ba1:
+            comment = f"Variant occures with {gnomad.popmax_frequency} in GnomAD subpopulation {gnomad.popmax}."
             result = True
         else:
-            comment = f"Variant occurs with {gnomad.frequency} in {gnomad.name}."
+            comment = f"Variant occures with {gnomad.popmax_frequency} in GnomAD subpopulation {gnomad.popmax}."
             result = False
         return RuleResult(
             "BA1",

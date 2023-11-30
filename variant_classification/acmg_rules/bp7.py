@@ -2,15 +2,15 @@
 
 from typing import Callable
 
-from variant_classification.acmg_rules.utils import (
+from acmg_rules.utils import (
     RuleResult,
     evidence_strength,
     abstract_rule,
     evidence_type,
     rule_type,
 )
-from variant_classification.information import Info, Classification_Info
-from variant_classification.acmg_rules.computation_evidence_utils import (
+from information import Info, Classification_Info
+from acmg_rules.computation_evidence_utils import (
     assess_prediction_tool,
     Threshold,
 )
@@ -41,16 +41,19 @@ class Bp7(abstract_rule):
     ) -> RuleResult:
         try:
             prediction_value = prediction_dict[threshold.name]
+            prediction = assess_prediction_tool(threshold, prediction_value)
         except KeyError:
-            raise KeyError(
-                f"For {threshold.name} no prediction value was found in {prediction_dict}"
-            )
-        prediction = assess_prediction_tool(threshold, prediction_value)
+            prediction = None
+        if prediction is None:
+            comment = f"No score was provided for {threshold.name}"
+            result = False
         if prediction:
-            comment = "Varinat is predicted to be pathogenic."
+            comment = (
+                f"Variant is predicted to have no splicing effect by {threshold.name}."
+            )
             result = True
         else:
-            comment = "Varinat is not predicted to be pathogenic."
+            comment = f"Variant is not predicted to have no splicing effect by {threshold.name}."
             result = False
         return RuleResult(
             "BP7",

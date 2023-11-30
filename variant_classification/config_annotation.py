@@ -6,26 +6,26 @@ from functools import reduce, partial
 import operator as op
 from typing import Callable, Union, Any, Optional
 
-import variant_classification.acmg_rules as Rules
-from variant_classification.acmg_rules.computation_evidence_utils import (
+import acmg_rules as Rules
+from acmg_rules.computation_evidence_utils import (
     Threshold,
     THRESHOLD_DIRECTION,
 )
-from variant_classification.acmg_rules.utils import RuleResult
-from variant_classification.clinvar_annot import get_annotate_clinvar
-from variant_classification.information import (
+from acmg_rules.utils import RuleResult
+from clinvar_annot import get_annotate_clinvar
+from information import (
     Info,
     Classification_Info,
     Classification_Info_Groups,
 )
-from variant_classification.transcript_annotated import (
+from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
     annotate_transcripts,
 )
-from variant_classification.var_type import VARTYPE_GROUPS
-from variant_classification.variant import Variant
+from var_type import VARTYPE_GROUPS
+from variant import Variant
 
 logger = logging.getLogger("Classify.config_annotation")
 

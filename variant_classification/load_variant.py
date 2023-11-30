@@ -8,8 +8,8 @@ from typing import Optional
 from jsonschema import validate
 import hgvs.parser
 import hgvs.posedit
-from variant_classification.var_type import VARTYPE
-from variant_classification.variant import (
+from var_type import VARTYPE
+from variant import (
     FunctionalData,
     MultifactorialLikelihood,
     Variant,
@@ -19,6 +19,7 @@ from variant_classification.variant import (
     PopulationDatabases,
     AffectedRegion,
 )
+from os import path
 
 
 logger = logging.getLogger("HerediClass.load_variant")
@@ -42,7 +43,8 @@ def validate_variant(var_dict: dict) -> bool:
     """
     Validate variant input
     """
-    json_schema_path = pathlib.Path("./API/schema_input.json")
+    base_path = path.dirname(path.dirname(path.abspath(__file__)))
+    json_schema_path = pathlib.Path(path.join(base_path, "API/schema_input.json"))
     with open(json_schema_path) as f:
         json_schema = json.load(f)
     try:
@@ -124,6 +126,10 @@ def create_transcriptinfo(variant_json: dict) -> list[TranscriptInfo]:
     for trans_dict in transcripts_dict:
         transcript_id = trans_dict["transcript"]
         hgvs_c_str = trans_dict["hgvs_c"]
+        if hgvs_c_str is None or hgvs_c_str == "None":
+            continue
+        if hgvs_c_str[0:2] == "n.":
+            continue
         hgvs_c = hgvs_parser.parse_c_posedit(hgvs_c_str.split("c.")[1])
         var_start = hgvs_c.pos.start.base
         var_stop = hgvs_c.pos.end.base
@@ -160,6 +166,7 @@ def get_vartype_list(var_type_str: list[str]) -> list[VARTYPE]:
     """
     var_types = []
     for entry in var_type_str:
+        entry = entry.lower().strip().replace(" ", "_")
         try:
             var_type = VARTYPE(entry)
             var_types.append(var_type)

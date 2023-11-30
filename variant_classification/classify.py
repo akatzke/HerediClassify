@@ -3,10 +3,10 @@
 import pathlib
 import argparse
 
-from variant_classification.load_config import load_config, get_gene_specific_config
-from variant_classification.load_variant import load_variant
-from variant_classification.information import Classification_Info
-from variant_classification.config_annotation import (
+from load_config import load_config, get_gene_specific_config
+from load_variant import load_variant
+from information import Classification_Info
+from config_annotation import (
     get_annotations_needed_from_rules,
     get_annotation_functions,
     get_unique_annotations_needed,
@@ -14,7 +14,11 @@ from variant_classification.config_annotation import (
     remove_rules_with_missing_annotation,
     apply_rules,
 )
-from variant_classification.create_output import create_output
+from create_output import create_output
+
+from os import path
+import json
+import sys
 
 parser = argparse = argparse.ArgumentParser()
 
@@ -26,6 +30,13 @@ parser.add_argument(
     "--config",
     default="",
     help="path to configuration",
+    type=str,
+)
+parser.add_argument(
+    "-o",
+    "--output",
+    default="",
+    help="path to output file",
     type=str,
 )
 args = parser.parse_args()
@@ -57,9 +68,22 @@ def classify(config_path: pathlib.Path, variant_str: str):
 
 if __name__ == "__main__":
     if args.input == "":
-        raise ValueError("No variant json string provided.")
+        input_file = sys.stdin
     if args.config == "":
         raise ValueError("No config file provided.")
 
     path_config = pathlib.Path(args.config)
-    classify(path_config, args.input)
+    input = args.input
+    if path.exists(input):
+        with open(input) as infile:
+            input = infile.read()
+
+    result = classify(path_config, input)
+
+    # write classification to sout or to file
+    if args.output != "":
+        sys.stdout = open(args.output, 'w') # overwrite print with sout
+    result = json.loads(result)
+    result = json.dumps(result, indent=4)
+    print(result)
+

@@ -5,7 +5,7 @@ import pathlib
 import pyensembl
 
 from pybedtools import BedTool
-from variant_classification.variant import VariantInfo
+from variant import VariantInfo
 
 
 def check_bed_intersect_start_loss(

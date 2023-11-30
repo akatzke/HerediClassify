@@ -15,6 +15,7 @@ from variant_classification.transcript_annotated import (
     TranscriptInfo_start_loss,
 )
 from variant_classification.load_config import load_config
+import test.paths as paths
 
 
 def test_splicing():
@@ -22,7 +23,7 @@ def test_splicing():
     Test annotation for a splice variant
     """
     test_trans, test_var = create_example_splice_acceptor_BRCA1()
-    path_config = pathlib.Path("./config.yaml")
+    path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
@@ -53,7 +54,7 @@ def test_indel():
     Test annotation for duplication
     """
     test_trans, test_var = create_example_dup()
-    path_config = pathlib.Path("./config.yaml")
+    path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
@@ -84,7 +85,7 @@ def test_del_inframe():
     Test annotation for deletion
     """
     test_trans, test_var = create_example_del()
-    path_config = pathlib.Path("./config.yaml")
+    path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
@@ -115,7 +116,7 @@ def test_ins():
     Test annotation for insertion
     """
     test_trans, test_var = create_example_ins()
-    path_config = pathlib.Path("./config.yaml")
+    path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
@@ -146,7 +147,7 @@ def test_start_loss():
     Test annotation for a start loss variant
     """
     test_trans, test_var = create_start_lost()
-    path_config = pathlib.Path("./config.yaml")
+    path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])

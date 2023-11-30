@@ -2,15 +2,15 @@
 
 from typing import Callable
 
-from variant_classification.acmg_rules.utils import (
+from acmg_rules.utils import (
     RuleResult,
     evidence_strength,
     abstract_rule,
     evidence_type,
     rule_type,
 )
-from variant_classification.information import Classification_Info, Info
-from variant_classification.clinvar_utils import ClinVar_Type, ClinVar
+from information import Classification_Info, Info
+from clinvar_utils import ClinVar_Type, ClinVar
 
 
 class Ps1_protein(abstract_rule):
@@ -34,7 +34,7 @@ class Ps1_protein(abstract_rule):
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
             result = True
         else:
-            comment = "No matches found for variant."
+            comment = "No ClinVar entries found that show the same amino acid change as pathogneic."
             result = False
         return RuleResult(
             "PS1",
@@ -67,7 +67,7 @@ class Ps1_splicing(abstract_rule):
             comment = f"The following ClinVar entries show splice variants at the same nucleotide position to be pathogenic: {clinvar_same_nucleotide.ids}."
             result = True
         else:
-            comment = "No matches found for variant."
+            comment = "No ClinVar entries found that show splice variants at the same nucleotide position as pathogenic.."
             result = False
         return RuleResult(
             "PS1",

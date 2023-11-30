@@ -4,7 +4,7 @@ from typing import Optional
 from enum import Enum
 from dataclasses import dataclass
 
-from variant_classification.acmg_rules.utils import evidence_strength
+from acmg_rules.utils import evidence_strength
 
 
 class THRESHOLD_DIRECTION(Enum):

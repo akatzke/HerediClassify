@@ -3,14 +3,14 @@
 import logging
 import pyensembl
 
-from variant_classification.genotoscope_assess_NMD import (
+from genotoscope_assess_NMD import (
     search_termination_codon,
     extract_codons,
 )
-from variant_classification.genotoscope_exists_alternative_start_codon import (
+from genotoscope_exists_alternative_start_codon import (
     convert_exon_pos2genomic_pos,
 )
-from variant_classification.genotoscope_exon_skipping import find_exon_by_ref_pos
+from genotoscope_exon_skipping import find_exon_by_ref_pos
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.prot_len_diff")
 

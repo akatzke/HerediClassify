@@ -206,6 +206,10 @@
     "ref",
     "alt",
     "variant_type",
-    "variant_effect"
+    "variant_effect",
+    "mRNA_analysis",
+    "functional_data",
+    "cancer_hotspot",
+    "cold_spot"
   ]
 }

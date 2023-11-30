@@ -5,7 +5,7 @@ from typing import Callable
 from dataclasses import dataclass
 from enum import Enum
 
-from variant_classification.information import Classification_Info, Info
+from information import Classification_Info, Info
 
 
 class evidence_strength(Enum):
