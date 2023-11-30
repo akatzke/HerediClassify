@@ -88,23 +88,28 @@ def create_variantInfo(variant_json: dict) -> VariantInfo:
         # Create genomic positon for substitution
         genomic_start = variant_json["pos"]
         genomic_end = variant_json["pos"]
-    elif len(ref) > len(alt):
+    elif len(ref) > 1 and len(alt) > 1:
+        # Create genomic position for indels
+        genomic_start = variant_json["pos"] + 1
+        del_length = len(alt) - 1
+        genomic_end = genomic_start + del_length - 1
+    elif len(ref) > 1 and len(alt) == 1:
         # Create genomic position for deletions
         genomic_start = variant_json["pos"] + 1
         del_length = len(alt) - 1
         genomic_end = genomic_start + del_length - 1
         alt = ""
         ref = ref[1:]
-    elif len(ref) < len(alt):
+    elif len(ref) == 1 and len(alt) > 1:
         # Create genomic position for insertions
         genomic_start = variant_json["pos"]
         genomic_end = variant_json["pos"]
         ref = ""
         alt = alt[1:]
     else:
-        raise ValueError(
-            f"Variant is not of type substitution, insertion or deletion. Please check variant input."
-        )
+        # All other cases
+        genomic_start = variant_json["pos"]
+        genomic_end = variant_json["pos"]
     var_info = VariantInfo(
         chr=chr,
         genomic_start=genomic_start,
