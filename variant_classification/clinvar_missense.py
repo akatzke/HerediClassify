@@ -9,8 +9,6 @@ from Bio.Seq import Seq
 from Bio.Data import IUPACData
 from cyvcf2 import VCF
 import pyensembl
-import hgvs.parser
-import hgvs.posedit
 
 from variant import VariantInfo, TranscriptInfo
 from var_type import VARTYPE_GROUPS
