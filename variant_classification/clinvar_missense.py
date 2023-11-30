@@ -26,8 +26,6 @@ from clinvar_utils import (
     get_affected_transcript,
 )
 
-hgvs_parser = hgvs.parser.Parser()
-
 logger = logging.getLogger("GenOtoScope_Classify.clinvar.missense")
 
 

@@ -4,7 +4,6 @@ import logging
 import pathlib
 from collections.abc import Iterable
 
-import hgvs.parser
 import pyensembl
 from cyvcf2 import VCF
 
@@ -21,8 +20,6 @@ from genotoscope_exon_skipping import (
     parse_variant_intron_pos,
     find_exon_by_ref_pos,
 )
-
-hgvs_parser = hgvs.parser.Parser()
 
 logger = logging.getLogger("GenOtoScope_Classify.clinvar.splicing")
 

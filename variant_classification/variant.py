@@ -3,11 +3,8 @@
 from dataclasses import dataclass
 from typing import Optional
 import hgvs.posedit
-import hgvs.parser
 
 from var_type import VARTYPE
-
-hgvs_parser = hgvs.parser.Parser()
 
 
 @dataclass
