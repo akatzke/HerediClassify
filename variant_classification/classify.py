@@ -3,6 +3,7 @@
 import pathlib
 import argparse
 
+from ensembl import ensembl
 from load_config import load_config, get_gene_specific_config
 from load_variant import load_variant
 from information import Classification_Info
@@ -63,6 +64,7 @@ def classify(config_path: pathlib.Path, variant_str: str):
     )
     rule_results = apply_rules(annotations_needed_by_rules_filtered)
     out_result = create_output(rule_results)
+    ensembl.clear_cache()
     return out_result
 
 
@@ -82,8 +84,7 @@ if __name__ == "__main__":
 
     # write classification to sout or to file
     if args.output != "":
-        sys.stdout = open(args.output, 'w') # overwrite print with sout
+        sys.stdout = open(args.output, "w")  # overwrite print with sout
     result = json.loads(result)
     result = json.dumps(result, indent=4)
     print(result)
-

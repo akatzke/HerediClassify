@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from collections.abc import Callable
 
 from variant import VariantInfo, TranscriptInfo, Variant
+from ensembl import ensembl
 from genotoscope_construct_variant_sequence import (
     construct_variant_coding_seq_exonic_variant,
     construct_variant_coding_seq_intronic_variant,
@@ -166,9 +167,7 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         """
         Perform annotation for exonic variants
         """
-        ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
-            transcript.transcript_id
-        )
+        ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
         var_seq, diff_len = construct_variant_coding_seq_exonic_variant(
             transcript, variant, ref_transcript
         )
@@ -293,9 +292,7 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
         """
         Perform annotation specific for intronic variants
         """
-        ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
-            transcript.transcript_id
-        )
+        ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
         (
             exons_skipped,
             are_exons_skipped,
@@ -422,9 +419,7 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
         path_critical_region: pathlib.Path,
         transcript: TranscriptInfo,
     ) -> TranscriptInfo_start_loss:
-        ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
-            transcript.transcript_id
-        )
+        ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
         var_seq, diff_len = construct_variant_coding_seq_exonic_variant(
             transcript, variant, ref_transcript
         )

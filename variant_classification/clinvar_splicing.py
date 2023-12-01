@@ -7,6 +7,7 @@ from collections.abc import Iterable
 import pyensembl
 from cyvcf2 import VCF
 
+from ensembl import ensembl
 from variant import VariantInfo, TranscriptInfo
 from var_type import VARTYPE_GROUPS
 from clinvar_utils import (
@@ -63,9 +64,7 @@ def find_corresponding_splice_site(
     Reconstruct splice site
     Splice site is defined as +/- 1,2 as only for these locations varinat is clearly defines as a splice variant
     """
-    ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
-        transcript.transcript_id
-    )
+    ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
     if "+" in str(transcript.var_hgvs) or "-" in str(transcript.var_hgvs):
         splice_site_start, splice_site_stop = get_splice_site_for_intronic_variant(
             variant, transcript, ref_transcript

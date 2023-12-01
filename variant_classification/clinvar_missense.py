@@ -10,6 +10,7 @@ from Bio.Data import IUPACData
 from cyvcf2 import VCF
 import pyensembl
 
+from ensembl import ensembl
 from variant import VariantInfo, TranscriptInfo
 from var_type import VARTYPE_GROUPS
 from genotoscope_exon_skipping import (
@@ -75,9 +76,7 @@ def extract_var_codon_info(
     """
     logger.debug("Extract codon information from variant-affected genomic position")
     logger.debug(f"=== New transcript id = {transcript.transcript_id} ===")
-    ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
-        transcript.transcript_id
-    )
+    ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
     var_start = int(transcript.var_hgvs.pos.start.base)
     var_pos_in_codon = get_variant_position_in_codon(var_start)
 
