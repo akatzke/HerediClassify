@@ -91,12 +91,12 @@ def create_variantInfo(variant_json: dict) -> VariantInfo:
     elif len(ref) > 1 and len(alt) > 1:
         # Create genomic position for indels
         genomic_start = variant_json["pos"] + 1
-        del_length = len(alt) - 1
+        del_length = len(ref) - 1
         genomic_end = genomic_start + del_length - 1
     elif len(ref) > 1 and len(alt) == 1:
         # Create genomic position for deletions
         genomic_start = variant_json["pos"] + 1
-        del_length = len(alt) - 1
+        del_length = len(ref) - 1
         genomic_end = genomic_start + del_length - 1
         alt = ""
         ref = ref[1:]
@@ -110,6 +110,8 @@ def create_variantInfo(variant_json: dict) -> VariantInfo:
         # All other cases
         genomic_start = variant_json["pos"]
         genomic_end = variant_json["pos"]
+    if genomic_start > genomic_end:
+        raise ValueError(f"genomic_start {genomic_start} is bigger than {genomic_end}")
     var_info = VariantInfo(
         chr=chr,
         genomic_start=genomic_start,
