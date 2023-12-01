@@ -100,7 +100,7 @@ class Pvs1(abstract_rule):
         )
 
     @classmethod
-    def assess_pvs1_start_loss_pathogenic(cls) -> RuleResult:
+    def assess_pvs1_start_loss_pathogenic_very_strong(cls) -> RuleResult:
         """
         Assess PVS1 for start loss variants, that are automatically classified as pathogenic
         """
