@@ -13,3 +13,9 @@ from acmg_rules.pm2 import *
 from acmg_rules.pm4 import *
 from acmg_rules.pm5 import *
 from acmg_rules.pp3 import *
+from acmg_rules.pvs1_brca1 import *
+from acmg_rules.pvs1_brca2 import *
+from acmg_rules.pvs1_atm import *
+from acmg_rules.pvs1_cdh1 import *
+from acmg_rules.pvs1_palb2 import *
+from acmg_rules.pvs1_pten import *
