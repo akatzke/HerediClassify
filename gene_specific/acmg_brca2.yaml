@@ -1,3 +1,6 @@
+### Configuration name ###
+name: "ACMG BRCA2"
+
 ### Rules ###
 rules:
     - pvs1

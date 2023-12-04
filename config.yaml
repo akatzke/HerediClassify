@@ -1,3 +1,6 @@
+### Configuration name ###
+name: "ACMG standard"
+
 ### Rules ###
 rules:
     - pvs1

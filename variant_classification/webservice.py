@@ -21,7 +21,8 @@ class Input(BaseModel):
 
 class Result(BaseModel):
     result: str
-    config: str
+    config_file: str
+    config_name: str
     date: str
     version: str
 
@@ -76,11 +77,12 @@ async def classify_variant(input: Input) -> Result:
             status_code=404,
             detail=f"The config path {input.config_path} does not exist.",
         )
-    classification_result = classify(config_path, variant_str)
+    configuration_name, classification_result = classify(config_path, variant_str)
     date = datetime.date.today().isoformat()
     return Result(
         result=classification_result,
-        config=config_path.name,
+        config_file=config_path.name,
+        config_name=configuration_name,
         date=date,
         version=__version__,
     )

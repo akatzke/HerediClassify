@@ -49,7 +49,9 @@ def classify(config_path: pathlib.Path, variant_str: str):
     """
     config = load_config(config_path)
     variant = load_variant(variant_str)
-    final_config = get_gene_specific_config(config, variant.variant_info.gene_name)
+    configuration_name, final_config = get_gene_specific_config(
+        config, variant.variant_info.gene_name
+    )
     class_info = Classification_Info()
     annotations_needed_by_rules = get_annotations_needed_from_rules(
         final_config["rules"], class_info
@@ -65,7 +67,7 @@ def classify(config_path: pathlib.Path, variant_str: str):
     rule_results = apply_rules(annotations_needed_by_rules_filtered)
     out_result = create_output(rule_results)
     ensembl.clear_cache()
-    return out_result
+    return configuration_name, out_result
 
 
 if __name__ == "__main__":
