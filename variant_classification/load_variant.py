@@ -8,6 +8,7 @@ from typing import Optional
 from jsonschema import validate
 import hgvs.parser
 import hgvs.posedit
+import hgvs.exceptions
 from var_type import VARTYPE
 from variant import (
     FunctionalData,
@@ -137,7 +138,10 @@ def create_transcriptinfo(variant_json: dict) -> list[TranscriptInfo]:
             continue
         if hgvs_c_str[0:2] == "n.":
             continue
-        hgvs_c = hgvs_parser.parse_c_posedit(hgvs_c_str.split("c.")[1])
+        try:
+            hgvs_c = hgvs_parser.parse_c_posedit(hgvs_c_str.split("c.")[1])
+        except hgvs.exceptions.HGVSParseError:
+            continue
         var_start = hgvs_c.pos.start.base
         var_stop = hgvs_c.pos.end.base
         var_type = get_vartype_list(variant_json["variant_type"])
