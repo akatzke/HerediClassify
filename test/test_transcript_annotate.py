@@ -9,6 +9,7 @@ from test.example_variant_indel_GRCh38 import (
 )
 from test.example_variant_splicing_GRCh38 import create_example_splice_acceptor_BRCA1
 from test.example_variant_various_GRCh38 import create_start_lost
+from test.example_variant_missense_GRCh38 import create_example_ter
 from variant_classification.transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
@@ -77,6 +78,30 @@ def test_indel():
         and annot_trans.len_change_in_repetitive_region == False
         and annot_trans.is_truncated_region_disease_relevant == True
         and round(annot_trans.diff_len_protein_percent, 2) == 0.29
+    )
+
+
+def test_ter():
+    """
+    Test annotation for termination codon
+    """
+    test_trans, test_var = create_example_ter()
+    path_config = paths.ROOT / "config.yaml"
+    config = load_config(path_config)
+    root_dir = pathlib.Path(config["annotation_files"]["root"])
+    dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
+    file_name = "clinvar_snv.vcf.gz"
+    path_clinvar = dir_clinvar / file_name
+    dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
+    path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
+    dir_critical_region = root_dir / pathlib.Path(
+        config["annotation_files"]["critical_region"]["root"]
+    )
+    path_critical_region = (
+        dir_critical_region / config["annotation_files"]["critical_region"]["file"]
+    )
+    annot_trans = TranscriptInfo_exonic.annotate(
+        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans
     )
 
 
