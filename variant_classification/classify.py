@@ -21,27 +21,6 @@ from os import path
 import json
 import sys
 
-parser = argparse = argparse.ArgumentParser()
-
-parser.add_argument(
-    "-i", "--input", default="", help="Json string of variant", type=str
-)
-parser.add_argument(
-    "-c",
-    "--config",
-    default="",
-    help="path to configuration",
-    type=str,
-)
-parser.add_argument(
-    "-o",
-    "--output",
-    default="",
-    help="path to output file",
-    type=str,
-)
-args = parser.parse_args()
-
 
 def classify(config_path: pathlib.Path, variant_str: str):
     """
@@ -71,22 +50,47 @@ def classify(config_path: pathlib.Path, variant_str: str):
 
 
 if __name__ == "__main__":
+    # define CLI arguments
+    parser = argparse = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "-i", "--input", default="", help="Json string of variant", type=str
+    )
+    parser.add_argument(
+        "-c",
+        "--config",
+        default="",
+        help="path to configuration",
+        type=str,
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        default="",
+        help="path to output file",
+        type=str,
+    )
+    # read passed CLI arguments
+    args = parser.parse_args()
+
+    # check if arguments were given
     if args.input == "":
         input_file = sys.stdin
     if args.config == "":
         raise ValueError("No config file provided.")
 
+    # Execute classification
     path_config = pathlib.Path(args.config)
     input = args.input
     if path.exists(input):
         with open(input) as infile:
             input = infile.read()
 
-    result = classify(path_config, input)
+    config_name, result = classify(path_config, input)
 
     # write classification to sout or to file
     if args.output != "":
         sys.stdout = open(args.output, "w")  # overwrite print with sout
-    result = json.loads(result)
-    result = json.dumps(result, indent=4)
-    print(result)
+    result_json = json.loads(result)
+    final_result = json.dumps(result_json, indent=4)
+    print(final_result)
