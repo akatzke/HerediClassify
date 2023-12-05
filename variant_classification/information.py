@@ -45,9 +45,9 @@ class Classification_Info:
     THRESHOLD_BS2: Info
     THRESHOLD_DIFF_LEN_PROT_PERCENT: Info
     THRESHOLD_NMD: Info
+    POS_LAST_KNOWN_PATHO_PTC: Info
     VARIANT: Info
     TRANSCRIPT: Info
-    THRESHOLD_NMD: Info
     CLINVAR_PATH: Info
     UNIPROT_REP_REGION_PATH: Info
     CRITICAL_REGION_PATH: Info
@@ -126,13 +126,18 @@ class Classification_Info:
             ),
             group=Classification_Info_Groups.THRESHOLD_SINGLE,
         )
-        self.VARIANT = Info("variant")
-        self.TRANSCRIPT = Info("transcript")
         self.THRESHOLD_NMD = Info(
             "threshold_nmd",
             config_location=("functional_thresholds", "nmd_threshold"),
             group=Classification_Info_Groups.THRESHOLD_SINGLE,
         )
+        self.POS_LAST_KNOWN_PATHO_PTC = Info(
+            "pos_last_known_patho_ptc",
+            config_location=("functional_thresholds", "pos_last_known_patho_ptc"),
+            group=Classification_Info_Groups.THRESHOLD_SINGLE,
+        )
+        self.VARIANT = Info("variant")
+        self.TRANSCRIPT = Info("transcript")
         self.CLINVAR_PATH = Info(
             "clinvar_path",
             config_location=("annotation_files", "clinvar", "clinvar_snv"),

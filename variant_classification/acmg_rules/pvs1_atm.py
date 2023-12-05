@@ -33,6 +33,7 @@ class Pvs1_atm(Pvs1):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
+                class_info.POS_LAST_KNOWN_PATHO_PTC,
                 class_info.SPLICE_RESULT,
             ),
         )
@@ -42,6 +43,7 @@ class Pvs1_atm(Pvs1):
         cls,
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
+        pos_last_known_patho_ptc: int,
         splice_result: Optional[RuleResult],
     ):
         if len(annotated_transcript) != 1:
@@ -50,7 +52,9 @@ class Pvs1_atm(Pvs1):
             )
         transcript = annotated_transcript[0]
         if type(transcript) is TranscriptInfo_exonic:
-            result = Pvs1_brca2.assess_pvs1_frameshift_PTC_brca2(transcript)
+            result = Pvs1_brca2.assess_pvs1_frameshift_PTC_brca2(
+                transcript, pos_last_known_patho_ptc
+            )
         elif type(transcript) is TranscriptInfo_intronic:
             if splice_result is None:
                 result = cls.assess_pvs1_splice(transcript)

@@ -33,7 +33,7 @@ class Pvs1_brca1(Pvs1):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
-                class_info.POS_LAST_KNOW_PATHO_PTC,
+                class_info.POS_LAST_KNOWN_PATHO_PTC,
                 class_info.SPLICE_RESULT,
             ),
         )

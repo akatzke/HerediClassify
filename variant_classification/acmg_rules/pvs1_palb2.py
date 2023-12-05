@@ -34,6 +34,7 @@ class Pvs1_palb2(Pvs1):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
+                class_info.POS_LAST_KNOWN_PATHO_PTC,
                 class_info.SPLICE_RESULT,
             ),
         )
@@ -43,6 +44,7 @@ class Pvs1_palb2(Pvs1):
         cls,
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
+        pos_last_known_patho_ptc: int,
         splice_result: Optional[RuleResult],
     ):
         if len(annotated_transcript) != 1:
@@ -51,7 +53,9 @@ class Pvs1_palb2(Pvs1):
             )
         transcript = annotated_transcript[0]
         if type(transcript) is TranscriptInfo_exonic:
-            result = cls.assess_pvs1_frameshift_PTC_palb2(transcript)
+            result = cls.assess_pvs1_frameshift_PTC_palb2(
+                transcript, pos_last_known_patho_ptc
+            )
         elif type(transcript) is TranscriptInfo_intronic:
             if splice_result is None:
                 result = cls.assess_pvs1_splice(transcript)
@@ -73,7 +77,7 @@ class Pvs1_palb2(Pvs1):
 
     @classmethod
     def assess_pvs1_frameshift_PTC_palb2(
-        cls, transcript: TranscriptInfo_exonic
+        cls, transcript: TranscriptInfo_exonic, pos_last_known_patho_ptc: int
     ) -> RuleResult:
         if transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD and in a disease relevant transcript."
@@ -98,7 +102,7 @@ class Pvs1_palb2(Pvs1):
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD. Variant type is frameshift."
             if (
                 transcript.is_truncated_region_disease_relevant
-                and transcript.PTC <= 3552
+                and transcript.PTC <= pos_last_known_patho_ptc
             ):
                 comment = (
                     comment
@@ -106,14 +110,14 @@ class Pvs1_palb2(Pvs1):
                 )
                 result = True
                 strength = evidence_strength.STRONG
-            elif transcript.var_start <= 3552:
+            elif transcript.var_start <= pos_last_known_patho_ptc:
                 comment = (
                     comment
                     + f"Frameshift variant starts upstream of p.His1184 and is predicted to lead to an alternative C-terminal end."
                 )
                 result = True
                 strength = evidence_strength.STRONG
-            elif transcript.var_start > 3552:
+            elif transcript.var_start > pos_last_known_patho_ptc:
                 comment = (
                     comment
                     + f"Frameshift variant starts downstream of p.Tyr1183 and is predicted to lead to an alternative C-terminal end."
