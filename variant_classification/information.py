@@ -51,6 +51,8 @@ class Classification_Info:
     CLINVAR_PATH: Info
     UNIPROT_REP_REGION_PATH: Info
     CRITICAL_REGION_PATH: Info
+    SPLICE_SITE_TABLE_PATH: Info
+    SPLICE_RESULT: Info
 
     def __init__(self):
         self.ANNOTATED_TRANSCRIPT_LIST = Info("annotated_transcript_list")
@@ -153,3 +155,9 @@ class Classification_Info:
             config_location=("annotation_files", "critical_region", "file"),
             group=Classification_Info_Groups.PATH,
         )
+        self.SPLICE_SITE_TABLE_PATH = Info(
+            "splice_site_table_path",
+            config_location=("annotation_files", "splice_site_table", "file"),
+            group=Classification_Info_Groups.PATH,
+        )
+        self.SPLICE_RESULT = Info("splice_result")

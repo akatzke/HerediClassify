@@ -8,7 +8,8 @@ from acmg_rules.utils import (
     evidence_type,
     rule_type,
 )
-from acmg_rules.pvs1 import Pvs1, Pvs1_brca2
+from acmg_rules.pvs1 import Pvs1
+from acmg_rules.pvs1_brca2 import Pvs1_brca2
 from information import Classification_Info, Info
 from variant import TranscriptInfo, VariantInfo
 from transcript_annotated import (
