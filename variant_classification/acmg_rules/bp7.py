@@ -14,8 +14,8 @@ from acmg_rules.computation_evidence_utils import (
     assess_prediction_tool,
     Threshold,
 )
-from variant_classification.variant import VariantInfo
-from variant_classification.var_type import VARTYPE
+from variant import VariantInfo
+from var_type import VARTYPE
 
 
 class Bp7(abstract_rule):
