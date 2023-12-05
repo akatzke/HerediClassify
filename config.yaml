@@ -50,7 +50,7 @@ annotation_files:
     root: "/home/katzkean/"
     clinvar:
         root: "databases/Clinvar"
-        clinvar_snv: "clinvar_snv.vcf.gz"
+        clinvar_snv: "clinvar_snv_quality_filter.vcf.gz"
         clinvar_small_indel: "clinvar_small_indel.vcf.gz"
     uniprot:
         root: "databases/Uniprot"
