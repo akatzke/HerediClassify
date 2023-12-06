@@ -34,35 +34,47 @@ def check_clinvar_missense(
     """
     Check ClinVar for entries supporting pathogenicity of missense variant
     """
-    affected_transcript = get_affected_transcript(transcripts, VARTYPE_GROUPS.MISSENSE)
-    var_codon_info = extract_var_codon_info(variant, affected_transcript)
+    affected_transcript, ref_transcript = get_affected_transcript(
+        transcripts, VARTYPE_GROUPS.MISSENSE
+    )
+    var_codon_info = extract_var_codon_info(
+        variant, ref_transcript, affected_transcript
+    )
     clinvar_same_codon = extract_clinvar_entries_missense(
         path_clinvar,
         variant.chr,
         var_codon_info["genomic_pos"],
         var_codon_info["intersects_intron_at"],
     )
-    clinvar_same_codon_aa = clinvar_same_codon.apply(
-        construct_clinvar_prot_change, var_codon_info=var_codon_info, axis=1
+    clinvar_same_codon_aa: pd.DataFrame = clinvar_same_codon.apply(
+        construct_clinvar_prot_change,
+        var_codon_info=var_codon_info,
+        axis=1,
     )
-    clinvar_same_codon_aa_filtered = filter_gene(
-        clinvar_same_codon_aa, variant.gene_name
-    )
-    clinvar_same_aa_df = clinvar_same_codon_aa_filtered[
-        clinvar_same_codon_aa_filtered.prot_alt == var_codon_info["prot_alt"]
-    ]
+    if not clinvar_same_codon_aa.empty:
+        clinvar_same_codon_aa_filtered = filter_gene(
+            clinvar_same_codon_aa, variant.gene_name
+        )
+        clinvar_same_aa_df = clinvar_same_codon_aa_filtered[
+            clinvar_same_codon_aa_filtered.prot_alt == var_codon_info["prot_alt"]
+        ]
+        clinvar_diff_aa = clinvar_same_codon_aa_filtered[
+            clinvar_same_codon_aa_filtered.prot_alt != var_codon_info["prot_alt"]
+        ]
+    else:
+        clinvar_same_aa_df = pd.DataFrame()
+        clinvar_diff_aa = pd.DataFrame()
     ClinVar_same_aa = create_ClinVar(clinvar_same_aa_df, ClinVar_Type.SAME_AA_CHANGE)
 
-    clinvar_diff_aa = clinvar_same_codon_aa_filtered[
-        clinvar_same_codon_aa_filtered.prot_alt != var_codon_info["prot_alt"]
-    ]
     ClinVar_diff_aa = create_ClinVar(clinvar_diff_aa, ClinVar_Type.DIFF_AA_CHANGE)
 
     return (ClinVar_same_aa, ClinVar_diff_aa)
 
 
 def extract_var_codon_info(
-    variant_info: VariantInfo, transcript: TranscriptInfo
+    variant_info: VariantInfo,
+    ref_transcript: pyensembl.transcript.Transcript,
+    transcript: TranscriptInfo,
 ) -> dict:
     """
     Construct variant codon information:
@@ -76,7 +88,6 @@ def extract_var_codon_info(
     """
     logger.debug("Extract codon information from variant-affected genomic position")
     logger.debug(f"=== New transcript id = {transcript.transcript_id} ===")
-    ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
     var_start = int(transcript.var_hgvs.pos.start.base)
     var_pos_in_codon = get_variant_position_in_codon(var_start)
 
