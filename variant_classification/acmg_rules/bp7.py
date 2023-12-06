@@ -52,7 +52,7 @@ class Bp7(abstract_rule):
                 evidence_type.BENIGN,
                 False,
                 evidence_strength.SUPPORTING,
-                f"BP7 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}.",
+                f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}.",
             )
         try:
             prediction_value = prediction_dict[threshold.name]
