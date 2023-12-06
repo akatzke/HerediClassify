@@ -27,7 +27,7 @@ then
    helpFunction
 fi
 
-dbs=$basedir/variant_classification/databases
+dbs=$basedir/databases
 mkdir -p $dbs
 
 # Begin script in case all parameters are correct
