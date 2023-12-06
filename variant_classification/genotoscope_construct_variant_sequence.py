@@ -83,7 +83,7 @@ def construct_variant_coding_seq_intronic_variant(
                 assert len(ref_coding_seq) - len(var_coding_seq) == del_length
             except AssertionError:
                 logger.error(
-                    f"For deletion should hold: len(reference coding) - len(variant coding) = len(deletion)\n=> variant position: {variant.to_string}",
+                    f"For deletion should hold: len(reference coding) - len(variant coding) = len(deletion)\n=> variant position: {variant.to_string} in {transcript.transcript_id} with variant {transcript.var_hgvs}",
                     exc_info=True,
                 )
         diff_len = -1 * del_length
@@ -242,7 +242,7 @@ def construct_variant_coding_seq_exonic_variant(
             assert len(ref_coding_seq) - len(var_coding_seq) == del_length
         except AssertionError:
             logger.error(
-                f"For deletion should hold: len(reference coding) - len(variant coding) = len(deletion)\n variant position: {variant.to_string()}",
+                f"For deletion should hold: len(reference coding) - len(variant coding) = len(deletion)\n variant position: {variant.to_string()} in {transcript.transcript_id} with variant {transcript.var_hgvs}",
                 exc_info=True,
             )
         ### ### ###
@@ -344,7 +344,7 @@ def construct_variant_coding_seq_exonic_variant(
             assert len(ref_coding_seq) - len(var_coding_seq) == del_length
         except AssertionError:
             logger.error(
-                f"For deletion should hold: len(reference coding) - len(variant coding) = len(deletion)\n variant position: {variant.to_string()}",
+                f"For deletion should hold: len(reference coding) - len(variant coding) = len(deletion)\n variant position: {variant.to_string()} in {transcript.transcript_id} with variant {transcript.var_hgvs}",
                 exc_info=True,
             )
         diff_len = -1 * del_length
@@ -548,7 +548,7 @@ def construct_variant_coding_seq_exonic_variant(
         assert ref_coding_seq.upper() != var_coding_seq.upper()
     except AssertionError:
         logger.error(
-            f"Coding sequence of reference and sample should be different\n variant position: {variant.to_string()}",
+            f"Coding sequence of reference and sample should be different\n variant position: {variant.to_string()} in transcript {transcript.transcript_id} with variant {transcript.var_hgvs}",
             exc_info=True,
         )
     print_ref_observed_seq(

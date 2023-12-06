@@ -138,6 +138,8 @@ def create_transcriptinfo(variant_json: dict) -> list[TranscriptInfo]:
             continue
         if hgvs_c_str[0:2] == "n.":
             continue
+        if "c.*" in hgvs_c_str:
+            continue
         try:
             hgvs_c = hgvs_parser.parse_c_posedit(hgvs_c_str.split("c.")[1])
         except hgvs.exceptions.HGVSParseError:
