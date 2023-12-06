@@ -146,7 +146,7 @@ def create_transcriptinfo(variant_json: dict) -> list[TranscriptInfo]:
             continue
         var_start = hgvs_c.pos.start.base
         var_stop = hgvs_c.pos.end.base
-        var_type = get_vartype_list(variant_json["variant_type"])
+        var_type = get_vartype_list(trans_dict["variant_type"])
         try:
             hgvs_p = trans_dict["hgvs_p"]
         except KeyError:
