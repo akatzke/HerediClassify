@@ -157,7 +157,7 @@ def create_transcriptinfo(variant_json: dict) -> list[TranscriptInfo]:
             exon = None
         try:
             intron = trans_dict["intron"]
-        except:
+        except KeyError:
             intron = None
         transcript = TranscriptInfo(
             transcript_id=transcript_id,
