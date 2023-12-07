@@ -1,22 +1,41 @@
 {
-    "chr" : "17",
-    "pos" : 7676080,
-    "gene":  "TP53",
-    "ref" : "CAGA",
-    "alt" : "C",
-    "variant_type" : ["inframe_deletion"],
+    "chr" : "7",
+    "pos" : 5986933,
+    "gene":  "PMS2",
+    "ref" : "A",
+    "alt" : "AT",
+    "variant_type" : ["frameshift_variant", "downstream_gene_variant", "3_prime_utr_variant", "NMD_transcript_variant", "intron_variant"],
     "variant_effect" : [
-        {"transcript" : "ENST00000269305",
-         "hgvs_c" : "c.286_288del",
-         "hgvs_p" : "p.Ser96del",
-         "variant_type" : ["inframe_deletion"],
-         "exon" : 4
+        {"transcript" : "ENST00000265849",
+         "hgvs_c" : "c.1831dup",
+         "hgvs_p" : "p.Ile611AsnfsTer2",
+         "variant_type" : ["frameshift_variant"],
+         "exon" : 11
          },
-        {"transcript" : "ENST00000445888",
-         "hgvs_c" : "c.286_288del",
-         "hgvs_p" : "p.96del",
-         "variant_type" : ["inframe_deletion"],
-         "exon" : 4
+        {"transcript" : "ENST00000699839",
+         "hgvs_c" : "c.2017dup",
+         "hgvs_p" : "p.Ile673AsnfsTer2",
+         "variant_type" : ["frameshift_variant"],
+         "exon" : 12
+        },
+        {"transcript" : "ENST00000699839",
+         "hgvs_c" : "None",
+         "variant_type" : ["downstream_gene_variant"]
+        },
+        {"transcript" : "ENST00000699833",
+         "hgvs_c" : "n.3603dup",
+         "variant_type" : ["non_coding_transcript_variant"],
+         "exon" : 10
+        },
+        {"transcript" : "ENST00000699764",
+         "hgvs_c" : "c.*149dup",
+         "variant_type" : ["3_prime_utr_variant", "NMD_transcript_variant"],
+         "exon": 12
+        },
+        {"transcript" : "ENST00000382321",
+         "hgvs_c" : "c.804-3943dup",
+         "variant_type" : ["intron_variant"],
+         "intron": 7
         }
     ],
     "splicing_prediction_tools":

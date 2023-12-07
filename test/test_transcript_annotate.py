@@ -101,7 +101,7 @@ def test_ter():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans
+        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans[0]
     )
 
 
