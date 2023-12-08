@@ -10,6 +10,11 @@
          "hgvs_c" : "c.5278-1G>A",
          "variant_type" : ["splice_acceptor"],
          "intron" : 19
+        },
+        {"transcript" : "ENST00000644379",
+         "hgvs_c" : "c.1665-1G>A",
+         "variant_type" : ["splice_acceptor"],
+         "intron" : 11
         }
     ],
     "splicing_prediction_tools":
