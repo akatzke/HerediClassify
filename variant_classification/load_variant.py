@@ -81,6 +81,8 @@ def create_variantInfo(variant_json: dict) -> VariantInfo:
     Create VariantInfo object from variant_json
     """
     chr = variant_json["chr"]
+    if "chr" in chr:
+        chr = chr.split("chr")[0]
     var_type = get_vartype_list(variant_json["variant_type"])
     gene_name = variant_json["gene"]
     ref = variant_json["ref"]
