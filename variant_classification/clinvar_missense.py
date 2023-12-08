@@ -277,7 +277,7 @@ def extract_clinvar_entries_missense(
     clinvar = VCF(path_clinvar)
     if not codon_intersects_intron:
         clinvar_same_codon = clinvar(
-            f"{int(chrom)}:{genomic_positions[0]}-{genomic_positions[2]}"
+            f"{chrom}:{genomic_positions[0]}-{genomic_positions[2]}"
         )
         clinvar_same_codon_df = convert_vcf_gen_to_df(clinvar_same_codon)
     else:
