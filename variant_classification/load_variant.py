@@ -82,7 +82,7 @@ def create_variantInfo(variant_json: dict) -> VariantInfo:
     """
     chr = variant_json["chr"]
     if "chr" in chr:
-        chr = chr.split("chr")[0]
+        chr = chr.split("chr")[1]
     var_type = get_vartype_list(variant_json["variant_type"])
     gene_name = variant_json["gene"]
     ref = variant_json["ref"]
