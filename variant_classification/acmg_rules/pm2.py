@@ -40,11 +40,15 @@ class Pm2(abstract_rule):
                 f"The gnomAD allele frequency is None. Please check variant import."
             )
         elif gnomad.popmax_frequency > threshold_pm2:
-            comment = f"Variant occures with {gnomad.popmax_frequency} in GnomAD subpopulation {gnomad.popmax}."
+            comment = f"Variant occures with {gnomad.popmax_frequency} in gnomAD subpopulation {gnomad.popmax}."
             result = False
         else:
-            comment = f"Variant occures with {gnomad.popmax_frequency} in GnomAD subpopulation {gnomad.popmax}."
+            comment = f"Variant occures with {gnomad.popmax_frequency} in gnomAD subpopulation {gnomad.popmax}."
             result = True
+        if gnomad.popmax == "None":
+            comment = f"Variant does not occur in gnomAD, allele frequency in gnomAD is assumed to be 0."
+        if gnomad.popmax == "ALL":
+            comment = f"Variant has no popmax. Variant occurs with {gnomad.popmax_frequency} in gnomAD."
         return RuleResult(
             "PM2",
             rule_type.GENERAL,

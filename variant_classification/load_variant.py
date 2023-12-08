@@ -217,7 +217,14 @@ def create_gnomad(variant_json: dict) -> Optional[PopulationDatabases_gnomAD]:
     try:
         gnomad_dict = variant_json["gnomAD"]
     except KeyError:
-        return None
+        return PopulationDatabases_gnomAD(
+            name="gnomAD",
+            frequency=0,
+            count=0,
+            popmax="None",
+            popmax_frequency=0,
+            popmax_allele_count=0,
+        )
     name = "gnomAD"
     frequency = gnomad_dict["AF"]
     allele_count = gnomad_dict["AC"]
