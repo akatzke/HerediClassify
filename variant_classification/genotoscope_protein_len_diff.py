@@ -23,7 +23,7 @@ def calculate_prot_len_diff(
     Calculate difference in portein length caused by variant in percent
     """
     ref_prot_len = len(ref_transcript.protein_sequence)
-    codon_position_ptc = get_position_ptc(ref_transcript, var_coding_seq)
+    codon_position_ptc = get_position_ptc(ref_transcript, var_coding_seq.upper())
     # Substract one from postion of ptc, as ptc does not code for amino acid
     rel_len_protein = abs(codon_position_ptc - 1) / ref_prot_len
     diff_len_protein_percent = 1 - rel_len_protein
