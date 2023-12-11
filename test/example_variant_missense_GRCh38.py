@@ -8,6 +8,46 @@ import hgvs.posedit
 hgvs_parser = hgvs.parser.Parser()
 
 
+def create_example_ter() -> tuple:
+    """
+    Create PMS2 missense SNV variant
+    Leading to a termiation codon
+    """
+    hgvs_1 = hgvs_parser.parse_c_posedit("c.823C>T".split("c.")[1])
+    transcript_1 = TranscriptInfo(
+        "ENST00000265849",
+        [VARTYPE.STOP_GAINED],
+        hgvs_1,
+        823,
+        823,
+        exon=8,
+        intron=None,
+        var_protein="p.Gln275Ter",
+    )
+    hgvs_2 = hgvs_parser.parse_c_posedit("c.1009C>T".split("c.")[1])
+    transcript_2 = TranscriptInfo(
+        "ENST00000699839",
+        [VARTYPE.STOP_GAINED],
+        hgvs_2,
+        1009,
+        1009,
+        exon=9,
+        intron=None,
+        var_protein="p.Gln337Ter",
+    )
+    transcripts = [transcript_1, transcript_2]
+    variant = VariantInfo(
+        "7",
+        5995614,
+        5995614,
+        "PMS2",
+        [VARTYPE.STOP_GAINED],
+        "G",
+        "A",
+    )
+    return (transcripts, variant)
+
+
 def create_example_mis() -> tuple:
     """
     Create BRCA1 missense SNV variant

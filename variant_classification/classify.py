@@ -3,6 +3,7 @@
 import pathlib
 import argparse
 
+from ensembl import ensembl
 from load_config import load_config, get_gene_specific_config
 from load_variant import load_variant
 from information import Classification_Info
@@ -20,27 +21,6 @@ from os import path
 import json
 import sys
 
-parser = argparse = argparse.ArgumentParser()
-
-parser.add_argument(
-    "-i", "--input", default="", help="Json string of variant", type=str
-)
-parser.add_argument(
-    "-c",
-    "--config",
-    default="",
-    help="path to configuration",
-    type=str,
-)
-parser.add_argument(
-    "-o",
-    "--output",
-    default="",
-    help="path to output file",
-    type=str,
-)
-args = parser.parse_args()
-
 
 def classify(config_path: pathlib.Path, variant_str: str):
     """
@@ -48,7 +28,9 @@ def classify(config_path: pathlib.Path, variant_str: str):
     """
     config = load_config(config_path)
     variant = load_variant(variant_str)
-    final_config = get_gene_specific_config(config, variant.variant_info.gene_name)
+    configuration_name, final_config = get_gene_specific_config(
+        config, variant.variant_info.gene_name
+    )
     class_info = Classification_Info()
     annotations_needed_by_rules = get_annotations_needed_from_rules(
         final_config["rules"], class_info
@@ -63,27 +45,52 @@ def classify(config_path: pathlib.Path, variant_str: str):
     )
     rule_results = apply_rules(annotations_needed_by_rules_filtered)
     out_result = create_output(rule_results)
-    return out_result
+    ensembl.clear_cache()
+    return configuration_name, out_result
 
 
 if __name__ == "__main__":
+    # define CLI arguments
+    parser = argparse = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "-i", "--input", default="", help="Json string of variant", type=str
+    )
+    parser.add_argument(
+        "-c",
+        "--config",
+        default="",
+        help="path to configuration",
+        type=str,
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        default="",
+        help="path to output file",
+        type=str,
+    )
+    # read passed CLI arguments
+    args = parser.parse_args()
+
+    # check if arguments were given
     if args.input == "":
         input_file = sys.stdin
     if args.config == "":
         raise ValueError("No config file provided.")
 
+    # Execute classification
     path_config = pathlib.Path(args.config)
     input = args.input
     if path.exists(input):
         with open(input) as infile:
             input = infile.read()
 
-    result = classify(path_config, input)
+    config_name, result = classify(path_config, input)
 
     # write classification to sout or to file
     if args.output != "":
-        sys.stdout = open(args.output, 'w') # overwrite print with sout
-    result = json.loads(result)
-    result = json.dumps(result, indent=4)
-    print(result)
-
+        sys.stdout = open(args.output, "w")  # overwrite print with sout
+    result_json = json.loads(result)
+    final_result = json.dumps(result_json, indent=4)
+    print(final_result)

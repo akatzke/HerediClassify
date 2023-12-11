@@ -7,6 +7,7 @@ from collections.abc import Iterable
 import pyensembl
 from cyvcf2 import VCF
 
+from ensembl import ensembl
 from variant import VariantInfo, TranscriptInfo
 from var_type import VARTYPE_GROUPS
 from clinvar_utils import (
@@ -42,9 +43,11 @@ def check_clinvar_splicing(
     clinvar_same_pos_df = convert_vcf_gen_to_df(clinvar_same_pos)
     ClinVar_same_pos = create_ClinVar(clinvar_same_pos_df, ClinVar_Type.SAME_NUCLEOTIDE)
     ### Check ClinVar for pathogenic variant in same / closest splice site
-    affected_transcript = get_affected_transcript(transcripts, VARTYPE_GROUPS.INTRONIC)
+    affected_transcript, ref_transcript = get_affected_transcript(
+        transcripts, VARTYPE_GROUPS.INTRONIC
+    )
     (start_splice_site, end_splice_site) = find_corresponding_splice_site(
-        affected_transcript, variant
+        affected_transcript, ref_transcript, variant
     )
     clinvar_splice_site = clinvar(
         f"{variant.chr}:{start_splice_site}-{end_splice_site}"
@@ -57,15 +60,14 @@ def check_clinvar_splicing(
 
 
 def find_corresponding_splice_site(
-    transcript: TranscriptInfo, variant: VariantInfo
+    transcript: TranscriptInfo,
+    ref_transcript: pyensembl.transcript.Transcript,
+    variant: VariantInfo,
 ) -> tuple[int, int]:
     """
     Reconstruct splice site
     Splice site is defined as +/- 1,2 as only for these locations varinat is clearly defines as a splice variant
     """
-    ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
-        transcript.transcript_id
-    )
     if "+" in str(transcript.var_hgvs) or "-" in str(transcript.var_hgvs):
         splice_site_start, splice_site_stop = get_splice_site_for_intronic_variant(
             variant, transcript, ref_transcript

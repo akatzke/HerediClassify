@@ -1,3 +1,6 @@
+### Configuration name ###
+name: "ACMG BRCA2"
+
 ### Rules ###
 rules:
     - pvs1
@@ -22,7 +25,7 @@ rules:
 prediction_tool_thresholds:
     pathogenicity_prediction:
         name: "REVEL"
-        benign: 0.183
+        benign: 0.290
         pathogenic: 0.644
     splicing_prediction:
         name: "SpliceAI"
@@ -47,7 +50,7 @@ annotation_files:
     root: "/home/katzkean/"
     clinvar:
         root: "databases/Clinvar"
-        clinvar_snv: "clinvar_snv.vcf.gz"
+        clinvar_snv: "clinvar_snv_quality_filter.vcf.gz"
         clinvar_small_indel: "clinvar_small_indel.vcf.gz"
     uniprot:
         root: "databases/Uniprot"

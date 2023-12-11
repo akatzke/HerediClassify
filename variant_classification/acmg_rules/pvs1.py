@@ -40,13 +40,13 @@ class Pvs1(abstract_rule):
     ) -> RuleResult:
         results = []
         for transcript in annotated_transcripts:
-            if type(transcript) is TranscriptInfo_exonic:
+            if isinstance(transcript, TranscriptInfo_exonic):
                 result_frameshift = cls.assess_pvs1_frameshift_PTC(transcript)
                 results.append(result_frameshift)
-            elif type(transcript) is TranscriptInfo_intronic:
+            elif isinstance(transcript, TranscriptInfo_intronic):
                 result_splice = cls.assess_pvs1_splice(transcript)
                 results.append(result_splice)
-            elif type(transcript) is TranscriptInfo_start_loss:
+            elif isinstance(transcript, TranscriptInfo_start_loss):
                 result_start_loss = cls.assess_pvs1_start_loss(transcript)
                 results.append(result_start_loss)
         if len(results) == 0:

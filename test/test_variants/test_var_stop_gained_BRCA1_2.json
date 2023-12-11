@@ -1,0 +1,41 @@
+{
+    "chr": "17",
+    "pos": 43045728,
+    "gene": "BRCA1",
+    "ref": "G",
+    "alt": "C",
+    "variant_type": ["stop_gained"],
+    "variant_effect": [
+        {"transcript": "ENST00000357654",
+         "hgvs_c": "c.4689C>G",
+         "hgvs_p": "p.Tyr1563Ter",
+         "variant_type": ["stop_gained"],
+         "exon": 15
+        },
+        {"transcript": "ENST00000471181",
+         "hgvs_c": "c.4752C>G",
+         "hgvs_p": "p.Tyr1584Ter",
+         "variant_type": ["stop_gained"],
+         "exon": 16
+        }
+    ],
+    "splicing_prediction_tools": {"SpliceAI": 0.5},
+    "pathogenicity_prediction_tools": {"REVEL": 0.5, "BayesDel": 0.5},
+    "gnomAD": {
+        "AF": 0.007,
+        "AC": 12,
+        "popmax": "EAS",
+        "popmax_AF": 0.009,
+        "popmax_AC": 5
+    },
+    "FLOSSIES": {"AFR": 9, "EUR": 130},
+    "mRNA_analysis": {"performed": true, "pathogenic": true, "benign": true},
+    "functional_data": {"performed": true, "pathogenic": true, "benign": true},
+    "prior": 0.25,
+    "co-occurrence": 0.56,
+    "segregation": 0.56,
+    "multifactorial_log-likelihood": 0.56,
+    "VUS_task_force_domain": true,
+    "cancer_hotspot": true,
+    "cold_spot": true
+}

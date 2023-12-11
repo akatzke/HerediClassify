@@ -262,13 +262,7 @@ def execute_annotation(
     """
     for annotation in annotations_to_execute:
         if annotation.compute_function is not None:
-            try:
-                annotation.value = annotation.compute_function()
-            except Exception:
-                logger.warning(
-                    f"Whilst executing the annotation for {annotation.name} an error occurred."
-                )
-                annotation.value = None
+            annotation.value = annotation.compute_function()
     return annotations_to_execute
 
 

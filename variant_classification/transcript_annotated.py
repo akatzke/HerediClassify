@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from collections.abc import Callable
 
 from variant import VariantInfo, TranscriptInfo, Variant
+from ensembl import ensembl
 from genotoscope_construct_variant_sequence import (
     construct_variant_coding_seq_exonic_variant,
     construct_variant_coding_seq_intronic_variant,
@@ -24,6 +25,7 @@ from genotoscope_protein_len_diff import (
     calculate_prot_len_diff,
     calculate_prot_len_diff_start_loss,
 )
+from custom_exceptions import Pyensembl_no_coding_sequence
 from variant_in_critical_region import (
     check_variant_in_critical_region_exon,
 )
@@ -88,8 +90,11 @@ def annotate_transcripts(
         try:
             annotated_transcript = annot_fun(transcript)
             annotated_transcripts.append(annotated_transcript)
-        except Exception:
-            logger.warning(f"Annotation function {annot_fun.func} did not execute.")
+        except Pyensembl_no_coding_sequence:
+            logger.warning(
+                f"No coding sequence in pyensembl for transcript {transcript.transcript_id}.",
+                exc_info=True,
+            )
     return annotated_transcripts
 
 
@@ -166,9 +171,11 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         """
         Perform annotation for exonic variants
         """
-        ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
-            transcript.transcript_id
-        )
+        ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
+        try:
+            ref_transcript.coding_sequence
+        except ValueError or AttributeError:
+            raise Pyensembl_no_coding_sequence
         var_seq, diff_len = construct_variant_coding_seq_exonic_variant(
             transcript, variant, ref_transcript
         )
@@ -293,9 +300,11 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
         """
         Perform annotation specific for intronic variants
         """
-        ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
-            transcript.transcript_id
-        )
+        ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
+        try:
+            ref_transcript.coding_sequence
+        except ValueError or AttributeError:
+            raise Pyensembl_no_coding_sequence
         (
             exons_skipped,
             are_exons_skipped,
@@ -422,9 +431,11 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
         path_critical_region: pathlib.Path,
         transcript: TranscriptInfo,
     ) -> TranscriptInfo_start_loss:
-        ref_transcript = pyensembl.EnsemblRelease(110).transcript_by_id(
-            transcript.transcript_id
-        )
+        ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
+        try:
+            ref_transcript.coding_sequence
+        except ValueError or AttributeError:
+            raise Pyensembl_no_coding_sequence
         var_seq, diff_len = construct_variant_coding_seq_exonic_variant(
             transcript, variant, ref_transcript
         )

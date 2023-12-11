@@ -34,7 +34,7 @@ def validate_config(config: dict) -> bool:
     return True
 
 
-def get_gene_specific_config(config: dict, gene_name: str) -> dict:
+def get_gene_specific_config(config: dict, gene_name: str) -> tuple[str, dict]:
     """
     Check if gene_specific_configs are available for gene_name
     If available return gene specific configuration otherwise return standard configuration
@@ -45,8 +45,8 @@ def get_gene_specific_config(config: dict, gene_name: str) -> dict:
             file_gene_config = config["gene_specific_configs"][gene_name.lower()]
             path_gene_config = dir_gene_config / file_gene_config
             gene_config = load_config(path_gene_config)
-            return gene_config
+            return gene_config["name"], gene_config
         else:
-            return config
+            return config["name"], config
     else:
-        return config
+        return config["name"], config

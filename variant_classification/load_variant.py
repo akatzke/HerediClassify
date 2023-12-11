@@ -8,6 +8,7 @@ from typing import Optional
 from jsonschema import validate
 import hgvs.parser
 import hgvs.posedit
+import hgvs.exceptions
 from var_type import VARTYPE
 from variant import (
     FunctionalData,
@@ -80,6 +81,8 @@ def create_variantInfo(variant_json: dict) -> VariantInfo:
     Create VariantInfo object from variant_json
     """
     chr = variant_json["chr"]
+    if "chr" in chr:
+        chr = chr.split("chr")[1]
     var_type = get_vartype_list(variant_json["variant_type"])
     gene_name = variant_json["gene"]
     ref = variant_json["ref"]
@@ -88,23 +91,30 @@ def create_variantInfo(variant_json: dict) -> VariantInfo:
         # Create genomic positon for substitution
         genomic_start = variant_json["pos"]
         genomic_end = variant_json["pos"]
-    elif len(ref) > len(alt):
+    elif len(ref) > 1 and len(alt) > 1:
+        # Create genomic position for indels
+        genomic_start = variant_json["pos"] + 1
+        del_length = len(ref) - 1
+        genomic_end = genomic_start + del_length - 1
+    elif len(ref) > 1 and len(alt) == 1:
         # Create genomic position for deletions
         genomic_start = variant_json["pos"] + 1
-        del_length = len(alt) - 1
+        del_length = len(ref) - 1
         genomic_end = genomic_start + del_length - 1
         alt = ""
         ref = ref[1:]
-    elif len(ref) < len(alt):
+    elif len(ref) == 1 and len(alt) > 1:
         # Create genomic position for insertions
         genomic_start = variant_json["pos"]
         genomic_end = variant_json["pos"]
         ref = ""
         alt = alt[1:]
     else:
-        raise ValueError(
-            f"Variant is not of type substitution, insertion or deletion. Please check variant input."
-        )
+        # All other cases
+        genomic_start = variant_json["pos"]
+        genomic_end = variant_json["pos"]
+    if genomic_start > genomic_end:
+        raise ValueError(f"genomic_start {genomic_start} is bigger than {genomic_end}")
     var_info = VariantInfo(
         chr=chr,
         genomic_start=genomic_start,
@@ -130,10 +140,15 @@ def create_transcriptinfo(variant_json: dict) -> list[TranscriptInfo]:
             continue
         if hgvs_c_str[0:2] == "n.":
             continue
-        hgvs_c = hgvs_parser.parse_c_posedit(hgvs_c_str.split("c.")[1])
+        if "c.*" in hgvs_c_str:
+            continue
+        try:
+            hgvs_c = hgvs_parser.parse_c_posedit(hgvs_c_str.split("c.")[1])
+        except hgvs.exceptions.HGVSParseError:
+            continue
         var_start = hgvs_c.pos.start.base
         var_stop = hgvs_c.pos.end.base
-        var_type = get_vartype_list(variant_json["variant_type"])
+        var_type = get_vartype_list(trans_dict["variant_type"])
         try:
             hgvs_p = trans_dict["hgvs_p"]
         except KeyError:
@@ -144,7 +159,7 @@ def create_transcriptinfo(variant_json: dict) -> list[TranscriptInfo]:
             exon = None
         try:
             intron = trans_dict["intron"]
-        except:
+        except KeyError:
             intron = None
         transcript = TranscriptInfo(
             transcript_id=transcript_id,
@@ -204,7 +219,14 @@ def create_gnomad(variant_json: dict) -> Optional[PopulationDatabases_gnomAD]:
     try:
         gnomad_dict = variant_json["gnomAD"]
     except KeyError:
-        return None
+        return PopulationDatabases_gnomAD(
+            name="gnomAD",
+            frequency=0,
+            count=0,
+            popmax="None",
+            popmax_frequency=0,
+            popmax_allele_count=0,
+        )
     name = "gnomAD"
     frequency = gnomad_dict["AF"]
     allele_count = gnomad_dict["AC"]
