@@ -18,7 +18,7 @@ logger = logging.getLogger("GenOtoScope_Classify.PVS1.prot_len_diff")
 def calculate_prot_len_diff(
     ref_transcript: pyensembl.transcript.Transcript,
     var_coding_seq: str,
-) -> float:
+) -> tuple(float, int):
     """
     Calculate difference in portein length caused by variant in percent
     """
@@ -27,7 +27,10 @@ def calculate_prot_len_diff(
     # Substract one from postion of ptc, as ptc does not code for amino acid
     rel_len_protein = abs(codon_position_ptc - 1) / ref_prot_len
     diff_len_protein_percent = 1 - rel_len_protein
-    return diff_len_protein_percent
+    corrected_codon_position_ptc = correct_position_ptc_for_indels(
+        ref_transcript, var_coding_seq, codon_position_ptc
+    )
+    return diff_len_protein_percent, codon_position_ptc
 
 
 def calculate_prot_len_diff_start_loss(
@@ -66,3 +69,22 @@ def get_position_ptc(
         return 0
     else:
         return premature_term_codon_index
+
+
+def correct_position_ptc_for_indels(
+    ref_transcript: pyensembl.transcript.Transcript,
+    var_coding_seq: str,
+    codon_positon_ptc: int,
+) -> int:
+    """
+    Correct position of PTC in case of insertion, deletion, indels
+    """
+    len_ref = len(ref_transcript.coding_sequence)
+    if len_ref == len(var_coding_seq):
+        return codon_positon_ptc
+    elif len_ref > len(var_coding_seq):
+        return codon_positon_ptc
+    elif len_ref < len(var_coding_seq):
+        return codon_positon_ptc
+    else:
+        raise ValueError("Error whilst correcting PTC position")

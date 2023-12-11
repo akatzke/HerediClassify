@@ -16,7 +16,7 @@ from transcript_annotated import (
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
 )
-from variant_classification.var_type import VARTYPE
+from var_type import VARTYPE
 
 
 class Pvs1_palb2(Pvs1):
@@ -102,7 +102,7 @@ class Pvs1_palb2(Pvs1):
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD. Variant type is frameshift."
             if (
                 transcript.is_truncated_region_disease_relevant
-                and transcript.PTC <= pos_last_known_patho_ptc
+                and transcript.ptc <= pos_last_known_patho_ptc
             ):
                 comment = (
                     comment
