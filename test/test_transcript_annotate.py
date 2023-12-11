@@ -103,6 +103,13 @@ def test_ter():
     annot_trans = TranscriptInfo_exonic.annotate(
         test_var, path_clinvar, path_uniprot, path_critical_region, test_trans[0]
     )
+    assert (
+        annot_trans.is_NMD == True
+        and annot_trans.is_reading_frame_preserved == True
+        and annot_trans.len_change_in_repetitive_region == False
+        and annot_trans.is_truncated_region_disease_relevant == True
+        and round(annot_trans.diff_len_protein_percent, 2) == 0.68
+    )
 
 
 def test_del_inframe():
