@@ -544,7 +544,7 @@ def search_stop_codon(
             # self.logger.debug("remaining: {}".format(
             # 	var_coding_seq[last_start + current_codon_length:len(var_coding_seq)]))
 
-            observed_codons = extract_codons(obs_exon_coding_seq)
+            observed_codons = extract_codons(obs_exon_coding_seq.upper())
 
             if exon_idx == stop_codon_exon_idx - 1:
                 logger.debug("Process penultimate exon")
