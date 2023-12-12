@@ -41,9 +41,6 @@ def annotate_splice_site_classification(
         )
     splice_table = pd.read_csv(path_splice_table, sep="\t")
     splice_table_entry = splice_table[
-        (splice_table.position == str(transcript.var_hgvs.pos)) & (splice_table.alte)
-    ]
-    splice_table_entry = splice_table[
         (splice_table.position == str(transcript.var_hgvs.pos))
         & (splice_table.alternative_allele == transcript.var_hgvs.edit.alt)
     ]
@@ -54,7 +51,7 @@ def annotate_splice_site_classification(
             "PVS1",
             rule_type.SPLICING,
             evidence_type.PATHOGENIC,
-            splice_table_entry.result_status.values[0],
+            splice_table_entry.rule_status.values[0],
             evidence_strength(splice_table_entry.evidence_strength.values[0]),
             splice_table_entry.comment.values[0],
         )

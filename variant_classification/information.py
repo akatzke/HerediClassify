@@ -24,6 +24,7 @@ class Info(Generic[ValueType]):
     )
     value: Optional[ValueType] = field(init=False, default=None)
     group: Optional[Classification_Info_Groups] = field(default=None)
+    optional: bool = False
 
 
 @dataclass
@@ -160,4 +161,4 @@ class Classification_Info:
             config_location=("annotation_files", "splice_site_table", "file"),
             group=Classification_Info_Groups.PATH,
         )
-        self.SPLICE_RESULT = Info("splice_result")
+        self.SPLICE_RESULT = Info("splice_result", optional=True)

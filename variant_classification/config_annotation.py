@@ -41,6 +41,12 @@ def get_annotations_needed_from_rules(
     """
     RULE_DICTIONARY = {
         "pvs1": Rules.Pvs1,
+        "pvs1_brca1": Rules.Pvs1_brca1,
+        "pvs1_brca2": Rules.Pvs1_brca2,
+        "pvs1_atm": Rules.Pvs1_atm,
+        "pvs1_palb2": Rules.Pvs1_palb2,
+        "pvs1_pten": Rules.Pvs1_pten,
+        "pvs1_cdh1": Rules.Pvs1_cdh1,
         "ps1_protein": Rules.Ps1_protein,
         "ps1_splicing": Rules.Ps1_splicing,
         "pm1": Rules.Pm1,
@@ -130,6 +136,9 @@ def get_annotation_functions(
             variant, config, class_info
         ),
         class_info.VARIANT_CLINVAR.name: lambda variant, config: get_annotation_function_variant_clinvar(
+            variant, config, class_info
+        ),
+        class_info.SPLICE_RESULT.name: lambda variant, config: get_annotation_function_splice_result(
             variant, config, class_info
         ),
     }
@@ -293,7 +302,7 @@ def remove_rules_with_missing_annotation(
     original_dict = fun_info_dict.copy()
     for rule_fun, rule_args in original_dict.items():
         for annotation in rule_args:
-            if annotation.value is None:
+            if annotation.value is None and not annotation.optional:
                 del fun_info_dict[rule_fun]
                 logger.info(f"Removed {rule_fun} from rules that will be assessed.")
                 break
