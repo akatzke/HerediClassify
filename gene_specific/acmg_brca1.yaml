@@ -22,8 +22,7 @@ rules:
     - bp7
 
 ### Disease relevant transcript ###
-disease_relevant_transcript:
-    - ENST00000357654
+disease_relevant_transcript: "ENST00000357654"
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:

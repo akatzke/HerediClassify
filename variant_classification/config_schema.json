@@ -12,9 +12,7 @@
             }
         },
         "disease_relevant_transcript": {
-            "type": "array",
-            "items": {
-                "type": "string"
+            "type": "string"
             }
         },
         "prediction_tool_threshold" :{
