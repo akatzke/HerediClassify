@@ -1,9 +1,9 @@
 ### Configuration name ###
-name: "ACMG BRCA2"
+name: "ACMG BRCA1"
 
 ### Rules ###
 rules:
-    - pvs1
+    - pvs1_brca1
     - ps1_protein
     - ps1_splicing
     - pm1
@@ -20,6 +20,10 @@ rules:
     - bp4_protein
     - bp4_splicing
     - bp7
+
+### Disease relevant transcript ###
+disease_relevant_transcript:
+    - ENST00000357654
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:
@@ -43,6 +47,7 @@ allele_frequency_thresholds:
 functional_thresholds:
     threshold_nmd: 1234
     threshold_diff_len_prot_percent: 0.1
+    pos_last_known_patho_ptc: 1345
 
 
 ### Annotation filesitems
@@ -58,3 +63,6 @@ annotation_files:
     critical_region:
         root: "variant_classification/data/critical_region"
         file: "VUS-Task-Force_critical_protein_domains.bed"
+    splice_site_table:
+        root: "variant_classification/data/splice_site_classification"
+        file: "BRCA1_splice_table.csv"

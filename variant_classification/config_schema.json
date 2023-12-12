@@ -11,6 +11,12 @@
                 "type": "string"
             }
         },
+        "disease_relevant_transcript": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
         "prediction_tool_threshold" :{
             "properties":{
                 "pathogenicity_prediction": {
@@ -81,13 +87,30 @@
                 },
                 "uniprot":{
                     "properties" :{
-                        "uniport_root": {
+                        "root": {
                             "type": "string"
                         },
-                        "uniprot_version": {
+                        "rep": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "critical_region":{
+                    "properties" :{
+                        "root": {
                             "type": "string"
                         },
-                        "uniprot_rep": {
+                        "file": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "splice_site_table":{
+                    "properties" :{
+                        "root": {
+                            "type": "string"
+                        },
+                        "file": {
                             "type": "string"
                         }
                     }
