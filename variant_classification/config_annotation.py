@@ -6,17 +6,22 @@ from functools import reduce, partial
 import operator as op
 from typing import Callable, Union, Any, Optional
 
+from variant import Variant
+from var_type import VARTYPE_GROUPS
 import acmg_rules as Rules
-from acmg_rules.computation_evidence_utils import (
-    Threshold,
-    THRESHOLD_DIRECTION,
-)
 from acmg_rules.utils import RuleResult
-from clinvar_annot import get_annotate_clinvar
 from information import (
     Info,
     Classification_Info,
     Classification_Info_Groups,
+)
+from acmg_rules.computation_evidence_utils import (
+    Threshold,
+    THRESHOLD_DIRECTION,
+)
+from clinvar_annot import get_annotate_clinvar
+from check_splice_site_classification_table import (
+    get_annotate_splice_site_classification,
 )
 from transcript_annotated import (
     TranscriptInfo_exonic,
@@ -24,8 +29,6 @@ from transcript_annotated import (
     TranscriptInfo_start_loss,
     annotate_transcripts,
 )
-from var_type import VARTYPE_GROUPS
-from variant import Variant
 
 logger = logging.getLogger("Classify.config_annotation")
 
@@ -34,7 +37,7 @@ def get_annotations_needed_from_rules(
     rule_list: list[str], class_info: Classification_Info
 ) -> dict[Callable, tuple[Info, ...]]:
     """
-    Based on rule get classification_information objects required to apply the rules
+    Based on rule get Classification_Info objects required to apply the rules
     """
     RULE_DICTIONARY = {
         "pvs1": Rules.Pvs1,
@@ -72,7 +75,7 @@ def get_unique_annotations_needed(
     fun_info_dict: dict[Callable, tuple[Info, ...]]
 ) -> list[Info]:
     """
-    From dictionary mapping rules functions to their needed classification_information object
+    From dictionary mapping rules functions to their needed Classification_Info object
     """
     annots = []
     for rule_args in fun_info_dict.values():
@@ -93,7 +96,7 @@ def get_annotation_functions(
     """
     Based on needed annotations perform annotation
     """
-    ### Dictionary for all classification_information objects that are defined in the Variant object
+    ### Dictionary for all Classification_Info objects that are defined in the Variant object
     ### For definition Variant object see variant.py
     dict_annotation_variant = {
         class_info.VARIANT.name: lambda variant: partial(
@@ -118,7 +121,7 @@ def get_annotation_functions(
         ),
     }
 
-    ### Dictionary for all classification_information objects that have a get_annotation_function
+    ### Dictionary for all Classification_Info objects that have a get_annotation_function
     dict_annotation = {
         class_info.ANNOTATED_TRANSCRIPT_LIST.name: lambda variant, config: get_annotation_function_annotated_transcript(
             variant, config, class_info
@@ -131,7 +134,7 @@ def get_annotation_functions(
         ),
     }
 
-    ### Dictionary for all classification_information that belong to a classification_information_groups
+    ### Dictionary for all Classification_Info that belong to a Classification_Info_groups
     dict_annotation_groups = {
         Classification_Info_Groups.PATH: lambda annot, config: partial(
             get_path_from_config, annot.config_location, config
@@ -175,7 +178,7 @@ def get_annotation_function_annotated_transcript(
     variant: Variant, config: dict, class_info: Classification_Info
 ) -> Callable[[], Any]:
     """
-    Create annotation function for construction of classification_information.ANNOTATED_TRANSCIPT_LIST
+    Create annotation function for construction of Classification_Info.ANNOTATED_TRANSCIPT_LIST
     """
     relevant_classes = {
         VARTYPE_GROUPS.EXONIC: TranscriptInfo_exonic,
@@ -196,7 +199,7 @@ def get_annotation_function_annotated_transcript_acmg(
     variant: Variant, config: dict, class_info: Classification_Info
 ) -> Callable[[], Any]:
     """
-    Create annotation function for construction of classification_information.ANNOTATED_TRANSCIPT_LIST_ACMG_Spec
+    Create annotation function for construction of Classification_Info.ANNOTATED_TRANSCIPT_LIST_ACMG_Spec
     """
     relevant_classes = {
         VARTYPE_GROUPS.EXONIC: TranscriptInfo_exonic,
@@ -221,10 +224,25 @@ def get_annotation_function_variant_clinvar(
     variant: Variant, config: dict, class_info: Classification_Info
 ) -> Callable[[], Any]:
     """
-    Create annotation function for construction of classification_information.VARIANT_CLINVAR
+    Create annotation function for construction of Classification_Info.VARIANT_CLINVAR
     """
     fun = prepare_function_for_annotation(
         partial(get_annotate_clinvar, class_info), variant, config, class_info
+    )
+    return fun
+
+
+def get_annotation_function_splice_result(
+    variant: Variant, config: dict, class_info: Classification_Info
+) -> Callable[[], Any]:
+    """
+    Create annotation function for construction of Classification_Info.SPLICE_RESULT
+    """
+    fun = prepare_function_for_annotation(
+        partial(get_annotate_splice_site_classification, class_info),
+        variant,
+        config,
+        class_info,
     )
     return fun
 
