@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from __future__ import annotations
-from typing import Optional
 
 import pyensembl
 import pathlib
@@ -145,7 +144,8 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
 
     is_NMD: bool = False
     is_reading_frame_preserved: bool = True
-    ptc: Optional[int] = None
+    frameshift: int = 0
+    ptc: int = -1
 
     @classmethod
     def get_annotate(
@@ -217,7 +217,9 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
                 is_truncated_exon_relevant = truncated_exon_ClinVar.pathogenic
                 comment_truncated_exon_relevant = f"The following relevant ClinVar are (likely) pathogenic: {truncated_exon_ClinVar.ids}"
 
-        is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
+        is_reading_frame_preserved, frameshift = assess_reading_frame_preservation(
+            diff_len
+        )
         diff_len_protein_percent, ptc = calculate_prot_len_diff(ref_transcript, var_seq)
         if diff_len_protein_percent != 0:
             len_change_in_repetitive_region = check_intersection_with_bed(
@@ -243,6 +245,7 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             len_change_in_repetitive_region=len_change_in_repetitive_region,
             is_NMD=is_NMD,
             is_reading_frame_preserved=is_reading_frame_preserved,
+            frameshift=frameshift,
             is_truncated_region_disease_relevant=is_truncated_exon_relevant,
             comment_truncated_region=comment_truncated_exon_relevant,
             ptc=ptc,
@@ -356,7 +359,7 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             )
             is_truncated_region_disease_relevant = skipped_exon_ClinVar.pathogenic
             comment_truncated_region_disease_relevant = f"The following relevant ClinVar are (likely) pathogenic: {skipped_exon_ClinVar.ids}"
-        is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
+        is_reading_frame_preserved, _ = assess_reading_frame_preservation(diff_len)
         diff_len_protein_percent, _ = calculate_prot_len_diff(ref_transcript, var_seq)
         if diff_len != 0:
             len_change_in_repetitive_region = (
