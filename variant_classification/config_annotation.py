@@ -271,7 +271,7 @@ def prepare_function_for_annotation(
     )
     args = execute_annotation(set_args)
     for arg in args:
-        if arg.value is None:
+        if arg.value is None and not arg.optional:
             logger.warning(
                 f"The annotation function {annot_fun} can not be defined, as {arg.name} is None. Annotation is skipped."
             )
