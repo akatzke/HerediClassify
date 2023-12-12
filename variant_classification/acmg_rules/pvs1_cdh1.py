@@ -17,6 +17,7 @@ from transcript_annotated import (
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
 )
+from variant_classification.var_type import VARTYPE
 
 
 class Pvs1_cdh1(Pvs1):
@@ -75,7 +76,7 @@ class Pvs1_cdh1(Pvs1):
     def assess_pvs1_frameshift_PTC_cdh1(
         cls, transcript: TranscriptInfo_exonic
     ) -> RuleResult:
-        if transcript.var_type is "nonsense":
+        if VARTYPE.STOP_GAINED in transcript.var_type:
             if transcript.var_start >= 4 and transcript.var_start <= 2388:
                 comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD."
                 result = True
