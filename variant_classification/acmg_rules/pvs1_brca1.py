@@ -43,7 +43,7 @@ class Pvs1_brca1(Pvs1):
         cls,
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
-        pops_last_known_patho_ptc: int,
+        pos_last_known_patho_ptc: int,
         splice_result: Optional[RuleResult],
     ):
         if len(annotated_transcript) != 1:
@@ -53,7 +53,7 @@ class Pvs1_brca1(Pvs1):
         transcript = annotated_transcript[0]
         if type(transcript) is TranscriptInfo_exonic:
             result = cls.assess_pvs1_frameshift_PTC_brca1(
-                transcript, pops_last_known_patho_ptc
+                transcript, pos_last_known_patho_ptc
             )
         elif type(transcript) is TranscriptInfo_intronic:
             if splice_result is None:
@@ -76,7 +76,7 @@ class Pvs1_brca1(Pvs1):
 
     @classmethod
     def assess_pvs1_frameshift_PTC_brca1(
-        cls, transcript: TranscriptInfo_exonic, pops_last_known_patho_ptc: int
+        cls, transcript: TranscriptInfo_exonic, pos_last_known_patho_ptc: int
     ) -> RuleResult:
         if transcript.is_NMD:
             comment = (
@@ -91,7 +91,7 @@ class Pvs1_brca1(Pvs1):
             strength = evidence_strength.VERY_STRONG
         else:
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD."
-            if transcript.var_start <= pops_last_known_patho_ptc:
+            if transcript.var_start <= pos_last_known_patho_ptc:
                 comment = (
                     comment
                     + "Truncated/altered region is critical to protein function."
