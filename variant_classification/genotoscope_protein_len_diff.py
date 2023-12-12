@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
 
 import logging
+import math
 import pyensembl
 
 from genotoscope_assess_NMD import (
     search_termination_codon,
     extract_codons,
 )
-from genotoscope_exists_alternative_start_codon import (
-    convert_exon_pos2genomic_pos,
-)
-from genotoscope_exon_skipping import find_exon_by_ref_pos
 
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.prot_len_diff")
 
@@ -18,7 +15,7 @@ logger = logging.getLogger("GenOtoScope_Classify.PVS1.prot_len_diff")
 def calculate_prot_len_diff(
     ref_transcript: pyensembl.transcript.Transcript,
     var_coding_seq: str,
-) -> tuple(float, int):
+) -> tuple[float, int]:
     """
     Calculate difference in portein length caused by variant in percent
     """
@@ -30,7 +27,7 @@ def calculate_prot_len_diff(
     corrected_codon_position_ptc = correct_position_ptc_for_indels(
         ref_transcript, var_coding_seq, codon_position_ptc
     )
-    return diff_len_protein_percent, codon_position_ptc
+    return diff_len_protein_percent, corrected_codon_position_ptc
 
 
 def calculate_prot_len_diff_start_loss(
@@ -78,13 +75,18 @@ def correct_position_ptc_for_indels(
 ) -> int:
     """
     Correct position of PTC in case of insertion, deletion, indels
+    Adjust the PTC codon by codons added/substracted by the variant
+    Non-complete codons are rounded up, as the start/end of the codon is still affected
     """
     len_ref = len(ref_transcript.coding_sequence)
-    if len_ref == len(var_coding_seq):
+    len_diff = len_ref - len(var_coding_seq)
+    if len_diff == 0:
         return codon_positon_ptc
-    elif len_ref > len(var_coding_seq):
-        return codon_positon_ptc
-    elif len_ref < len(var_coding_seq):
-        return codon_positon_ptc
+    elif len_diff > 0:
+        codon_shift = math.ceil(len_diff / 3)
+        return codon_positon_ptc + codon_shift
+    elif len_diff < 0:
+        codon_shift = math.ceil(abs(len_diff) / 3) * -1
+        return codon_positon_ptc + codon_shift
     else:
-        raise ValueError("Error whilst correcting PTC position")
+        raise ValueError("Error whilst correcting PTC position.")
