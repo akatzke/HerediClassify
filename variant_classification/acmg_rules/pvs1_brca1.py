@@ -35,6 +35,7 @@ class Pvs1_brca1(Pvs1):
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.SPLICE_RESULT,
             ),
         )
@@ -45,6 +46,7 @@ class Pvs1_brca1(Pvs1):
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
         pos_last_known_patho_ptc_dict: dict[str, int],
+        threshold_diff_len_prot_percent: float,
         splice_result: Optional[RuleResult],
     ):
         results = []
@@ -59,12 +61,15 @@ class Pvs1_brca1(Pvs1):
                         f"Transcript {transcript.transcript_id} not in disease relevant transcripts: {pos_last_known_patho_ptc_dict.keys()}. Transcript should have been filtered out earlier."
                     )
                 result = cls.assess_pvs1_frameshift_PTC_brca1(
-                    transcript, pos_last_known_patho_ptc
+                    transcript,
+                    pos_last_known_patho_ptc,
                 )
                 results.append(result)
             elif isinstance(transcript, TranscriptInfo_intronic):
                 if splice_result is None:
-                    result = cls.assess_pvs1_splice(transcript)
+                    result = cls.assess_pvs1_splice_brca1(
+                        transcript, threshold_diff_len_prot_percent
+                    )
                 else:
                     result = splice_result
                 results.append(result)
@@ -87,7 +92,9 @@ class Pvs1_brca1(Pvs1):
 
     @classmethod
     def assess_pvs1_frameshift_PTC_brca1(
-        cls, transcript: TranscriptInfo_exonic, pos_last_known_patho_ptc: int
+        cls,
+        transcript: TranscriptInfo_exonic,
+        pos_last_known_patho_ptc: int,
     ) -> RuleResult:
         if transcript.is_NMD:
             comment = (
@@ -115,6 +122,74 @@ class Pvs1_brca1(Pvs1):
                 )
                 result = False
                 strength = evidence_strength.VERY_STRONG
+        return RuleResult(
+            "PVS1",
+            rule_type.PROTEIN,
+            evidence_type.PATHOGENIC,
+            result,
+            strength,
+            comment,
+        )
+
+    @classmethod
+    def assess_pvs1_splice_brca1(
+        cls, transcript: TranscriptInfo_intronic, threshold_diff_len_prot_percent: float
+    ) -> RuleResult:
+        if not transcript.are_exons_skipped:
+            result = False
+            strength = evidence_strength.VERY_STRONG
+            comment = f"No splicing alteration predicted for transcript {transcript.transcript_id}."
+        if not transcript.coding_exon_skipped:
+            result = False
+            strength = evidence_strength.VERY_STRONG
+            comment = f"Predicted alteration does not affect coding sequence {transcript.transcript_id}."
+        elif transcript.start_codon_exon_skipped:
+            result = True
+            strength = evidence_strength.VERY_STRONG
+            comment = f"Predicted alteration is non-coding (initation codon skipped) {transcript.transcript_id}."
+        elif transcript.is_NMD:
+            comment = (
+                f"Transcript {transcript.transcript_id} is predicted to undergo NMD."
+            )
+            if transcript.is_affected_exon_disease_relevant:
+                result = True
+                strength = evidence_strength.VERY_STRONG
+                comment = (
+                    " Skipped exon is present in biologically-relevant transcript."
+                )
+            else:
+                result = False
+                strength = evidence_strength.VERY_STRONG
+                comment = "Skipped exon is absent in biologically-relevant transcript."
+        elif not transcript.is_reading_frame_preserved and not transcript.is_NMD:
+            comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is not preserved."
+            if transcript.is_truncated_region_disease_relevant:
+                result = True
+                strength = evidence_strength.VERY_STRONG
+                comment = f"Target region is critical to protein function."
+            else:
+                comment = comment + " Role of target region is unknown."
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                ):
+                    result = True
+                    strength = evidence_strength.MODERATE
+                    comment = (
+                        comment
+                        + f" Splicing alteration removes >{threshold_diff_len_prot_percent} of coding sequence."
+                    )
+                else:
+                    result = True
+                    strength = evidence_strength.SUPPORTING
+                    comment = (
+                        comment
+                        + f" Splicing alteration removes <{threshold_diff_len_prot_percent} of coding sequence."
+                    )
+        else:
+            result = False
+            strength = evidence_strength.VERY_STRONG
+            comment = f"Splicing alteration in transcript {transcript.transcript_id} not predicted to be pathogenic."
         return RuleResult(
             "PVS1",
             rule_type.PROTEIN,

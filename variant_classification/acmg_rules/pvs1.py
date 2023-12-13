@@ -31,20 +31,31 @@ class Pvs1(abstract_rule):
     ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (class_info.ANNOTATED_TRANSCRIPT_LIST, class_info.VARIANT),
+            (
+                class_info.ANNOTATED_TRANSCRIPT_LIST,
+                class_info.VARIANT,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+            ),
         )
 
     @classmethod
     def assess_rule(
-        cls, annotated_transcripts: list[TranscriptInfo], variant: VariantInfo
+        cls,
+        annotated_transcripts: list[TranscriptInfo],
+        variant: VariantInfo,
+        threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
         results = []
         for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_exonic):
-                result_frameshift = cls.assess_pvs1_frameshift_PTC(transcript)
+                result_frameshift = cls.assess_pvs1_frameshift_PTC(
+                    transcript, threshold_diff_len_prot_percent
+                )
                 results.append(result_frameshift)
             elif isinstance(transcript, TranscriptInfo_intronic):
-                result_splice = cls.assess_pvs1_splice(transcript)
+                result_splice = cls.assess_pvs1_splice(
+                    transcript, threshold_diff_len_prot_percent
+                )
                 results.append(result_splice)
             elif isinstance(transcript, TranscriptInfo_start_loss):
                 result_start_loss = cls.assess_pvs1_start_loss(transcript)
@@ -114,7 +125,9 @@ class Pvs1(abstract_rule):
         )
 
     @classmethod
-    def assess_pvs1_splice(cls, transcript: TranscriptInfo_intronic) -> RuleResult:
+    def assess_pvs1_splice(
+        cls, transcript: TranscriptInfo_intronic, threshold_diff_len_prot_percent: float
+    ) -> RuleResult:
         """
         Assess PVS1 for splice variants
         """
@@ -140,7 +153,10 @@ class Pvs1(abstract_rule):
                 result = True
                 strength = evidence_strength.STRONG
             else:
-                if transcript.diff_len_protein_percent > 0.1:
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                ):
                     comment = (
                         comment
                         + f" Protein length change of {transcript.diff_len_protein_percent} observed."
@@ -161,7 +177,10 @@ class Pvs1(abstract_rule):
                 result = True
                 strength = evidence_strength.STRONG
             else:
-                if transcript.diff_len_protein_percent > 0.1:
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                ):
                     comment = (
                         comment
                         + f" Protein length change of {transcript.diff_len_protein_percent} observed."
@@ -190,7 +209,7 @@ class Pvs1(abstract_rule):
 
     @classmethod
     def assess_pvs1_frameshift_PTC(
-        cls, transcript: TranscriptInfo_exonic
+        cls, transcript: TranscriptInfo_exonic, threshold_diff_len_prot_percent: float
     ) -> RuleResult:
         """
         Assess PVS1 for frameshift variants
@@ -213,7 +232,10 @@ class Pvs1(abstract_rule):
                 result = True
                 strength = evidence_strength.STRONG
             else:
-                if transcript.diff_len_protein_percent > 0.1:
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                ):
                     comment = (
                         comment
                         + f" Protein length change of {transcript.diff_len_protein_percent} observed."

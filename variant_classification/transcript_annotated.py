@@ -290,6 +290,8 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
     """
 
     are_exons_skipped: bool = False
+    coding_exon_skipped: bool = False
+    start_codon_exon_skipped: bool = False
     is_NMD: bool = False
     is_reading_frame_preserved: bool = False
 
@@ -394,6 +396,8 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             ref_transcript=ref_transcript,
             diff_len_protein_percent=diff_len_protein_percent,
             are_exons_skipped=are_exons_skipped,
+            coding_exon_skipped=coding_exon_skipped,
+            start_codon_exon_skipped=start_codon_exon_skipped,
             len_change_in_repetitive_region=len_change_in_repetitive_region,
             is_NMD=is_NMD,
             is_truncated_region_disease_relevant=is_truncated_region_disease_relevant,

@@ -34,6 +34,7 @@ class Pvs1_brca2(Pvs1):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
                 class_info.SPLICE_RESULT,
             ),
@@ -45,6 +46,7 @@ class Pvs1_brca2(Pvs1):
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
         pos_last_known_patho_ptc_dict: dict[str, int],
+        threshold_diff_len_prot_percent: float,
         splice_result: Optional[RuleResult],
     ):
         results = []
@@ -64,7 +66,9 @@ class Pvs1_brca2(Pvs1):
                 results.append(result)
             elif isinstance(transcript, TranscriptInfo_intronic):
                 if splice_result is None:
-                    result = cls.assess_pvs1_splice(transcript)
+                    result = cls.assess_pvs1_splice_brca2(
+                        transcript, threshold_diff_len_prot_percent
+                    )
                 else:
                     result = splice_result
                 results.append(result)
@@ -108,6 +112,77 @@ class Pvs1_brca2(Pvs1):
                 )
                 result = False
                 strength = evidence_strength.VERY_STRONG
+        return RuleResult(
+            "PVS1",
+            rule_type.PROTEIN,
+            evidence_type.PATHOGENIC,
+            result,
+            strength,
+            comment,
+        )
+
+    @classmethod
+    def assess_pvs1_splice_brca2(
+        cls, transcript: TranscriptInfo_intronic, threshold_diff_len_prot_percent: float
+    ) -> RuleResult:
+        if not transcript.are_exons_skipped:
+            result = False
+            strength = evidence_strength.VERY_STRONG
+            comment = f"No splicing alteration predicted for transcript {transcript.transcript_id}."
+        if not transcript.coding_exon_skipped:
+            result = False
+            strength = evidence_strength.VERY_STRONG
+            comment = f"Predicted alteration does not affect coding sequence {transcript.transcript_id}."
+        elif transcript.start_codon_exon_skipped:
+            result = True
+            strength = evidence_strength.VERY_STRONG
+            comment = f"Predicted alteration is non-coding (initation codon skipped) {transcript.transcript_id}."
+        elif transcript.is_NMD:
+            result = True
+            strength = evidence_strength.VERY_STRONG
+            comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD. All exons in transcript are disease relevant."
+        elif not transcript.is_reading_frame_preserved and not transcript.is_NMD:
+            result = True
+            strength = evidence_strength.VERY_STRONG
+            comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD. Reading frame is not preserved and in BRCA2 all regions are considered disease relevant."
+        elif transcript.is_reading_frame_preserved:
+            comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is not preserved."
+            if transcript.is_truncated_region_disease_relevant:
+                result = True
+                strength = evidence_strength.VERY_STRONG
+                comment = (
+                    comment
+                    + f" Transcript {transcript.transcript_id} is not predicted to undergo NMD. Reading frame is not preserved and in BRCA2 all regions are considered disease relevant."
+                )
+            else:
+                comment = comment + " Role of target region is unknown."
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                ):
+                    comment = (
+                        comment
+                        + f" Splicing alteration removes >{threshold_diff_len_prot_percent} of coding sequence."
+                    )
+                    if transcript.exon_skipped == 11:
+                        result = True
+                        strength = evidence_strength.VERY_STRONG
+                        comment = comment + f" Exon 11 is skipped."
+                    else:
+                        result = False
+                        strength = evidence_strength.VERY_STRONG
+                        comment = comment + f" Exon 11 is not skipped."
+                else:
+                    result = False
+                    strength = evidence_strength.VERY_STRONG
+                    comment = (
+                        comment
+                        + f" Splicing alteration removes <{threshold_diff_len_prot_percent} of coding sequence."
+                    )
+        else:
+            result = False
+            strength = evidence_strength.VERY_STRONG
+            comment = f"Splicing alteration in transcript {transcript.transcript_id} not predicted to be pathogenic."
         return RuleResult(
             "PVS1",
             rule_type.PROTEIN,

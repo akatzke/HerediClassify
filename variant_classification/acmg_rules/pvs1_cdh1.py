@@ -36,6 +36,7 @@ class Pvs1_cdh1(Pvs1):
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
                 class_info.SPLICE_RESULT,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
             ),
         )
 
@@ -45,6 +46,7 @@ class Pvs1_cdh1(Pvs1):
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
         splice_result: Optional[RuleResult],
+        threshold_diff_len_prot_percent: float,
     ):
         if len(annotated_transcript) != 1:
             raise ValueError(
@@ -55,7 +57,9 @@ class Pvs1_cdh1(Pvs1):
             result = cls.assess_pvs1_frameshift_PTC_cdh1(transcript)
         elif isinstance(transcript, TranscriptInfo_intronic):
             if splice_result is None:
-                result = cls.assess_pvs1_splice(transcript)
+                result = cls.assess_pvs1_splice(
+                    transcript, threshold_diff_len_prot_percent
+                )
             else:
                 result = splice_result
         elif isinstance(transcript, TranscriptInfo_start_loss):

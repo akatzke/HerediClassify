@@ -50,7 +50,7 @@ class Pvs1_pten(Pvs1):
         if isinstance(transcript, TranscriptInfo_exonic):
             result = cls.assess_pvs1_frameshift_PTC_pten(transcript)
         elif isinstance(transcript, TranscriptInfo_intronic):
-            result = cls.assess_pvs1_splice(transcript)
+            result = cls.assess_pvs1_splice_pten(transcript)
         elif isinstance(transcript, TranscriptInfo_start_loss):
             result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
         else:
