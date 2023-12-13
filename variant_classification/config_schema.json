@@ -57,9 +57,6 @@
         },
         "functional_thresholds": {
             "properties": {
-                "threshold_nmd": {
-                    "type": "integer"
-                },
                 "threshold_diff_len_prot_percent": {
                     "type": "number"
                 }
@@ -127,8 +124,7 @@
                     "type": "string"
                 }
             }
-        }
-    },
+        },
     "required": [
         "rules"
     ]

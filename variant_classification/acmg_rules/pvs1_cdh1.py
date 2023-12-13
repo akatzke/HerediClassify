@@ -17,7 +17,7 @@ from transcript_annotated import (
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
 )
-from variant_classification.var_type import VARTYPE
+from var_type import VARTYPE
 
 
 class Pvs1_cdh1(Pvs1):
@@ -51,14 +51,14 @@ class Pvs1_cdh1(Pvs1):
                 "For CDH1 more than one transcript is being used for assessment of PVS1, despite only one disease relevant transcript being defined."
             )
         transcript = annotated_transcript[0]
-        if type(transcript) is TranscriptInfo_exonic:
+        if isinstance(transcript, TranscriptInfo_exonic):
             result = cls.assess_pvs1_frameshift_PTC_cdh1(transcript)
-        elif type(transcript) is TranscriptInfo_intronic:
+        elif isinstance(transcript, TranscriptInfo_intronic):
             if splice_result is None:
                 result = cls.assess_pvs1_splice(transcript)
             else:
                 result = splice_result
-        elif type(transcript) is TranscriptInfo_start_loss:
+        elif isinstance(transcript, TranscriptInfo_start_loss):
             result = cls.assess_pvs1_start_loss(transcript)
         else:
             comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."

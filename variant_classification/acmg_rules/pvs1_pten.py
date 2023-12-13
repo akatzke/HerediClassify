@@ -47,11 +47,11 @@ class Pvs1_pten(Pvs1):
                 "For PTEN more than one transcript is being used for assessment of PVS1, despite only one disease relevant transcript being defined."
             )
         transcript = annotated_transcript[0]
-        if type(transcript) is TranscriptInfo_exonic:
+        if isinstance(transcript, TranscriptInfo_exonic):
             result = cls.assess_pvs1_frameshift_PTC_pten(transcript)
-        elif type(transcript) is TranscriptInfo_intronic:
+        elif isinstance(transcript, TranscriptInfo_intronic):
             result = cls.assess_pvs1_splice(transcript)
-        elif type(transcript) is TranscriptInfo_start_loss:
+        elif isinstance(transcript, TranscriptInfo_start_loss):
             result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
         else:
             comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."

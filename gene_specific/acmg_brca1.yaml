@@ -22,7 +22,10 @@ rules:
     - bp7
 
 ### Disease relevant transcript ###
-disease_relevant_transcript: "ENST00000357654"
+disease_relevant_transcripts:
+    - name: "ENST00000357654"
+      nmd_threshold: 5418
+      pos_last_known_patho_ptc: 5562
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:
@@ -44,10 +47,7 @@ allele_frequency_thresholds:
 
 ### Functional thresholds
 functional_thresholds:
-    threshold_nmd: 1234
     threshold_diff_len_prot_percent: 0.1
-    pos_last_known_patho_ptc: 1345
-
 
 ### Annotation filesitems
 annotation_files:

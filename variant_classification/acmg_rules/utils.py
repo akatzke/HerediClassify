@@ -73,6 +73,8 @@ class abstract_rule(ABC):
 
 
 def summarise_results_per_transcript(results: list[RuleResult]) -> RuleResult:
+    if len(results) == 1:
+        return results[0]
     strength_values = {
         evidence_strength.STAND_ALONE.value: 5,
         evidence_strength.VERY_STRONG.value: 4,

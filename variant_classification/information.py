@@ -13,6 +13,7 @@ class Classification_Info_Groups(Enum):
     THRESHOLD_SINGLE = auto()
     THRESHOLD_PREDICTION = auto()
     PATH = auto()
+    DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD = auto()
 
 
 @dataclass(frozen=False)
@@ -131,13 +132,14 @@ class Classification_Info:
         )
         self.THRESHOLD_NMD = Info(
             "threshold_nmd",
-            config_location=("functional_thresholds", "nmd_threshold"),
-            group=Classification_Info_Groups.THRESHOLD_SINGLE,
+            config_location=("disease_relevant_thresholds", "nmd_threshold"),
+            group=Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD,
+            optional=True,
         )
         self.POS_LAST_KNOWN_PATHO_PTC = Info(
             "pos_last_known_patho_ptc",
-            config_location=("functional_thresholds", "pos_last_known_patho_ptc"),
-            group=Classification_Info_Groups.THRESHOLD_SINGLE,
+            config_location=("disease_relevant_thresholds", "pos_last_known_patho_ptc"),
+            group=Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD,
         )
         self.VARIANT = Info("variant")
         self.TRANSCRIPT = Info("transcript")
@@ -155,6 +157,7 @@ class Classification_Info:
             "critical_region_path",
             config_location=("annotation_files", "critical_region", "file"),
             group=Classification_Info_Groups.PATH,
+            optional=True,
         )
         self.SPLICE_SITE_TABLE_PATH = Info(
             "splice_site_table_path",

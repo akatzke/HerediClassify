@@ -154,6 +154,9 @@ def get_annotation_functions(
         Classification_Info_Groups.THRESHOLD_PREDICTION: lambda annot, config: partial(
             get_threshold_prediction_from_config, annot.config_location, config
         ),
+        Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD: lambda annot, config: partial(
+            get_disease_relevant_transcript_thresholds, annot.config_location, config
+        ),
     }
 
     for annotation in annotations_needed:
@@ -177,6 +180,13 @@ def get_annotation_functions(
             elif annotation.group is Classification_Info_Groups.THRESHOLD_PREDICTION:
                 annotation.compute_function = dict_annotation_groups[
                     Classification_Info_Groups.THRESHOLD_PREDICTION
+                ](annotation, config)
+            elif (
+                annotation.group
+                is Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD
+            ):
+                annotation.compute_function = dict_annotation_groups[
+                    Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD
                 ](annotation, config)
             else:
                 raise ValueError(f"No annotation function defined for {annotation}.")
@@ -435,3 +445,35 @@ def get_threshold_prediction_from_config(
             )
         else:
             return Threshold(name, thr_pathogenic, THRESHOLD_DIRECTION.LOWER)
+
+
+def get_disease_relevant_transcript_thresholds(
+    config_location: Union[tuple[str, ...], None], config: dict
+) -> Union[dict[str, int], None]:
+    """
+    Create dictionary containing the
+    """
+    if config_location is None:
+        logger.warning(
+            f"No location in the configuration is defined for this disease relevant transcript threshold. Please check information.py."
+        )
+        return None
+    try:
+        disease_relevant_transcripts = config["disease_relevant_transcripts"]
+    except KeyError:
+        logger.warning(
+            f"No field disease_relevant_transcripts found in the configuration file."
+        )
+        return None
+    try:
+        thresh_dict = {}
+        for transcript in disease_relevant_transcripts:
+            thresh_dict[transcript["name"]] = transcript[config_location[-1]]
+        if not bool(thresh_dict):
+            return None
+        return thresh_dict
+    except KeyError:
+        logger.warning(
+            f"Either 'name' or {config_location[-1]} not defined for all disease relevant transcripts."
+        )
+        return None

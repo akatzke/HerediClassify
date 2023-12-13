@@ -17,19 +17,29 @@ logger = logging.getLogger("GenOtoScope_Classify.PVS1.assess_NMD")
 
 
 def assess_NMD_threshold(
-    transcript: TranscriptInfo, threshold: int, clin_transcript: str
+    transcript: TranscriptInfo,
+    variant: VariantInfo,
+    ref_transcript: pyensembl.transcript.Transcript,
+    diff_len: int,
+    threshold: int,
 ) -> tuple:
     """
     Examine if position of variant is located before or after given threshold for NMD
     """
-    if transcript.transcript_id == clin_transcript:
-        if transcript.var_start >= threshold:
-            NMD_affected_exon = []
-            return True, NMD_affected_exon
-        else:
-            return False, []
+    if transcript.var_start <= threshold:
+        (
+            exons_containing_var,
+            var_exon_start_offset,
+            var_exon_end_offset,
+        ) = find_exon_by_var_pos(ref_transcript, transcript, variant, False, diff_len)
+        NMD_affected_exon = find_pos_affected_exons(
+            ref_transcript,
+            exons_containing_var,
+            variant,
+        )
+        return True, NMD_affected_exon
     else:
-        return True, []
+        return False, []
 
 
 def assess_NMD_intronic_variant(

@@ -7,6 +7,7 @@ import pathlib
 import logging
 from dataclasses import dataclass, field
 from collections.abc import Callable
+from typing import Optional
 
 from variant import VariantInfo, TranscriptInfo, Variant
 from ensembl import ensembl
@@ -15,6 +16,7 @@ from genotoscope_construct_variant_sequence import (
     construct_variant_coding_seq_intronic_variant,
 )
 from genotoscope_assess_NMD import (
+    assess_NMD_threshold,
     assess_NMD_exonic_variant,
     assess_NMD_intronic_variant,
 )
@@ -25,7 +27,10 @@ from genotoscope_protein_len_diff import (
     calculate_prot_len_diff,
     calculate_prot_len_diff_start_loss,
 )
-from custom_exceptions import Pyensembl_no_coding_sequence
+from custom_exceptions import (
+    Pyensembl_no_coding_sequence,
+    Not_disease_relevant_transcript,
+)
 from variant_in_critical_region import (
     check_variant_in_critical_region_exon,
 )
@@ -158,6 +163,7 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
                 class_info.CLINVAR_PATH,
                 class_info.UNIPROT_REP_REGION_PATH,
                 class_info.CRITICAL_REGION_PATH,
+                class_info.THRESHOLD_NMD,
             ),
         )
 
@@ -167,7 +173,8 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         variant: VariantInfo,
         path_clinvar: pathlib.Path,
         path_uniprot_rep: pathlib.Path,
-        path_critical_region: pathlib.Path,
+        path_critical_region: Optional[pathlib.Path],
+        nmd_threshold_dict: Optional[dict[str, int]],
         transcript: TranscriptInfo,
     ) -> TranscriptInfo_exonic:
         """
@@ -181,12 +188,18 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         var_seq, diff_len = construct_variant_coding_seq_exonic_variant(
             transcript, variant, ref_transcript
         )
-        # if threshold_NMD:
-        #    is_NMD, NMD_affected_exons = assess_NMD_threshold(transcript, threshold_NMD, clin_transcript)
-        # else:
-        is_NMD, NMD_affected_exons = assess_NMD_exonic_variant(
-            transcript, variant, ref_transcript, var_seq, diff_len
-        )
+        if nmd_threshold_dict is not None:
+            try:
+                nmd_threshold = nmd_threshold_dict[transcript.transcript_id]
+            except KeyError:
+                raise Not_disease_relevant_transcript
+            is_NMD, NMD_affected_exons = assess_NMD_threshold(
+                transcript, variant, ref_transcript, diff_len, nmd_threshold
+            )
+        else:
+            is_NMD, NMD_affected_exons = assess_NMD_exonic_variant(
+                transcript, variant, ref_transcript, var_seq, diff_len
+            )
         if path_critical_region is not None:
             # Check if variant is located in defined functionally relevant region from ACMG guidelines
             if is_NMD:

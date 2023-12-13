@@ -7,6 +7,7 @@ from acmg_rules.utils import (
     evidence_strength,
     evidence_type,
     rule_type,
+    summarise_results_per_transcript,
 )
 from acmg_rules.pvs1 import Pvs1
 from information import Classification_Info, Info
@@ -43,26 +44,34 @@ class Pvs1_brca1(Pvs1):
         cls,
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
-        pos_last_known_patho_ptc: int,
+        pos_last_known_patho_ptc_dict: dict[str, int],
         splice_result: Optional[RuleResult],
     ):
-        if len(annotated_transcript) != 1:
-            raise ValueError(
-                "For BRCA1 more than one transcript is being used for assessment of PVS1, despite only one disease relevant transcript being defined."
-            )
-        transcript = annotated_transcript[0]
-        if type(transcript) is TranscriptInfo_exonic:
-            result = cls.assess_pvs1_frameshift_PTC_brca1(
-                transcript, pos_last_known_patho_ptc
-            )
-        elif type(transcript) is TranscriptInfo_intronic:
-            if splice_result is None:
-                result = cls.assess_pvs1_splice(transcript)
-            else:
-                result = splice_result
-        elif type(transcript) is TranscriptInfo_start_loss:
-            result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
-        else:
+        results = []
+        for transcript in annotated_transcript:
+            if isinstance(transcript, TranscriptInfo_exonic):
+                try:
+                    pos_last_known_patho_ptc = pos_last_known_patho_ptc_dict[
+                        transcript.transcript_id
+                    ]
+                except KeyError:
+                    raise KeyError(
+                        f"Transcript {transcript.transcript_id} not in disease relevant transcripts: {pos_last_known_patho_ptc_dict.keys()}. Transcript should have been filtered out earlier."
+                    )
+                result = cls.assess_pvs1_frameshift_PTC_brca1(
+                    transcript, pos_last_known_patho_ptc
+                )
+                results.append(result)
+            elif isinstance(transcript, TranscriptInfo_intronic):
+                if splice_result is None:
+                    result = cls.assess_pvs1_splice(transcript)
+                else:
+                    result = splice_result
+                results.append(result)
+            elif isinstance(transcript, TranscriptInfo_start_loss):
+                result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
+                results.append(result)
+        if len(results) == 0:
             comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             result = RuleResult(
                 "PVS1",
@@ -72,6 +81,8 @@ class Pvs1_brca1(Pvs1):
                 evidence_strength.VERY_STRONG,
                 comment,
             )
+        else:
+            result = summarise_results_per_transcript(results)
         return result
 
     @classmethod
