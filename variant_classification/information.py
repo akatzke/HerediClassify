@@ -162,7 +162,7 @@ class Classification_Info:
         )
         self.DISEASE_IRRELEVANT_EXONS_PATH = Info(
             "disease_irrelevant_exons_path",
-            config_location=("annotatoin_files", "disease_irrelevant_exons", "file")
+            config_location=("annotation_files", "disease_irrelevant_exons", "file")
             group= Classification_Info_Groups.PATH,
             optional = True,
             )

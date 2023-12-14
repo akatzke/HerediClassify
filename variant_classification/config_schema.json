@@ -100,6 +100,16 @@
                         }
                     }
                 },
+                "disease_irrelevant_exons":{
+                    "properties" :{
+                        "root": {
+                            "type": "string"
+                        },
+                        "file": {
+                            "type": "string"
+                        }
+                    }
+                },
                 "splice_site_table":{
                     "properties" :{
                         "root": {
