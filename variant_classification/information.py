@@ -53,6 +53,7 @@ class Classification_Info:
     CLINVAR_PATH: Info
     UNIPROT_REP_REGION_PATH: Info
     CRITICAL_REGION_PATH: Info
+    DISEASE_IRRELEVANT_EXONS_PATH: Info
     SPLICE_SITE_TABLE_PATH: Info
     SPLICE_RESULT: Info
 
@@ -159,6 +160,12 @@ class Classification_Info:
             group=Classification_Info_Groups.PATH,
             optional=True,
         )
+        self.DISEASE_IRRELEVANT_EXONS_PATH = Info(
+            "disease_irrelevant_exons_path",
+            config_location=("annotatoin_files", "disease_irrelevant_exons", "file")
+            group= Classification_Info_Groups.PATH,
+            optional = True,
+            )
         self.SPLICE_SITE_TABLE_PATH = Info(
             "splice_site_table_path",
             config_location=("annotation_files", "splice_site_table", "file"),

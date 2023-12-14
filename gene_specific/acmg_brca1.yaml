@@ -62,6 +62,9 @@ annotation_files:
     critical_region:
         root: "variant_classification/data/critical_region"
         file: "VUS-Task-Force_critical_protein_domains.bed"
+    disease_irrelevant_exons:
+        root: "variant_classification/data/critical_region"
+        file: "VCEP_disease_irrelevant_exons.bed"
     splice_site_table:
         root: "variant_classification/data/splice_site_classification"
         file: "BRCA1_splice_table.csv"
