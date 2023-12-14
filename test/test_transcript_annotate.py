@@ -39,7 +39,7 @@ def test_splicing():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_intronic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans
+        test_var, path_clinvar, path_uniprot, path_critical_region, None, test_trans
     )
     assert (
         annot_trans.are_exons_skipped == True
@@ -70,7 +70,13 @@ def test_indel():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans
+        test_var,
+        path_clinvar,
+        path_uniprot,
+        path_critical_region,
+        None,
+        None,
+        test_trans,
     )
     assert (
         annot_trans.is_NMD == True
@@ -101,7 +107,13 @@ def test_ter():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans[0]
+        test_var,
+        path_clinvar,
+        path_uniprot,
+        path_critical_region,
+        None,
+        None,
+        test_trans[0],
     )
     assert (
         annot_trans.is_NMD == True
@@ -132,7 +144,13 @@ def test_del_inframe():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans
+        test_var,
+        path_clinvar,
+        path_uniprot,
+        path_critical_region,
+        None,
+        None,
+        test_trans,
     )
     assert (
         round(annot_trans.diff_len_protein_percent, 2) == 0.0
@@ -163,7 +181,13 @@ def test_ins():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans
+        test_var,
+        path_clinvar,
+        path_uniprot,
+        path_critical_region,
+        None,
+        None,
+        test_trans,
     )
     assert (
         round(annot_trans.diff_len_protein_percent, 2) == 0.94

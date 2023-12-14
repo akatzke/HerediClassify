@@ -154,7 +154,10 @@ class Pvs1_atm(Pvs1):
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = f"Exon skipping or use of cryptic splice site does not affect the coding sequence in transcript {transcript.transcript_id}."
-        elif transcript.exon_skipped >= 2 and transcript.exon_skipped <= 38:
+        elif (
+            transcript.affected_exon["exon_no"] >= 2
+            and transcript.affected_exon["exon_no"] <= 38
+        ):
             if not transcript.is_reading_frame_preserved:
                 result = True
                 strength = evidence_strength.VERY_STRONG
@@ -163,7 +166,10 @@ class Pvs1_atm(Pvs1):
                 result = True
                 strength = evidence_strength.STRONG
                 comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and ."
-        elif transcript.exon_skipped >= 39 and transcript.exon_skipped <= 63:
+        elif (
+            transcript.affected_exon["exon_no"] >= 39
+            and transcript.affected_exon["exon_no"] <= 63
+        ):
             if (
                 not transcript.is_reading_frame_preserved
                 and transcript.var_start <= nmd_threshold

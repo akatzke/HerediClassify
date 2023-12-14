@@ -16,6 +16,28 @@ from var_type import VARTYPE_GROUPS
 logger = logging.getLogger("GenOtoScope_Classify.PVS1.assess_NMD")
 
 
+def get_affected_exon(
+    ref_transcript: pyensembl.transcript.Transcript,
+    transcript: TranscriptInfo,
+    variant: VariantInfo,
+    diff_len: int,
+) -> list[dict]:
+    """
+    Get affected exons
+    """
+    (
+        exons_containing_var,
+        var_exon_start_offset,
+        var_exon_end_offset,
+    ) = find_exon_by_var_pos(ref_transcript, transcript, variant, False, diff_len)
+    NMD_affected_exon = find_pos_affected_exons(
+        ref_transcript,
+        exons_containing_var,
+        variant,
+    )
+    return NMD_affected_exon
+
+
 def assess_NMD_threshold(
     transcript: TranscriptInfo,
     variant: VariantInfo,
@@ -27,15 +49,8 @@ def assess_NMD_threshold(
     Examine if position of variant is located before or after given threshold for NMD
     """
     if transcript.var_start <= threshold:
-        (
-            exons_containing_var,
-            var_exon_start_offset,
-            var_exon_end_offset,
-        ) = find_exon_by_var_pos(ref_transcript, transcript, variant, False, diff_len)
-        NMD_affected_exon = find_pos_affected_exons(
-            ref_transcript,
-            exons_containing_var,
-            variant,
+        NMD_affected_exon = get_affected_exon(
+            ref_transcript, transcript, variant, diff_len
         )
         return True, NMD_affected_exon
     else:
@@ -345,6 +360,7 @@ def find_pos_affected_exons(
         interact_exon_pos.append(
             {
                 "exon_id": ref_exon.id,
+                "exon_no": affected_exon,
                 "exon_start": ref_exon.start,
                 "exon_end": ref_exon.end,
             }

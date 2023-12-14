@@ -19,6 +19,7 @@ from genotoscope_assess_NMD import (
     assess_NMD_threshold,
     assess_NMD_exonic_variant,
     assess_NMD_intronic_variant,
+    get_affected_exon,
 )
 from genotoscope_reading_frame_preservation import (
     assess_reading_frame_preservation,
@@ -50,6 +51,7 @@ from utils import (
     check_intersection_with_bed,
     check_bed_intersect_start_loss,
 )
+from check_exon_disease_relevant import check_exon_disease_relevant
 from var_type import VARTYPE_GROUPS
 from information import Classification_Info, Info
 
@@ -148,9 +150,11 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
     """
 
     is_NMD: bool = False
+    affected_exon: dict = field(default_factory=dict)
     is_reading_frame_preserved: bool = True
     frameshift: int = 0
     ptc: int = -1
+    is_affected_exon_disease_relevant: bool = True
 
     @classmethod
     def get_annotate(
@@ -163,6 +167,7 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
                 class_info.CLINVAR_PATH,
                 class_info.UNIPROT_REP_REGION_PATH,
                 class_info.CRITICAL_REGION_PATH,
+                class_info.DISEASE_IRRELEVANT_EXONS_PATH,
                 class_info.THRESHOLD_NMD,
             ),
         )
@@ -174,6 +179,7 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         path_clinvar: pathlib.Path,
         path_uniprot_rep: pathlib.Path,
         path_critical_region: Optional[pathlib.Path],
+        path_disease_irrelevant_exons: Optional[pathlib.Path],
         nmd_threshold_dict: Optional[dict[str, int]],
         transcript: TranscriptInfo,
     ) -> TranscriptInfo_exonic:
@@ -229,7 +235,18 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
                 )
                 is_truncated_exon_relevant = truncated_exon_ClinVar.pathogenic
                 comment_truncated_exon_relevant = f"The following relevant ClinVar are (likely) pathogenic: {truncated_exon_ClinVar.ids}"
-
+        if not NMD_affected_exons:
+            affected_exon = get_affected_exon(
+                ref_transcript, transcript, variant, diff_len
+            )[0]
+        else:
+            affected_exon = NMD_affected_exons[0]
+        if is_NMD and path_disease_irrelevant_exons is not None:
+            is_affected_exon_disease_relevant = check_exon_disease_relevant(
+                path_disease_irrelevant_exons, NMD_affected_exons
+            )
+        else:
+            is_affected_exon_disease_relevant = True
         is_reading_frame_preserved, frameshift = assess_reading_frame_preservation(
             diff_len
         )
@@ -257,9 +274,11 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             diff_len_protein_percent=diff_len_protein_percent,
             len_change_in_repetitive_region=len_change_in_repetitive_region,
             is_NMD=is_NMD,
+            affected_exon=affected_exon,
             is_reading_frame_preserved=is_reading_frame_preserved,
             frameshift=frameshift,
             is_truncated_region_disease_relevant=is_truncated_exon_relevant,
+            is_affected_exon_disease_relevant=is_affected_exon_disease_relevant,
             comment_truncated_region=comment_truncated_exon_relevant,
             ptc=ptc,
         )
@@ -293,7 +312,9 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
     coding_exon_skipped: bool = False
     start_codon_exon_skipped: bool = False
     is_NMD: bool = False
+    affected_exon: dict = field(default_factory=dict)
     is_reading_frame_preserved: bool = False
+    is_affected_exon_disease_relevant: bool = True
 
     @classmethod
     def get_annotate(
@@ -305,6 +326,7 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
                 class_info.VARIANT,
                 class_info.CLINVAR_PATH,
                 class_info.UNIPROT_REP_REGION_PATH,
+                class_info.DISEASE_IRRELEVANT_EXONS_PATH,
                 class_info.CRITICAL_REGION_PATH,
             ),
         )
@@ -315,7 +337,8 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
         variant: VariantInfo,
         path_clinvar: pathlib.Path,
         path_uniprot_rep: pathlib.Path,
-        path_critical_region,
+        path_critical_region: Optional[pathlib.Path],
+        path_disease_irrelevant_exons: Optional[pathlib.Path],
         transcript: TranscriptInfo,
     ) -> TranscriptInfo_intronic:
         """
@@ -374,6 +397,18 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             )
             is_truncated_region_disease_relevant = skipped_exon_ClinVar.pathogenic
             comment_truncated_region_disease_relevant = f"The following relevant ClinVar are (likely) pathogenic: {skipped_exon_ClinVar.ids}"
+        if not NMD_affected_exons:
+            affected_exon = get_affected_exon(
+                ref_transcript, transcript, variant, diff_len
+            )[0]
+        else:
+            affected_exon = NMD_affected_exons[0]
+        if is_NMD and path_disease_irrelevant_exons is not None:
+            is_affected_exon_disease_relevant = check_exon_disease_relevant(
+                path_disease_irrelevant_exons, NMD_affected_exons
+            )
+        else:
+            is_affected_exon_disease_relevant = True
         is_reading_frame_preserved, _ = assess_reading_frame_preservation(diff_len)
         diff_len_protein_percent, _ = calculate_prot_len_diff(ref_transcript, var_seq)
         if diff_len != 0:
@@ -400,7 +435,9 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             start_codon_exon_skipped=start_codon_exon_skipped,
             len_change_in_repetitive_region=len_change_in_repetitive_region,
             is_NMD=is_NMD,
+            affected_exon=affected_exon,
             is_truncated_region_disease_relevant=is_truncated_region_disease_relevant,
+            is_affected_exon_disease_relevant=is_affected_exon_disease_relevant,
             comment_truncated_region=comment_truncated_region_disease_relevant,
             is_reading_frame_preserved=is_reading_frame_preserved,
         )

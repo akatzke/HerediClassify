@@ -164,7 +164,7 @@ class Pvs1_brca2(Pvs1):
                         comment
                         + f" Splicing alteration removes >{threshold_diff_len_prot_percent} of coding sequence."
                     )
-                    if transcript.exon_skipped == 11:
+                    if transcript.affected_exon["exon_no"] == 11:
                         result = True
                         strength = evidence_strength.VERY_STRONG
                         comment = comment + f" Exon 11 is skipped."
