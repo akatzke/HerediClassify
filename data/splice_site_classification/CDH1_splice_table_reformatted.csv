@@ -1,0 +1,181 @@
+position	alternative_allele	rule_status	evidence_strength	comment
+48+1	A	True	strong	Likely cryptic splice site.
+48+1	C	True	strong	Likely cryptic splice site.
+48+1	T	True	strong	Likely cryptic splice site.
+48+2	A	True	strong	Likely cryptic splice site.
+48+2	C	True	strong	Likely cryptic splice site.
+48+2	G	True	strong	Likely cryptic splice site.
+49-1	C	True	strong	Skipping of exon 2 causes frameshift.
+49-1	T	True	strong	Skipping of exon 2 causes frameshift.
+49-1	A	True	strong	Skipping of exon 2 causes frameshift.
+49-2	C	True	strong	Skipping of exon 2 causes frameshift.
+49-2	T	True	strong	Skipping of exon 2 causes frameshift.
+49-2	G	True	strong	Skipping of exon 2 causes frameshift.
+163+1	C	True	strong	Skipping of exon 2 causes frameshift.
+163+1	T	True	strong	Skipping of exon 2 causes frameshift.
+163+1	A	True	strong	Skipping of exon 2 causes frameshift.
+163+2	C	True	strong	Skipping of exon 2 causes frameshift.
+163+2	G	True	strong	Skipping of exon 2 causes frameshift.
+163+2	A	True	strong	Skipping of exon 2 causes frameshift.
+164-1	C	True	strong	Splicing alteration predicted to cause frameshift.
+164-1	T	True	strong	Splicing alteration predicted to cause frameshift.
+164-1	A	True	strong	Splicing alteration predicted to cause frameshift.
+164-2	G	True	strong	Splicing alteration predicted to cause frameshift.
+164-2	C	True	strong	Splicing alteration predicted to cause frameshift.
+164-2	T	True	strong	Splicing alteration predicted to cause frameshift.
+387+1	C	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+387+1	T	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+387+1	A	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+387+2	C	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+387+2	G	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+387+2	A	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+388-1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+388-1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+388-1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+388-2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+388-2	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+388-2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+531+1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+531+1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+531+1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+531+2	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+531+2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+531+2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+532-1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+532-1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+532-1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+532-2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+532-2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+532-2	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+687+1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+687+1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+687+1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+687+2	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+687+2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+687+2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+688-1	C	True	strong	Splicing alteration predicted to cause frameshift.
+688-1	T	True	strong	Splicing alteration predicted to cause frameshift.
+688-1	A	True	strong	Splicing alteration predicted to cause frameshift.
+688-2	C	True	strong	Splicing alteration predicted to cause frameshift.
+688-2	T	True	strong	Splicing alteration predicted to cause frameshift.
+688-2	G	True	strong	Splicing alteration predicted to cause frameshift.
+832+1	A	True	strong	Splicing alteration predicted to cause frameshift.
+832+1	C	True	strong	Splicing alteration predicted to cause frameshift.
+832+1	T	True	strong	Splicing alteration predicted to cause frameshift.
+832+2	A	True	strong	Splicing alteration predicted to cause frameshift.
+832+2	C	True	strong	Splicing alteration predicted to cause frameshift.
+832+2	G	True	strong	Splicing alteration predicted to cause frameshift.
+833-1	A	True	strong	Splicing alteration predicted to cause frameshift.
+833-1	C	True	strong	Splicing alteration predicted to cause frameshift.
+833-1	T	True	strong	Splicing alteration predicted to cause frameshift.
+833-2	C	True	strong	Splicing alteration predicted to cause frameshift.
+833-2	G	True	strong	Splicing alteration predicted to cause frameshift.
+833-2	T	True	strong	Splicing alteration predicted to cause frameshift.
+1008+1	A	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
+1008+1	C	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
+1008+1	T	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
+1008+2	C	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
+1008+2	G	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
+1008+2	A	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
+1009-1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1009-1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1009-1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1009-2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1009-2	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1009-2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1137+1	C	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
+1137+1	T	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
+1137+1	A	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
+1137+2	C	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
+1137+2	G	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
+1137+2	A	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
+1138-1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1138-1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1138-1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1138-2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1138-2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1138-2	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1320+1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1320+1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1320+1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1320+2	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1320+2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1320+2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1321-1	A	True	strong	Splicing alteration predicted to cause frameshift.
+1321-1	C	True	strong	Splicing alteration predicted to cause frameshift.
+1321-1	T	True	strong	Splicing alteration predicted to cause frameshift.
+1321-2	C	True	strong	Splicing alteration predicted to cause frameshift.
+1321-2	T	True	strong	Splicing alteration predicted to cause frameshift.
+1321-2	G	True	strong	Splicing alteration predicted to cause frameshift.
+1565+1	A	True	strong	Splicing alteration predicted to cause frameshift.
+1565+1	C	True	strong	Splicing alteration predicted to cause frameshift.
+1565+1	T	True	strong	Splicing alteration predicted to cause frameshift.
+1565+2	A	True	strong	Splicing alteration predicted to cause frameshift.
+1565+2	G	True	strong	Splicing alteration predicted to cause frameshift.
+1565+2	C	True	strong	Splicing alteration predicted to cause frameshift.
+1566-1	A	True	moderate	Splicing alteration predicted in-frame insertion with potential rescue transcript.
+1566-1	C	True	moderate	Splicing alteration predicted in-frame insertion with potential rescue transcript.
+1566-1	T	True	moderate	Splicing alteration predicted in-frame insertion with potential rescue transcript.
+1566-2	C	True	moderate	Splicing alteration predicted in-frame insertion with potential rescue transcript.
+1566-2	T	True	moderate	Splicing alteration predicted in-frame insertion with potential rescue transcript.
+1566-2	G	True	moderate	Splicing alteration predicted in-frame insertion with potential rescue transcript.
+1711+1	A	True	strong	Splicing alteration predicted to cause frameshift.
+1711+1	C	True	strong	Splicing alteration predicted to cause frameshift.
+1711+1	T	True	strong	Splicing alteration predicted to cause frameshift.
+1711+2	A	True	strong	Splicing alteration predicted to cause frameshift.
+1711+2	G	True	strong	Splicing alteration predicted to cause frameshift.
+1711+2	C	True	strong	Splicing alteration predicted to cause frameshift.
+1712-1	C	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+1712-1	T	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+1712-1	A	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+1712-2	C	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+1712-2	G	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+1712-2	T	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+1936+1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1936+1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1936+1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1936+2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1936+2	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1936+2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1937-1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1937-1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1937-1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1937-2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1937-2	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1937-2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2164+1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2164+1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2164+1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2164+2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2164+2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2164+2	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2165-1	A	True	strong	Splicing alteration predicted to cause frameshift.
+2165-1	C	True	strong	Splicing alteration predicted to cause frameshift.
+2165-1	T	True	strong	Splicing alteration predicted to cause frameshift.
+2165-2	C	True	strong	Splicing alteration predicted to cause frameshift.
+2165-2	T	True	strong	Splicing alteration predicted to cause frameshift.
+2165-2	G	True	strong	Splicing alteration predicted to cause frameshift.
+2295+1	C	True	strong	Splicing alteration predicted to cause frameshift.
+2295+1	T	True	strong	Splicing alteration predicted to cause frameshift.
+2295+1	A	True	strong	Splicing alteration predicted to cause frameshift.
+2295+2	C	True	strong	Splicing alteration predicted to cause frameshift.
+2295+2	G	True	strong	Splicing alteration predicted to cause frameshift.
+2295+2	A	True	strong	Splicing alteration predicted to cause frameshift.
+2296-1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2296-1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2296-1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2296-2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2296-2	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2296-2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2439+1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2439+1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2439+1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2439+2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2439+2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2439+2	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2440-1	C	True	strong	Splicing alteration creates likely cryptic splice site leading to abnormal splicing.
+2440-1	T	True	strong	Splicing alteration creates likely cryptic splice site leading to abnormal splicing.
+2440-1	A	True	strong	Splicing alteration creates likely cryptic splice site leading to abnormal splicing.
+2440-2	G	True	strong	Splicing alteration creates likely cryptic splice site leading to abnormal splicing.
+2440-2	C	True	strong	Splicing alteration creates likely cryptic splice site leading to abnormal splicing.
+2440-2	T	True	strong	Splicing alteration creates likely cryptic splice site leading to abnormal splicing.

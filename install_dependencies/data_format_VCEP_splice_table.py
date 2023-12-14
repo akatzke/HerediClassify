@@ -26,6 +26,12 @@ def format_VCEP_splice_table(path: pathlib.Path) -> None:
     splice_table.position = splice_table.position.str[:-2]
     ## Reformat alternative_allele
     splice_table.alternative_allele = splice_table.alternative_allele.str.replace(
+        ".", ","
+    )
+    splice_table.alternative_allele = splice_table.alternative_allele.str.replace(
+        "I", "T"
+    )
+    splice_table.alternative_allele = splice_table.alternative_allele.str.replace(
         " ", ""
     )
     splice_table.alternative_allele = splice_table.alternative_allele.str.split(",")
