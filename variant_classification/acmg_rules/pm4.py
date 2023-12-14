@@ -49,7 +49,7 @@ class Pm4(abstract_rule):
                 comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region does not overlap repetitive region."
                 result = True
             elif (
-                transcript.diff_len_protein_percent > 0.1
+                transcript.diff_len_protein_percent > threshold_diff_len_prot_percent
                 and transcript.is_truncated_region_disease_relevant
                 and transcript.len_change_in_repetitive_region
             ):
