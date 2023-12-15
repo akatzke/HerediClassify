@@ -250,7 +250,9 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         is_reading_frame_preserved, frameshift = assess_reading_frame_preservation(
             diff_len
         )
-        diff_len_protein_percent, ptc = calculate_prot_len_diff(ref_transcript, var_seq)
+        diff_len_protein_percent, ptc = calculate_prot_len_diff(
+            ref_transcript, var_seq, diff_len
+        )
         if diff_len_protein_percent != 0:
             len_change_in_repetitive_region = check_intersection_with_bed(
                 variant,
@@ -410,7 +412,9 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
         else:
             is_affected_exon_disease_relevant = True
         is_reading_frame_preserved, _ = assess_reading_frame_preservation(diff_len)
-        diff_len_protein_percent, _ = calculate_prot_len_diff(ref_transcript, var_seq)
+        diff_len_protein_percent, _ = calculate_prot_len_diff(
+            ref_transcript, var_seq, diff_len
+        )
         if diff_len != 0:
             len_change_in_repetitive_region = (
                 check_prot_len_change_in_repetitive_region_exon(

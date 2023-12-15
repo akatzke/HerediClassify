@@ -133,13 +133,16 @@ class Classification_Info:
         )
         self.THRESHOLD_NMD = Info(
             "threshold_nmd",
-            config_location=("disease_relevant_thresholds", "nmd_threshold"),
+            config_location=("disease_relevant_transcripts", "nmd_threshold"),
             group=Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD,
             optional=True,
         )
         self.POS_LAST_KNOWN_PATHO_PTC = Info(
             "pos_last_known_patho_ptc",
-            config_location=("disease_relevant_thresholds", "pos_last_known_patho_ptc"),
+            config_location=(
+                "disease_relevant_transcripts",
+                "pos_last_known_patho_ptc",
+            ),
             group=Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD,
         )
         self.VARIANT = Info("variant")

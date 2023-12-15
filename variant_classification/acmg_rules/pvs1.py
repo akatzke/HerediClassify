@@ -228,7 +228,7 @@ class Pvs1(abstract_rule):
         else:
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD."
             if transcript.is_truncated_region_disease_relevant:
-                comment = "Truncated region is disease relevant."
+                comment = comment + "Truncated region is disease relevant."
                 result = True
                 strength = evidence_strength.STRONG
             else:
