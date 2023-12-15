@@ -105,44 +105,6 @@ def annotate_transcripts(
     return annotated_transcripts
 
 
-def annotate_transcripts_acmg_specification(
-    variant: Variant,
-    fun_dict: dict[VARTYPE_GROUPS, dict[str, Callable[[], TranscriptInfo_annot]]],
-) -> list[TranscriptInfo_annot]:
-    """
-    Check if ACMG classification is sufficient to define complete variant interpretation
-    """
-    annotated_transcripts = []
-    for transcript in variant.transcript_info:
-        if transcript.var_type in VARTYPE_GROUPS.EXONIC.value:
-            try:
-                annot_fun = fun_dict[VARTYPE_GROUPS.EXONIC]["acmg"]
-                annotated_transcript = annot_fun()
-            except Exception:
-                annot_fun = fun_dict[VARTYPE_GROUPS.EXONIC]["general"]
-                annotated_transcript = annot_fun()
-        elif transcript.var_type in VARTYPE_GROUPS.INTRONIC.value:
-            try:
-                annot_fun = fun_dict[VARTYPE_GROUPS.INTRONIC]["acmg"]
-                annotated_transcript = annot_fun()
-            except Exception:
-                annot_fun = fun_dict[VARTYPE_GROUPS.INTRONIC]["general"]
-                annotated_transcript = annot_fun()
-        elif transcript.var_type in VARTYPE_GROUPS.START_LOST.value:
-            try:
-                annot_fun = fun_dict[VARTYPE_GROUPS.START_LOST]["acmg"]
-                annotated_transcript = annot_fun()
-            except Exception:
-                annot_fun = fun_dict[VARTYPE_GROUPS.START_LOST]["general"]
-                annotated_transcript = annot_fun()
-        else:
-            break
-        annotated_transcripts.append(annotated_transcript)
-    if len(annotated_transcripts) == 0:
-        raise TypeError("No annotated transcripts created")
-    return annotated_transcripts
-
-
 @dataclass
 class TranscriptInfo_exonic(TranscriptInfo_annot):
     """
@@ -284,24 +246,6 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             comment_truncated_region=comment_truncated_exon_relevant,
             ptc=ptc,
         )
-
-    @classmethod
-    def get_annotate_acmg(cls, class_info: Classification_Info):
-        class_info = class_info
-        pass
-
-    @classmethod
-    def annotate_acmg_specification(
-        cls, variant: VariantInfo, transcript: TranscriptInfo
-    ):
-        """
-        This function implements gene specifications from ACMG for frameshift and other variants
-        - NMD threshold
-        - Functionally important regions
-        """
-        variant = variant
-        transcript = transcript
-        pass
 
 
 @dataclass
@@ -446,22 +390,6 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             is_reading_frame_preserved=is_reading_frame_preserved,
         )
 
-    @classmethod
-    def get_annotate_acmg(cls):
-        pass
-
-    @classmethod
-    def annotate_acmg_specification(
-        cls, variant: VariantInfo, transcript: TranscriptInfo
-    ):
-        """
-        This function implements gene specifications from ACMG for frameshift and other variants
-        - Preimplemented splice decision trees
-        """
-        variant = variant
-        transcript = transcript
-        pass
-
 
 @dataclass
 class TranscriptInfo_start_loss(TranscriptInfo_annot):
@@ -558,19 +486,3 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
             diff_len_protein_percent=diff_len_protein_percent,
             len_change_in_repetitive_region=len_change_in_repetitive_region,
         )
-
-    @classmethod
-    def get_annotate_acmg(cls, class_info: Classification_Info):
-        class_info = class_info
-        pass
-
-    @classmethod
-    def annotate_acmg_specification(
-        cls, variant: VariantInfo, transcript: TranscriptInfo
-    ):
-        """
-        This function implements gene specifications from ACMG for start loss variants
-        """
-        variant = variant
-        transcript = transcript
-        pass
