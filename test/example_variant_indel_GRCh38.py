@@ -120,6 +120,34 @@ def create_example_del() -> tuple:
     return (transcript, variant)
 
 
+def create_example_del_frameshift() -> tuple:
+    """
+    Create CDH1 deletion variant
+    From HerediVar
+    """
+    hgvs = hgvs_parser.parse_c_posedit("c.1567del".split("c.")[1])
+    transcript = TranscriptInfo(
+        "ENST00000404276",
+        [VARTYPE.INFRAME_DELETION],
+        hgvs,
+        1567,
+        1568,
+        exon=15,
+        intron=None,
+        var_protein=None,
+    )
+    variant = VariantInfo(
+        "22",
+        28687961,
+        28687962,
+        "CHEK2",
+        [VARTYPE.FRAMESHIFT_VARIANT],
+        "G",
+        "",
+    )
+    return (transcript, variant)
+
+
 def create_example_indel() -> tuple:
     """
     Create BRCA1 indel variant
