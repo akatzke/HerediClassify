@@ -1,0 +1,9 @@
+#chr	start	end	gene	comment	strand	prot_start	prot_end	source
+chr17	7675087	7675089	TP53	Variant in hot spots defined by VCEP but not to variants within functional domains.	-	175	175	VCEP
+chr17	7674228	7674230	TP53	Variant in hot spots defined by VCEP but not to variants within functional domains.	-	245	245	VCEP
+chr17	7674219	7674224	TP53	Variant in hot spots defined by VCEP but not to variants within functional domains.	-	248	249	VCEP
+chr17	7673801	7673803	TP53	Variant in hot spots defined by VCEP but not to variants within functional domains.	-	273	273	VCEP
+chr17	7673774	7673776	TP53	Variant in hot spots defined by VCEP but not to variants within functional domains.	-	282	282	VCEP
+chr10	87933027	87933041	PTEN	Variant in hot spots defined by VCEP but not to variants within functional domains.	+	90	94	VCEP
+chr10	87933126	87933149	PTEN	Variant in hot spots defined by VCEP but not to variants within functional domains.	+	123	130	VCEP
+chr10	87952118	87952126	PTEN	Variant in hot spots defined by VCEP but not to variants within functional domains.	+	166	168	VCEP

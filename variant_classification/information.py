@@ -34,6 +34,8 @@ class Classification_Info:
     ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec: Info
     VARIANT_CLINVAR: Info
     VARIANT_HOTSPOT: Info
+    VARIANT_HOTSPOT_ANNOTATION: Info
+    VARIANT_HOTSPOT_ANNOTATION_PATH: Info
     VARIANT_GNOMAD: Info
     VARIANT_FLOSSIES: Info
     VARIANT_PREDICTION: Info
@@ -64,6 +66,12 @@ class Classification_Info:
         )
         self.VARIANT_CLINVAR = Info("variant_clinvar")
         self.VARIANT_HOTSPOT = Info("variant_hotspot")
+        self.VARIANT_HOTSPOT_ANNOTATION = Info("variant_hotspot_annotation")
+        self.VARIANT_HOTSPOT_ANNOTATION_PATH = Info(
+            "variant_hotspot_annotation_path",
+            config_location=("annotation_files", "hotspot", "file"),
+            group=Classification_Info_Groups.PATH,
+        )
         self.VARIANT_GNOMAD = Info("variant_gnomad")
         self.VARIANT_FLOSSIES = Info("variant_flossies")
         self.VARIANT_PREDICTION = Info("variant_prediction")
