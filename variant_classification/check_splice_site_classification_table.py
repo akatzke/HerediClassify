@@ -21,7 +21,7 @@ def annotate_splice_site_classification(
     transcripts: list[TranscriptInfo], path_splice_table: pathlib.Path
 ) -> Optional[RuleResult]:
     """
-    Check if
+    Check if variant is listed in the preclassified splice sites by VCEP
     """
     if len(transcripts) != 1:
         raise ValueError(
