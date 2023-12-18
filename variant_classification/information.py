@@ -36,6 +36,8 @@ class Classification_Info:
     VARIANT_HOTSPOT: Info
     VARIANT_HOTSPOT_ANNOTATION: Info
     VARIANT_HOTSPOT_ANNOTATION_PATH: Info
+    VARIANT_COLDSPOT_ANNOTATION: Info
+    VARIANT_COLDSPOT_ANNOTATION_PATH: Info
     VARIANT_GNOMAD: Info
     VARIANT_FLOSSIES: Info
     VARIANT_PREDICTION: Info
@@ -45,8 +47,12 @@ class Classification_Info:
     THRESHOLD_SPLICING_PREDICTION_BENIGN: Info
     THRESHOLD_PM2: Info
     THRESHOLD_BA1: Info
+    THRESHOLD_BA1_ABSOLUTE: Info
     THRESHOLD_BS1: Info
+    THRESHOLD_BS1_ABSOLUTE: Info
+    THRESHOLD_BS1_SUPPORTING: Info
     THRESHOLD_BS2: Info
+    THRESHOLD_BS2_SUPPORTING: Info
     THRESHOLD_DIFF_LEN_PROT_PERCENT: Info
     THRESHOLD_NMD: Info
     POS_LAST_KNOWN_PATHO_PTC: Info
@@ -67,6 +73,12 @@ class Classification_Info:
         self.VARIANT_CLINVAR = Info("variant_clinvar")
         self.VARIANT_HOTSPOT = Info("variant_hotspot")
         self.VARIANT_HOTSPOT_ANNOTATION = Info("variant_hotspot_annotation")
+        self.VARIANT_COLDSPOT_ANNOTATION = Info("variant_coldspot_annotation")
+        self.VARIANT_COLDSPOT_ANNOTATION_PATH = Info(
+            "variant_coldspot_annotation_path",
+            config_location=("annotation_files", "coldspot", "file"),
+            group=Classification_Info_Groups.PATH,
+        )
         self.VARIANT_HOTSPOT_ANNOTATION_PATH = Info(
             "variant_hotspot_annotation_path",
             config_location=("annotation_files", "hotspot", "file"),
@@ -121,14 +133,34 @@ class Classification_Info:
             config_location=("allele_frequency_thresholds", "threshold_ba1"),
             group=Classification_Info_Groups.THRESHOLD_SINGLE,
         )
+        self.THRESHOLD_BA1_ABSOLUTE = Info(
+            "threshold_ba1_absolute",
+            config_location=("allele_frequency_thresholds", "threshold_ba1_absolute"),
+            group=Classification_Info_Groups.THRESHOLD_SINGLE,
+        )
         self.THRESHOLD_BS1 = Info(
             "threshold_bs1",
             config_location=("allele_frequency_thresholds", "threshold_bs1"),
             group=Classification_Info_Groups.THRESHOLD_SINGLE,
         )
+        self.THRESHOLD_BS1_ABSOLUTE = Info(
+            "threshold_bs1_absolute",
+            config_location=("allele_frequency_thresholds", "threshold_bs1_absolute"),
+            group=Classification_Info_Groups.THRESHOLD_SINGLE,
+        )
+        self.THRESHOLD_BS1_SUPPORTING = Info(
+            "threshold_bs1_supporting",
+            config_location=("allele_frequency_thresholds", "threshold_bs1_supporting"),
+            group=Classification_Info_Groups.THRESHOLD_SINGLE,
+        )
         self.THRESHOLD_BS2 = Info(
             "threshold_bs2",
             config_location=("allele_frequency_thresholds", "threshold_bs2"),
+            group=Classification_Info_Groups.THRESHOLD_SINGLE,
+        )
+        self.THRESHOLD_BS2_SUPPORTING = Info(
+            "threshold_bs2_supporting",
+            config_location=("allele_frequency_thresholds", "threshold_bs2_supporting"),
             group=Classification_Info_Groups.THRESHOLD_SINGLE,
         )
         self.THRESHOLD_DIFF_LEN_PROT_PERCENT = Info(
