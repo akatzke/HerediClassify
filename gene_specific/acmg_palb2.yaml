@@ -1,9 +1,9 @@
 ### Configuration name ###
-name: "ACMG BRCA2"
+name: "ACMG TP53"
 
 ### Rules ###
 rules:
-    - pvs1_brca2
+    - pvs1
     - ps1_protein
     - ps1_splicing
     - pm1
@@ -14,7 +14,8 @@ rules:
     - pp3_protein
     - pp3_splicing
     - ba1
-    - bs1_supporting
+    - bs1
+    - bp1
     - bp3
     - bp4_protein
     - bp4_splicing
@@ -22,16 +23,16 @@ rules:
 
 ### Disease relevant transcript ###
 disease_relevant_transcripts:
-    - name: "ENST00000380152"
-      nmd_threshold: 9599
-      pos_last_known_patho_ptc: 9927
+    - name: "ENST00000261584"
+      nmd_threshold: 3300
+      pos_last_known_patho_ptc: 3549
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:
     pathogenicity_prediction:
-        name: "BayesDel"
-        benign: 0.18
-        pathogenic: 0.3
+        name: "REVEL"
+        benign: 0.290
+        pathogenic: 0.644
     splicing_prediction:
         name: "SpliceAI"
         benign: 0.1
@@ -41,8 +42,7 @@ prediction_tool_thresholds:
 allele_frequency_thresholds:
     threshold_ba1: 0.001
     threshold_bs1: 0.0001
-    threshold_bs1_supporting: 0.00002
-    threshold_pm2: 0
+    threshold_pm2: 0.00001
 
 ### Functional thresholds
 functional_thresholds:
@@ -63,4 +63,4 @@ annotation_files:
         file: "VUS-Task-Force_critical_protein_domains.bed"
     splice_site_table:
         root: "variant_classification/data/splice_site_classification"
-        file: "BRCA2_splice_table_reformatted.csv"
+        file: "PALB2_splice_table.csv"

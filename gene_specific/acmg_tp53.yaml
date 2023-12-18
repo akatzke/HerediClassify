@@ -7,15 +7,15 @@ rules:
     - ps1_protein
     - ps1_splicing
     - pm1
-    - pm2
+    - pm2_supporting
     - pm4
     - pm5_protein
     - pm5_splicing
     - pp3_protein
     - pp3_splicing
-    - ba1
-    - bs1
-    - bs2
+    - ba1_with_absolute
+    - bs1_with_absolute
+    - bs2_supporting
     - bp3
     - bp4_protein
     - bp4_splicing
@@ -24,9 +24,9 @@ rules:
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:
     pathogenicity_prediction:
-        name: "REVEL"
-        benign: 0.290
-        pathogenic: 0.644
+        name: "BayesDel"
+        benign: 0.16
+        pathogenic: 0.16
     splicing_prediction:
         name: "SpliceAI"
         benign: 0.1
@@ -34,9 +34,12 @@ prediction_tool_thresholds:
 
 ### Allelee frequency threshold for each gene ###
 allele_frequency_thresholds:
-    threshold_ba1: 0.1
-    threshold_bs1: 0.01
-    threshold_bs2: 5
+    threshold_ba1: 0.001
+    threshold_ba1_absolute: 5
+    threshold_bs1: 0.0003
+    threshold_bs1_absolute: 5
+    threshold_bs2: 8
+    threshold_bs2_supporting: 2
     threshold_pm2: 0
 
 ### Functional thresholds
@@ -56,12 +59,6 @@ annotation_files:
     critical_region:
         root: "variant_classification/data/critical_region"
         file: "VUS-Task-Force_critical_protein_domains.bed"
-    disease_irrelevant_exons:
-        root: "variant_classification/data/critical_region"
-        file: "VCEP_disease_irrelevant_exons.bed"
-    splice_site_table:
-        root: "variant_classification/data/splice_site_classification"
-        file: "BRCA1_splice_table.csv"
     hotspot_region:
         root: "variant_classification/data/critical_region"
         file: "VCEP_mutational_hotspots.csv"

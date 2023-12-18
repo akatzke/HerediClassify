@@ -7,15 +7,14 @@ rules:
     - ps1_protein
     - ps1_splicing
     - pm1
-    - pm2
+    - pm2_supporting
     - pm4
     - pm5_protein
     - pm5_splicing
     - pp3_protein
     - pp3_splicing
     - ba1
-    - bs1
-    - bs2
+    - bs1_supporting
     - bp3
     - bp4_protein
     - bp4_splicing
@@ -30,9 +29,9 @@ disease_relevant_transcripts:
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:
     pathogenicity_prediction:
-        name: "REVEL"
-        benign: 0.290
-        pathogenic: 0.644
+        name: "BayesDel"
+        benign: 0.15
+        pathogenic: 0.28
     splicing_prediction:
         name: "SpliceAI"
         benign: 0.1
@@ -40,9 +39,9 @@ prediction_tool_thresholds:
 
 ### Allelee frequency threshold for each gene ###
 allele_frequency_thresholds:
-    threshold_ba1: 0.1
-    threshold_bs1: 0.01
-    threshold_bs2: 5
+    threshold_ba1: 0.001
+    threshold_bs1: 0.0001
+    threshold_bs1_supporting: 0.00002
     threshold_pm2: 0
 
 ### Functional thresholds
