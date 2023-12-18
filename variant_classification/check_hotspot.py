@@ -6,7 +6,7 @@ from collections.abc import Callable
 
 from ensembl import ensembl
 from information import Classification_Info, Info
-from variant_classification.variant import TranscriptInfo, VariantInfo
+from variant import TranscriptInfo, VariantInfo
 from utils import check_intersection_with_bed
 
 

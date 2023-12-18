@@ -29,6 +29,7 @@ from transcript_annotated import (
     TranscriptInfo_start_loss,
     annotate_transcripts,
 )
+from check_hotspot import get_check_hotspot
 
 logger = logging.getLogger("Classify.config_annotation")
 
@@ -50,6 +51,7 @@ def get_annotations_needed_from_rules(
         "ps1_protein": Rules.Ps1_protein,
         "ps1_splicing": Rules.Ps1_splicing,
         "pm1": Rules.Pm1,
+        "pm1_defined_regions": Rules.Pm1_defined_regions,
         "pm2": Rules.Pm2,
         "pm4": Rules.Pm4,
         "pm5_protein": Rules.Pm5_protein,
@@ -114,7 +116,7 @@ def get_annotation_functions(
         class_info.VARIANT_HOTSPOT.name: lambda variant: partial(
             return_information,
             "Critical region",
-            variant.affected_region.critical_region,
+            variant.affected_region.cancer_hotspot,
         ),
         class_info.VARIANT_GNOMAD.name: lambda variant: partial(
             return_information, "GnomAD", variant.gnomad
@@ -139,6 +141,9 @@ def get_annotation_functions(
             variant, config, class_info
         ),
         class_info.SPLICE_RESULT.name: lambda variant, config: get_annotation_function_splice_result(
+            variant, config, class_info
+        ),
+        class_info.VARIANT_HOTSPOT_ANNOTATION.name: lambda variant, config: get_annotation_function_check_hotspot(
             variant, config, class_info
         ),
     }
@@ -259,6 +264,18 @@ def get_annotation_function_splice_result(
     """
     fun = prepare_function_for_annotation(
         partial(get_annotate_splice_site_classification, class_info),
+        variant,
+        config,
+        class_info,
+    )
+    return fun
+
+
+def get_annotation_function_check_hotspot(
+    variant: Variant, config: dict, class_info: Classification_Info
+) -> Callable[[], Any]:
+    fun = prepare_function_for_annotation(
+        partial(get_check_hotspot, class_info),
         variant,
         config,
         class_info,
