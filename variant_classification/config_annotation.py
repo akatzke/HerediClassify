@@ -134,14 +134,14 @@ def get_annotation_functions(
         class_info.ANNOTATED_TRANSCRIPT_LIST.name: lambda variant, config: get_annotation_function_annotated_transcript(
             variant, config, class_info
         ),
-        class_info.VARIANT_CLINVAR.name: lambda variant, config: get_annotation_function_variant_clinvar(
-            variant, config, class_info
+        class_info.VARIANT_CLINVAR.name: lambda variant, config: get_annotation_function(
+            get_annotate_clinvar, variant, config, class_info
         ),
-        class_info.SPLICE_RESULT.name: lambda variant, config: get_annotation_function_splice_result(
-            variant, config, class_info
+        class_info.SPLICE_RESULT.name: lambda variant, config: get_annotation_function(
+            get_annotate_splice_site_classification, variant, config, class_info
         ),
-        class_info.VARIANT_HOTSPOT_ANNOTATION.name: lambda variant, config: get_annotation_function_check_hotspot(
-            variant, config, class_info
+        class_info.VARIANT_HOTSPOT_ANNOTATION.name: lambda variant, config: get_annotation_function(
+            get_check_hotspot, variant, config, class_info
         ),
     }
 
@@ -213,6 +213,15 @@ def get_annotation_function_annotated_transcript(
         )
         fun_dict[name] = fun_annot
     fun = partial(annotate_transcripts, variant, fun_dict)
+    return fun
+
+
+def get_annotation_function(
+    get_fun: Callable, variant: Variant, config: dict, class_info: Classification_Info
+):
+    fun = prepare_function_for_annotation(
+        partial(get_fun, class_info), variant, config, class_info
+    )
     return fun
 
 
