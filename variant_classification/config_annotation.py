@@ -134,9 +134,6 @@ def get_annotation_functions(
         class_info.ANNOTATED_TRANSCRIPT_LIST.name: lambda variant, config: get_annotation_function_annotated_transcript(
             variant, config, class_info
         ),
-        class_info.ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec.name: lambda variant, config: get_annotation_function_annotated_transcript_acmg(
-            variant, config, class_info
-        ),
         class_info.VARIANT_CLINVAR.name: lambda variant, config: get_annotation_function_variant_clinvar(
             variant, config, class_info
         ),
@@ -215,31 +212,6 @@ def get_annotation_function_annotated_transcript(
             partial(entry.get_annotate, class_info), variant, config, class_info
         )
         fun_dict[name] = fun_annot
-    fun = partial(annotate_transcripts, variant, fun_dict)
-    return fun
-
-
-def get_annotation_function_annotated_transcript_acmg(
-    variant: Variant, config: dict, class_info: Classification_Info
-) -> Callable[[], Any]:
-    """
-    Create annotation function for construction of Classification_Info.ANNOTATED_TRANSCIPT_LIST_ACMG_Spec
-    """
-    relevant_classes = {
-        VARTYPE_GROUPS.EXONIC: TranscriptInfo_exonic,
-        VARTYPE_GROUPS.INTRONIC: TranscriptInfo_intronic,
-        VARTYPE_GROUPS.START_LOST: TranscriptInfo_start_loss,
-    }
-    fun_dict = {}
-    for name, entry in relevant_classes.items():
-        fun_annot = prepare_function_for_annotation(
-            partial(entry.get_annotate, class_info), variant, config, class_info
-        )
-        fun_dict[name]["general"] = fun_annot
-        fun_acmg = prepare_function_for_annotation(
-            partial(entry.get_annotation_acmg, class_info), variant, config, class_info
-        )
-        fun_dict[name]["acmg"] = fun_acmg
     fun = partial(annotate_transcripts, variant, fun_dict)
     return fun
 
