@@ -61,6 +61,7 @@ annotation_files:
     critical_regions:
         root: "variant_classification/data/critical_region"
         critical_region: "VCEP_defined_critical_regions.bed"
+        coldspot_region: "VCEP_coldspot.bed"
     splice_site_table:
         root: "variant_classification/data/splice_site_classification"
         file: "BRCA1_splice_table.csv"

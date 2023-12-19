@@ -112,6 +112,9 @@
                         },
                         "hotspot_region":{
                             "type": "string"
+                        },
+                        "coldspot_region":{
+                            "type": "string"
                         }
                     }
                 },
