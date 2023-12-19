@@ -130,6 +130,12 @@ def get_annotation_functions(
         class_info.VARIANT_PREDICTION.name: lambda variant: partial(
             return_information, "Prediction tools", variant.prediction_tools
         ),
+        class_info.FUNCTIONAL_ASSAY.name: lambda: partial(
+            return_information, "Functional assay", variant.functional_assay
+        ),
+        class_info.SPLICING_ASSAY.name: lambda: partial(
+            return_information, "Splicing assay", variant.splicing_assay
+        ),
     }
 
     ### Dictionary for all Classification_Info objects that have a get_annotation_function

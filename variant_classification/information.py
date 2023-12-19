@@ -64,6 +64,8 @@ class Classification_Info:
     DISEASE_IRRELEVANT_EXONS_PATH: Info
     SPLICE_SITE_TABLE_PATH: Info
     SPLICE_RESULT: Info
+    FUNCTIONAL_ASSAY: Info
+    SPLICING_ASSAY: Info
 
     def __init__(self):
         self.ANNOTATED_TRANSCRIPT_LIST = Info("annotated_transcript_list")
@@ -219,3 +221,5 @@ class Classification_Info:
             group=Classification_Info_Groups.PATH,
         )
         self.SPLICE_RESULT = Info("splice_result", optional=True)
+        self.FUNCTIONAL_ASSAY = Info("functional_assay")
+        self.SPLICING_ASSAY = Info("splicing_assay")
