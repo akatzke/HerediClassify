@@ -76,12 +76,12 @@ class Classification_Info:
         self.VARIANT_COLDSPOT_ANNOTATION = Info("variant_coldspot_annotation")
         self.VARIANT_COLDSPOT_ANNOTATION_PATH = Info(
             "variant_coldspot_annotation_path",
-            config_location=("annotation_files", "coldspot", "file"),
+            config_location=("annotation_files", "critical_regions", "coldspot_region"),
             group=Classification_Info_Groups.PATH,
         )
         self.VARIANT_HOTSPOT_ANNOTATION_PATH = Info(
             "variant_hotspot_annotation_path",
-            config_location=("annotation_files", "hotspot", "file"),
+            config_location=("annotation_files", "critical_regions", "hotspot_region"),
             group=Classification_Info_Groups.PATH,
         )
         self.VARIANT_GNOMAD = Info("variant_gnomad")
@@ -199,13 +199,17 @@ class Classification_Info:
         )
         self.CRITICAL_REGION_PATH = Info(
             "critical_region_path",
-            config_location=("annotation_files", "critical_region", "file"),
+            config_location=("annotation_files", "critical_regions", "critical_region"),
             group=Classification_Info_Groups.PATH,
             optional=True,
         )
         self.DISEASE_IRRELEVANT_EXONS_PATH = Info(
             "disease_irrelevant_exons_path",
-            config_location=("annotation_files", "disease_irrelevant_exons", "file"),
+            config_location=(
+                "annotation_files",
+                "critical_regions",
+                "disease_irrelevant_exons",
+            ),
             group=Classification_Info_Groups.PATH,
             optional=True,
         )

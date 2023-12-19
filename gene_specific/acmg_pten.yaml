@@ -61,7 +61,5 @@ annotation_files:
         rep: "repeats_hg38_uniprot.bed"
     critical_region:
         root: "variant_classification/data/critical_region"
-        file: "VUS-Task-Force_critical_protein_domains.bed"
-    hotspot_region:
-        root: "variant_classification/data/critical_region"
-        file: "VCEP_mutational_hotspots.csv"
+        critical_region: "VCEP_defined_critical_regions.bed"
+        hotspot_region: "VCEP_mutational_hotspots.csv"

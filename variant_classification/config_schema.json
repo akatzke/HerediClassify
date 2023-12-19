@@ -99,22 +99,18 @@
                         }
                     }
                 },
-                "critical_region":{
+                "critical_regions":{
                     "properties" :{
                         "root": {
                             "type": "string"
                         },
-                        "file": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "disease_irrelevant_exons":{
-                    "properties" :{
-                        "root": {
+                        "critical_region": {
                             "type": "string"
                         },
-                        "file": {
+                        "disease_irrelevant_exons":{
+                            "type": "string"
+                        },
+                        "hotspot_region":{
                             "type": "string"
                         }
                     }
