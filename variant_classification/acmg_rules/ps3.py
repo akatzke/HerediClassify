@@ -53,9 +53,9 @@ class Ps3(abstract_rule):
         )
 
 
-class Bs3_prot_and_splice_assay(abstract_rule):
+class Ps3_prot_and_splice_assay(abstract_rule):
     """
-    BS3: Well-established in vitro or in vivo functional studies show no damaging effect on protein function or splicing.
+    PS3: Well-established in vitro or in vivo functional studies supportive of a damaging effect on the gene or gene product.
     """
 
     @classmethod
