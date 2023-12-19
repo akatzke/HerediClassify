@@ -13,7 +13,7 @@ from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_t
 from acmg_rules.pvs1 import Pvs1
 from acmg_rules.pvs1_brca2 import Pvs1_brca2
 from information import Classification_Info, Info
-from variant import TranscriptInfo, VariantInfo
+from variant import TranscriptInfo, VariantInfo, FunctionalData
 from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
@@ -41,6 +41,7 @@ class Pvs1_atm(Pvs1):
                 class_info.SPLICE_RESULT,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
+                class_info.SPLICING_ASSAY,
             ),
         )
 
@@ -54,6 +55,7 @@ class Pvs1_atm(Pvs1):
         splice_result: Optional[RuleResult],
         prediction_dict: dict[str, float],
         threshold: Threshold,
+        splice_assay: FunctionalData,
     ):
         results = []
         for transcript in annotated_transcript:
@@ -71,6 +73,21 @@ class Pvs1_atm(Pvs1):
                 )
                 results.append(result)
             elif isinstance(transcript, TranscriptInfo_intronic):
+                if splice_assay.performed:
+                    if splice_assay.pathogenic:
+                        result = True
+                        comment = f"A splice assay was performed showing a detrimental effect on splicing by the variant."
+                    else:
+                        result = False
+                        comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
+                    return RuleResult(
+                        "PVS1_RNA",
+                        rule_type.SPLICING,
+                        evidence_type.PATHOGENIC,
+                        result,
+                        evidence_strength.VERY_STRONG,
+                        comment,
+                    )
                 try:
                     nmd_threshold = nmd_threshold_dict[transcript.transcript_id]
                 except KeyError or TypeError:

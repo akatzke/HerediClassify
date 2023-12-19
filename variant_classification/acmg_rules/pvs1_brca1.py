@@ -11,7 +11,7 @@ from acmg_rules.utils import (
 )
 from acmg_rules.pvs1 import Pvs1
 from information import Classification_Info, Info
-from variant import TranscriptInfo, VariantInfo
+from variant import TranscriptInfo, VariantInfo, FunctionalData
 from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
@@ -37,6 +37,7 @@ class Pvs1_brca1(Pvs1):
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.SPLICE_RESULT,
+                class_info.SPLICING_ASSAY,
             ),
         )
 
@@ -48,6 +49,7 @@ class Pvs1_brca1(Pvs1):
         pos_last_known_patho_ptc_dict: dict[str, int],
         threshold_diff_len_prot_percent: float,
         splice_result: Optional[RuleResult],
+        splice_assay: FunctionalData,
     ):
         results = []
         for transcript in annotated_transcript:
@@ -66,6 +68,21 @@ class Pvs1_brca1(Pvs1):
                 )
                 results.append(result)
             elif isinstance(transcript, TranscriptInfo_intronic):
+                if splice_assay.performed:
+                    if splice_assay.pathogenic:
+                        result = True
+                        comment = f"A splice assay was performed showing a detrimental effect on splicing by the variant."
+                    else:
+                        result = False
+                        comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
+                    return RuleResult(
+                        "PVS1_RNA",
+                        rule_type.SPLICING,
+                        evidence_type.PATHOGENIC,
+                        result,
+                        evidence_strength.VERY_STRONG,
+                        comment,
+                    )
                 if splice_result is None:
                     result = cls.assess_pvs1_splice_brca1(
                         transcript, threshold_diff_len_prot_percent
