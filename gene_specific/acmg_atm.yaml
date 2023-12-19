@@ -6,7 +6,6 @@ rules:
     - pvs1_atm
     - ps1_protein
     - ps1_splicing
-    - pm1
     - pm2
     - pm4
     - pm5_protein
@@ -15,7 +14,6 @@ rules:
     - pp3_splicing
     - ba1
     - bs1
-    - bp3
     - bp4_protein
     - bp4_splicing
     - bp7

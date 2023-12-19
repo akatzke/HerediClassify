@@ -1,14 +1,12 @@
 ### Configuration name ###
-name: "ACMG TP53"
+name: "ACMG PALB2"
 
 ### Rules ###
 rules:
-    - pvs1
+    - pvs1_palb2
     - ps1_protein
     - ps1_splicing
-    - pm1
     - pm2_supporting
-    - pm4
     - pm5_protein
     - pm5_splicing
     - pp3_protein
@@ -16,7 +14,6 @@ rules:
     - ba1
     - bs1
     - bp1
-    - bp3
     - bp4_protein
     - bp4_splicing
     - bp7

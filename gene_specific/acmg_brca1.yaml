@@ -6,16 +6,14 @@ rules:
     - pvs1_brca1
     - ps1_protein
     - ps1_splicing
-    - pm1
+    - ps3
     - pm2_supporting
-    - pm4
     - pm5_protein
     - pm5_splicing
     - pp3_protein
     - pp3_splicing
     - ba1
     - bs1_supporting
-    - bp3
     - bp4_protein
     - bp4_splicing
     - bp7

@@ -1,9 +1,9 @@
 ### Configuration name ###
-name: "ACMG TP53"
+name: "ACMG PTEN"
 
 ### Rules ###
 rules:
-    - pvs1
+    - pvs1_pten
     - ps1_protein
     - ps1_splicing
     - pm1
@@ -16,7 +16,6 @@ rules:
     - pp3_splicing
     - ba1
     - bs1_supporting
-    - bp3
     - bp4_protein
     - bp4_splicing
     - bp7
