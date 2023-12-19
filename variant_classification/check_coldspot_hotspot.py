@@ -10,7 +10,7 @@ from variant import TranscriptInfo, VariantInfo
 from utils import check_intersection_with_bed
 
 
-def check_hotspot(
+def check_variant_intersection_with_bed(
     variant_hotspot_annotation_path: pathlib.Path,
     variant: VariantInfo,
     transcript: list[TranscriptInfo],
@@ -35,9 +35,25 @@ def get_check_hotspot(
     Get function for hotspot annotation and needed classification_information objects
     """
     return (
-        check_hotspot,
+        check_variant_intersection_with_bed,
         (
             class_info.VARIANT_HOTSPOT_ANNOTATION_PATH,
+            class_info.VARIANT,
+            class_info.TRANSCRIPT,
+        ),
+    )
+
+
+def get_check_coldspot(
+    class_info: Classification_Info,
+) -> tuple[Callable, tuple[Info, ...]]:
+    """
+    Get function for hotspot annotation and needed classification_information objects
+    """
+    return (
+        check_variant_intersection_with_bed,
+        (
+            class_info.VARIANT_COLDSPOT_ANNOTATION_PATH,
             class_info.VARIANT,
             class_info.TRANSCRIPT,
         ),

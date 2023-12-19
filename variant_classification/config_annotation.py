@@ -29,7 +29,10 @@ from transcript_annotated import (
     TranscriptInfo_start_loss,
     annotate_transcripts,
 )
-from check_hotspot import get_check_hotspot
+from check_coldspot_hotspot import (
+    get_check_coldspot,
+    get_check_hotspot,
+)
 
 logger = logging.getLogger("Classify.config_annotation")
 
@@ -143,6 +146,9 @@ def get_annotation_functions(
         class_info.VARIANT_HOTSPOT_ANNOTATION.name: lambda variant, config: get_annotation_function(
             get_check_hotspot, variant, config, class_info
         ),
+        class_info.VARIANT_COLDSPOT_ANNOTATION.name: lambda variant, config: get_annotation_function(
+            get_check_coldspot, variant, config, class_info
+        ),
     }
 
     ### Dictionary for all Classification_Info that belong to a Classification_Info_groups
@@ -221,45 +227,6 @@ def get_annotation_function(
 ):
     fun = prepare_function_for_annotation(
         partial(get_fun, class_info), variant, config, class_info
-    )
-    return fun
-
-
-def get_annotation_function_variant_clinvar(
-    variant: Variant, config: dict, class_info: Classification_Info
-) -> Callable[[], Any]:
-    """
-    Create annotation function for construction of Classification_Info.VARIANT_CLINVAR
-    """
-    fun = prepare_function_for_annotation(
-        partial(get_annotate_clinvar, class_info), variant, config, class_info
-    )
-    return fun
-
-
-def get_annotation_function_splice_result(
-    variant: Variant, config: dict, class_info: Classification_Info
-) -> Callable[[], Any]:
-    """
-    Create annotation function for construction of Classification_Info.SPLICE_RESULT
-    """
-    fun = prepare_function_for_annotation(
-        partial(get_annotate_splice_site_classification, class_info),
-        variant,
-        config,
-        class_info,
-    )
-    return fun
-
-
-def get_annotation_function_check_hotspot(
-    variant: Variant, config: dict, class_info: Classification_Info
-) -> Callable[[], Any]:
-    fun = prepare_function_for_annotation(
-        partial(get_check_hotspot, class_info),
-        variant,
-        config,
-        class_info,
     )
     return fun
 
