@@ -11,8 +11,17 @@ from pydantic import BaseModel
 from classify import classify
 from _version import __version__
 
-app = FastAPI()
+from fastapi import Request, status
+from fastapi.responses import JSONResponse
+import traceback
 
+app = FastAPI()
+@app.exception_handler(Exception)
+async def my_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"message": ''.join(traceback.format_tb(exc.__traceback__)).replace('\n', '')}
+    )
 
 class Input(BaseModel):
     config_path: str
