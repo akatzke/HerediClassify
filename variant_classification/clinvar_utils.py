@@ -12,7 +12,6 @@ import pyensembl
 from variant import TranscriptInfo
 from var_type import VARTYPE_GROUPS
 from ensembl import ensembl
-from custom_exceptions import Pyensembl_no_coding_sequence
 
 logger = logging.getLogger("GenOtoScope_Classify.genotoscope_clinvar")
 
@@ -46,11 +45,11 @@ def get_affected_transcript(
 ) -> tuple[TranscriptInfo, pyensembl.transcript.Transcript]:
     for transcript in transcripts:
         if any(var_type in transcript.var_type for var_type in var_types.value):
-            ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
             try:
+                ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
                 ref_transcript.coding_sequence
             except ValueError or AttributeError:
-                raise Pyensembl_no_coding_sequence
+                continue
             return transcript, ref_transcript
     raise ValueError(f"No transcript has {var_types}")
 
