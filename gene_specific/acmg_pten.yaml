@@ -8,7 +8,7 @@ rules:
     - ps1_splicing
     - pm1
     - pm2
-    - pm4
+    - pm4_pten
     - pm5_protein
     - pm5_splicing
     - pp2
