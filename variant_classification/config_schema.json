@@ -12,7 +12,20 @@
             }
         },
         "disease_relevant_transcript": {
-            "type": "string"
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "nmd_threshold": {
+                        "type": "integer"
+                    },
+                    "pos_last_known_ptc": {
+                        "type": "integer"
+                    }
+                }
             }
         },
         "prediction_tool_threshold" :{
@@ -39,11 +52,47 @@
                 }
             }
         },
+        "loglikelihood_thresholds": {
+            "properties": {
+                "pathogenic_prediction": {
+                    "properties": {
+                        "supproting": {
+                            "type": "number"
+                        },
+                        "moderate": {
+                            "type": "number"
+                        },
+                        "strong": {
+                            "type": "number"
+                        },
+                        "very_strong": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "benign_prediction": {
+                    "properties": {
+                        "supproting": {
+                            "type": "number"
+                        },
+                        "moderate": {
+                            "type": "number"
+                        },
+                        "strong": {
+                            "type": "number"
+                        },
+                        "very_strong": {
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        },
         "allele_frequency_threshold" :{
             "properties":{
                 "threshold_ba1": {
                     "type": "number"
-                },
+                }
                 "threshold_ba1_absolute": {
                     "type": "integer"
                 },
@@ -142,8 +191,6 @@
                     "type": "string"
                 }
             }
-        },
-    "required": [
-        "rules"
-    ]
+        }
+    }
 }
