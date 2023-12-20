@@ -6,7 +6,7 @@ rules:
     - pvs1_atm
     - ps1_protein
     - ps1_splicing
-    - pm2
+    - pm2_supporting
     - pm4_stoploss
     - pm5_protein
     - pm5_splicing
