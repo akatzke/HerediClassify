@@ -12,7 +12,7 @@ from acmg_rules.utils import (
 from information import Info, Classification_Info
 from transcript_annotated import TranscriptInfo_annot
 from variant import VariantInfo
-from variant_classification.var_type import VARTYPE
+from var_type import VARTYPE
 
 
 class Pm4(abstract_rule):

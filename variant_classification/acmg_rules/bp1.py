@@ -13,7 +13,7 @@ from information import Classification_Info, Info
 from var_type import VARTYPE, VARTYPE_GROUPS
 from variant import VariantInfo
 from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_tool
-from variant_classification import var_type
+from var_type import VARTYPE
 
 
 class Bp1_annotation_cold_spot_strong(abstract_rule):
