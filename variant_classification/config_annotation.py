@@ -62,6 +62,8 @@ def get_annotations_needed_from_rules(
         "pm2": Rules.Pm2,
         "pm2_supporting": Rules.Pm2_supporting,
         "pm4": Rules.Pm4,
+        "pm4_pten": Rules.Pm4_pten,
+        "pm4_stoploss": Rules.Pm4_stoploss,
         "pm5_protein": Rules.Pm5_protein,
         "pm5_splicing": Rules.Pm5_splicing,
         "pp2": Rules.Pp2,
