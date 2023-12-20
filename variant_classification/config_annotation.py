@@ -18,6 +18,7 @@ from information import (
 from acmg_rules.computation_evidence_utils import (
     Threshold,
     THRESHOLD_DIRECTION,
+    Threshold_evidence_strength,
 )
 from clinvar_annot import get_annotate_clinvar
 from check_splice_site_classification_table import (
@@ -152,6 +153,11 @@ def get_annotation_functions(
         class_info.SPLICING_ASSAY.name: lambda: partial(
             return_information, "Splicing assay", variant.splicing_assay
         ),
+        class_info.VARIANT_MULTIFACTORIAL_LIKELIHOOD.name: lambda: partial(
+            return_information,
+            "Multifactorial likelihood",
+            variant.multifactorial_likelihood,
+        ),
     }
 
     ### Dictionary for all Classification_Info objects that have a get_annotation_function
@@ -184,6 +190,11 @@ def get_annotation_functions(
         Classification_Info_Groups.THRESHOLD_PREDICTION: lambda annot, config: partial(
             get_threshold_prediction_from_config, annot.config_location, config
         ),
+        Classification_Info_Groups.THRESHOLD_MULT_STRENGTH: lambda annot, config: partial(
+            get_threshold_prediction_from_config_mult_strength,
+            annot.config_location,
+            config,
+        ),
         Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD: lambda annot, config: partial(
             get_disease_relevant_transcript_thresholds, annot.config_location, config
         ),
@@ -210,6 +221,10 @@ def get_annotation_functions(
             elif annotation.group is Classification_Info_Groups.THRESHOLD_PREDICTION:
                 annotation.compute_function = dict_annotation_groups[
                     Classification_Info_Groups.THRESHOLD_PREDICTION
+                ](annotation, config)
+            elif annotation.group is Classification_Info_Groups.THRESHOLD_MULT_STRENGTH:
+                annotation.compute_function = dict_annotation_groups[
+                    Classification_Info_Groups.THRESHOLD_MULT_STRENGTH
                 ](annotation, config)
             elif (
                 annotation.group
@@ -404,7 +419,9 @@ def get_threshold_prediction_from_config(
         thr_benign = config_prediction_tool["benign"]
         thr_pathogenic = config_prediction_tool["pathogenic"]
     except KeyError:
-        logger.warning(f"The location {config_location} could not ")
+        logger.warning(
+            f"The location {config_location} could not be found in configuration."
+        )
         return None
     try:
         float(thr_benign)
@@ -432,6 +449,44 @@ def get_threshold_prediction_from_config(
             )
         else:
             return Threshold(name, thr_pathogenic, THRESHOLD_DIRECTION.LOWER)
+
+
+def get_threshold_prediction_from_config_mult_strength(
+    config_location: Union[tuple[str, ...], None], config: dict
+) -> Union[Threshold_evidence_strength, None]:
+    """
+    Get thresholds when multiple evidence strengths are defined
+    """
+    if config_location is None:
+        logger.warning(
+            f"No location in the configuration is defined for this threshold. Please check information.py."
+        )
+        return None
+    try:
+        config_prediction_tool = reduce(op.getitem, config_location, config)
+    except KeyError:
+        logger.warning(
+            f"The location {config_location} could not be found in configuration."
+        )
+        return None
+    thr_supp = config_prediction_tool.get("supporting")
+    thr_mod = config_prediction_tool.get("moderate")
+    thr_str = config_prediction_tool.get("strong")
+    thr_very_str = config_prediction_tool.get("very_strong")
+    if config_location[-1] == "pathogenic":
+        dir = THRESHOLD_DIRECTION.HIGHER
+    elif config_location[-1] == "benign":
+        dir = THRESHOLD_DIRECTION.LOWER
+    else:
+        raise ValueError(f"The direction of the threshold could not be determined")
+    return Threshold_evidence_strength(
+        name=config_location[0],
+        direction=dir,
+        threshold_very_strong=thr_very_str,
+        threshold_strong=thr_str,
+        threshold_moderate=thr_mod,
+        threshold_supporting=thr_supp,
+    )
 
 
 def get_disease_relevant_transcript_thresholds(

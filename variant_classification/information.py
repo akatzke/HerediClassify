@@ -12,6 +12,7 @@ ValueType = TypeVar("ValueType")
 class Classification_Info_Groups(Enum):
     THRESHOLD_SINGLE = auto()
     THRESHOLD_PREDICTION = auto()
+    THRESHOLD_MULT_STRENGTH = auto()
     PATH = auto()
     DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD = auto()
 
@@ -41,10 +42,13 @@ class Classification_Info:
     VARIANT_GNOMAD: Info
     VARIANT_FLOSSIES: Info
     VARIANT_PREDICTION: Info
+    VARIANT_MULTIFACTORIAL_LIKELIHOOD: Info
     THRESHOLD_PATHOGENICITY_PREDICTION_PATHOGENIC: Info
     THRESHOLD_PATHOGENICITY_PREDICTION_BENIGN: Info
     THRESHOLD_SPLICING_PREDICTION_PATHOGENIC: Info
     THRESHOLD_SPLICING_PREDICTION_BENIGN: Info
+    THRESHOLD_LIKELIHOOD_BENIGN: Info
+    THRESHOLD_LIKELIHOOD_PATHOGENIC: Info
     THRESHOLD_PM2: Info
     THRESHOLD_BA1: Info
     THRESHOLD_BA1_ABSOLUTE: Info
@@ -89,6 +93,9 @@ class Classification_Info:
         self.VARIANT_GNOMAD = Info("variant_gnomad")
         self.VARIANT_FLOSSIES = Info("variant_flossies")
         self.VARIANT_PREDICTION = Info("variant_prediction")
+        self.VARIANT_MULTIFACTORIAL_LIKELIHOOD = Info(
+            "variant_multifactorial_likelihood"
+        )
         self.THRESHOLD_PATHOGENICITY_PREDICTION_BENIGN = Info(
             "prediction_pathogenicity_benign",
             config_location=(
@@ -124,6 +131,16 @@ class Classification_Info:
                 "pathogenic",
             ),
             group=Classification_Info_Groups.THRESHOLD_PREDICTION,
+        )
+        self.THRESHOLD_LIKELIHOOD_PATHOGENIC = Info(
+            "threshold_likelihood_pathogenic",
+            config_location=("likelihood_thresholds", "pathogenic"),
+            group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
+        )
+        self.THRESHOLD_LIKELIHOOD_PATHOGENIC = Info(
+            "threshold_likelihood_pathogenic",
+            config_location=("likelihood_thresholds", "benign"),
+            group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
         )
         self.THRESHOLD_PM2 = Info(
             "threshold_pm2",
