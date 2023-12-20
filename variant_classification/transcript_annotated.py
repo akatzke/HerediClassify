@@ -25,7 +25,10 @@ from genotoscope_protein_len_diff import (
     calculate_prot_len_diff,
     calculate_prot_len_diff_start_loss,
 )
-from custom_exceptions import Pyensembl_no_coding_sequence
+from custom_exceptions import (
+    Pyensembl_no_coding_sequence,
+    Pyensembl_transcript_not_found,
+)
 from variant_in_critical_region import (
     check_variant_in_critical_region_exon,
 )
@@ -86,13 +89,18 @@ def annotate_transcripts(
         ):
             annot_fun = fun_dict[VARTYPE_GROUPS.INTRONIC]
         else:
-            break
+            continue
         try:
             annotated_transcript = annot_fun(transcript)
             annotated_transcripts.append(annotated_transcript)
         except Pyensembl_no_coding_sequence:
             logger.warning(
                 f"No coding sequence in pyensembl for transcript {transcript.transcript_id}.",
+                exc_info=True,
+            )
+        except Pyensembl_transcript_not_found:
+            logger.warning(
+                f"No transcript in pyensembl for transcript {transcript.transcript_id}.",
                 exc_info=True,
             )
     return annotated_transcripts
@@ -171,7 +179,10 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         """
         Perform annotation for exonic variants
         """
-        ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
+        try:
+            ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
+        except ValueError:
+            raise Pyensembl_transcript_not_found
         try:
             ref_transcript.coding_sequence
         except ValueError or AttributeError:
@@ -300,7 +311,10 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
         """
         Perform annotation specific for intronic variants
         """
-        ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
+        try:
+            ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
+        except ValueError:
+            raise Pyensembl_transcript_not_found
         try:
             ref_transcript.coding_sequence
         except ValueError or AttributeError:
@@ -431,7 +445,10 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
         path_critical_region: pathlib.Path,
         transcript: TranscriptInfo,
     ) -> TranscriptInfo_start_loss:
-        ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
+        try:
+            ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
+        except ValueError:
+            raise Pyensembl_transcript_not_found
         try:
             ref_transcript.coding_sequence
         except ValueError or AttributeError:
