@@ -4,6 +4,7 @@ from acmg_rules.ba1 import *
 from acmg_rules.bs1 import *
 from acmg_rules.bs2 import *
 from acmg_rules.bs3 import *
+from acmg_rules.bs4 import *
 from acmg_rules.bp1 import *
 from acmg_rules.bp3 import *
 from acmg_rules.bp4 import *
@@ -15,6 +16,7 @@ from acmg_rules.pm1 import *
 from acmg_rules.pm2 import *
 from acmg_rules.pm4 import *
 from acmg_rules.pm5 import *
+from acmg_rules.pp1 import *
 from acmg_rules.pp2 import *
 from acmg_rules.pp3 import *
 from acmg_rules.pp4 import *

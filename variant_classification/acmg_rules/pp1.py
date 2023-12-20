@@ -14,10 +14,10 @@ from acmg_rules.computation_evidence_utils import Threshold_evidence_strength
 from variant import MultifactorialLikelihood
 
 
-class Pp4(abstract_rule):
+class Pp1(abstract_rule):
     """
-    PP4: Patient’s phenotype or family history is highly specific for a disease with a single genetic etiology.
-    Here used for multifactorial likelihood
+    PP1: Co-segregation with disease in multiple affected family members in a gene definitively known to cause the disease.
+    Here used for Co-segregation
     """
 
     @classmethod
@@ -38,49 +38,47 @@ class Pp4(abstract_rule):
         multifactorial_likelihood: MultifactorialLikelihood,
         thresholds: Threshold_evidence_strength,
     ) -> RuleResult:
-        if multifactorial_likelihood.multifactorial_likelihood is None:
+        if multifactorial_likelihood.co_segregation is None:
             result = False
-            comment = "No multifactorial likelihood given for variant."
+            comment = "No Co-segregation given for variant."
             strength = evidence_strength.SUPPORTING
         elif (
             thresholds.threshold_very_strong is not None
-            and multifactorial_likelihood.multifactorial_likelihood
+            and multifactorial_likelihood.co_segregation
             > thresholds.threshold_very_strong
         ):
             result = True
             strength = evidence_strength.VERY_STRONG
-            comment = f"Multifactorial likelihood given for variant {multifactorial_likelihood.multifactorial_likelihood} meets threshold for very strong pathogenic evidence strength {thresholds.threshold_very_strong}."
+            comment = f"Co-segregation given for variant {multifactorial_likelihood.co_segregation} meets threshold for very strong pathogenic evidence strength {thresholds.threshold_very_strong}."
         elif (
             thresholds.threshold_strong is not None
-            and multifactorial_likelihood.multifactorial_likelihood
-            > thresholds.threshold_strong
+            and multifactorial_likelihood.co_segregation > thresholds.threshold_strong
         ):
             result = True
             strength = evidence_strength.STRONG
-            comment = f"Multifactorial likelihood given for variant {multifactorial_likelihood.multifactorial_likelihood} meets threshold for strong pathogenic evidence strength {thresholds.threshold_strong}."
+            comment = f"Co-segregation given for variant {multifactorial_likelihood.co_segregation} meets threshold for strong pathogenic evidence strength {thresholds.threshold_strong}."
         elif (
             thresholds.threshold_moderate is not None
-            and multifactorial_likelihood.multifactorial_likelihood
-            > thresholds.threshold_moderate
+            and multifactorial_likelihood.co_segregation > thresholds.threshold_moderate
         ):
             result = True
             strength = evidence_strength.MODERATE
-            comment = f"Multifactorial likelihood given for variant {multifactorial_likelihood.multifactorial_likelihood} meets threshold for moderate pathogenic evidence strength {thresholds.threshold_moderate}."
+            comment = f"Co-segregation given for variant {multifactorial_likelihood.co_segregation} meets threshold for moderate pathogenic evidence strength {thresholds.threshold_moderate}."
         elif (
             thresholds.threshold_supporting is not None
-            and multifactorial_likelihood.multifactorial_likelihood
+            and multifactorial_likelihood.co_segregation
             > thresholds.threshold_supporting
         ):
             result = True
             strength = evidence_strength.SUPPORTING
-            comment = f"Multifactorial likelihood given for variant {multifactorial_likelihood.multifactorial_likelihood} meets threshold for supporting pathogenic evidence strength {thresholds.threshold_supporting}."
+            comment = f"Co-segregation given for variant {multifactorial_likelihood.co_segregation} meets threshold for supporting pathogenic evidence strength {thresholds.threshold_supporting}."
         else:
             result = False
             strength = evidence_strength.SUPPORTING
-            comment = f"Multifactorial likelihood given for variant {multifactorial_likelihood.multifactorial_likelihood} does not meet any threshold for pathogenic evidence."
+            comment = f"Co-segregation given for variant {multifactorial_likelihood.co_segregation} does not meet any threshold for pathogenic evidence."
 
         return RuleResult(
-            "PP4",
+            "PP1",
             rule_type.GENERAL,
             evidence_type.PATHOGENIC,
             result,
