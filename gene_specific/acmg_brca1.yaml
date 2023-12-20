@@ -37,7 +37,7 @@ prediction_tool_thresholds:
 
 
 ### Thresholds loglikelihood ###
-loglikelihood_thresholds:
+likelihood_thresholds:
     benign:
         supporting: 0.48
         moderate: 0.25

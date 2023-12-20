@@ -52,7 +52,7 @@
                 }
             }
         },
-        "loglikelihood_thresholds": {
+        "likelihood_thresholds": {
             "properties": {
                 "pathogenic_prediction": {
                     "properties": {
