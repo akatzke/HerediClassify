@@ -55,7 +55,3 @@ def test_classify_no_hotspot():
     variant_str = create_json_string_from_variant(path_variant)
     path_config = paths.ROOT / "config.yaml"
     rules_list = classify(path_config, variant_str)
-
-
-# def test_one_threshold_pathogenic() -> None:
-#    assert assess_one_threshold(data=1.2, threshold=1.1) == Prediction_result.PATHOGENIC

@@ -1,3 +1,6 @@
+### Configuration name ###
+name: "Test_config"
+
 ### Rules ###
 rules:
     - pvs1
@@ -41,10 +44,3 @@ annotation_files:
     uniprot:
         root: "Uniprot"
         rep: "repeats_hg38_uniprot.bed"
-
-### Variant specific annotations
-### Define respective gene specific configuration in the given location
-gene_specific_configs:
-    root: "/home/katzkean/variant_classification/gene_specific/"
-    brca1: "acmg_brca1.yaml"
-    brca2: "acmg_brca2.yaml"
