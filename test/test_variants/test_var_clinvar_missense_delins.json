@@ -1,0 +1,41 @@
+{
+    "chr": "16",
+    "pos": 23636204,
+    "gene": "PALB2",
+    "ref": "TC",
+    "alt": "AT",
+    "variant_type": ["missense_variant", "5_prime_utr_variant"],
+    "variant_effect": [
+        {"transcript": "ENST00000261584",
+         "hgvs_c": "c.341_342delinsAT",
+         "hgvs_p": "p.Gly114Asp",
+         "variant_type": ["missense_variant"],
+         "exon": 4
+        },
+        {"transcript": "ENST00000561514",
+         "hgvs_c": "c.-545_-544delinsAT",
+         "hgvs_p": "",
+         "variant_type": ["5_prime_utr_variant"],
+         "exon": 24
+        }
+    ],
+    "splicing_prediction_tools": {"SpliceAI": 0.5},
+    "pathogenicity_prediction_tools": {"REVEL": 0.5, "BayesDel": 0.5},
+    "gnomAD": {
+        "AF": 0.007,
+        "AC": 12,
+        "popmax": "EAS",
+        "popmax_AF": 0.009,
+        "popmax_AC": 5
+    },
+    "FLOSSIES": {"AFR": 9, "EUR": 130},
+    "mRNA_analysis": {"performed": true, "pathogenic": true, "benign": true},
+    "functional_data": {"performed": true, "pathogenic": true, "benign": true},
+    "prior": 0.25,
+    "co-occurrence": 0.56,
+    "segregation": 0.56,
+    "multifactorial_log-likelihood": 0.56,
+    "VUS_task_force_domain": true,
+    "cancer_hotspot": true,
+    "cold_spot": true
+}
