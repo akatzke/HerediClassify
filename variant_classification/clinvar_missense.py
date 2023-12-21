@@ -10,7 +10,6 @@ from Bio.Data import IUPACData
 from cyvcf2 import VCF
 import pyensembl
 
-from ensembl import ensembl
 from variant import VariantInfo, TranscriptInfo
 from var_type import VARTYPE_GROUPS
 from genotoscope_exon_skipping import (
@@ -34,6 +33,11 @@ def check_clinvar_missense(
     """
     Check ClinVar for entries supporting pathogenicity of missense variant
     """
+    # In case the variant is not an SNV, return empty ClinVar result
+    if len(variant.var_obs) != 1 or len(variant.var_ref) != 1:
+        ClinVar_same_aa = create_ClinVar(pd.DataFrame(), ClinVar_Type.SAME_AA_CHANGE)
+        ClinVar_diff_aa = create_ClinVar(pd.DataFrame(), ClinVar_Type.DIFF_AA_CHANGE)
+        return (ClinVar_same_aa, ClinVar_diff_aa)
     affected_transcript, ref_transcript = get_affected_transcript(
         transcripts, VARTYPE_GROUPS.MISSENSE
     )
@@ -582,8 +586,12 @@ def correct_observed_base_for_strand(strand: str, base: str) -> str:
     Depending on which strand the transcript is located on, correct observed base
     """
     comp_bases = {"C": "G", "G": "C", "A": "T", "T": "A"}
+    print(base)
     if strand == "+":
         corrected_base = base
     else:
-        corrected_base = comp_bases[base]
+        corrected_base = ""
+        for entry in base:
+            print(entry)
+            corrected_base += comp_bases[entry]
     return corrected_base
