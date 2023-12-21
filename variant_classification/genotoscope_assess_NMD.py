@@ -197,7 +197,7 @@ def assess_NMD_exonic_variant(
         ) = find_exon_by_var_pos(ref_transcript, transcript, variant, False, diff_len)
     else:
         raise ValueError(
-            "Genomic position in transcript coding region expected, but variant no located in coding region."
+            f"Genomic position in transcript coding region expected, but variant no located in coding region. {transcript}"
         )
 
     NMD_comment = "NMD is not predicted"
@@ -297,7 +297,11 @@ def is_genomic_pos_in_coding_exon(
         # set up exon coding start and end positions
         if strand_direction == 1:
             exon_coding_start = coding_interval[0]
-            exon_coding_end = coding_interval[1]
+            if coding_exon_idx + 1 == num_coding_exons:
+                # update end of last exon to be the highest chromosomal position of the stop codon
+                exon_coding_end = transcript.stop_codon_positions[-1]
+            else:
+                exon_coding_end = coding_interval[1]
         else:
             exon_coding_start = coding_interval[1]
             if coding_exon_idx + 1 == num_coding_exons:

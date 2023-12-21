@@ -1,0 +1,70 @@
+{
+    "chr": "10",
+    "pos": 87965472,
+    "gene": "PTEN",
+    "ref": "A",
+    "alt": "T",
+    "variant_type": [
+        "stop_lost",
+        "downstream_gene_variant",
+        "non_coding_transcript_exon_variant",
+        "3_prime_UTR_variant",
+        "NMD_transcript_variant"
+    ],
+    "variant_effect": [
+        {
+            "transcript": "ENST00000371953",
+            "hgvs_c": "c.1212A>T",
+            "hgvs_p": "p.Ter404CysextTer8",
+            "variant_type": ["stop_lost"],
+            "exon": 9
+        },
+        {
+            "transcript": "ENST00000693560",
+            "hgvs_c": "c.1731A>T",
+            "hgvs_p": "p.Ter577CysextTer8",
+            "variant_type": ["stop_lost"],
+            "exon": 10
+        },
+        {
+            "transcript": "ENST00000688308",
+            "hgvs_c": "c.1212A>T",
+            "hgvs_p": "p.Ter404CysextTer8",
+            "variant_type": ["stop_lost"],
+            "exon": 10
+        },
+        {
+            "transcript": "ENST00000700021",
+            "hgvs_c": "c.1167A>T",
+            "hgvs_p": "p.Ter389CysextTer8",
+            "variant_type": ["stop_lost"],
+            "exon": 8
+        },
+        {
+            "transcript": "ENST00000700021",
+            "hgvs_c": "c.1167A>T",
+            "hgvs_p": "p.Ter389CysextTer8",
+            "variant_type": ["stop_lost"],
+            "exon": 8
+        }
+    ],
+    "splicing_prediction_tools": {"SpliceAI": 0.5},
+    "pathogenicity_prediction_tools": {"REVEL": 0.5, "BayesDel": 0.5},
+    "gnomAD": {
+        "AF": 0.007,
+        "AC": 12,
+        "popmax": "EAS",
+        "popmax_AF": 0.009,
+        "popmax_AC": 5
+    },
+    "FLOSSIES": {"AFR": 9, "EUR": 130},
+    "mRNA_analysis": {"performed": true, "pathogenic": true, "benign": true},
+    "functional_data": {"performed": true, "pathogenic": true, "benign": true},
+    "prior": 0.25,
+    "co-occurrence": 0.56,
+    "segregation": 0.56,
+    "multifactorial_log-likelihood": 0.56,
+    "VUS_task_force_domain": true,
+    "cancer_hotspot": true,
+    "cold_spot": true
+}
