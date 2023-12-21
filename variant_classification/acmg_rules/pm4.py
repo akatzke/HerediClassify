@@ -12,6 +12,7 @@ from acmg_rules.utils import (
 from information import Info, Classification_Info
 from transcript_annotated import TranscriptInfo_annot
 from variant import VariantInfo
+from var_type import VARTYPE
 
 
 class Pm4(abstract_rule):
@@ -68,7 +69,185 @@ class Pm4(abstract_rule):
             )
             results.append(rule_result)
         if len(results) == 0:
-            comment = f"PM4 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+            comment = "PM4 does not apply to this variant."
+            final_result = RuleResult(
+                "PM4",
+                rule_type.GENERAL,
+                evidence_type.PATHOGENIC,
+                False,
+                evidence_strength.MODERATE,
+                comment,
+            )
+        else:
+            final_result = summarise_results_per_transcript(results)
+        return final_result
+
+
+class Pm4_stoploss(abstract_rule):
+    """
+    PM4: Protein length change caused by variant is above 10% threshold
+    Only applicable to stop loss variants
+    """
+
+    @classmethod
+    def get_assess_rule(
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
+        return (
+            cls.assess_rule,
+            (
+                class_info.ANNOTATED_TRANSCRIPT_LIST,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+                class_info.VARIANT,
+            ),
+        )
+
+    @classmethod
+    def assess_rule(
+        cls,
+        annotated_transcript_list: list[TranscriptInfo_annot],
+        threshold_diff_len_prot_percent: float,
+        variant: VariantInfo,
+    ) -> RuleResult:
+        results = []
+        for transcript in annotated_transcript_list:
+            if any(var_type is VARTYPE.STOP_LOST for var_type in transcript.var_type):
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                    and transcript.is_truncated_region_disease_relevant
+                    and not transcript.len_change_in_repetitive_region
+                ):
+                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region does not overlap repetitive region."
+                    result = True
+                elif (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                    and transcript.is_truncated_region_disease_relevant
+                    and transcript.len_change_in_repetitive_region
+                ):
+                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
+                    result = False
+                else:
+                    comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}"
+                    result = False
+                rule_result = RuleResult(
+                    "PM4",
+                    rule_type.GENERAL,
+                    evidence_type.PATHOGENIC,
+                    result,
+                    evidence_strength.MODERATE,
+                    comment,
+                )
+                results.append(rule_result)
+        if len(results) == 0:
+            comment = f"PM4 does not apply to this variant, as PM4 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+            final_result = RuleResult(
+                "PM4",
+                rule_type.GENERAL,
+                evidence_type.PATHOGENIC,
+                False,
+                evidence_strength.MODERATE,
+                comment,
+            )
+        else:
+            final_result = summarise_results_per_transcript(results)
+        return final_result
+
+
+class Pm4_pten(abstract_rule):
+    """
+    PM4: Protein length change caused by variant is above 10% threshold
+    Only applicable to stop loss variants
+    """
+
+    @classmethod
+    def get_assess_rule(
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
+        return (
+            cls.assess_rule,
+            (
+                class_info.ANNOTATED_TRANSCRIPT_LIST,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+                class_info.VARIANT,
+                class_info.VARIANT_HOTSPOT_ANNOTATION,
+            ),
+        )
+
+    @classmethod
+    def assess_rule(
+        cls,
+        annotated_transcript_list: list[TranscriptInfo_annot],
+        threshold_diff_len_prot_percent: float,
+        variant: VariantInfo,
+        variant_in_hotspot: bool,
+    ) -> RuleResult:
+        results = []
+        for transcript in annotated_transcript_list:
+            if any(var_type is VARTYPE.STOP_LOST for var_type in transcript.var_type):
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                    and transcript.is_truncated_region_disease_relevant
+                    and not transcript.len_change_in_repetitive_region
+                ):
+                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region does not overlap repetitive region."
+                    result = True
+                elif (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                    and transcript.is_truncated_region_disease_relevant
+                    and transcript.len_change_in_repetitive_region
+                ):
+                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
+                    result = False
+                else:
+                    comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}"
+                    result = False
+                rule_result = RuleResult(
+                    "PM4",
+                    rule_type.GENERAL,
+                    evidence_type.PATHOGENIC,
+                    result,
+                    evidence_strength.MODERATE,
+                    comment,
+                )
+                results.append(rule_result)
+            elif any(
+                var_type in [VARTYPE.INFRAME_DELETION, VARTYPE.INFRAME_INSERTION]
+                for var_type in transcript.var_type
+            ):
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                    and not transcript.len_change_in_repetitive_region
+                    and variant_in_hotspot
+                ):
+                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region is overlaps mutational hotspot."
+                    result = True
+                elif (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                    and variant_in_hotspot
+                    and transcript.len_change_in_repetitive_region
+                ):
+                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
+                    result = False
+                else:
+                    comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}"
+                    result = False
+                rule_result = RuleResult(
+                    "PM4",
+                    rule_type.GENERAL,
+                    evidence_type.PATHOGENIC,
+                    result,
+                    evidence_strength.MODERATE,
+                    comment,
+                )
+                results.append(rule_result)
+        if len(results) == 0:
+            comment = f"PM4 does not apply to this variant, as PM4 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             final_result = RuleResult(
                 "PM4",
                 rule_type.GENERAL,

@@ -11,7 +11,7 @@ from acmg_rules.utils import (
     summarise_results_per_transcript,
 )
 from information import Classification_Info, Info
-from variant import TranscriptInfo, VariantInfo
+from variant import FunctionalData, TranscriptInfo, VariantInfo
 from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
@@ -31,20 +31,31 @@ class Pvs1(abstract_rule):
     ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (class_info.ANNOTATED_TRANSCRIPT_LIST, class_info.VARIANT),
+            (
+                class_info.ANNOTATED_TRANSCRIPT_LIST,
+                class_info.VARIANT,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+            ),
         )
 
     @classmethod
     def assess_rule(
-        cls, annotated_transcripts: list[TranscriptInfo], variant: VariantInfo
+        cls,
+        annotated_transcripts: list[TranscriptInfo],
+        variant: VariantInfo,
+        threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
         results = []
         for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_exonic):
-                result_frameshift = cls.assess_pvs1_frameshift_PTC(transcript)
+                result_frameshift = cls.assess_pvs1_frameshift_PTC(
+                    transcript, threshold_diff_len_prot_percent
+                )
                 results.append(result_frameshift)
             elif isinstance(transcript, TranscriptInfo_intronic):
-                result_splice = cls.assess_pvs1_splice(transcript)
+                result_splice = cls.assess_pvs1_splice(
+                    transcript, threshold_diff_len_prot_percent
+                )
                 results.append(result_splice)
             elif isinstance(transcript, TranscriptInfo_start_loss):
                 result_start_loss = cls.assess_pvs1_start_loss(transcript)
@@ -100,7 +111,23 @@ class Pvs1(abstract_rule):
         )
 
     @classmethod
-    def assess_pvs1_splice(cls, transcript: TranscriptInfo_intronic) -> RuleResult:
+    def assess_pvs1_start_loss_pathogenic_very_strong(cls) -> RuleResult:
+        """
+        Assess PVS1 for start loss variants, that are automatically classified as pathogenic
+        """
+        return RuleResult(
+            "PVS1",
+            rule_type.PROTEIN,
+            evidence_type.PATHOGENIC,
+            True,
+            evidence_strength.VERY_STRONG,
+            "For this gene, start loss variants automatically give PVS1 with very strong evidence strength.",
+        )
+
+    @classmethod
+    def assess_pvs1_splice(
+        cls, transcript: TranscriptInfo_intronic, threshold_diff_len_prot_percent: float
+    ) -> RuleResult:
         """
         Assess PVS1 for splice variants
         """
@@ -126,7 +153,10 @@ class Pvs1(abstract_rule):
                 result = True
                 strength = evidence_strength.STRONG
             else:
-                if transcript.diff_len_protein_percent > 0.1:
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                ):
                     comment = (
                         comment
                         + f" Protein length change of {transcript.diff_len_protein_percent} observed."
@@ -147,7 +177,10 @@ class Pvs1(abstract_rule):
                 result = True
                 strength = evidence_strength.STRONG
             else:
-                if transcript.diff_len_protein_percent > 0.1:
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                ):
                     comment = (
                         comment
                         + f" Protein length change of {transcript.diff_len_protein_percent} observed."
@@ -176,7 +209,7 @@ class Pvs1(abstract_rule):
 
     @classmethod
     def assess_pvs1_frameshift_PTC(
-        cls, transcript: TranscriptInfo_exonic
+        cls, transcript: TranscriptInfo_exonic, threshold_diff_len_prot_percent: float
     ) -> RuleResult:
         """
         Assess PVS1 for frameshift variants
@@ -195,11 +228,14 @@ class Pvs1(abstract_rule):
         else:
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD."
             if transcript.is_truncated_region_disease_relevant:
-                comment = "Truncated region is disease relevant."
+                comment = comment + "Truncated region is disease relevant."
                 result = True
                 strength = evidence_strength.STRONG
             else:
-                if transcript.diff_len_protein_percent > 0.1:
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                ):
                     comment = (
                         comment
                         + f" Protein length change of {transcript.diff_len_protein_percent} observed."
@@ -221,3 +257,76 @@ class Pvs1(abstract_rule):
             strength,
             comment,
         )
+
+
+class Pvs1_with_splice_assay(abstract_rule):
+    """
+    PVS1: Loss of function
+    Devided into three separate parts: Frameshift, splice and start_loss
+    """
+
+    @classmethod
+    def get_assess_rule(
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
+        return (
+            cls.assess_rule,
+            (
+                class_info.ANNOTATED_TRANSCRIPT_LIST,
+                class_info.VARIANT,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+                class_info.SPLICING_ASSAY,
+            ),
+        )
+
+    @classmethod
+    def assess_rule(
+        cls,
+        annotated_transcripts: list[TranscriptInfo],
+        variant: VariantInfo,
+        threshold_diff_len_prot_percent: float,
+        splice_assay: FunctionalData,
+    ) -> RuleResult:
+        results = []
+        for transcript in annotated_transcripts:
+            if isinstance(transcript, TranscriptInfo_exonic):
+                result_frameshift = Pvs1.assess_pvs1_frameshift_PTC(
+                    transcript, threshold_diff_len_prot_percent
+                )
+                results.append(result_frameshift)
+            elif isinstance(transcript, TranscriptInfo_intronic):
+                if splice_assay.performed:
+                    if splice_assay.pathogenic:
+                        result = True
+                        comment = f"A splice assay was performed showing a detrimental effect on splicing by the variant."
+                    else:
+                        result = False
+                        comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
+                    return RuleResult(
+                        "PVS1_RNA",
+                        rule_type.SPLICING,
+                        evidence_type.PATHOGENIC,
+                        result,
+                        evidence_strength.VERY_STRONG,
+                        comment,
+                    )
+                result_splice = Pvs1.assess_pvs1_splice(
+                    transcript, threshold_diff_len_prot_percent
+                )
+                results.append(result_splice)
+            elif isinstance(transcript, TranscriptInfo_start_loss):
+                result_start_loss = Pvs1.assess_pvs1_start_loss(transcript)
+                results.append(result_start_loss)
+        if len(results) == 0:
+            comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+            result = RuleResult(
+                "PVS1",
+                rule_type.GENERAL,
+                evidence_type.PATHOGENIC,
+                False,
+                evidence_strength.VERY_STRONG,
+                comment,
+            )
+        else:
+            result = summarise_results_per_transcript(results)
+        return result

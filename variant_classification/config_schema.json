@@ -11,6 +11,23 @@
                 "type": "string"
             }
         },
+        "disease_relevant_transcript": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "nmd_threshold": {
+                        "type": "integer"
+                    },
+                    "pos_last_known_ptc": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "prediction_tool_threshold" :{
             "properties":{
                 "pathogenicity_prediction": {
@@ -35,12 +52,57 @@
                 }
             }
         },
+        "likelihood_thresholds": {
+            "properties": {
+                "pathogenic_prediction": {
+                    "properties": {
+                        "supproting": {
+                            "type": "number"
+                        },
+                        "moderate": {
+                            "type": "number"
+                        },
+                        "strong": {
+                            "type": "number"
+                        },
+                        "very_strong": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "benign_prediction": {
+                    "properties": {
+                        "supproting": {
+                            "type": "number"
+                        },
+                        "moderate": {
+                            "type": "number"
+                        },
+                        "strong": {
+                            "type": "number"
+                        },
+                        "very_strong": {
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        },
         "allele_frequency_threshold" :{
             "properties":{
                 "threshold_ba1": {
                     "type": "number"
+                }
+                "threshold_ba1_absolute": {
+                    "type": "integer"
                 },
                 "threshold_bs1": {
+                    "type": "number"
+                },
+                "threshold_bs1_absolute": {
+                    "type": "integer"
+                },
+                "threshold_bs1_supporting": {
                     "type": "number"
                 },
                 "threshold_bs2": {
@@ -53,9 +115,6 @@
         },
         "functional_thresholds": {
             "properties": {
-                "threshold_nmd": {
-                    "type": "integer"
-                },
                 "threshold_diff_len_prot_percent": {
                     "type": "number"
                 }
@@ -81,13 +140,39 @@
                 },
                 "uniprot":{
                     "properties" :{
-                        "uniport_root": {
+                        "root": {
                             "type": "string"
                         },
-                        "uniprot_version": {
+                        "rep": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "critical_regions":{
+                    "properties" :{
+                        "root": {
                             "type": "string"
                         },
-                        "uniprot_rep": {
+                        "critical_region": {
+                            "type": "string"
+                        },
+                        "disease_irrelevant_exons":{
+                            "type": "string"
+                        },
+                        "hotspot_region":{
+                            "type": "string"
+                        },
+                        "coldspot_region":{
+                            "type": "string"
+                        }
+                    }
+                },
+                "splice_site_table":{
+                    "properties" :{
+                        "root": {
+                            "type": "string"
+                        },
+                        "file": {
                             "type": "string"
                         }
                     }
@@ -107,8 +192,5 @@
                 }
             }
         }
-    },
-    "required": [
-        "rules"
-    ]
+    }
 }

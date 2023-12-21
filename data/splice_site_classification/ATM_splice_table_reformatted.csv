@@ -1,0 +1,756 @@
+position	alternative_allele	rule_status	evidence_strength	comment
+72+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+72+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+72+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+72+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+72+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+72+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+73-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+73-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+73-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+73-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+73-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+73-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+185+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+185+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+185+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+185+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+185+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+185+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+186-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+186-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+186-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+186-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+186-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+186-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+331+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+331+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+331+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+331+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+331+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+331+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+497-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+497-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+497-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+497-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+497-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+497-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+662+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+662+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+662+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+662+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+662+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+662+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+663-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+663-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+663-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+663-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+663-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+663-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+901+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+901+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+901+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+901+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+901+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+901+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+902-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+902-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+902-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+902-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+902-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+902-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1065+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1065+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1065+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1065+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1065+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1065+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1066-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1066-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1066-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1066-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1066-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1066-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1235+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1235+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1235+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1235+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1235+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1235+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1236-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1236-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1236-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1236-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1236-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1236-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1803-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1803-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1803-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1803-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1803-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1803-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1899-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1899-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1899-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1899-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1899-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+1899-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2124+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2124+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2124+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2124+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2124+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2124+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2125-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2125-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2125-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2125-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2125-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2125-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2251-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2251-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2251-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2251-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2251-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2251-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4110-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4110-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4110-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4110-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4110-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4110-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4236+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4236+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4236+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4236+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4236+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4236+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4237-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4436+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4436+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4436+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4436+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4436+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4436+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4437-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4611+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4611+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4611+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4611+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4611+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4611+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4777-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4777-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4777-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4777-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4777-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4777-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4909+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4909+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4909+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4909+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4909+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4909+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5006-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5006-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5006-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5006-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5006-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5006-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5177+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5177+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5177+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5177+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5177+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5177+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5178-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5178-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5178-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5178-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5178-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5178-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5319+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5319+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5319+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5319+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5319+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5319+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5320-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5320-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5320-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5320-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5320-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5320-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5496+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5496+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5496+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5497-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5497-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5497-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5497-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5497-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5497-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5674+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5674+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5674+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5674+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5674+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5674+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5675-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5675-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5675-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5675-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5762+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5762+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5762+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5762+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5762+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5762+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2467-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2467-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2638+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2638+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2638+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2638+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2638+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2638+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2639-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2639-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2639-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2639-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2639-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2639-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2838+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2838+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2838+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2838+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2838+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2838+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2921+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2921+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2921+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2921+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2921+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2921+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2922-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2922-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2922-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2922-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2922-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+2922-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3077+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3077+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3077+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3077+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3077+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3077+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3078-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3078-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3078-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3078-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3078-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3078-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3153+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3153+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3153+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3153+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3153+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3153+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3154-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3154-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3154-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3154-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3154-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3154-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3284+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3284+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3284+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3284+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3284+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3284+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3285-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3285-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3285-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3285-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3285-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3285-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3402+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3402+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3402+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3402+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3402+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3402+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3403-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3403-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3403-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3403-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3403-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3403-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3577-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3577-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3577-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3577-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3577-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3577-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3746+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3746+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3746+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3746+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3746+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3746+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3747-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3747-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3747-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3747-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3747-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3747-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3994-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3994-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3994-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3994-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3994-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+3994-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4109+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4109+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4109+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4109+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4109+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+4109+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in N-Solenoid domain and is predicted to undergo NMD.
+5674+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5674+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5674+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5675-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5675-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5675-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5675-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5762+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5762+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5762+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5763-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5763-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5763-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5763-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5763-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+5763-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6006+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6006+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6006+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6006+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6006+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6006+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6007-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6007-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6007-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6007-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6007-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6007-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6095+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6095+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6095+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6095+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6095+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6095+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6096-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6096-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6096-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6096-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6096-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6096-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6198+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6198+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6198+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6198+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6198+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6198+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6199-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6347+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6347+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6347+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6347+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6347+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6453-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6453-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6453-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6453-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6453-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6453-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6573-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6573-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6573-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6573-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6573-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6573-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6807+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6807+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6807+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6807+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+6807+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7090-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7090-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7090-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7090-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7090-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7090-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7307+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7307+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7307+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7307+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7307+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7307+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7308-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7308-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7308-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7308-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7308-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7308-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7515+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7515+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7515+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7515+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7515+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7516-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7516-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7516-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7516-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7516-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7516-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7789-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7789-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7789-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7789-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7789-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7789-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7927+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7927+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7927+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7927+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7927+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+7927+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8010+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8010+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8010+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8010+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8010+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8010+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8011-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8011-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8011-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8011-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8011-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8011-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8152-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8152-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8419-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8419-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8584+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8584+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8584+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8584+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8584+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8584+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8672-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8672-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8672-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8672-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8672-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8672-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8786+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8786+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8786+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8786+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8786+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8787-2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8787-2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8787-2	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8787-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8787-1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8787-1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8850+1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8850+1	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8850+1	T	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8850+2	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8850+2	C	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8850+2	G	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+8851-1	A	True	very_strong	Exon skipping/cryptic splice site disrupts reading frame in FATKIN domain and is predicted to undergo NMD.
+332-2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+332-2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+332-2	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+332-1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+332-1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+332-1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+496+1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+496+1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+496+1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+496+2	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+496+2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+496+2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1607+1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1607+1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1607+1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1607+2	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1607+2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1607+2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1608-2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1608-2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1608-2	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1608-1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1608-1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1608-1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1802+1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1802+1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1802+1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1802+2	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1802+2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1802+2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1898+1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1898+1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1898+1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1898+2	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1898+2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+1898+2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2250+1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2250+1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2250+1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2250+2	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2250+2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2250+2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2376+1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2376+1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2376+1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2376+2	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2376+2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2376+2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2377-2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2377-2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2377-2	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2377-1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2377-1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2377-1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2466+1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2466+1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2466+1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2466+2	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2466+2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2466+2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+3576+1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+3576+1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+3576+1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+3576+2	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+3576+2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+3576+2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+3993+1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+3993+1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+3993+1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+3993+2	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+3993+2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+3993+2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4612-2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4612-2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4612-2	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4612-1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4612-1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4612-1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4776+1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4776+1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4776+1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4776+2	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4776+2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4776+2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4910-2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4910-2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4910-2	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4910-1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4910-1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+4910-1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+5005+1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+5005+1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+5005+1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+5005+2	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+5005+2	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+5005+2	G	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+5496+1	A	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+5496+1	C	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+5496+1	T	True	strong	Exon skipping or use of cryptic splice site preserves reading frame in N-Solenoid domain.
+2467-2	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+2467-2	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+2467-1	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+2467-1	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+2839-2	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+2839-2	G	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+2839-2	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+2839-1	A	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+2839-1	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+2839-1	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+4237-2	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+4237-2	G	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+4237-2	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+4237-1	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+4237-1	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+4437-2	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+4437-2	G	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+4437-2	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+4437-1	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+4437-1	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+5675-	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+5675-	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8268+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8268+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8268+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8268+2	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8268+2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8268+2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8269-1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8418+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8418+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8418+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8418+2	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8418+2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8418+2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8585-2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8585-2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8585-2	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8585-1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8585-1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8585-1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8671+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8671+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8671+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8671+2	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8671+2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8671+2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8851-2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8851-2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8851-2	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8851-1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8851-1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8987+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8987+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8987+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8987+2	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8987+2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8988-2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8988-2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8988-2	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8988-1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8988-1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8988-1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+5918+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+5918+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+5918+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+5918+2	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+5918+2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+5918+2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+5919-2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+5919-2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+5919-2	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+5919-1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+5919-1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+5919-1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6348-2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6348-2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6348-2	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6348-1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6348-1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6348-1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6452+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6452+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6452+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6452+2	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6452+2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6452+2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6572+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6572+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6572+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6572+2	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6572+2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6572+2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6808-2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6808-2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6808-2	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6808-1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6808-1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6808-1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6975+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6975+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6975+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6975+2	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6975+2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6975+2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6976-2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6976-2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6976-2	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6976-1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6976-1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6976-1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7089+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7089+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7089+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7089+2	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7089+2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7089+2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7629+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7629+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7629+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7629+2	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7629+2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7630-2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7630-2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7630-2	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7630-1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7630-1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7630-1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7788+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7788+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7788+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7788+2	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7788+2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+7788+2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8151+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8151+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8151+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8151+2	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8151+2	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+8151+2	G	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
+6199-2	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+6199-2	G	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+6199-2	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+6199-1	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+6199-1	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+7928-2	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+7928-2	G	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+7928-2	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+7928-1	A	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+7928-1	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+7928-1	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8152-2	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8152-2	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8152-1	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8152-1	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8269-2	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8269-2	G	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8269-2	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8269-1	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8269-1	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8419-2	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8419-2	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8419-1	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+8419-1	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+-31+1	A	False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+-31+1	T	False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+-31+1	C	False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+-31+1		False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+-31+2	C	False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+-31+2	G	False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+-31+2	A	False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+-30-2	G	False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+-30-2	C	False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+-30-2	T	False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+-30-1	A	False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+-30-1	C	False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+-30-1	T	False	very_strong	Exon skipping or use of cryptic splice site does not affect coding sequence
+6347+2	C	False	very_strong	No splicing alteration predicted.
+6807+2	C	False	very_strong	No splicing alteration predicted.
+7629+2	C	False	very_strong	No splicing alteration predicted.
+8786+2	C	False	very_strong	No splicing alteration predicted.
+8987+2	C	False	very_strong	No splicing alteration predicted.
+7515+2	T	False	very_strong	Variant imporoves donor splice site.

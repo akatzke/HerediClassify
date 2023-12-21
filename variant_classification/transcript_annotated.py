@@ -7,6 +7,7 @@ import pathlib
 import logging
 from dataclasses import dataclass, field
 from collections.abc import Callable
+from typing import Optional
 
 from variant import VariantInfo, TranscriptInfo, Variant
 from ensembl import ensembl
@@ -15,8 +16,10 @@ from genotoscope_construct_variant_sequence import (
     construct_variant_coding_seq_intronic_variant,
 )
 from genotoscope_assess_NMD import (
+    assess_NMD_threshold,
     assess_NMD_exonic_variant,
     assess_NMD_intronic_variant,
+    get_affected_exon,
 )
 from genotoscope_reading_frame_preservation import (
     assess_reading_frame_preservation,
@@ -28,6 +31,8 @@ from genotoscope_protein_len_diff import (
 from custom_exceptions import (
     Pyensembl_no_coding_sequence,
     Pyensembl_transcript_not_found,
+    Not_disease_relevant_transcript,
+
 )
 from variant_in_critical_region import (
     check_variant_in_critical_region_exon,
@@ -48,6 +53,7 @@ from utils import (
     check_intersection_with_bed,
     check_bed_intersect_start_loss,
 )
+from check_exon_disease_relevant import check_exon_disease_relevant
 from var_type import VARTYPE_GROUPS
 from information import Classification_Info, Info
 
@@ -106,44 +112,6 @@ def annotate_transcripts(
     return annotated_transcripts
 
 
-def annotate_transcripts_acmg_specification(
-    variant: Variant,
-    fun_dict: dict[VARTYPE_GROUPS, dict[str, Callable[[], TranscriptInfo_annot]]],
-) -> list[TranscriptInfo_annot]:
-    """
-    Check if ACMG classification is sufficient to define complete variant interpretation
-    """
-    annotated_transcripts = []
-    for transcript in variant.transcript_info:
-        if transcript.var_type in VARTYPE_GROUPS.EXONIC.value:
-            try:
-                annot_fun = fun_dict[VARTYPE_GROUPS.EXONIC]["acmg"]
-                annotated_transcript = annot_fun()
-            except Exception:
-                annot_fun = fun_dict[VARTYPE_GROUPS.EXONIC]["general"]
-                annotated_transcript = annot_fun()
-        elif transcript.var_type in VARTYPE_GROUPS.INTRONIC.value:
-            try:
-                annot_fun = fun_dict[VARTYPE_GROUPS.INTRONIC]["acmg"]
-                annotated_transcript = annot_fun()
-            except Exception:
-                annot_fun = fun_dict[VARTYPE_GROUPS.INTRONIC]["general"]
-                annotated_transcript = annot_fun()
-        elif transcript.var_type in VARTYPE_GROUPS.START_LOST.value:
-            try:
-                annot_fun = fun_dict[VARTYPE_GROUPS.START_LOST]["acmg"]
-                annotated_transcript = annot_fun()
-            except Exception:
-                annot_fun = fun_dict[VARTYPE_GROUPS.START_LOST]["general"]
-                annotated_transcript = annot_fun()
-        else:
-            break
-        annotated_transcripts.append(annotated_transcript)
-    if len(annotated_transcripts) == 0:
-        raise TypeError("No annotated transcripts created")
-    return annotated_transcripts
-
-
 @dataclass
 class TranscriptInfo_exonic(TranscriptInfo_annot):
     """
@@ -151,7 +119,11 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
     """
 
     is_NMD: bool = False
+    affected_exon: dict = field(default_factory=dict)
     is_reading_frame_preserved: bool = True
+    frameshift: int = 0
+    ptc: int = -1
+    is_affected_exon_disease_relevant: bool = True
 
     @classmethod
     def get_annotate(
@@ -164,6 +136,8 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
                 class_info.CLINVAR_PATH,
                 class_info.UNIPROT_REP_REGION_PATH,
                 class_info.CRITICAL_REGION_PATH,
+                class_info.DISEASE_IRRELEVANT_EXONS_PATH,
+                class_info.THRESHOLD_NMD,
             ),
         )
 
@@ -173,7 +147,9 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         variant: VariantInfo,
         path_clinvar: pathlib.Path,
         path_uniprot_rep: pathlib.Path,
-        path_critical_region: pathlib.Path,
+        path_critical_region: Optional[pathlib.Path],
+        path_disease_irrelevant_exons: Optional[pathlib.Path],
+        nmd_threshold_dict: Optional[dict[str, int]],
         transcript: TranscriptInfo,
     ) -> TranscriptInfo_exonic:
         """
@@ -190,12 +166,18 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         var_seq, diff_len = construct_variant_coding_seq_exonic_variant(
             transcript, variant, ref_transcript
         )
-        # if threshold_NMD:
-        #    is_NMD, NMD_affected_exons = assess_NMD_threshold(transcript, threshold_NMD, clin_transcript)
-        # else:
-        is_NMD, NMD_affected_exons = assess_NMD_exonic_variant(
-            transcript, variant, ref_transcript, var_seq, diff_len
-        )
+        if nmd_threshold_dict is not None:
+            try:
+                nmd_threshold = nmd_threshold_dict[transcript.transcript_id]
+            except KeyError:
+                raise Not_disease_relevant_transcript
+            is_NMD, NMD_affected_exons = assess_NMD_threshold(
+                transcript, variant, ref_transcript, diff_len, nmd_threshold
+            )
+        else:
+            is_NMD, NMD_affected_exons = assess_NMD_exonic_variant(
+                transcript, variant, ref_transcript, var_seq, diff_len
+            )
         if path_critical_region is not None:
             # Check if variant is located in defined functionally relevant region from ACMG guidelines
             if is_NMD:
@@ -225,9 +207,24 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
                 )
                 is_truncated_exon_relevant = truncated_exon_ClinVar.pathogenic
                 comment_truncated_exon_relevant = f"The following relevant ClinVar are (likely) pathogenic: {truncated_exon_ClinVar.ids}"
-
-        is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
-        diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
+        if not NMD_affected_exons:
+            affected_exon = get_affected_exon(
+                ref_transcript, transcript, variant, diff_len
+            )[0]
+        else:
+            affected_exon = NMD_affected_exons[0]
+        if is_NMD and path_disease_irrelevant_exons is not None:
+            is_affected_exon_disease_relevant = check_exon_disease_relevant(
+                path_disease_irrelevant_exons, NMD_affected_exons
+            )
+        else:
+            is_affected_exon_disease_relevant = True
+        is_reading_frame_preserved, frameshift = assess_reading_frame_preservation(
+            diff_len
+        )
+        diff_len_protein_percent, ptc = calculate_prot_len_diff(
+            ref_transcript, var_seq, diff_len
+        )
         if diff_len_protein_percent != 0:
             len_change_in_repetitive_region = check_intersection_with_bed(
                 variant,
@@ -251,28 +248,14 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             diff_len_protein_percent=diff_len_protein_percent,
             len_change_in_repetitive_region=len_change_in_repetitive_region,
             is_NMD=is_NMD,
+            affected_exon=affected_exon,
             is_reading_frame_preserved=is_reading_frame_preserved,
+            frameshift=frameshift,
             is_truncated_region_disease_relevant=is_truncated_exon_relevant,
+            is_affected_exon_disease_relevant=is_affected_exon_disease_relevant,
             comment_truncated_region=comment_truncated_exon_relevant,
+            ptc=ptc,
         )
-
-    @classmethod
-    def get_annotate_acmg(cls, class_info: Classification_Info):
-        class_info = class_info
-        pass
-
-    @classmethod
-    def annotate_acmg_specification(
-        cls, variant: VariantInfo, transcript: TranscriptInfo
-    ):
-        """
-        This function implements gene specifications from ACMG for frameshift and other variants
-        - NMD threshold
-        - Functionally important regions
-        """
-        variant = variant
-        transcript = transcript
-        pass
 
 
 @dataclass
@@ -282,8 +265,12 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
     """
 
     are_exons_skipped: bool = False
+    coding_exon_skipped: bool = False
+    start_codon_exon_skipped: bool = False
     is_NMD: bool = False
+    affected_exon: dict = field(default_factory=dict)
     is_reading_frame_preserved: bool = False
+    is_affected_exon_disease_relevant: bool = True
 
     @classmethod
     def get_annotate(
@@ -295,6 +282,7 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
                 class_info.VARIANT,
                 class_info.CLINVAR_PATH,
                 class_info.UNIPROT_REP_REGION_PATH,
+                class_info.DISEASE_IRRELEVANT_EXONS_PATH,
                 class_info.CRITICAL_REGION_PATH,
             ),
         )
@@ -305,7 +293,8 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
         variant: VariantInfo,
         path_clinvar: pathlib.Path,
         path_uniprot_rep: pathlib.Path,
-        path_critical_region,
+        path_critical_region: Optional[pathlib.Path],
+        path_disease_irrelevant_exons: Optional[pathlib.Path],
         transcript: TranscriptInfo,
     ) -> TranscriptInfo_intronic:
         """
@@ -367,8 +356,22 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             )
             is_truncated_region_disease_relevant = skipped_exon_ClinVar.pathogenic
             comment_truncated_region_disease_relevant = f"The following relevant ClinVar are (likely) pathogenic: {skipped_exon_ClinVar.ids}"
-        is_reading_frame_preserved = assess_reading_frame_preservation(diff_len)
-        diff_len_protein_percent = calculate_prot_len_diff(ref_transcript, var_seq)
+        if not NMD_affected_exons:
+            affected_exon = get_affected_exon(
+                ref_transcript, transcript, variant, diff_len
+            )[0]
+        else:
+            affected_exon = NMD_affected_exons[0]
+        if is_NMD and path_disease_irrelevant_exons is not None:
+            is_affected_exon_disease_relevant = check_exon_disease_relevant(
+                path_disease_irrelevant_exons, NMD_affected_exons
+            )
+        else:
+            is_affected_exon_disease_relevant = True
+        is_reading_frame_preserved, _ = assess_reading_frame_preservation(diff_len)
+        diff_len_protein_percent, _ = calculate_prot_len_diff(
+            ref_transcript, var_seq, diff_len
+        )
         if diff_len != 0:
             len_change_in_repetitive_region = (
                 check_prot_len_change_in_repetitive_region_exon(
@@ -389,28 +392,16 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             ref_transcript=ref_transcript,
             diff_len_protein_percent=diff_len_protein_percent,
             are_exons_skipped=are_exons_skipped,
+            coding_exon_skipped=coding_exon_skipped,
+            start_codon_exon_skipped=start_codon_exon_skipped,
             len_change_in_repetitive_region=len_change_in_repetitive_region,
             is_NMD=is_NMD,
+            affected_exon=affected_exon,
             is_truncated_region_disease_relevant=is_truncated_region_disease_relevant,
+            is_affected_exon_disease_relevant=is_affected_exon_disease_relevant,
             comment_truncated_region=comment_truncated_region_disease_relevant,
             is_reading_frame_preserved=is_reading_frame_preserved,
         )
-
-    @classmethod
-    def get_annotate_acmg(cls):
-        pass
-
-    @classmethod
-    def annotate_acmg_specification(
-        cls, variant: VariantInfo, transcript: TranscriptInfo
-    ):
-        """
-        This function implements gene specifications from ACMG for frameshift and other variants
-        - Preimplemented splice decision trees
-        """
-        variant = variant
-        transcript = transcript
-        pass
 
 
 @dataclass
@@ -511,19 +502,3 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
             diff_len_protein_percent=diff_len_protein_percent,
             len_change_in_repetitive_region=len_change_in_repetitive_region,
         )
-
-    @classmethod
-    def get_annotate_acmg(cls, class_info: Classification_Info):
-        class_info = class_info
-        pass
-
-    @classmethod
-    def annotate_acmg_specification(
-        cls, variant: VariantInfo, transcript: TranscriptInfo
-    ):
-        """
-        This function implements gene specifications from ACMG for start loss variants
-        """
-        variant = variant
-        transcript = transcript
-        pass

@@ -1,0 +1,124 @@
+position	alternative_allele	rule_status	evidence_strength	comment
+108+1	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+108+1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+108+1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+108+2	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+108+2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2515-2	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2515-2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2515-2	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2515-1	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2515-1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2515-1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2586+1	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2586+1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2586+1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2586+2	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2586+2	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2586+2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2748+1	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2748+1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2748+1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2748+2	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2748+2	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2748+2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2835-2	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2835-2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2835-2	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2835-1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2835-1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2996+2	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2996+2	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2996+2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2996+1	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2996+1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2996+1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2997-2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+2997-2	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+3113+1	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+3113+1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+3113+1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+3113+2	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+3113+2	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+3113+2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+3202-2	C	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3202-2	G	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3202-2	T	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3202-1	A	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3202-1	C	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3202-1	T	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3350+1	A	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3350+1	C	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3350+1	T	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3350+2	A	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3350+2	G	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3351-2	C	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3351-2	G	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3351-2	T	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3351-1	A	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3351-1	C	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+3351-1	T	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+48+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+48+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+48+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+48+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+48+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+48+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+49-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+109-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+109-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+109-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+109-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+109-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+109-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+1685-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2514+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2514+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2514+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2514+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2514+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2514+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2587-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2587-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2587-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2587-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2587-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2587-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2749-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2749-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2749-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2749-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2749-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2749-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2834+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2834+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2834+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2834+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2834+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2834+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2835-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2997-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2997-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2997-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+2997-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+3114-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+3114-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+3114-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+3114-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+3114-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+3114-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+3201+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+3201+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+3201+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+3201+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+3201+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+3201+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+49-2	C	True	moderate	In-frame splicing alteration predicted. Role of target region unknown. Alteration removes <10% of coding sequence.
+49-2	T	True	moderate	In-frame splicing alteration predicted. Role of target region unknown. Alteration removes <10% of coding sequence.
+49-1	A	True	moderate	In-frame splicing alteration predicted. Role of target region unknown. Alteration removes <10% of coding sequence.
+49-1	C	True	moderate	In-frame splicing alteration predicted. Role of target region unknown. Alteration removes <10% of coding sequence.
+49-1	T	True	moderate	In-frame splicing alteration predicted. Role of target region unknown. Alteration removes <10% of coding sequence.
+211+1	C	True	supporting	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts <10% of coding sequence.
+211+2	T	True	supporting	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts <10% of coding sequence.
+108+2	C	False	very_strong	No splicing alteration predicted. Variant creates a GC predicted functional.
+3350+2	T	False	very_strong	No splicing alteration predicted. Non-canonical GC improved to GT.

@@ -3,6 +3,7 @@
 import pathlib
 
 from test.example_variant_indel_GRCh38 import (
+    create_example_del_frameshift,
     create_example_dup,
     create_example_del,
     create_example_ins,
@@ -39,7 +40,7 @@ def test_splicing():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_intronic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans
+        test_var, path_clinvar, path_uniprot, path_critical_region, None, test_trans
     )
     assert (
         annot_trans.are_exons_skipped == True
@@ -70,7 +71,13 @@ def test_indel():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans
+        test_var,
+        path_clinvar,
+        path_uniprot,
+        path_critical_region,
+        None,
+        None,
+        test_trans,
     )
     assert (
         annot_trans.is_NMD == True
@@ -78,6 +85,8 @@ def test_indel():
         and annot_trans.len_change_in_repetitive_region == False
         and annot_trans.is_truncated_region_disease_relevant == True
         and round(annot_trans.diff_len_protein_percent, 2) == 0.29
+        and annot_trans.frameshift == 1
+        and annot_trans.ptc == 613
     )
 
 
@@ -101,7 +110,13 @@ def test_ter():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans[0]
+        test_var,
+        path_clinvar,
+        path_uniprot,
+        path_critical_region,
+        None,
+        None,
+        test_trans[0],
     )
     assert (
         annot_trans.is_NMD == True
@@ -109,6 +124,8 @@ def test_ter():
         and annot_trans.len_change_in_repetitive_region == False
         and annot_trans.is_truncated_region_disease_relevant == True
         and round(annot_trans.diff_len_protein_percent, 2) == 0.68
+        and annot_trans.frameshift == 0
+        and annot_trans.ptc == 275
     )
 
 
@@ -132,7 +149,13 @@ def test_del_inframe():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans
+        test_var,
+        path_clinvar,
+        path_uniprot,
+        path_critical_region,
+        None,
+        None,
+        test_trans,
     )
     assert (
         round(annot_trans.diff_len_protein_percent, 2) == 0.0
@@ -140,6 +163,47 @@ def test_del_inframe():
         and annot_trans.is_truncated_region_disease_relevant == False
         and annot_trans.is_NMD == False
         and annot_trans.is_reading_frame_preserved == True
+        and annot_trans.frameshift == 0
+        and annot_trans.ptc == 392
+    )
+
+
+def test_del_frameshift():
+    """
+    Test annotation for deletion
+    """
+    test_trans, test_var = create_example_del_frameshift()
+    path_config = paths.ROOT / "config.yaml"
+    config = load_config(path_config)
+    root_dir = pathlib.Path(config["annotation_files"]["root"])
+    dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
+    file_name = "clinvar_snv.vcf.gz"
+    path_clinvar = dir_clinvar / file_name
+    dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
+    path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
+    dir_critical_region = root_dir / pathlib.Path(
+        config["annotation_files"]["critical_region"]["root"]
+    )
+    path_critical_region = (
+        dir_critical_region / config["annotation_files"]["critical_region"]["file"]
+    )
+    annot_trans = TranscriptInfo_exonic.annotate(
+        test_var,
+        path_clinvar,
+        path_uniprot,
+        path_critical_region,
+        None,
+        None,
+        test_trans,
+    )
+    assert (
+        round(annot_trans.diff_len_protein_percent, 2) == -0.04
+        and annot_trans.len_change_in_repetitive_region == False
+        and annot_trans.is_truncated_region_disease_relevant == True
+        and annot_trans.is_NMD == False
+        and annot_trans.is_reading_frame_preserved == False
+        and annot_trans.frameshift == -1
+        and annot_trans.ptc == 564
     )
 
 
@@ -163,7 +227,13 @@ def test_ins():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans
+        test_var,
+        path_clinvar,
+        path_uniprot,
+        path_critical_region,
+        None,
+        None,
+        test_trans,
     )
     assert (
         round(annot_trans.diff_len_protein_percent, 2) == 0.94
@@ -171,6 +241,8 @@ def test_ins():
         and annot_trans.is_truncated_region_disease_relevant == True
         and annot_trans.is_NMD == True
         and annot_trans.is_reading_frame_preserved == False
+        and annot_trans.frameshift == 1
+        and annot_trans.ptc == 114
     )
 
 

@@ -1,0 +1,313 @@
+position	alternative_allele	rule_status	evidence_strength	comment
+-40+1	A	False	very_strong	Predicted alteration does not affect the coding sequence.
+-40+1	C	False	very_strong	Predicted alteration does not affect the coding sequence.
+-40+1	T	False	very_strong	Predicted alteration does not affect the coding sequence.
+-40+2	A	False	very_strong	Predicted alteration does not affect the coding sequence.
+-40+2	C	False	very_strong	Predicted alteration does not affect the coding sequence.
+-40+2	G	False	very_strong	Predicted alteration does not affect the coding sequence.
+-39-2	C	False	very_strong	Predicted alteration non-coding (initiation codon skipped).
+-39-2	T	False	very_strong	Predicted alteration non-coding (initiation codon skipped).
+-39-2	G	False	very_strong	Predicted alteration non-coding (initiation codon skipped).
+-39-2	A	False	very_strong	Predicted alteration non-coding (initiation codon skipped).
+-39-2	C	False	very_strong	Predicted alteration non-coding (initiation codon skipped).
+-39-2	T	False	very_strong	Predicted alteration non-coding (initiation codon skipped).
+67+1	A	False	very_strong	Predicted alteration non-coding (initiation codon skipped).
+67+1	C	False	very_strong	Predicted alteration non-coding (initiation codon skipped).
+67+1	T	False	very_strong	Predicted alteration non-coding (initiation codon skipped).
+67+2	A	False	very_strong	Predicted alteration non-coding (initiation codon skipped).
+67+2	C	False	very_strong	Predicted alteration non-coding (initiation codon skipped).
+67+2	G	False	very_strong	Predicted alteration non-coding (initiation codon skipped).
+316+1	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+316+1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+316+1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+316+2	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+316+2	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+316+2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+7806-2	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+7806-2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+7806-2	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+7806-1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+7806-1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+7976+1	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+7976+1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+7976+1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+7976+2	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+7976+2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8332-2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8487+1	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8487+1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8487+1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8487+2	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8487+2	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8487+2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8954-2	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8954-2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8954-2	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8954-1	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8954-1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+8954-1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+9502-2	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+9502-2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+9502-2	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+9502-1	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+9502-1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+9502-1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+9648+1	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+9648+1	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+9648+1	T	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+9648+2	A	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+9648+2	C	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+9648+2	G	True	very_strong	In-frame splicing alteration predicted. Target region critical to protein function.
+426-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+426-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+426-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+426-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+426-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+426-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+475+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+475+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+475+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+475+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+475+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+475+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+476-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+476-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+476-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+476-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+476-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+476-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+516+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+516+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+516+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+516+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+516+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+516+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+517-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+632-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+632-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+632-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+632-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+632-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+632-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+681+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+681+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+681+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+681+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+681+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+681+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+682-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+682-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+682-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+682-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+682-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+682-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+793+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+793+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+793+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+793+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+793+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+793+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+794-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+1910-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+6938-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+6938-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+6938-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+6938-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+6938-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+6938-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7007+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7007+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7007+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7007+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7007+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7007+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7008-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7008-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7008-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7008-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7008-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7008-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7435+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7435+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7435+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7435+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7435+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7435+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7436-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7436-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7436-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7436-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7436-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7436-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7617+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7617+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7617+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7617+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7617+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7617+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7618-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7618-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7618-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7618-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7618-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7618-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7805+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7805+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7805+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7805+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7805+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7805+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7806-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7977-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7977-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7977-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7977-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7977-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+7977-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8331+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8331+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8331+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8331+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8331+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8331+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8332-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8332-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8332-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8332-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8332-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8632+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8632+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8632+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8632+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8632+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8632+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8633-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8633-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8633-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8633-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8633-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8633-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8754+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8754+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8754+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8754+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8754+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8754+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8755-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8755-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8755-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8755-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8755-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8755-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8953+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8953+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8953+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8953+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+8953+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9117+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9117+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9117+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9117+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9117+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9117+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9118-2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9118-2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9118-2	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9118-1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9118-1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9256+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9256+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9256+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9256+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9256+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9256+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9257-1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9501+1	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9501+1	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9501+1	T	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9501+2	A	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9501+2	C	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9501+2	G	True	very_strong	NMD is predicted and exon is present in biologically-relevant-transcript.
+9649-2	C	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+9649-2	T	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+9649-2	G	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+9649-1	A	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+9649-1	C	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+9649-1	T	True	very_strong	NMD is not predicted. Reading frame is not preserved and truncated/altered region is critical to protein function.
+68-2	C	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+68-2	G	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+68-2	T	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+68-1	A	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+68-1	C	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+68-1	T	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+8488-2	C	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+8488-2	G	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+8488-2	T	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+8488-1	A	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+8488-1	C	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+8488-1	T	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+9118-1	A	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+9257-2	C	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+9257-2	G	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+9257-2	T	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+9257-1	C	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+9257-1	T	True	supporting	In-frame splicing alteration predicted. Cryptic splice and no known clinically important residues targeted.
+1910-2	C	True	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Splicing alteration removes >10% of coding sequence and exon 11 is skipped.
+1910-2	G	True	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Splicing alteration removes >10% of coding sequence and exon 11 is skipped.
+1910-2	T	True	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Splicing alteration removes >10% of coding sequence and exon 11 is skipped.
+1910-1	C	True	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Splicing alteration removes >10% of coding sequence and exon 11 is skipped.
+1910-1	T	True	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Splicing alteration removes >10% of coding sequence and exon 11 is skipped.
+6841+1	A	True	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Splicing alteration removes >10% of coding sequence and exon 11 is skipped.
+6841+1	C	True	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Splicing alteration removes >10% of coding sequence and exon 11 is skipped.
+6841+1	T	True	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Splicing alteration removes >10% of coding sequence and exon 11 is skipped.
+6841+2	A	True	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Splicing alteration removes >10% of coding sequence and exon 11 is skipped.
+6841+2	C	True	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Splicing alteration removes >10% of coding sequence and exon 11 is skipped.
+6841+2	G	True	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Splicing alteration removes >10% of coding sequence and exon 11 is skipped.
+317-2	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+317-2	G	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+317-2	T	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+317-1	A	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+317-1	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+317-1	T	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+425+1	A	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+425+1	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+425+1	T	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+425+2	A	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+425+2	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+425+2	G	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+517-2	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+517-2	G	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+517-2	T	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+517-1	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+517-1	T	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+631+1	A	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+631+1	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+631+1	T	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+631+2	A	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+631+2	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+631+2	G	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+794-2	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+794-2	G	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+794-2	T	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+794-1	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+794-1	T	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+1909+1	A	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+1909+1	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+1909+1	T	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+1909+2	A	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+1909+2	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+1909+2	G	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+6842-2	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+6842-2	G	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+6842-2	T	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+6842-1	A	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+6842-1	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+6842-1	T	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+6937+1	A	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+6937+1	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+6937+1	T	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+6937+2	A	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+6937+2	C	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+6937+2	G	False	very_strong	In-frame splicing alteration predicted. Role of target region unknown. Either splicing alteration removes <10% of coding sequence or exon 11 not skipped.
+8953+2	C	False	very_strong	No splicing alteration predicted. Creates a GC site, predicted functional by SpliceAI score <0.8 and the new donor site sequence is AG|GCAAGT.
+7976+2	T	False	very_strong	No splicing alteration predicted. Non-canonical GC improved to GT (supported by SpliceAI and SSF-like).

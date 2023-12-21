@@ -1,60 +1,46 @@
 ### Configuration name ###
-name: "ACMG BRCA1"
+name: "ACMG ATM"
 
 ### Rules ###
 rules:
-    - pvs1_brca1
+    - pvs1_atm
     - ps1_protein
     - ps1_splicing
-    - ps3
     - pm2_supporting
+    - pm4_stoploss
     - pm5_protein
     - pm5_splicing
     - pp3_protein
     - pp3_splicing
     - ba1
-    - bs1_supporting
+    - bs1
     - bp4_protein
     - bp4_splicing
     - bp7
 
 ### Disease relevant transcript ###
 disease_relevant_transcripts:
-    - name: "ENST00000357654"
-      nmd_threshold: 5418
-      pos_last_known_patho_ptc: 5562
+    - name: "ENST00000675843"
+      nmd_threshold: 3937
+      pos_last_known_patho_ptc: 9141
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:
     pathogenicity_prediction:
-        name: "BayesDel"
-        benign: 0.15
-        pathogenic: 0.28
+        name: "REVEL"
+        benign: 0.249
+        pathogenic: 0.73333
     splicing_prediction:
         name: "SpliceAI"
         benign: 0.1
         pathogenic: 0.2
 
-
-### Thresholds loglikelihood ###
-likelihood_thresholds:
-    benign:
-        supporting: 0.48
-        moderate: 0.25
-        strong: 0.05
-        very_strong: 0.00285
-    pathogenic:
-        supporting: 2.08
-        moderate: 4.3
-        strong: 18.7
-        very_strong: 350
-
 ### Allelee frequency threshold for each gene ###
 allele_frequency_thresholds:
-    threshold_ba1: 0.001
-    threshold_bs1: 0.0001
-    threshold_bs1_supporting: 0.00002
-    threshold_pm2: 0
+    threshold_ba1: 0.005
+    threshold_bs1: 0.0005
+    threshold_bs2: 5
+    threshold_pm2: 0.00001
 
 ### Functional thresholds
 functional_thresholds:
@@ -70,11 +56,9 @@ annotation_files:
     uniprot:
         root: "databases/Uniprot"
         rep: "repeats_hg38_uniprot.bed"
-    critical_region:
+    critical_regions:
         root: "variant_classification/data/critical_region"
-        critical_region: "VUS-Task-Force_critical_protein_domains.bed"
-        disease_irrelevant_exons: "VCEP_disease_irrelevant_exons.bed"
-        coldspot_region: "VCEP_coldspot.bed"
+        critical_region: "VCEP_defined_critical_regions.bed"
     splice_site_table:
         root: "variant_classification/data/splice_site_classification"
-        file: "BRCA1_splice_table.csv"
+        file: "ATM_splice_table_reformatted.csv"

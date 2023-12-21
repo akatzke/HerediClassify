@@ -6,17 +6,23 @@ from functools import reduce, partial
 import operator as op
 from typing import Callable, Union, Any, Optional
 
+from variant import Variant
+from var_type import VARTYPE_GROUPS
 import acmg_rules as Rules
-from acmg_rules.computation_evidence_utils import (
-    Threshold,
-    THRESHOLD_DIRECTION,
-)
 from acmg_rules.utils import RuleResult
-from clinvar_annot import get_annotate_clinvar
 from information import (
     Info,
     Classification_Info,
     Classification_Info_Groups,
+)
+from acmg_rules.computation_evidence_utils import (
+    Threshold,
+    THRESHOLD_DIRECTION,
+    Threshold_evidence_strength,
+)
+from clinvar_annot import get_annotate_clinvar
+from check_splice_site_classification_table import (
+    get_annotate_splice_site_classification,
 )
 from transcript_annotated import (
     TranscriptInfo_exonic,
@@ -24,8 +30,10 @@ from transcript_annotated import (
     TranscriptInfo_start_loss,
     annotate_transcripts,
 )
-from var_type import VARTYPE_GROUPS
-from variant import Variant
+from check_coldspot_hotspot import (
+    get_check_coldspot,
+    get_check_hotspot,
+)
 
 logger = logging.getLogger("Classify.config_annotation")
 
@@ -34,22 +42,45 @@ def get_annotations_needed_from_rules(
     rule_list: list[str], class_info: Classification_Info
 ) -> dict[Callable, tuple[Info, ...]]:
     """
-    Based on rule get classification_information objects required to apply the rules
+    Based on rule get Classification_Info objects required to apply the rules
     """
     RULE_DICTIONARY = {
         "pvs1": Rules.Pvs1,
+        "pvs1_RNA": Rules.Pvs1_with_splice_assay,
+        "pvs1_brca1": Rules.Pvs1_brca1,
+        "pvs1_brca2": Rules.Pvs1_brca2,
+        "pvs1_atm": Rules.Pvs1_atm,
+        "pvs1_palb2": Rules.Pvs1_palb2,
+        "pvs1_pten": Rules.Pvs1_pten,
+        "pvs1_cdh1": Rules.Pvs1_cdh1,
         "ps1_protein": Rules.Ps1_protein,
         "ps1_splicing": Rules.Ps1_splicing,
+        "ps3": Rules.Ps3,
+        "ps3_only_splice": Rules.Ps3_only_splice,
+        "ps3_prot_splice": Rules.Ps3_prot_and_splice_assay,
         "pm1": Rules.Pm1,
+        "pm1_defined_regions": Rules.Pm1_defined_regions,
         "pm2": Rules.Pm2,
+        "pm2_supporting": Rules.Pm2_supporting,
         "pm4": Rules.Pm4,
+        "pm4_pten": Rules.Pm4_pten,
+        "pm4_stoploss": Rules.Pm4_stoploss,
         "pm5_protein": Rules.Pm5_protein,
         "pm5_splicing": Rules.Pm5_splicing,
+        "pp2": Rules.Pp2,
         "pp3_splicing": Rules.Pp3_splicing,
         "pp3_protein": Rules.Pp3_protein,
         "ba1": Rules.Ba1,
+        "ba1": Rules.Ba1_with_absolute,
         "bs1": Rules.Bs1,
+        "bs1_with_absolute": Rules.Bs1_with_absolute,
+        "bs1_supporting": Rules.Bs1_with_supporting,
+        "bs1_absolute": Rules.Bs1_with_absolute,
         "bs2": Rules.Bs2,
+        "bs2_supporting": Rules.Bs2_with_supporting,
+        "bs3": Rules.Bs3,
+        "bs3_only_splice": Rules.Bs3_only_splice,
+        "bs3_prot_splice": Rules.Bs3_prot_and_splice_assay,
         "bp3": Rules.Bp3,
         "bp4_splicing": Rules.Bp4_splicing,
         "bp4_protein": Rules.Bp4_protein,
@@ -72,7 +103,7 @@ def get_unique_annotations_needed(
     fun_info_dict: dict[Callable, tuple[Info, ...]]
 ) -> list[Info]:
     """
-    From dictionary mapping rules functions to their needed classification_information object
+    From dictionary mapping rules functions to their needed Classification_Info object
     """
     annots = []
     for rule_args in fun_info_dict.values():
@@ -93,7 +124,7 @@ def get_annotation_functions(
     """
     Based on needed annotations perform annotation
     """
-    ### Dictionary for all classification_information objects that are defined in the Variant object
+    ### Dictionary for all Classification_Info objects that are defined in the Variant object
     ### For definition Variant object see variant.py
     dict_annotation_variant = {
         class_info.VARIANT.name: lambda variant: partial(
@@ -105,7 +136,7 @@ def get_annotation_functions(
         class_info.VARIANT_HOTSPOT.name: lambda variant: partial(
             return_information,
             "Critical region",
-            variant.affected_region.critical_region,
+            variant.affected_region.cancer_hotspot,
         ),
         class_info.VARIANT_GNOMAD.name: lambda variant: partial(
             return_information, "GnomAD", variant.gnomad
@@ -116,22 +147,39 @@ def get_annotation_functions(
         class_info.VARIANT_PREDICTION.name: lambda variant: partial(
             return_information, "Prediction tools", variant.prediction_tools
         ),
+        class_info.FUNCTIONAL_ASSAY.name: lambda: partial(
+            return_information, "Functional assay", variant.functional_assay
+        ),
+        class_info.SPLICING_ASSAY.name: lambda: partial(
+            return_information, "Splicing assay", variant.splicing_assay
+        ),
+        class_info.VARIANT_MULTIFACTORIAL_LIKELIHOOD.name: lambda: partial(
+            return_information,
+            "Multifactorial likelihood",
+            variant.multifactorial_likelihood,
+        ),
     }
 
-    ### Dictionary for all classification_information objects that have a get_annotation_function
+    ### Dictionary for all Classification_Info objects that have a get_annotation_function
     dict_annotation = {
         class_info.ANNOTATED_TRANSCRIPT_LIST.name: lambda variant, config: get_annotation_function_annotated_transcript(
             variant, config, class_info
         ),
-        class_info.ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec.name: lambda variant, config: get_annotation_function_annotated_transcript_acmg(
-            variant, config, class_info
+        class_info.VARIANT_CLINVAR.name: lambda variant, config: get_annotation_function(
+            get_annotate_clinvar, variant, config, class_info
         ),
-        class_info.VARIANT_CLINVAR.name: lambda variant, config: get_annotation_function_variant_clinvar(
-            variant, config, class_info
+        class_info.SPLICE_RESULT.name: lambda variant, config: get_annotation_function(
+            get_annotate_splice_site_classification, variant, config, class_info
+        ),
+        class_info.VARIANT_HOTSPOT_ANNOTATION.name: lambda variant, config: get_annotation_function(
+            get_check_hotspot, variant, config, class_info
+        ),
+        class_info.VARIANT_COLDSPOT_ANNOTATION.name: lambda variant, config: get_annotation_function(
+            get_check_coldspot, variant, config, class_info
         ),
     }
 
-    ### Dictionary for all classification_information that belong to a classification_information_groups
+    ### Dictionary for all Classification_Info that belong to a Classification_Info_groups
     dict_annotation_groups = {
         Classification_Info_Groups.PATH: lambda annot, config: partial(
             get_path_from_config, annot.config_location, config
@@ -141,6 +189,14 @@ def get_annotation_functions(
         ),
         Classification_Info_Groups.THRESHOLD_PREDICTION: lambda annot, config: partial(
             get_threshold_prediction_from_config, annot.config_location, config
+        ),
+        Classification_Info_Groups.THRESHOLD_MULT_STRENGTH: lambda annot, config: partial(
+            get_threshold_prediction_from_config_mult_strength,
+            annot.config_location,
+            config,
+        ),
+        Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD: lambda annot, config: partial(
+            get_disease_relevant_transcript_thresholds, annot.config_location, config
         ),
     }
 
@@ -166,6 +222,17 @@ def get_annotation_functions(
                 annotation.compute_function = dict_annotation_groups[
                     Classification_Info_Groups.THRESHOLD_PREDICTION
                 ](annotation, config)
+            elif annotation.group is Classification_Info_Groups.THRESHOLD_MULT_STRENGTH:
+                annotation.compute_function = dict_annotation_groups[
+                    Classification_Info_Groups.THRESHOLD_MULT_STRENGTH
+                ](annotation, config)
+            elif (
+                annotation.group
+                is Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD
+            ):
+                annotation.compute_function = dict_annotation_groups[
+                    Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD
+                ](annotation, config)
             else:
                 raise ValueError(f"No annotation function defined for {annotation}.")
     return annotations_needed
@@ -175,7 +242,7 @@ def get_annotation_function_annotated_transcript(
     variant: Variant, config: dict, class_info: Classification_Info
 ) -> Callable[[], Any]:
     """
-    Create annotation function for construction of classification_information.ANNOTATED_TRANSCIPT_LIST
+    Create annotation function for construction of Classification_Info.ANNOTATED_TRANSCIPT_LIST
     """
     relevant_classes = {
         VARTYPE_GROUPS.EXONIC: TranscriptInfo_exonic,
@@ -192,39 +259,11 @@ def get_annotation_function_annotated_transcript(
     return fun
 
 
-def get_annotation_function_annotated_transcript_acmg(
-    variant: Variant, config: dict, class_info: Classification_Info
-) -> Callable[[], Any]:
-    """
-    Create annotation function for construction of classification_information.ANNOTATED_TRANSCIPT_LIST_ACMG_Spec
-    """
-    relevant_classes = {
-        VARTYPE_GROUPS.EXONIC: TranscriptInfo_exonic,
-        VARTYPE_GROUPS.INTRONIC: TranscriptInfo_intronic,
-        VARTYPE_GROUPS.START_LOST: TranscriptInfo_start_loss,
-    }
-    fun_dict = {}
-    for name, entry in relevant_classes.items():
-        fun_annot = prepare_function_for_annotation(
-            partial(entry.get_annotate, class_info), variant, config, class_info
-        )
-        fun_dict[name]["general"] = fun_annot
-        fun_acmg = prepare_function_for_annotation(
-            partial(entry.get_annotation_acmg, class_info), variant, config, class_info
-        )
-        fun_dict[name]["acmg"] = fun_acmg
-    fun = partial(annotate_transcripts, variant, fun_dict)
-    return fun
-
-
-def get_annotation_function_variant_clinvar(
-    variant: Variant, config: dict, class_info: Classification_Info
-) -> Callable[[], Any]:
-    """
-    Create annotation function for construction of classification_information.VARIANT_CLINVAR
-    """
+def get_annotation_function(
+    get_fun: Callable, variant: Variant, config: dict, class_info: Classification_Info
+):
     fun = prepare_function_for_annotation(
-        partial(get_annotate_clinvar, class_info), variant, config, class_info
+        partial(get_fun, class_info), variant, config, class_info
     )
     return fun
 
@@ -244,7 +283,7 @@ def prepare_function_for_annotation(
     )
     args = execute_annotation(set_args)
     for arg in args:
-        if arg.value is None:
+        if arg.value is None and not arg.optional:
             logger.warning(
                 f"The annotation function {annot_fun} can not be defined, as {arg.name} is None. Annotation is skipped."
             )
@@ -275,7 +314,7 @@ def remove_rules_with_missing_annotation(
     original_dict = fun_info_dict.copy()
     for rule_fun, rule_args in original_dict.items():
         for annotation in rule_args:
-            if annotation.value is None:
+            if annotation.value is None and not annotation.optional:
                 del fun_info_dict[rule_fun]
                 logger.info(f"Removed {rule_fun} from rules that will be assessed.")
                 break
@@ -380,7 +419,9 @@ def get_threshold_prediction_from_config(
         thr_benign = config_prediction_tool["benign"]
         thr_pathogenic = config_prediction_tool["pathogenic"]
     except KeyError:
-        logger.warning(f"The location {config_location} could not ")
+        logger.warning(
+            f"The location {config_location} could not be found in configuration."
+        )
         return None
     try:
         float(thr_benign)
@@ -408,3 +449,73 @@ def get_threshold_prediction_from_config(
             )
         else:
             return Threshold(name, thr_pathogenic, THRESHOLD_DIRECTION.LOWER)
+
+
+def get_threshold_prediction_from_config_mult_strength(
+    config_location: Union[tuple[str, ...], None], config: dict
+) -> Union[Threshold_evidence_strength, None]:
+    """
+    Get thresholds when multiple evidence strengths are defined
+    """
+    if config_location is None:
+        logger.warning(
+            f"No location in the configuration is defined for this threshold. Please check information.py."
+        )
+        return None
+    try:
+        config_prediction_tool = reduce(op.getitem, config_location, config)
+    except KeyError:
+        logger.warning(
+            f"The location {config_location} could not be found in configuration."
+        )
+        return None
+    thr_supp = config_prediction_tool.get("supporting")
+    thr_mod = config_prediction_tool.get("moderate")
+    thr_str = config_prediction_tool.get("strong")
+    thr_very_str = config_prediction_tool.get("very_strong")
+    if config_location[-1] == "pathogenic":
+        dir = THRESHOLD_DIRECTION.HIGHER
+    elif config_location[-1] == "benign":
+        dir = THRESHOLD_DIRECTION.LOWER
+    else:
+        raise ValueError(f"The direction of the threshold could not be determined")
+    return Threshold_evidence_strength(
+        name=config_location[0],
+        direction=dir,
+        threshold_very_strong=thr_very_str,
+        threshold_strong=thr_str,
+        threshold_moderate=thr_mod,
+        threshold_supporting=thr_supp,
+    )
+
+
+def get_disease_relevant_transcript_thresholds(
+    config_location: Union[tuple[str, ...], None], config: dict
+) -> Union[dict[str, int], None]:
+    """
+    Create dictionary containing the
+    """
+    if config_location is None:
+        logger.warning(
+            f"No location in the configuration is defined for this disease relevant transcript threshold. Please check information.py."
+        )
+        return None
+    try:
+        disease_relevant_transcripts = config["disease_relevant_transcripts"]
+    except KeyError:
+        logger.warning(
+            f"No field disease_relevant_transcripts found in the configuration file."
+        )
+        return None
+    try:
+        thresh_dict = {}
+        for transcript in disease_relevant_transcripts:
+            thresh_dict[transcript["name"]] = transcript[config_location[-1]]
+        if not bool(thresh_dict):
+            return None
+        return thresh_dict
+    except KeyError:
+        logger.warning(
+            f"Either 'name' or {config_location[-1]} not defined for all disease relevant transcripts."
+        )
+        return None
