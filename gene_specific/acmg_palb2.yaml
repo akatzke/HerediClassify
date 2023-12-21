@@ -55,7 +55,7 @@ annotation_files:
     uniprot:
         root: "databases/Uniprot"
         rep: "repeats_hg38_uniprot.bed"
-    critical_region:
+    critical_regions:
         root: "variant_classification/data/critical_region"
         critical_region: "VCEP_defined_critical_regions.bed"
     splice_site_table:

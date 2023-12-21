@@ -56,7 +56,7 @@ annotation_files:
     uniprot:
         root: "databases/Uniprot"
         rep: "repeats_hg38_uniprot.bed"
-    critical_region:
+    critical_regions:
         root: "variant_classification/data/critical_region"
         critical_region: "VUS-Task-Force_critical_protein_domains.bed"
     splice_site_table:
