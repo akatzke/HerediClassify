@@ -92,7 +92,7 @@
             "properties":{
                 "threshold_ba1": {
                     "type": "number"
-                }
+                },
                 "threshold_ba1_absolute": {
                     "type": "integer"
                 },
