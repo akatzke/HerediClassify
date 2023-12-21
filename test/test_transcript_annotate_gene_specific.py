@@ -133,11 +133,13 @@ def test_exon_not_disease_relevant():
     )
     root_dir = pathlib.Path(final_config["annotation_files"]["root"])
     dir_critical_region = root_dir / pathlib.Path(
-        final_config["annotation_files"]["disease_irrelevant_exons"]["root"]
+        final_config["annotation_files"]["critical_regions"]["root"]
     )
     path_disease_irrelevant_exons = (
         dir_critical_region
-        / final_config["annotation_files"]["disease_irrelevant_exons"]["file"]
+        / final_config["annotation_files"]["critical_regions"][
+            "disease_irrelevant_exons"
+        ]
     )
     is_affected_exon_disease_relevant = check_exon_disease_relevant(
         path_disease_irrelevant_exons, NMD_affected_exons
