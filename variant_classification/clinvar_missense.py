@@ -23,6 +23,7 @@ from clinvar_utils import (
     convert_vcf_gen_to_df,
     get_affected_transcript,
 )
+from custom_exceptions import No_transcript_with_var_type_found
 
 logger = logging.getLogger("GenOtoScope_Classify.clinvar.missense")
 
@@ -35,12 +36,22 @@ def check_clinvar_missense(
     """
     # In case the variant is not an SNV, return empty ClinVar result
     if len(variant.var_obs) != 1 or len(variant.var_ref) != 1:
+        logger.warning(
+            "Variant is not a SNV. PS1/PM5 currently not implemented for delins."
+        )
         ClinVar_same_aa = create_ClinVar(pd.DataFrame(), ClinVar_Type.SAME_AA_CHANGE)
         ClinVar_diff_aa = create_ClinVar(pd.DataFrame(), ClinVar_Type.DIFF_AA_CHANGE)
         return (ClinVar_same_aa, ClinVar_diff_aa)
-    affected_transcript, ref_transcript = get_affected_transcript(
-        transcripts, VARTYPE_GROUPS.MISSENSE
-    )
+    try:
+        affected_transcript, ref_transcript = get_affected_transcript(
+            transcripts, VARTYPE_GROUPS.MISSENSE
+        )
+    except No_transcript_with_var_type_found:
+        logger.warning("No transcript with variant type missense found.")
+        ClinVar_same_aa = create_ClinVar(pd.DataFrame(), ClinVar_Type.SAME_AA_CHANGE)
+        ClinVar_diff_aa = create_ClinVar(pd.DataFrame(), ClinVar_Type.DIFF_AA_CHANGE)
+        return (ClinVar_same_aa, ClinVar_diff_aa)
+
     var_codon_info = extract_var_codon_info(
         variant, ref_transcript, affected_transcript
     )

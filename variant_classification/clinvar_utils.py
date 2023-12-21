@@ -12,6 +12,7 @@ import pyensembl
 from variant import TranscriptInfo
 from var_type import VARTYPE_GROUPS
 from ensembl import ensembl
+from custom_exceptions import No_transcript_with_var_type_found
 
 logger = logging.getLogger("GenOtoScope_Classify.genotoscope_clinvar")
 
@@ -51,7 +52,7 @@ def get_affected_transcript(
             except ValueError or AttributeError:
                 continue
             return transcript, ref_transcript
-    raise ValueError(f"No transcript has {var_types}")
+    raise No_transcript_with_var_type_found
 
 
 def convert_vcf_gen_to_df(vcf_generator: Generator) -> pd.DataFrame:
