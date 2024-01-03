@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from types import FunctionType
 from typing import Callable
 
 from acmg_rules.utils import (
@@ -28,7 +27,7 @@ class Ps1_protein_spliceai(abstract_rule):
         return (
             cls.assess_rule,
             (
-                class_info.VARIANT_CLINVAR_SPLICEAI,
+                class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
                 class_info.SPLICING_ASSAY,
@@ -87,7 +86,7 @@ class Ps1_splicing_spliceai(abstract_rule):
         return (
             cls.assess_rule,
             (
-                class_info.VARIANT_CLINVAR_SPLICEAI,
+                class_info.VARIANT_CLINVAR_SPLICEAI_SPLICING,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
             ),
