@@ -44,36 +44,3 @@ class Pm5_protein(abstract_rule):
             evidence_strength.MODERATE,
             comment,
         )
-
-
-class Pm5_splicing(abstract_rule):
-    """
-    PM5: Pathogenic missense variant to different amino acid in same position classified as pathogenic in ClinVar
-    """
-
-    @classmethod
-    def get_assess_rule(
-        cls, class_info: Classification_Info
-    ) -> tuple[Callable, tuple[Info, ...]]:
-        return (
-            cls.assess_rule,
-            (class_info.VARIANT_CLINVAR,),
-        )
-
-    @classmethod
-    def assess_rule(cls, clinvar_results: dict[ClinVar_Type, ClinVar]) -> RuleResult:
-        clinvar_same_splice_site = clinvar_results[ClinVar_Type.SAME_SPLICE_SITE]
-        if clinvar_same_splice_site.pathogenic:
-            comment = f"The following ClinVar entries show the variants in the same splice site as pathogenic: {clinvar_same_splice_site.pathogenic}."
-            result = True
-        else:
-            comment = "No ClinVar entries found that show variant in the same splice site as pathogenic."
-            result = False
-        return RuleResult(
-            "PM5",
-            rule_type.SPLICING,
-            evidence_type.PATHOGENIC,
-            result,
-            evidence_strength.MODERATE,
-            comment,
-        )
