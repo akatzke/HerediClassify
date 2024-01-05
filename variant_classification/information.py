@@ -13,6 +13,7 @@ class Classification_Info_Groups(Enum):
     THRESHOLD_SINGLE = auto()
     THRESHOLD_PREDICTION = auto()
     THRESHOLD_MULT_STRENGTH = auto()
+    CONFIG_ENTRY_STR = auto()
     PATH = auto()
     DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD = auto()
 
@@ -63,6 +64,8 @@ class Classification_Info:
     VARIANT: Info
     TRANSCRIPT: Info
     CLINVAR_PATH: Info
+    SIMILARITY_SCORE_PATH: Info
+    SIMILARITY_SOCRE_DIRECTION: Info
     UNIPROT_REP_REGION_PATH: Info
     CRITICAL_REGION_PATH: Info
     DISEASE_IRRELEVANT_EXONS_PATH: Info
@@ -210,6 +213,26 @@ class Classification_Info:
             "clinvar_path",
             config_location=("annotation_files", "clinvar", "clinvar_snv"),
             group=Classification_Info_Groups.PATH,
+        )
+        self.SIMILARITY_SCORE_PATH = Info(
+            "similarity_score_path",
+            config_location=(
+                "annotation_files",
+                "similarity_score",
+                "similarity_score_file",
+            ),
+            group=Classification_Info_Groups.PATH,
+        )
+        self.SIMILARITY_SOCRE_DIRECTION = Info(
+            ## Direction in which the similarity score has to be in order for a ClinVar entry to be admissable for PM5
+            ## "greater" and "less" always are interpreted as "greater or equal" or "less or equal"
+            "similarity_score_direction",
+            config_location=(
+                "annotation_files",
+                "similarity_score",
+                "similarity_score_direction",
+            ),
+            group=Classification_Info_Groups.CONFIG_ENTRY_STR,
         )
         self.UNIPROT_REP_REGION_PATH = Info(
             "uniprot_rep_region_path",

@@ -198,6 +198,9 @@ def get_annotation_functions(
         Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD: lambda annot, config: partial(
             get_disease_relevant_transcript_thresholds, annot.config_location, config
         ),
+        Classification_Info_Groups.CONFIG_ENTRY_STR: lambda annot, config: partial(
+            get_config_entry_str, annot.config_location, config
+        ),
     }
 
     for annotation in annotations_needed:
@@ -232,6 +235,10 @@ def get_annotation_functions(
             ):
                 annotation.compute_function = dict_annotation_groups[
                     Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD
+                ](annotation, config)
+            elif annotation.group is Classification_Info_Groups.CONFIG_ENTRY_STR:
+                annotation.compute_function = dict_annotation_groups[
+                    Classification_Info_Groups.CONFIG_ENTRY_STR
                 ](annotation, config)
             else:
                 raise ValueError(f"No annotation function defined for {annotation}.")
@@ -517,5 +524,24 @@ def get_disease_relevant_transcript_thresholds(
     except KeyError:
         logger.warning(
             f"Either 'name' or {config_location[-1]} not defined for all disease relevant transcripts."
+        )
+        return None
+
+
+def get_config_entry_str(
+    config_location: Union[tuple[str, ...], None], config: dict
+) -> Union[str, None]:
+    """
+    Create dictionary containing the
+    """
+    if config_location is None:
+        logger.warning(f"No location in the configuration is defined.")
+        return None
+    try:
+        conf_str = reduce(op.getitem, config_location, config)
+        return conf_str
+    except KeyError:
+        logger.warning(
+            f"The location {config_location} could not be found in the configuration."
         )
         return None
