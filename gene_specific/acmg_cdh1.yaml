@@ -64,4 +64,4 @@ annotation_files:
         file: "CDH1_splice_table_reformatted.csv"
     splice_site_table_pm5:
         root: "variant_classification/data/PM5_annotations"
-        file: "PM5_splicing_CDH1.csv"
+        file: "PM5_splicing_CDH1.bed"
