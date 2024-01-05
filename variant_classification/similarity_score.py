@@ -21,7 +21,7 @@ def get_similarity_score_clinvar(
     The dataframe expected is created from ClinVar entries
     """
     similarity_score = pd.read_csv(path_similarity_score, sep="\t")
-    data_similarity_score = pd.DataFrame = data.apply(
+    data_similarity_score: pd.DataFrame = data.apply(
         get_similarity_score_df, similarity_score=similarity_score, axis=1
     )
     return data_similarity_score
