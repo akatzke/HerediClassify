@@ -89,7 +89,7 @@ class Pm5_splicing_cdh1(abstract_rule):
     ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (class_info.PM5_RESULTS_SPLICING,),
+            (class_info.SPLICE_RESULT_PM5,),
         )
 
     @classmethod
