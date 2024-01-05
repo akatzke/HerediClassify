@@ -32,7 +32,7 @@ def format_grantham(path: pathlib.Path) -> None:
     grantham_transposed["W"] = 0
     grantham_symmetrical = grantham_transposed + grantham_transposed.T
     #
-    grantham_melt = grantham_index.melt(
+    grantham_melt = grantham_symmetrical.melt(
         var_name="alt_aa", value_name="score", ignore_index=False
     )
     grantham_melt["ref_aa"] = grantham_melt.index
