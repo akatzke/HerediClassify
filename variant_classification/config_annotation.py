@@ -34,6 +34,7 @@ from check_coldspot_hotspot import (
     get_check_coldspot,
     get_check_hotspot,
 )
+from variant_classification.check_exon_pm5 import get_annotate_exon_classification_pm5
 from variant_classification.check_splice_site_pm5_classification_table import (
     get_annotate_splice_site_classification_pm5,
 )
@@ -182,6 +183,9 @@ def get_annotation_functions(
         ),
         class_info.SPLICE_RESULT_PM5.name: lambda variant, config: get_annotation_function(
             get_annotate_splice_site_classification_pm5, variant, config, class_info
+        ),
+        class_info.PM5_RESULTS_PTC.name: lambda variant, config: get_annotation_function(
+            get_annotate_exon_classification_pm5, variant, config, class_info
         ),
     }
 

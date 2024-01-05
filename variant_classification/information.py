@@ -73,6 +73,8 @@ class Classification_Info:
     SPLICE_RESULT: Info
     SPLICE_SITE_TABLE_PM5_PATH: Info
     SPLICE_RESULT_PM5: Info
+    EXON_PM5_PATH: Info
+    PM5_RESULTS_PTC: Info
     FUNCTIONAL_ASSAY: Info
     SPLICING_ASSAY: Info
 
@@ -269,5 +271,11 @@ class Classification_Info:
             config_location=("annotation_files", "splice_site_table_pm5", "file"),
             group=Classification_Info_Groups.PATH,
         )
+        self.EXON_PM5_PATH = Info(
+            "exon_pm5_path",
+            config_location=("annotation_files", "exon_pm5", "file"),
+            group=Classification_Info_Groups.PATH,
+        )
+        self.PM5_RESULTS_PTC = Info("pm5_results_ptc", optional=True)
         self.FUNCTIONAL_ASSAY = Info("functional_assay")
         self.SPLICING_ASSAY = Info("splicing_assay")
