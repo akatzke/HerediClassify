@@ -34,6 +34,9 @@ from check_coldspot_hotspot import (
     get_check_coldspot,
     get_check_hotspot,
 )
+from variant_classification.check_splice_site_pm5_classification_table import (
+    get_annotate_splice_site_classification_pm5,
+)
 
 logger = logging.getLogger("Classify.config_annotation")
 
@@ -176,6 +179,9 @@ def get_annotation_functions(
         ),
         class_info.VARIANT_COLDSPOT_ANNOTATION.name: lambda variant, config: get_annotation_function(
             get_check_coldspot, variant, config, class_info
+        ),
+        class_info.SPLICE_RESULT_PM5.name: lambda variant, config: get_annotation_function(
+            get_annotate_splice_site_classification_pm5, variant, config, class_info
         ),
     }
 

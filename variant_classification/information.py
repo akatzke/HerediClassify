@@ -71,6 +71,8 @@ class Classification_Info:
     DISEASE_IRRELEVANT_EXONS_PATH: Info
     SPLICE_SITE_TABLE_PATH: Info
     SPLICE_RESULT: Info
+    SPLICE_SITE_TABLE_PM5_PATH: Info
+    SPLICE_RESULT_PM5: Info
     FUNCTIONAL_ASSAY: Info
     SPLICING_ASSAY: Info
 
@@ -255,11 +257,17 @@ class Classification_Info:
             group=Classification_Info_Groups.PATH,
             optional=True,
         )
+        self.SPLICE_RESULT = Info("splice_result", optional=True)
         self.SPLICE_SITE_TABLE_PATH = Info(
             "splice_site_table_path",
             config_location=("annotation_files", "splice_site_table", "file"),
             group=Classification_Info_Groups.PATH,
         )
-        self.SPLICE_RESULT = Info("splice_result", optional=True)
+        self.SPLICE_RESULT_PM5 = Info("splice_result", optional=True)
+        self.SPLICE_SITE_TABLE_PM5_PATH = Info(
+            "splice_site_table_path",
+            config_location=("annotation_files", "splice_site_table_pm5", "file"),
+            group=Classification_Info_Groups.PATH,
+        )
         self.FUNCTIONAL_ASSAY = Info("functional_assay")
         self.SPLICING_ASSAY = Info("splicing_assay")
