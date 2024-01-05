@@ -32,7 +32,6 @@ from custom_exceptions import (
     Pyensembl_no_coding_sequence,
     Pyensembl_transcript_not_found,
     Not_disease_relevant_transcript,
-
 )
 from variant_in_critical_region import (
     check_variant_in_critical_region_exon,
@@ -268,6 +267,7 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
     coding_exon_skipped: bool = False
     start_codon_exon_skipped: bool = False
     is_NMD: bool = False
+    ptc: int = -1
     affected_exon: dict = field(default_factory=dict)
     is_reading_frame_preserved: bool = False
     is_affected_exon_disease_relevant: bool = True
@@ -369,7 +369,7 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
         else:
             is_affected_exon_disease_relevant = True
         is_reading_frame_preserved, _ = assess_reading_frame_preservation(diff_len)
-        diff_len_protein_percent, _ = calculate_prot_len_diff(
+        diff_len_protein_percent, ptc = calculate_prot_len_diff(
             ref_transcript, var_seq, diff_len
         )
         if diff_len != 0:
@@ -391,6 +391,7 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             intron=transcript.intron,
             ref_transcript=ref_transcript,
             diff_len_protein_percent=diff_len_protein_percent,
+            ptc=ptc,
             are_exons_skipped=are_exons_skipped,
             coding_exon_skipped=coding_exon_skipped,
             start_codon_exon_skipped=start_codon_exon_skipped,
