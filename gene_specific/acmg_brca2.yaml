@@ -75,3 +75,6 @@ annotation_files:
     splice_site_table:
         root: "variant_classification/data/splice_site_classification"
         file: "BRCA1_splice_table.csv"
+    exon_pm5:
+        root: "variant_classification/data/PM5_annotations"
+        file: "PM5_PTC_BRCA1.csv"
