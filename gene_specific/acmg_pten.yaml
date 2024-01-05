@@ -73,3 +73,7 @@ annotation_files:
         root: "variant_classification/data/critical_region"
         critical_region: "VCEP_defined_critical_regions.bed"
         hotspot_region: "VCEP_mutational_hotspots.csv"
+    similarity_score:
+        root: "variant_classification/data/similarity_score"
+        similarity_score_file: "blosum62_formatted.csv"
+        similarity_score_direction: "less"
