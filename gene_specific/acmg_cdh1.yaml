@@ -62,3 +62,6 @@ annotation_files:
     splice_site_table:
         root: "variant_classification/data/splice_site_classification"
         file: "CDH1_splice_table_reformatted.csv"
+    splice_site_table_pm5:
+        root: "variant_classification/data/PM5_annotations"
+        file: "PM5_splicing_CDH1.csv"
