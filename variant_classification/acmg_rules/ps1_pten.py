@@ -25,7 +25,7 @@ class Ps1_splicing_spliceai(abstract_rule):
     ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (class_info.VARIANT_CLINVAR_SPLICEAI_SPLICING,),
+            (class_info.VARIANT_CLINVAR_SPLICEAI_SPLICE,),
         )
 
     @classmethod
