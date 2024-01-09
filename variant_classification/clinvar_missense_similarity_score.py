@@ -22,13 +22,11 @@ from clinvar_missense import (
     extract_clinvar_entries_missense,
     construct_clinvar_prot_change,
 )
-from acmg_rules.computation_evidence_utils import (
-    THRESHOLD_DIRECTION,
-)
 from similarity_score import (
     get_similarity_score,
     get_similarity_score_clinvar,
 )
+from acmg_rules.computation_evidence_utils import Threshold
 
 logger = logging.getLogger("GenOtoScope_Classify.clinvar.missense_similarity_score")
 
@@ -39,10 +37,12 @@ def check_clinvar_missense_similarity(
     path_clinvar: pathlib.Path,
     path_similarity_score: pathlib.Path,
     name_similarity_score: str,
+    threshold_spliceAI: Threshold,
 ) -> ClinVar:
     """
     Check ClinVar for entries supporting pathogenicity of missense variant
     Only looks for different amino acids
+    Also ensures that splicing is not predicted for any of the already classified variants
     """
     # In case the variant is not an SNV, return empty ClinVar result
     if len(variant.var_obs) != 1 or len(variant.var_ref) != 1:
@@ -84,8 +84,11 @@ def check_clinvar_missense_similarity(
             path_similarity_score,
             name_similarity_score,
         )
-        clinvar_diff_aa = clinvar_same_codon_aa_similarity[
-            clinvar_same_codon_aa_filtered.prot_alt != var_codon_info["prot_alt"]
+        clinvar_same_codon_aa_spliceAI = clinvar_same_codon_aa_similarity[
+            clinvar_same_codon_aa_similarity.SpliceAI_max < threshold_spliceAI.threshold
+        ]
+        clinvar_diff_aa = clinvar_same_codon_aa_spliceAI[
+            clinvar_same_codon_aa_spliceAI.prot_alt != var_codon_info["prot_alt"]
         ]
     else:
         clinvar_diff_aa = pd.DataFrame()
@@ -115,7 +118,7 @@ def filter_similarity(
         clinvar_filtered = clinvar_similarity[clinvar_similarity.score >= var_score]
     else:
         raise ValueError(
-            f"No direction for filtering is defiend for the similarity score f{name_similarity_score}."
+            f"No direction for filtering is defiend for the similarity score {path_similarity_score.stem}."
         )
     return clinvar_filtered
 
@@ -131,8 +134,9 @@ def get_check_clinvar_missense_similarity(
         (
             class_info.VARIANT,
             class_info.TRANSCRIPT,
-            class_info.CLINVAR_PATH,
+            class_info.CLINVAR_PATH_SPLICEAI,
             class_info.SIMILARITY_SCORE_PATH,
             class_info.SIMILARITY_SOCRE_DIRECTION,
+            class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
         ),
     )
