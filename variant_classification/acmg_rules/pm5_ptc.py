@@ -16,7 +16,7 @@ from variant import TranscriptInfo, VariantInfo
 from transcript_annotated import TranscriptInfo_exonic, TranscriptInfo_intronic
 
 
-class Pm5_protein_atm(abstract_rule):
+class Pm5_protein_ptc(abstract_rule):
     """
     PM5: Pathogenic missense variant to different amino acid in same position classified as pathogenic in ClinVar
     Implementing the rule specifications for ATM
@@ -78,7 +78,7 @@ class Pm5_protein_atm(abstract_rule):
         return final_result
 
 
-class Pm5_splicing_atm(abstract_rule):
+class Pm5_splicing_ptc(abstract_rule):
     """
     PM5: Pathogenic missense variant to different amino acid in same position classified as pathogenic in ClinVar
     Implementing the rule specifications for ATM

@@ -25,7 +25,7 @@ from acmg_rules.pm1 import *
 from acmg_rules.pm2 import *
 from acmg_rules.pm4 import *
 from acmg_rules.pm5 import *
-from acmg_rules.pm5_atm import *
+from acmg_rules.pm5_ptc import *
 from acmg_rules.pm5_cdh1 import *
 from acmg_rules.pm5_enigma import *
 from acmg_rules.pm5_pten import *
