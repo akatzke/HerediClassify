@@ -126,7 +126,7 @@ class Pvs1_palb2(Pvs1):
             strength = evidence_strength.VERY_STRONG
         elif VARTYPE.STOP_GAINED in transcript.var_type:
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD. Variant type is nonsense."
-            if transcript.is_truncated_region_disease_relevant:
+            if transcript.ptc <= pos_last_known_patho_ptc:
                 comment = (
                     comment + f"Truncated region located in disease relevant region."
                 )
