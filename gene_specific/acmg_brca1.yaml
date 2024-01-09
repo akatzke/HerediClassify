@@ -21,7 +21,7 @@ rules:
 disease_relevant_transcripts:
     - name: "ENST00000357654"
       nmd_threshold: 5418
-      pos_last_known_patho_ptc: 5562
+      pos_last_known_patho_ptc: 1853
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:
