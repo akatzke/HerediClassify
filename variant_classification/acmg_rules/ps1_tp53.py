@@ -15,7 +15,7 @@ from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_t
 from variant import FunctionalData
 
 
-class Ps1_protein_spliceai(abstract_rule):
+class Ps1_protein_tp53(abstract_rule):
     """
     PS1: Position is classified as pathogenic
     """
@@ -74,7 +74,7 @@ class Ps1_protein_spliceai(abstract_rule):
         )
 
 
-class Ps1_splicing_spliceai(abstract_rule):
+class Ps1_splicing_tp53(abstract_rule):
     """
     PS1 for splicing: Splice variant in same position has been show to be pathogenic
     """

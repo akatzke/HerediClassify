@@ -14,7 +14,7 @@ from information import Classification_Info, Info
 from clinvar_utils import ClinVar_Status, ClinVar_Type, ClinVar
 
 
-class Ps1_splicing_spliceai(abstract_rule):
+class Ps1_splicing_pten(abstract_rule):
     """
     PS1 for splicing: Splice variant in same position has been show to be pathogenic
     """
