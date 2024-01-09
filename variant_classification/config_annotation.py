@@ -38,6 +38,13 @@ from variant_classification.check_exon_pm5 import get_annotate_exon_classificati
 from variant_classification.check_splice_site_pm5_classification_table import (
     get_annotate_splice_site_classification_pm5,
 )
+from variant_classification.clinvar_annot_spliceai import (
+    get_annotate_clinvar_spliceai_protein,
+    get_annotate_clinvar_spliceai_splicing,
+)
+from variant_classification.clinvar_missense_similarity_score import (
+    get_check_clinvar_missense_similarity,
+)
 
 logger = logging.getLogger("Classify.config_annotation")
 
@@ -171,6 +178,15 @@ def get_annotation_functions(
         ),
         class_info.VARIANT_CLINVAR.name: lambda variant, config: get_annotation_function(
             get_annotate_clinvar, variant, config, class_info
+        ),
+        class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN.name: lambda variant, config: get_annotation_function(
+            get_annotate_clinvar_spliceai_protein, variant, config, class_info
+        ),
+        class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN_SIMILARITY.name: lambda variant, config: get_annotation_function(
+            get_check_clinvar_missense_similarity, variant, config, class_info
+        ),
+        class_info.VARIANT_CLINVAR_SPLICEAI_SPLICE.name: lambda variant, config: get_annotation_function(
+            get_annotate_clinvar_spliceai_splicing, variant, config, class_info
         ),
         class_info.SPLICE_RESULT.name: lambda variant, config: get_annotation_function(
             get_annotate_splice_site_classification, variant, config, class_info
