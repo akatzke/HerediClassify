@@ -4,12 +4,11 @@ name: "ACMG TP53"
 ### Rules ###
 rules:
     - pvs1
-    - ps1_protein
-    - ps1_splicing
+    - ps1_protein_tp53
+    - ps1_splicing_tp53
     - pm1
     - pm2_supporting
-    - pm5_protein
-    - pm5_splicing
+    - pm5_protein_tp53
     - pp3_protein
     - pp3_splicing
     - ba1_with_absolute

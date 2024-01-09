@@ -4,13 +4,12 @@ name: "ACMG PTEN"
 ### Rules ###
 rules:
     - pvs1_pten
-    - ps1_protein
-    - ps1_splicing
+    - ps1_protein_spliceai
+    - ps1_splicing_pten
     - pm1
     - pm2_supporting
     - pm4_pten
-    - pm5_protein
-    - pm5_splicing
+    - pm5_protein_pten
     - pp2
     - pp3_protein
     - pp3_splicing

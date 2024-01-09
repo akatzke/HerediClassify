@@ -4,12 +4,12 @@ name: "ACMG ATM"
 ### Rules ###
 rules:
     - pvs1_atm
-    - ps1_protein
-    - ps1_splicing
+    - ps1_protein_spliceai
+    - ps1_splicing_clingen
     - pm2_supporting
     - pm4_stoploss
-    - pm5_protein
-    - pm5_splicing
+    - pm5_protein_ptc
+    - pm5_splicing_ptc
     - pp3_protein
     - pp3_splicing
     - ba1
