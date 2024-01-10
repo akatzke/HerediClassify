@@ -27,19 +27,30 @@ def prepare_clinvar_file(clinvar_path: pathlib.Path) -> None:
     """
     Filter Clinvar for SNVs, indels and quality
     """
-    quality = ["reviewed_by_expert_panel"]
-    clinvar_snv_path = filter_clinvar_snv(clinvar_path)
-    clinvar_quality_path = filter_clinvar_quality(clinvar_snv_path, quality)
+    quality_three_star = ["reviewed_by_expert_panel"]
+    quality_two_star = [
+        "reviewed_by_expert_panel",
+        "criteria_provided,_multiple_submitters,_no_conflicts",
+    ]
+    clinvar_snv_path = filter_clinvar_snv(
+        clinvar_path,
+    )
+    clinvar_quality_three_star_path = filter_clinvar_quality(
+        clinvar_snv_path, quality_three_star, "three_star"
+    )
+    clinvar_quality_two_star_path = filter_clinvar_quality(
+        clinvar_snv_path, quality_two_star, "two_star"
+    )
 
 
 def filter_clinvar_quality(
-    clinvar_path: pathlib.Path, quality_filter: list[str]
+    clinvar_path: pathlib.Path, quality_filter: list[str], quality_filter_name: str
 ) -> pathlib.Path:
     """
     Filter clinvar for quality metric
     """
     clinvar = VCF(clinvar_path)
-    out_name = clinvar_path.stem.split(".")[0] + f"_quality_filter.vcf"
+    out_name = clinvar_path.stem.split(".")[0] + "_" + f"{quality_filter_name}.vcf"
     out_path = clinvar_path.parent / out_name
     w = Writer(out_path, clinvar)
     for entry in clinvar:
