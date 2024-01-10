@@ -11,7 +11,6 @@ from acmg_rules.utils import (
     summarise_results_per_transcript,
 )
 from information import Info, Classification_Info
-from clinvar_utils import ClinVar_Type, ClinVar
 from variant import TranscriptInfo, VariantInfo
 from transcript_annotated import TranscriptInfo_exonic, TranscriptInfo_intronic
 

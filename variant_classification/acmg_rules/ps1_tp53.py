@@ -10,7 +10,7 @@ from acmg_rules.utils import (
     rule_type,
 )
 from information import Classification_Info, Info
-from clinvar_utils import ClinVar_Type, ClinVar
+from clinvar_utils import ClinVar_Status, ClinVar_Type, ClinVar
 from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_tool
 from variant import FunctionalData
 
@@ -48,11 +48,19 @@ class Ps1_protein_tp53(abstract_rule):
         except KeyError:
             prediction = None
         clinvar_same_aa = clinvar_result[ClinVar_Type.SAME_AA_CHANGE]
-        if clinvar_same_aa.pathogenic and splice_assay.benign:
+        if (
+            clinvar_same_aa.pathogenic
+            and splice_assay.benign
+            and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
+        ):
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}. An RNA shows that the variant does not affect splicing."
             strength = evidence_strength.STRONG
             result = True
-        elif clinvar_same_aa.pathogenic and not prediction:
+        elif (
+            clinvar_same_aa.pathogenic
+            and not prediction
+            and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
+        ):
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}. SpliceAI does not predict an effect on splicing for this variant."
             strength = evidence_strength.MODERATE
             result = True
