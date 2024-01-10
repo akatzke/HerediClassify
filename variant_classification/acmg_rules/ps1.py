@@ -52,6 +52,7 @@ class Ps1_protein(abstract_rule):
 class Ps1_protein_spliceai(abstract_rule):
     """
     PS1: Position is classified as pathogenic
+    The splicing effect of the missense variant is excluded based on the SpliceAI prediction
     """
 
     @classmethod
@@ -84,7 +85,7 @@ class Ps1_protein_spliceai(abstract_rule):
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
             result = True
         elif prediction:
-            comment = f"Variant is predicted to affect splicing"
+            comment = f"Variant is predicted to affect splicing."
             result = False
         else:
             comment = "No ClinVar entries found that show the same amino acid change as pathogneic."

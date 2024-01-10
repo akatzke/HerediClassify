@@ -118,10 +118,10 @@ class Pvs1_brca1(Pvs1):
                 f"Transcript {transcript.transcript_id} is predicted to undergo NMD."
             )
             if transcript.is_affected_exon_disease_relevant:
-                comment = comment + "Truncated region is disease relevant."
+                comment = comment + " Truncated region is disease relevant."
                 result = True
             else:
-                comment = comment + "Truncated region is not disease relevant."
+                comment = comment + " Truncated region is not disease relevant."
                 result = False
             strength = evidence_strength.VERY_STRONG
         else:
@@ -129,13 +129,14 @@ class Pvs1_brca1(Pvs1):
             if transcript.ptc <= pos_last_known_patho_ptc:
                 comment = (
                     comment
-                    + "Truncated/altered region is critical to protein function."
+                    + " Truncated/altered region is critical to protein function."
                 )
                 result = True
                 strength = evidence_strength.STRONG
             else:
                 comment = (
-                    "Role of truncated/alterend region in protein function is unknown."
+                    comment
+                    + " Role of truncated/alterend region in protein function is unknown."
                 )
                 result = False
                 strength = evidence_strength.VERY_STRONG
@@ -179,7 +180,7 @@ class Pvs1_brca1(Pvs1):
                 strength = evidence_strength.VERY_STRONG
                 comment = (
                     comment
-                    + "Skipped exon is absent in biologically-relevant transcript."
+                    + " Skipped exon is absent in biologically-relevant transcript."
                 )
         elif not transcript.is_reading_frame_preserved and not transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is not preserved."
