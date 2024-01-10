@@ -125,7 +125,8 @@ class Pvs1_brca2(Pvs1):
                 strength = evidence_strength.STRONG
             else:
                 comment = (
-                    "Role of truncated/alterend region in protein function is unknown."
+                    comment
+                    + "Role of truncated/alterend region in protein function is unknown."
                 )
                 result = False
                 strength = evidence_strength.VERY_STRONG

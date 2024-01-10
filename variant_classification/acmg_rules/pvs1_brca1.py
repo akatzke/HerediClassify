@@ -171,19 +171,22 @@ class Pvs1_brca1(Pvs1):
             if transcript.is_affected_exon_disease_relevant:
                 result = True
                 strength = evidence_strength.VERY_STRONG
-                comment = (
+                comment = comment + (
                     " Skipped exon is present in biologically-relevant transcript."
                 )
             else:
                 result = False
                 strength = evidence_strength.VERY_STRONG
-                comment = "Skipped exon is absent in biologically-relevant transcript."
+                comment = (
+                    comment
+                    + "Skipped exon is absent in biologically-relevant transcript."
+                )
         elif not transcript.is_reading_frame_preserved and not transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is not preserved."
             if transcript.is_truncated_region_disease_relevant:
                 result = True
                 strength = evidence_strength.VERY_STRONG
-                comment = f"Target region is critical to protein function."
+                comment = comment + f" Target region is critical to protein function."
             else:
                 comment = comment + " Role of target region is unknown."
                 if (

@@ -128,14 +128,14 @@ class Pvs1_palb2(Pvs1):
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD. Variant type is nonsense."
             if transcript.is_truncated_region_disease_relevant:
                 comment = (
-                    comment + f"Truncated region located in disease relevant region."
+                    comment + f" Truncated region located in disease relevant region."
                 )
                 result = True
                 strength = evidence_strength.VERY_STRONG
             else:
                 comment = (
                     comment
-                    + f"Truncated region not located in disease relevnat region."
+                    + f" Truncated region not located in disease relevnat region."
                 )
                 result = True
                 strength = evidence_strength.MODERATE
@@ -147,21 +147,21 @@ class Pvs1_palb2(Pvs1):
             ):
                 comment = (
                     comment
-                    + f"Truncated region located in disease relevant region. PTC is located upstream of p.His1184."
+                    + f" Truncated region located in disease relevant region. PTC is located upstream of p.His1184."
                 )
                 result = True
                 strength = evidence_strength.STRONG
             elif transcript.var_start <= pos_last_known_patho_ptc:
                 comment = (
                     comment
-                    + f"Frameshift variant starts upstream of p.His1184 and is predicted to lead to an alternative C-terminal end."
+                    + f" Frameshift variant starts upstream of p.His1184 and is predicted to lead to an alternative C-terminal end."
                 )
                 result = True
                 strength = evidence_strength.STRONG
             elif transcript.var_start > pos_last_known_patho_ptc:
                 comment = (
                     comment
-                    + f"Frameshift variant starts downstream of p.Tyr1183 and is predicted to lead to an alternative C-terminal end."
+                    + f" Frameshift variant starts downstream of p.Tyr1183 and is predicted to lead to an alternative C-terminal end."
                 )
                 result = True
                 strength = evidence_strength.SUPPORTING
@@ -210,9 +210,9 @@ class Pvs1_palb2(Pvs1):
         elif not transcript.is_reading_frame_preserved:
             result = True
             strength = evidence_strength.VERY_STRONG
-            comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD. Reading frame is not preserved and truncated/altered region is disease relevant."
+            comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD. Reading frame is not preserved and truncated/altered region is disease relevant."
         else:
-            comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD and reading frame is preserved."
+            comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is preserved."
             if transcript.is_truncated_region_disease_relevant:
                 result = True
                 strength = evidence_strength.VERY_STRONG
@@ -228,7 +228,7 @@ class Pvs1_palb2(Pvs1):
                     strength = evidence_strength.STRONG
                     comment = (
                         comment
-                        + f" Splicing alteration removes >{threshold_diff_len_prot_percent} of coding sequence."
+                        + f" Splicing alteration removes more than {threshold_diff_len_prot_percent} of coding sequence."
                     )
                 elif (
                     abs(transcript.diff_len_protein_percent)
@@ -239,14 +239,14 @@ class Pvs1_palb2(Pvs1):
                     strength = evidence_strength.MODERATE
                     comment = (
                         comment
-                        + f" Splicing alteration inserts >{threshold_diff_len_prot_percent} of coding sequence."
+                        + f" Splicing alteration inserts more than {threshold_diff_len_prot_percent} of coding sequence."
                     )
                 else:
                     result = True
                     strength = evidence_strength.SUPPORTING
                     comment = (
                         comment
-                        + f" Splicing alteration removes >{threshold_diff_len_prot_percent} of coding sequence."
+                        + f" Splicing alteration removes less then {threshold_diff_len_prot_percent} of coding sequence."
                     )
         return RuleResult(
             "PVS1",
