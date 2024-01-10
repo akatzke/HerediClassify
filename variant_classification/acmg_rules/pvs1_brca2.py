@@ -116,7 +116,7 @@ class Pvs1_brca2(Pvs1):
             strength = evidence_strength.VERY_STRONG
         else:
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD."
-            if transcript.var_start <= pos_last_known_patho_ptc:
+            if transcript.ptc <= pos_last_known_patho_ptc:
                 comment = (
                     comment
                     + "Truncated/altered region is critical to protein function."

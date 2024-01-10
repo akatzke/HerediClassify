@@ -4,11 +4,10 @@ name: "ACMG BRCA2"
 ### Rules ###
 rules:
     - pvs1_brca2
-    - ps1_protein
-    - ps1_splicing
+    - ps1_protein_enigma
+    - ps1_splicing_clingen
     - pm2_supporting
-    - pm5_protein
-    - pm5_splicing
+    - pm5_enigma
     - pp3_protein
     - pp3_splicing
     - ba1
@@ -21,7 +20,7 @@ rules:
 disease_relevant_transcripts:
     - name: "ENST00000380152"
       nmd_threshold: 9599
-      pos_last_known_patho_ptc: 9927
+      pos_last_known_patho_ptc: 3308
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:

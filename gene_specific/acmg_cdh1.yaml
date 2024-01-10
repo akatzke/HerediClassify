@@ -6,8 +6,8 @@ rules:
     - pvs1_cdh1
     - pm2_supporting
     - pm4_stoploss
-    - pm5_protein
-    - pm5_splicing
+    - pm5_protein_cdh1
+    - pm5_splicing_cdh1
     - pp3_protein
     - pp3_splicing
     - ba1

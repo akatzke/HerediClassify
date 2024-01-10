@@ -10,7 +10,7 @@ from acmg_rules.utils import (
     rule_type,
 )
 from information import Info, Classification_Info
-from clinvar_utils import ClinVar_Type, ClinVar_Status, ClinVar_similarity
+from clinvar_utils import ClinVar, ClinVar_Type, ClinVar_Status
 from variant_classification.variant import AffectedRegion
 
 
@@ -27,7 +27,7 @@ class Pm5_protein_tp53(abstract_rule):
         return (
             cls.assess_rule,
             (
-                class_info.VARIANT_CLINVAR_SPLICEAI_PROT_GRANTHAM,
+                class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN_SIMILARITY,
                 class_info.VARIANT_HOTSPOT,
             ),
         )
@@ -35,7 +35,7 @@ class Pm5_protein_tp53(abstract_rule):
     @classmethod
     def assess_rule(
         cls,
-        clinvar_results: dict[ClinVar_Type, ClinVar_similarity],
+        clinvar_results: dict[ClinVar_Type, ClinVar],
         variant_in_hotspot: AffectedRegion,
     ) -> RuleResult:
         clinvar_diff_aa = clinvar_results[ClinVar_Type.DIFF_AA_CHANGE]

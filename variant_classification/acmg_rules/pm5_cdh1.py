@@ -52,7 +52,7 @@ class Pm5_protein_cdh1(abstract_rule):
                     raise KeyError(
                         f"Transcript {transcript.transcript_id} not in disease relevant transcripts: {pos_last_known_patho_ptc_dict.keys()}. Transcript should have been filtered out earlier."
                     )
-                if transcript.ptc <= pos_last_known_patho_ptc or transcript.is_NMD:
+                if (transcript.ptc <= pos_last_known_patho_ptc) or transcript.is_NMD:
                     result = RuleResult(
                         "PM5",
                         rule_type.PROTEIN,

@@ -120,7 +120,7 @@ class Ps1_splicing(abstract_rule):
             comment = f"The following ClinVar entries show splice variants at the same nucleotide position to be pathogenic: {clinvar_same_nucleotide.ids}."
             result = True
         else:
-            comment = "No ClinVar entries found that show splice variants at the same nucleotide position as pathogenic.."
+            comment = "No ClinVar entries found that show splice variants at the same nucleotide position as pathogenic."
             result = False
         return RuleResult(
             "PS1",

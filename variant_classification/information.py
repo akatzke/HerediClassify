@@ -35,6 +35,9 @@ class Classification_Info:
     ANNOTATED_TRANSCRIPT_LIST: Info
     ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec: Info
     VARIANT_CLINVAR: Info
+    VARIANT_CLINVAR_SIMILARITY: Info
+    VARIANT_CLINVAR_SPLICEAI_PROTEIN: Info
+    VARIANT_CLINVAR_SPLICEAI_SPLICE: Info
     VARIANT_HOTSPOT: Info
     VARIANT_HOTSPOT_ANNOTATION: Info
     VARIANT_HOTSPOT_ANNOTATION_PATH: Info
@@ -64,6 +67,7 @@ class Classification_Info:
     VARIANT: Info
     TRANSCRIPT: Info
     CLINVAR_PATH: Info
+    CLINVAR_PATH_SPLICEAI: Info
     SIMILARITY_SCORE_PATH: Info
     SIMILARITY_SOCRE_DIRECTION: Info
     UNIPROT_REP_REGION_PATH: Info
@@ -84,17 +88,22 @@ class Classification_Info:
             "annotated_transcript_list_acmg"
         )
         self.VARIANT_CLINVAR = Info("variant_clinvar")
+        self.VARIANT_CLINVAR_SPLICEAI_PROTEIN = Info("variant_clinvar_spliceai_protein")
+        self.VARIANT_CLINVAR_SPLICEAI_PROTEIN_SIMILARITY = Info(
+            "variant_clinvar_spliceai_protein_similarity"
+        )
+        self.VARIANT_CLINVAR_SPLICEAI_SPLICE = Info("variant_clinvar_spliceai_splicing")
         self.VARIANT_HOTSPOT = Info("variant_hotspot")
         self.VARIANT_HOTSPOT_ANNOTATION = Info("variant_hotspot_annotation")
+        self.VARIANT_HOTSPOT_ANNOTATION_PATH = Info(
+            "variant_hotspot_annotation_path",
+            config_location=("annotation_files", "critical_regions", "hotspot_region"),
+            group=Classification_Info_Groups.PATH,
+        )
         self.VARIANT_COLDSPOT_ANNOTATION = Info("variant_coldspot_annotation")
         self.VARIANT_COLDSPOT_ANNOTATION_PATH = Info(
             "variant_coldspot_annotation_path",
             config_location=("annotation_files", "critical_regions", "coldspot_region"),
-            group=Classification_Info_Groups.PATH,
-        )
-        self.VARIANT_HOTSPOT_ANNOTATION_PATH = Info(
-            "variant_hotspot_annotation_path",
-            config_location=("annotation_files", "critical_regions", "hotspot_region"),
             group=Classification_Info_Groups.PATH,
         )
         self.VARIANT_GNOMAD = Info("variant_gnomad")
@@ -216,6 +225,11 @@ class Classification_Info:
         self.CLINVAR_PATH = Info(
             "clinvar_path",
             config_location=("annotation_files", "clinvar", "clinvar_snv"),
+            group=Classification_Info_Groups.PATH,
+        )
+        self.CLINVAR_PATH_SPLICEAI = Info(
+            "clinvar_path_spliceai",
+            config_location=("annotation_files", "clinvar", "clinvar_snv_spliceai"),
             group=Classification_Info_Groups.PATH,
         )
         self.SIMILARITY_SCORE_PATH = Info(

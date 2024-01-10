@@ -38,6 +38,13 @@ from variant_classification.check_exon_pm5 import get_annotate_exon_classificati
 from variant_classification.check_splice_site_pm5_classification_table import (
     get_annotate_splice_site_classification_pm5,
 )
+from variant_classification.clinvar_annot_spliceai import (
+    get_annotate_clinvar_spliceai_protein,
+    get_annotate_clinvar_spliceai_splicing,
+)
+from variant_classification.clinvar_missense_similarity_score import (
+    get_check_clinvar_missense_similarity,
+)
 
 logger = logging.getLogger("Classify.config_annotation")
 
@@ -58,7 +65,13 @@ def get_annotations_needed_from_rules(
         "pvs1_pten": Rules.Pvs1_pten,
         "pvs1_cdh1": Rules.Pvs1_cdh1,
         "ps1_protein": Rules.Ps1_protein,
+        "ps1_protein_spliceai": Rules.Ps1_protein_spliceai,
+        "ps1_protein_enigma": Rules.Ps1_protein_enigma,
         "ps1_splicing": Rules.Ps1_splicing,
+        "ps1_splicing_clingen": Rules.Ps1_splicing_clingen,
+        "ps1_protein_tp53": Rules.Ps1_protein_tp53,
+        "ps1_splicing_tp53": Rules.Ps1_splicing_tp53,
+        "ps1_splicing_pten": Rules.Ps1_splicing_pten,
         "ps3": Rules.Ps3,
         "ps3_only_splice": Rules.Ps3_only_splice,
         "ps3_prot_splice": Rules.Ps3_prot_and_splice_assay,
@@ -70,7 +83,14 @@ def get_annotations_needed_from_rules(
         "pm4_pten": Rules.Pm4_pten,
         "pm4_stoploss": Rules.Pm4_stoploss,
         "pm5_protein": Rules.Pm5_protein,
-        "pm5_splicing": Rules.Pm5_splicing,
+        "pm5_protein_pathogenic": Rules.Pm5_protein_pathogenic,
+        "pm5_protein_ptc": Rules.Pm5_protein_ptc,
+        "pm5_splicing_ptc": Rules.Pm5_splicing_ptc,
+        "pm5_protein_cdh1": Rules.Pm5_protein_cdh1,
+        "pm5_splicing_cdh1": Rules.Pm5_splicing_cdh1,
+        "pm5_enigma": Rules.Pm5_ptc_enigma,
+        "pm5_protein_pten": Rules.Pm5_protein_pten,
+        "pm5_protein_tp53": Rules.Pm5_protein_tp53,
         "pp2": Rules.Pp2,
         "pp3_splicing": Rules.Pp3_splicing,
         "pp3_protein": Rules.Pp3_protein,
@@ -171,6 +191,15 @@ def get_annotation_functions(
         ),
         class_info.VARIANT_CLINVAR.name: lambda variant, config: get_annotation_function(
             get_annotate_clinvar, variant, config, class_info
+        ),
+        class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN.name: lambda variant, config: get_annotation_function(
+            get_annotate_clinvar_spliceai_protein, variant, config, class_info
+        ),
+        class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN_SIMILARITY.name: lambda variant, config: get_annotation_function(
+            get_check_clinvar_missense_similarity, variant, config, class_info
+        ),
+        class_info.VARIANT_CLINVAR_SPLICEAI_SPLICE.name: lambda variant, config: get_annotation_function(
+            get_annotate_clinvar_spliceai_splicing, variant, config, class_info
         ),
         class_info.SPLICE_RESULT.name: lambda variant, config: get_annotation_function(
             get_annotate_splice_site_classification, variant, config, class_info

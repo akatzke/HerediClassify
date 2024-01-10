@@ -27,7 +27,7 @@ class Pm5_protein_pten(abstract_rule):
         return (
             cls.assess_rule,
             (
-                class_info.VARIANT_CLINVAR_SPLICEAI_PROT_BLOSUM62,
+                class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN_SIMILARITY,
                 class_info.VARIANT_HOTSPOT,
             ),
         )
