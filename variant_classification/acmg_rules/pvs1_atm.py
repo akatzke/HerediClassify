@@ -187,17 +187,11 @@ class Pvs1_atm(Pvs1):
             transcript.affected_exon["exon_no"] >= 39
             and transcript.affected_exon["exon_no"] <= 63
         ):
-            if (
-                not transcript.is_reading_frame_preserved
-                and transcript.var_start <= nmd_threshold
-            ):
+            if not transcript.is_reading_frame_preserved and transcript.is_NMD:
                 result = True
                 strength = evidence_strength.VERY_STRONG
                 comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD."
-            elif (
-                not transcript.is_reading_frame_preserved
-                and transcript.var_start > nmd_threshold
-            ):
+            elif not transcript.is_reading_frame_preserved and not transcript.is_NMD:
                 result = True
                 strength = evidence_strength.VERY_STRONG
                 comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is not preserved. Truncated region is disease relevant."
