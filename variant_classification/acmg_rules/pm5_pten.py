@@ -11,7 +11,7 @@ from acmg_rules.utils import (
 )
 from information import Info, Classification_Info
 from clinvar_utils import ClinVar, ClinVar_Type, ClinVar_Status
-from variant_classification.variant import AffectedRegion
+from variant import AffectedRegion
 
 
 class Pm5_protein_pten(abstract_rule):

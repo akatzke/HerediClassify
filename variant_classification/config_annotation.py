@@ -34,15 +34,15 @@ from check_coldspot_hotspot import (
     get_check_coldspot,
     get_check_hotspot,
 )
-from variant_classification.check_exon_pm5 import get_annotate_exon_classification_pm5
-from variant_classification.check_splice_site_pm5_classification_table import (
+from check_exon_pm5 import get_annotate_exon_classification_pm5
+from check_splice_site_pm5_classification_table import (
     get_annotate_splice_site_classification_pm5,
 )
-from variant_classification.clinvar_annot_spliceai import (
+from clinvar_annot_spliceai import (
     get_annotate_clinvar_spliceai_protein,
     get_annotate_clinvar_spliceai_splicing,
 )
-from variant_classification.clinvar_missense_similarity_score import (
+from clinvar_missense_similarity_score import (
     get_check_clinvar_missense_similarity,
 )
 
