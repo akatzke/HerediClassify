@@ -10,7 +10,6 @@ rules:
     - pm2_supporting
     - pm4
     - pm5_protein
-    - pm5_splicing
     - pp3_protein
     - pp3_splicing
     - ba1
