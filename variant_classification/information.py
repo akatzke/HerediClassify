@@ -88,6 +88,7 @@ class Classification_Info:
             "annotated_transcript_list_acmg"
         )
         self.VARIANT_CLINVAR = Info("variant_clinvar")
+        self.VARIANT_CLINVAR_SIMILARITY = Info("variant_clinvar_similarity")
         self.VARIANT_CLINVAR_SPLICEAI_PROTEIN = Info("variant_clinvar_spliceai_protein")
         self.VARIANT_CLINVAR_SPLICEAI_PROTEIN_SIMILARITY = Info(
             "variant_clinvar_spliceai_protein_similarity"
@@ -153,8 +154,8 @@ class Classification_Info:
             config_location=("likelihood_thresholds", "pathogenic"),
             group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
         )
-        self.THRESHOLD_LIKELIHOOD_PATHOGENIC = Info(
-            "threshold_likelihood_pathogenic",
+        self.THRESHOLD_LIKELIHOOD_BENIGN = Info(
+            "threshold_likelihood_benign",
             config_location=("likelihood_thresholds", "benign"),
             group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
         )
