@@ -42,8 +42,8 @@ def get_prediction(data: pd.Series, threshold: pd.Series, list_of_tools: list):
 
 def get_threshold(thresholds: pd.Series, tool: str, type: str) -> int:
     name_threshold = tool + "_" + type
-    print(name_threshold)
     return thresholds[name_threshold]
+
 
 def get_pathogenicity_prediction(
     data: pd.Series, threshold: Prediction_tool_threshold
@@ -58,6 +58,7 @@ def get_pathogenicity_prediction(
     pyhlop_result = assess_one_threshold(data["phylop"], threshold.pyhlop)
     result = aggregate_patho_predictions([revel_result, cadd_result, pyhlop_result])
     return result
+
 
 def assess_two_thresholds(
     data: float, threshold_benign: float, threshold_pathogenic: float
