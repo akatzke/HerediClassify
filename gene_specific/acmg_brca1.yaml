@@ -13,6 +13,7 @@ rules:
     - pp3_splicing
     - ba1
     - bs1_supporting
+    - bp1_annotation_cold_spot_strong
     - bp4_protein
     - bp4_splicing
     - bp7
