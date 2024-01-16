@@ -173,13 +173,13 @@ def get_annotation_functions(
         class_info.VARIANT_PREDICTION.name: lambda variant: partial(
             return_information, "Prediction tools", variant.prediction_tools
         ),
-        class_info.FUNCTIONAL_ASSAY.name: lambda: partial(
+        class_info.FUNCTIONAL_ASSAY.name: lambda variant: partial(
             return_information, "Functional assay", variant.functional_assay
         ),
-        class_info.SPLICING_ASSAY.name: lambda: partial(
+        class_info.SPLICING_ASSAY.name: lambda variant: partial(
             return_information, "Splicing assay", variant.splicing_assay
         ),
-        class_info.VARIANT_MULTIFACTORIAL_LIKELIHOOD.name: lambda: partial(
+        class_info.VARIANT_MULTIFACTORIAL_LIKELIHOOD.name: lambda variant: partial(
             return_information,
             "Multifactorial likelihood",
             variant.multifactorial_likelihood,
