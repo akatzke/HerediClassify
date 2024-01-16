@@ -167,6 +167,7 @@ def reformat_consequence(cons_list: list[dict]) -> list[dict]:
         if entry["transcript"][0:4] == "ENST":
             if entry["hgvs_c"] == "None":
                 continue
+            entry["hgvs_c"] = entry["hgvs_c"].replace("%2B", "-")
             try:
                 entry["exon"] = int(entry["exon"])
             except ValueError:
