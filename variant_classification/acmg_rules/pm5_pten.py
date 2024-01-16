@@ -35,10 +35,9 @@ class Pm5_protein_pten(abstract_rule):
     @classmethod
     def assess_rule(
         cls,
-        clinvar_results: dict[ClinVar_Type, ClinVar],
+        clinvar_diff_aa: ClinVar,
         variant_in_hotspot: AffectedRegion,
     ) -> RuleResult:
-        clinvar_diff_aa = clinvar_results[ClinVar_Type.DIFF_AA_CHANGE]
         if variant_in_hotspot:
             return RuleResult(
                 "PM5",
