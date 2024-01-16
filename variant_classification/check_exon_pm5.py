@@ -56,7 +56,7 @@ def annotate_exon_classification_pm5(
         "PM5",
         rule_type.PROTEIN,
         evidence_type.PATHOGENIC,
-        strongest_evidence_entry.rule_status.values[0],
+        bool(strongest_evidence_entry.rule_status.values[0]),
         evidence_strength(strongest_evidence_entry.evidence_strength.values[0]),
         strongest_evidence_entry.comment.values[0],
     )
