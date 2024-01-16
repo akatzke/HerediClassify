@@ -7,6 +7,7 @@ from acmg_rules.utils import (
     evidence_strength,
     evidence_type,
     rule_type,
+    summarise_results_per_transcript,
 )
 from acmg_rules.pvs1 import Pvs1
 from information import Classification_Info, Info
@@ -42,18 +43,18 @@ class Pvs1_pten(Pvs1):
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
     ):
-        if len(annotated_transcript) != 1:
-            raise ValueError(
-                "For PTEN more than one transcript is being used for assessment of PVS1, despite only one disease relevant transcript being defined."
-            )
-        transcript = annotated_transcript[0]
-        if isinstance(transcript, TranscriptInfo_exonic):
-            result = cls.assess_pvs1_frameshift_PTC_pten(transcript)
-        elif isinstance(transcript, TranscriptInfo_intronic):
-            result = cls.assess_pvs1_splice_pten(transcript)
-        elif isinstance(transcript, TranscriptInfo_start_loss):
-            result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
-        else:
+        results = []
+        for transcript in annotated_transcript:
+            if isinstance(transcript, TranscriptInfo_exonic):
+                result = cls.assess_pvs1_frameshift_PTC_pten(transcript)
+                results.append(result)
+            elif isinstance(transcript, TranscriptInfo_intronic):
+                result = cls.assess_pvs1_splice_pten(transcript)
+                results.append(result)
+            elif isinstance(transcript, TranscriptInfo_start_loss):
+                result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
+                results.append(result)
+        if len(results):
             comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             result = RuleResult(
                 "PVS1",
@@ -63,6 +64,8 @@ class Pvs1_pten(Pvs1):
                 evidence_strength.VERY_STRONG,
                 comment,
             )
+        else:
+            result = summarise_results_per_transcript(results)
         return result
 
     @classmethod
