@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
-from variant_classification.classify import classify
 from test.test_import_variant import create_json_string_from_variant
 import test.paths as paths
 
-import test.paths as paths
-from test.test_import_variant import create_json_string_from_variant
+from variant_classification.classify import classify
 
 
 def test_gene_specific_atm_frameshift():
