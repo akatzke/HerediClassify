@@ -74,13 +74,13 @@ def annotate_clinvar_spliceai_protein(
         var_codon_info["genomic_pos"],
         var_codon_info["intersects_intron_at"],
     )
-    clinvar_same_codon_splicing = format_spliceai(clinvar_same_codon)
-    clinvar_same_codon_aa: pd.DataFrame = clinvar_same_codon_splicing.apply(
-        construct_clinvar_prot_change,
-        var_codon_info=var_codon_info,
-        axis=1,
-    )
-    if not clinvar_same_codon_aa.empty:
+    if not clinvar_same_codon.empty:
+        clinvar_same_codon_splicing = format_spliceai(clinvar_same_codon)
+        clinvar_same_codon_aa: pd.DataFrame = clinvar_same_codon_splicing.apply(
+            construct_clinvar_prot_change,
+            var_codon_info=var_codon_info,
+            axis=1,
+        )
         clinvar_same_codon_aa_filtered = filter_gene(
             clinvar_same_codon_aa, variant.gene_name
         )
