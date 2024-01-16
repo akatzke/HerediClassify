@@ -154,6 +154,7 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         """
         Perform annotation for exonic variants
         """
+        print(f"{path_disease_irrelevant_exons}")
         try:
             ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
         except ValueError:
@@ -212,7 +213,12 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             )[0]
         else:
             affected_exon = NMD_affected_exons[0]
+        logger.warning(
+            f"This is the path for the disease transcript {path_disease_irrelevant_exons} of type{type(path_disease_irrelevant_exons)}.",
+            exc_info=True,
+        )
         if is_NMD and path_disease_irrelevant_exons is not None:
+            print("I think that the disease_irrelevant_exons file is given.")
             is_affected_exon_disease_relevant = check_exon_disease_relevant(
                 path_disease_irrelevant_exons, NMD_affected_exons
             )
@@ -293,13 +299,16 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
         variant: VariantInfo,
         path_clinvar: pathlib.Path,
         path_uniprot_rep: pathlib.Path,
-        path_critical_region: Optional[pathlib.Path],
         path_disease_irrelevant_exons: Optional[pathlib.Path],
+        path_critical_region: Optional[pathlib.Path],
         transcript: TranscriptInfo,
     ) -> TranscriptInfo_intronic:
         """
         Perform annotation specific for intronic variants
         """
+        print(
+            f"This is the disease irrelevant exon file {path_disease_irrelevant_exons}"
+        )
         try:
             ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
         except ValueError:
@@ -363,6 +372,8 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
         else:
             affected_exon = NMD_affected_exons[0]
         if is_NMD and path_disease_irrelevant_exons is not None:
+            print("I think a disease irreleant exon file exists")
+            print(f"{type(path_disease_irrelevant_exons)}")
             is_affected_exon_disease_relevant = check_exon_disease_relevant(
                 path_disease_irrelevant_exons, NMD_affected_exons
             )
