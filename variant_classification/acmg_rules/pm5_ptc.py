@@ -89,7 +89,11 @@ class Pm5_splicing_ptc(abstract_rule):
     ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (class_info.ANNOTATED_TRANSCRIPT_LIST,),
+            (
+                class_info.VARIANT,
+                class_info.ANNOTATED_TRANSCRIPT_LIST,
+                class_info.POS_LAST_KNOWN_PATHO_PTC,
+            ),
         )
 
     @classmethod
