@@ -70,7 +70,7 @@ def get_annotate_exon_classification_pm5(
     """
     return (
         annotate_exon_classification_pm5,
-        (class_info.TRANSCRIPT, class_info.EXON_PM5_PATH),
+        (class_info.ANNOTATED_TRANSCRIPT_LIST, class_info.EXON_PM5_PATH),
     )
 
 
