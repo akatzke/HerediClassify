@@ -54,7 +54,7 @@ class Pvs1_pten(Pvs1):
             elif isinstance(transcript, TranscriptInfo_start_loss):
                 result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
                 results.append(result)
-        if len(results):
+        if len(results) == 0:
             comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             result = RuleResult(
                 "PVS1",
