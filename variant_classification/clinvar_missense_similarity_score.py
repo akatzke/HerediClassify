@@ -3,6 +3,7 @@
 import pathlib
 import logging
 from collections.abc import Callable
+from numpy import empty
 
 import pandas as pd
 
@@ -78,18 +79,22 @@ def check_clinvar_missense_similarity(
         clinvar_same_codon_aa_filtered = filter_gene(
             clinvar_same_codon_aa, variant.gene_name
         )
-        clinvar_same_codon_aa_similarity = filter_similarity(
+        clinvar_same_codon_aa_similarity: pd.DataFrame = filter_similarity(
             clinvar_same_codon_aa_filtered,
             var_codon_info,
             path_similarity_score,
             name_similarity_score,
         )
-        clinvar_same_codon_aa_spliceAI = clinvar_same_codon_aa_similarity[
-            clinvar_same_codon_aa_similarity.SpliceAI_max < threshold_spliceAI.threshold
-        ]
-        clinvar_diff_aa = clinvar_same_codon_aa_spliceAI[
-            clinvar_same_codon_aa_spliceAI.prot_alt != var_codon_info["prot_alt"]
-        ]
+        if clinvar_same_codon_aa_similarity.empty:
+            clinvar_diff_aa = pd.DataFrame()
+        else:
+            clinvar_same_codon_aa_spliceAI = clinvar_same_codon_aa_similarity[
+                clinvar_same_codon_aa_similarity.SpliceAI_max
+                < threshold_spliceAI.threshold
+            ]
+            clinvar_diff_aa = clinvar_same_codon_aa_spliceAI[
+                clinvar_same_codon_aa_spliceAI.prot_alt != var_codon_info["prot_alt"]
+            ]
     else:
         clinvar_diff_aa = pd.DataFrame()
 
@@ -112,10 +117,14 @@ def filter_similarity(
         clinvar_same_codon_aa, path_similarity_score
     )
     var_score = get_similarity_score(var_codon_info, path_similarity_score)
-    if direction is "less":
-        clinvar_filtered = clinvar_similarity[clinvar_similarity.score <= var_score]
-    elif direction is "greater":
-        clinvar_filtered = clinvar_similarity[clinvar_similarity.score >= var_score]
+    if direction == "less":
+        clinvar_filtered = clinvar_similarity[
+            clinvar_similarity.similarity_score <= var_score
+        ]
+    elif direction == "greater":
+        clinvar_filtered = clinvar_similarity[
+            clinvar_similarity.similarity_score >= var_score
+        ]
     else:
         raise ValueError(
             f"No direction for filtering is defiend for the similarity score {path_similarity_score.stem}."
