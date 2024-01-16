@@ -3,7 +3,6 @@
 import pathlib
 import logging
 from collections.abc import Callable
-from numpy import empty
 
 import pandas as pd
 
