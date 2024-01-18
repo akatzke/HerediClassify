@@ -10,56 +10,62 @@ from acmg_rules.utils import (
     evidence_strength,
     evidence_type,
     rule_type,
+    summarise_results_per_transcript,
 )
 
 from information import Classification_Info, Info
-from variant import TranscriptInfo
+from variant import TranscriptInfo, VariantInfo
 from var_type import VARTYPE_GROUPS
 
 
 def annotate_exon_classification_pm5(
-    transcripts: list[TranscriptInfo], path_exon_pm5: pathlib.Path
+    variant: VariantInfo,
+    annotated_transcripts: list[TranscriptInfo],
+    path_exon_pm5: pathlib.Path,
 ) -> Optional[RuleResult]:
     """
     Check if variant is listed in the preclassified splice sites by VCEP
     Here the PM5 classification is accessed
     """
-    if len(transcripts) != 1:
-        raise ValueError(
-            "There should be only one disease relevant transcript defined for variants with a Splice Site PM5 Classificaton Table."
-        )
-    transcript = transcripts[0]
-    if not any(
-        var_type in VARTYPE_GROUPS.EXONIC.value for var_type in transcript.var_type
-    ):
-        return RuleResult(
+    results = []
+    for transcript in annotated_transcripts:
+        if any(
+            var_type in VARTYPE_GROUPS.EXONIC.value for var_type in transcript.var_type
+        ):
+            exon_pm5 = pd.read_csv(path_exon_pm5, sep="\t")
+            exon_table_entries: pd.DataFrame = exon_pm5[
+                (exon_pm5.start <= transcript.ptc) & (exon_pm5.end >= transcript.ptc)
+            ]
+            if exon_table_entries.empty:
+                return None
+            elif exon_table_entries.shape[0] != 1:
+                strongest_evidence_entry = select_entry_with_strongest_evidence(
+                    exon_table_entries
+                )
+            else:
+                strongest_evidence_entry = exon_table_entries
+            result = RuleResult(
+                "PM5",
+                rule_type.PROTEIN,
+                evidence_type.PATHOGENIC,
+                bool(strongest_evidence_entry.rule_status.values[0]),
+                evidence_strength(strongest_evidence_entry.evidence_strength.values[0]),
+                strongest_evidence_entry.comment.values[0],
+            )
+            results.append(result)
+    if len(results) == 0:
+        comment = f"Accessing PM5_enigma does not apply to this variant, as PM5_enigma does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+        result = RuleResult(
             "PM5",
-            rule_type.SPLICING,
+            rule_type.PROTEIN,
             evidence_type.PATHOGENIC,
             False,
-            evidence_strength.VERY_STRONG,
-            f"Accessing PM5_enigma does not apply to this variant, as PM5_enigma does not apply to variant types {', '.join([var_type.value for var_type in transcript.var_type])}.",
-        )
-    exon_pm5 = pd.read_csv(path_exon_pm5, sep="\t")
-    exon_table_entries: pd.DataFrame = exon_pm5[
-        (exon_pm5.start <= transcript.ptc) & (exon_pm5.end >= transcript.ptc)
-    ]
-    if exon_table_entries.empty:
-        return None
-    elif exon_table_entries.shape[0] != 1:
-        strongest_evidence_entry = select_entry_with_strongest_evidence(
-            exon_table_entries
+            evidence_strength.MODERATE,
+            comment,
         )
     else:
-        strongest_evidence_entry = exon_table_entries
-    return RuleResult(
-        "PM5",
-        rule_type.PROTEIN,
-        evidence_type.PATHOGENIC,
-        bool(strongest_evidence_entry.rule_status.values[0]),
-        evidence_strength(strongest_evidence_entry.evidence_strength.values[0]),
-        strongest_evidence_entry.comment.values[0],
-    )
+        result = summarise_results_per_transcript(results)
+    return result
 
 
 def get_annotate_exon_classification_pm5(
@@ -70,7 +76,11 @@ def get_annotate_exon_classification_pm5(
     """
     return (
         annotate_exon_classification_pm5,
-        (class_info.ANNOTATED_TRANSCRIPT_LIST, class_info.EXON_PM5_PATH),
+        (
+            class_info.VARIANT,
+            class_info.ANNOTATED_TRANSCRIPT_LIST,
+            class_info.EXON_PM5_PATH,
+        ),
     )
 
 
