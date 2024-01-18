@@ -39,7 +39,7 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
     # Splicing prediction
     if type(data.spliceai_max_delta) is str:
         splice_ai_score = max([float(x) for x in data.spliceai_max_delta.split(",")])
-        json_dict["splicing_prediction"] = {"SpliceAI": splice_ai_score}
+        json_dict["splicing_prediction_tools"] = {"SpliceAI": splice_ai_score}
 
     # Pathogenicity prediction
     pathogenicity_prediction = {}
@@ -50,7 +50,7 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
     if not math.isnan(float(data.bayesdel)):
         pathogenicity_prediction["BayesDel"] = float(data.bayesdel)
     if len(pathogenicity_prediction) > 0:
-        json_dict["pathogenicity_prediction"] = pathogenicity_prediction
+        json_dict["pathogenicity_prediction_tools"] = pathogenicity_prediction
 
     # gnomAD
     gnomad_scores = {}
