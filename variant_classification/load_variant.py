@@ -65,6 +65,8 @@ def create_variant(variant_json: dict) -> Variant:
     gnomad = create_gnomad(variant_json)
     flossies = create_flossies(variant_json)
     affected_region = create_affected_region(variant_json)
+    mRNA_result = create_functional_data("mRNA_analysis", variant_json)
+    functional_data = create_functional_data("functional_data", variant_json)
     variant = Variant(
         variant_info=var_info,
         transcript_info=trans_info_list,
@@ -72,6 +74,8 @@ def create_variant(variant_json: dict) -> Variant:
         gnomad=gnomad,
         flossies=flossies,
         affected_region=affected_region,
+        functional_assay=functional_data,
+        splicing_assay=mRNA_result,
     )
     return variant
 
