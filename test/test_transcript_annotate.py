@@ -40,7 +40,7 @@ def test_splicing():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_intronic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, None, test_trans
+        test_var, path_clinvar, path_uniprot, None, path_critical_region, test_trans
     )
     assert (
         annot_trans.are_exons_skipped == True
