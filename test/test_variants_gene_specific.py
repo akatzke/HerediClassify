@@ -234,7 +234,9 @@ def test_gene_specific_palb2_stop_gained():
     """
     Test gene specific variant classification
     """
-    path_variant = paths.TEST / "test_variants_gene_specific" / "PALB2_stop_gained.json"
+    path_variant = (
+        paths.TEST / "test_variants_gene_specific" / "PALB2_frameshift_variant.json"
+    )
     var_str = create_json_string_from_variant(path_variant)
     path_config = paths.ROOT / "gene_specific" / "acmg_palb2.yaml"
     results = classify(path_config, var_str)
