@@ -4,8 +4,8 @@ name: "ACMG standard + SVI PVS1 + SVI Splicing"
 ### Rules ###
 rules:
     - pvs1
-    - ps1_protein
-    - ps1_splicing
+    - ps1_protein_spliceai
+    - ps1_splicing_clingen
     - pm1
     - pm2_supporting
     - pm4
