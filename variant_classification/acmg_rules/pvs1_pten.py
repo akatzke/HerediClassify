@@ -11,7 +11,7 @@ from acmg_rules.utils import (
 )
 from acmg_rules.pvs1 import Pvs1
 from information import Classification_Info, Info
-from variant import TranscriptInfo, VariantInfo
+from variant import FunctionalData, TranscriptInfo, VariantInfo
 from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
@@ -34,6 +34,7 @@ class Pvs1_pten(Pvs1):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
+                class_info.SPLICING_ASSAY,
             ),
         )
 
@@ -42,6 +43,7 @@ class Pvs1_pten(Pvs1):
         cls,
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
+        splice_assay: FunctionalData,
     ):
         results = []
         for transcript in annotated_transcript:
@@ -49,6 +51,21 @@ class Pvs1_pten(Pvs1):
                 result = cls.assess_pvs1_frameshift_PTC_pten(transcript)
                 results.append(result)
             elif isinstance(transcript, TranscriptInfo_intronic):
+                if splice_assay.performed:
+                    if splice_assay.pathogenic:
+                        result = True
+                        comment = f"A splice assay was performed showing a detrimental effect on splicing by the variant."
+                    else:
+                        result = False
+                        comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
+                    return RuleResult(
+                        "PVS1",
+                        rule_type.SPLICING,
+                        evidence_type.PATHOGENIC,
+                        result,
+                        evidence_strength.VERY_STRONG,
+                        comment,
+                    )
                 result = cls.assess_pvs1_splice_pten(transcript)
                 results.append(result)
             elif isinstance(transcript, TranscriptInfo_start_loss):
@@ -115,7 +132,7 @@ class Pvs1_pten(Pvs1):
             strength = evidence_strength.VERY_STRONG
         return RuleResult(
             "PVS1",
-            rule_type.PROTEIN,
+            rule_type.SPLICING,
             evidence_type.PATHOGENIC,
             result,
             strength,

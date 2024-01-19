@@ -12,7 +12,7 @@ from acmg_rules.utils import (
 )
 from acmg_rules.pvs1 import Pvs1
 from information import Classification_Info, Info
-from variant import TranscriptInfo, VariantInfo
+from variant import TranscriptInfo, VariantInfo, FunctionalData
 from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
@@ -37,6 +37,7 @@ class Pvs1_cdh1(Pvs1):
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
                 class_info.SPLICE_RESULT,
+                class_info.SPLICING_ASSAY,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
             ),
         )
@@ -47,6 +48,7 @@ class Pvs1_cdh1(Pvs1):
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
         splice_result: Optional[RuleResult],
+        splice_assay: FunctionalData,
         threshold_diff_len_prot_percent: float,
     ):
         results = []
@@ -55,6 +57,21 @@ class Pvs1_cdh1(Pvs1):
                 result = cls.assess_pvs1_frameshift_PTC_cdh1(transcript)
                 results.append(result)
             elif isinstance(transcript, TranscriptInfo_intronic):
+                if splice_assay.performed:
+                    if splice_assay.pathogenic:
+                        result = True
+                        comment = f"A splice assay was performed showing a detrimental effect on splicing by the variant."
+                    else:
+                        result = False
+                        comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
+                    return RuleResult(
+                        "PVS1",
+                        rule_type.SPLICING,
+                        evidence_type.PATHOGENIC,
+                        result,
+                        evidence_strength.VERY_STRONG,
+                        comment,
+                    )
                 if splice_result is None:
                     result = cls.assess_pvs1_splice(
                         transcript, threshold_diff_len_prot_percent
