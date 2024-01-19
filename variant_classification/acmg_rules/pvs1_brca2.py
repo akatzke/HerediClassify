@@ -75,7 +75,7 @@ class Pvs1_brca2(Pvs1):
                         result = False
                         comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
                     return RuleResult(
-                        "PVS1_RNA",
+                        "PVS1",
                         rule_type.SPLICING,
                         evidence_type.PATHOGENIC,
                         result,
@@ -203,7 +203,7 @@ class Pvs1_brca2(Pvs1):
             comment = f"Splicing alteration in transcript {transcript.transcript_id} not predicted to be pathogenic."
         return RuleResult(
             "PVS1",
-            rule_type.PROTEIN,
+            rule_type.SPLICING,
             evidence_type.PATHOGENIC,
             result,
             strength,

@@ -303,7 +303,7 @@ class Pvs1_with_splice_assay(abstract_rule):
                         result = False
                         comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
                     return RuleResult(
-                        "PVS1_RNA",
+                        "PVS1",
                         rule_type.SPLICING,
                         evidence_type.PATHOGENIC,
                         result,
