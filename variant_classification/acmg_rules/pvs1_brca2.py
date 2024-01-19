@@ -46,8 +46,8 @@ class Pvs1_brca2(Pvs1):
         cls,
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
-        pos_last_known_patho_ptc_dict: dict[str, int],
         threshold_diff_len_prot_percent: float,
+        pos_last_known_patho_ptc_dict: dict[str, int],
         splice_result: Optional[RuleResult],
         splice_assay: FunctionalData,
     ):
