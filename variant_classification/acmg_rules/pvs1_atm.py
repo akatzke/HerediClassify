@@ -37,7 +37,6 @@ class Pvs1_atm(Pvs1):
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
-                class_info.THRESHOLD_NMD,
                 class_info.SPLICE_RESULT,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
@@ -51,7 +50,6 @@ class Pvs1_atm(Pvs1):
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
         pos_last_known_patho_ptc_dict: dict[str, int],
-        nmd_threshold_dict: Optional[dict[str, int]],
         splice_result: Optional[RuleResult],
         prediction_dict: dict[str, float],
         threshold: Threshold,
@@ -88,15 +86,9 @@ class Pvs1_atm(Pvs1):
                         evidence_strength.VERY_STRONG,
                         comment,
                     )
-                try:
-                    nmd_threshold = nmd_threshold_dict[transcript.transcript_id]
-                except KeyError or TypeError:
-                    raise KeyError(
-                        f"Transcript {transcript.transcript_id} not in disease relevant transcripts: {pos_last_known_patho_ptc_dict.keys()}. Transcript should have been filtered out earlier."
-                    )
                 if splice_result is None:
                     result = cls.assess_pvs1_splice_atm(
-                        transcript, prediction_dict, threshold, nmd_threshold
+                        transcript, prediction_dict, threshold
                     )
                 else:
                     result = splice_result
@@ -149,7 +141,6 @@ class Pvs1_atm(Pvs1):
         transcript: TranscriptInfo_intronic,
         prediction_dict: dict[str, float],
         threshold: Threshold,
-        nmd_threshold: int,
     ) -> RuleResult:
         try:
             prediction_value = prediction_dict[threshold.name]
