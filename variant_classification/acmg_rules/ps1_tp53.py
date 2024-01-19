@@ -50,12 +50,22 @@ class Ps1_protein_tp53(abstract_rule):
         clinvar_same_aa = clinvar_result[ClinVar_Type.SAME_AA_CHANGE]
         if (
             clinvar_same_aa.pathogenic
+            and splice_assay.performed
             and splice_assay.benign
             and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
         ):
-            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}. An RNA shows that the variant does not affect splicing."
+            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}. A splice assays shows that the variant does not affect splicing."
             strength = evidence_strength.STRONG
             result = True
+        elif (
+            clinvar_same_aa.pathogenic
+            and splice_assay.performed
+            and splice_assay.pathogenic
+            and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
+        ):
+            comment = f"A splice assay shows that the variant affects splicing."
+            strength = evidence_strength.STRONG
+            result = False
         elif (
             clinvar_same_aa.pathogenic
             and not prediction
