@@ -27,6 +27,7 @@ from similarity_score import (
     get_similarity_score_clinvar,
 )
 from acmg_rules.computation_evidence_utils import Threshold
+from variant_classification.format_spliceai import format_spliceai
 
 logger = logging.getLogger("GenOtoScope_Classify.clinvar.missense_similarity_score")
 
@@ -36,7 +37,7 @@ def check_clinvar_missense_similarity(
     transcripts: list[TranscriptInfo],
     path_clinvar: pathlib.Path,
     path_similarity_score: pathlib.Path,
-    name_similarity_score: str,
+    direction_similarity_score: str,
     threshold_spliceAI: Threshold,
 ) -> ClinVar:
     """
@@ -75,14 +76,15 @@ def check_clinvar_missense_similarity(
         axis=1,
     )
     if not clinvar_same_codon_aa.empty:
+        clinvar_same_codon_aa_splicing = format_spliceai(clinvar_same_codon_aa)
         clinvar_same_codon_aa_filtered = filter_gene(
-            clinvar_same_codon_aa, variant.gene_name
+            clinvar_same_codon_aa_splicing, variant.gene_name
         )
         clinvar_same_codon_aa_similarity: pd.DataFrame = filter_similarity(
             clinvar_same_codon_aa_filtered,
             var_codon_info,
             path_similarity_score,
-            name_similarity_score,
+            direction_similarity_score,
         )
         if clinvar_same_codon_aa_similarity.empty:
             clinvar_diff_aa = pd.DataFrame()
