@@ -39,7 +39,7 @@ from variant_in_critical_region import (
 from clinvar_region import (
     check_clinvar_NMD_exon,
     check_clinvar_start_alt_start,
-    check_clinvar_region,
+    check_clinvar_truncated_region,
 )
 from genotoscope_exon_skipping import assess_exon_skipping
 from genotoscope_protein_len_diff_repetitive_region import (
@@ -133,6 +133,7 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             (
                 class_info.VARIANT,
                 class_info.CLINVAR_PATH,
+                class_info.CLINVAR_PATH_INDEL
                 class_info.UNIPROT_REP_REGION_PATH,
                 class_info.CRITICAL_REGION_PATH,
                 class_info.DISEASE_IRRELEVANT_EXONS_PATH,
@@ -144,7 +145,8 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
     def annotate(
         cls,
         variant: VariantInfo,
-        path_clinvar: pathlib.Path,
+        path_clinvar_snv: pathlib.Path,
+        path_clinvar_indel: pathlib.Path,
         path_uniprot_rep: pathlib.Path,
         path_critical_region: Optional[pathlib.Path],
         path_disease_irrelevant_exons: Optional[pathlib.Path],
@@ -196,13 +198,16 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         else:
             if is_NMD:
                 truncated_exon_ClinVar = check_clinvar_NMD_exon(
-                    variant, NMD_affected_exons, path_clinvar
+                    variant, NMD_affected_exons, path_clinvar_snv, path_clinvar_indel
                 )
                 is_truncated_exon_relevant = truncated_exon_ClinVar.pathogenic
                 comment_truncated_exon_relevant = f"The following relevant ClinVar are (likely) pathogenic: {truncated_exon_ClinVar.ids}"
             else:
-                truncated_exon_ClinVar = check_clinvar_region(
-                    variant, variant.genomic_start, variant.genomic_end, path_clinvar
+                truncated_exon_ClinVar = check_clinvar_truncated_region(
+                    variant,
+                    ref_transcript,
+                    path_clinvar_snv,
+                    path_clinvar_indel,
                 )
                 is_truncated_exon_relevant = truncated_exon_ClinVar.pathogenic
                 comment_truncated_exon_relevant = f"The following relevant ClinVar are (likely) pathogenic: {truncated_exon_ClinVar.ids}"
@@ -285,6 +290,7 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             (
                 class_info.VARIANT,
                 class_info.CLINVAR_PATH,
+                class_info.CLINVAR_PATH_INDEL,
                 class_info.UNIPROT_REP_REGION_PATH,
                 class_info.DISEASE_IRRELEVANT_EXONS_PATH,
                 class_info.CRITICAL_REGION_PATH,
@@ -295,7 +301,8 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
     def annotate(
         cls,
         variant: VariantInfo,
-        path_clinvar: pathlib.Path,
+        path_clinvar_snv: pathlib.Path,
+        path_clinvar_indel: pathlib.Path,
         path_uniprot_rep: pathlib.Path,
         path_disease_irrelevant_exons: Optional[pathlib.Path],
         path_critical_region: Optional[pathlib.Path],
@@ -356,7 +363,7 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             comment_truncated_region_disease_relevant = ""
         else:
             skipped_exon_ClinVar = check_clinvar_NMD_exon(
-                variant, NMD_affected_exons, path_clinvar
+                variant, NMD_affected_exons, path_clinvar_snv, path_clinvar_indel
             )
             is_truncated_region_disease_relevant = skipped_exon_ClinVar.pathogenic
             comment_truncated_region_disease_relevant = f"The following relevant ClinVar are (likely) pathogenic: {skipped_exon_ClinVar.ids}"
