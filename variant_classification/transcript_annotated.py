@@ -133,7 +133,7 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             (
                 class_info.VARIANT,
                 class_info.CLINVAR_PATH,
-                class_info.CLINVAR_PATH_INDEL
+                class_info.CLINVAR_PATH_INDEL,
                 class_info.UNIPROT_REP_REGION_PATH,
                 class_info.CRITICAL_REGION_PATH,
                 class_info.DISEASE_IRRELEVANT_EXONS_PATH,
