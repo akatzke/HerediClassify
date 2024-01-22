@@ -67,6 +67,7 @@ class Classification_Info:
     VARIANT: Info
     TRANSCRIPT: Info
     CLINVAR_PATH: Info
+    CLINVAR_PATH_INDEL: Info
     CLINVAR_PATH_SPLICEAI: Info
     SIMILARITY_SCORE_PATH: Info
     SIMILARITY_SOCRE_DIRECTION: Info
@@ -226,6 +227,11 @@ class Classification_Info:
         self.CLINVAR_PATH = Info(
             "clinvar_path",
             config_location=("annotation_files", "clinvar", "clinvar_snv"),
+            group=Classification_Info_Groups.PATH,
+        )
+        self.CLINVAR_PATH_INDEL = Info(
+            "clinvar_path",
+            config_location=("annotation_files", "clinvar", "clinvar_indel"),
             group=Classification_Info_Groups.PATH,
         )
         self.CLINVAR_PATH_SPLICEAI = Info(
