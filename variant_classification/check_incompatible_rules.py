@@ -4,7 +4,7 @@ from acmg_rules.utils import RuleResult, evidence_strength, rule_type
 
 
 def check_incompatible_rules(
-    rules: list[RuleResult], name_config: str
+    rules: list[RuleResult], name_config: str, rules_list: list[str]
 ) -> list[RuleResult]:
     """
     Filter out incompatible rules
@@ -29,7 +29,7 @@ def check_incompatible_rules(
                     rule.comment
                     + " The rule does not apply, as PVS1 already applies to the variant."
                 )
-    if pvs1_splicing_very_strong_applies:
+    if pvs1_splicing_very_strong_applies and "ps1_splicing_clingen" in rules_list:
         for rule in rules:
             if rule.name == "PS1" and rule_type.SPLICING and rule.status:
                 rule.strength = evidence_strength.SUPPORTING
