@@ -52,8 +52,7 @@ annotation_files:
     clinvar:
         root: "databases/Clinvar"
         clinvar_snv: "clinvar_snv_quality_filter.vcf.gz"
-        clinvar_snv_spliceai: "clinvar_snv_quality_filter_annot.vcf.gz"
-        clinvar_small_indel: "clinvar_small_indel.vcf.gz"
+        clinvar_snv_spliceai: "clinvar_spliceai_all_sorted_snv_two_star.vcf.gz"
     uniprot:
         root: "databases/Uniprot"
         rep: "repeats_hg38_uniprot.bed"
