@@ -40,7 +40,6 @@ allele_frequency_thresholds:
 
 ### Functional thresholds
 functional_thresholds:
-    threshold_nmd: 1234
     threshold_diff_len_prot_percent: 0.1
 
 
