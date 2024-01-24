@@ -148,7 +148,7 @@ def annotate_clinvar_spliceai_splicing(
         }
     try:
         affected_transcript, ref_transcript = get_affected_transcript(
-            transcripts, VARTYPE_GROUPS.MISSENSE
+            transcripts, VARTYPE_GROUPS.INTRONIC
         )
     except No_transcript_with_var_type_found:
         logger.warning(
