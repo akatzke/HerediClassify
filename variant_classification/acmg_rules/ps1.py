@@ -193,14 +193,14 @@ class Ps1_splicing_clingen(abstract_rule):
                     abs(affected_transcript.var_hgvs.pos.end.offset) > 2
                     or abs(affected_transcript.var_hgvs.pos.end.offset == 0)
                 ):
+                    # In case the canonical dinucleotide is not affected, PS1 supporting applies
+                    comment = f"The following ClinVar entries show splice variants at the same nucleotide position to be likely pathogenic: {clinvar_same_nucleotide.ids}."
+                    strength = evidence_strength.MODERATE
+                else:
                     # In case the canonical dinucleotide is affected, this criterium does not apply and is set to false
                     result = False
                     strength = evidence_strength.STRONG
                     comment = f"The variant is located in the canonical dinucleotide and a likely pathogenic variant was found in ClinVar affecting the same splice site. PS1 is not applicable in this case."
-                else:
-                    # In case the canonical dinucleotide is not affected, PS1 supporting applies
-                    comment = f"The following ClinVar entries show splice variants at the same nucleotide position to be likely pathogenic: {clinvar_same_nucleotide.ids}."
-                    strength = evidence_strength.MODERATE
         elif clinvar_same_splice_site.pathogenic:
             result = True
             if (
