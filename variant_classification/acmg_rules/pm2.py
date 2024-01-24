@@ -88,10 +88,10 @@ class Pm2_supporting(abstract_rule):
             )
         elif gnomad.popmax_frequency <= threshold_pm2:
             comment = f"Variant occures with {gnomad.popmax_frequency} in gnomAD subpopulation {gnomad.popmax}."
-            result = False
+            result = True
         else:
             comment = f"Variant occures with {gnomad.popmax_frequency} in gnomAD subpopulation {gnomad.popmax}."
-            result = True
+            result = False
         if gnomad.popmax == "None":
             comment = f"Variant does not occur in gnomAD, allele frequency in gnomAD is assumed to be 0."
         if gnomad.popmax == "ALL":
