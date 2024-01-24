@@ -76,6 +76,20 @@ def test_gene_specific_brca1_missense():
     config_name, results = classify(path_config, var_str)
 
 
+def test_gene_specific_brca1_splicing():
+    """
+    Test gene specific variant classification
+    """
+    path_variant = (
+        paths.TEST
+        / "test_variants_gene_specific"
+        / "BRCA1_splice_acceptor_variant.json"
+    )
+    var_str = create_json_string_from_variant(path_variant)
+    path_config = paths.ROOT / "gene_specific" / "acmg_brca1.yaml"
+    config_name, results = classify(path_config, var_str)
+
+
 def test_gene_specific_brca1_stop_gained():
     """
     Test gene specific variant classification
