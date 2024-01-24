@@ -12,6 +12,7 @@ def check_incompatible_rules(
     PVS1_splicing is incompatible with PS1_splicing
     """
     pvs1_applies, pvs1_splicing, pvs1_splicing_very_strong_applies = False, False, False
+    ba1_applies = False
     for rule in rules:
         if rule.name == "PVS1" and rule.status:
             pvs1_applies = True
@@ -19,7 +20,8 @@ def check_incompatible_rules(
                 pvs1_splicing = True
                 if rule.strength == evidence_strength.VERY_STRONG:
                     pvs1_splicing_very_strong_applies = True
-            break
+        if rule.name == "BA1" and rule.status:
+            ba1_applies = True
     if pvs1_applies:
         for rule in rules:
             if rule.name == "PM4" and rule.status:
@@ -49,4 +51,9 @@ def check_incompatible_rules(
                         rule.comment
                         + " PP3 splicing does not apply, as PVS1 splicing already applies to the variant."
                     )
+    if ba1_applies:
+        for rule in rules:
+            if rule.name == "BS1" and rule.status:
+                rule.status = False
+                rule.comment = rule.comment + " BS1 does not apply when BA1 applies."
     return rules
