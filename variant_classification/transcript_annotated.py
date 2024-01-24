@@ -217,10 +217,6 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             )[0]
         else:
             affected_exon = NMD_affected_exons[0]
-        logger.warning(
-            f"This is the path for the disease transcript {path_disease_irrelevant_exons} of type{type(path_disease_irrelevant_exons)}.",
-            exc_info=True,
-        )
         if is_NMD and path_disease_irrelevant_exons is not None:
             is_affected_exon_disease_relevant = check_exon_disease_relevant(
                 path_disease_irrelevant_exons, NMD_affected_exons
