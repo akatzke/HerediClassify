@@ -44,11 +44,9 @@ def check_incompatible_rules(
                     and rule.type == rule_type.SPLICING
                     and rule.status
                 ):
-                    print("Changing PP3")
                     rule.status = False
                     rule.comment = (
                         rule.comment
                         + " PP3 splicing does not apply, as PVS1 splicing already applies to the variant."
                     )
-                    print(f"PP3 after {rule}")
     return rules
