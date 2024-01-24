@@ -115,7 +115,7 @@ class Bp7_with_rna_assay(abstract_rule):
                 comment = f"Splicing assay does not show no effect on splicing."
                 result = False
             return RuleResult(
-                "BP7_RNA",
+                "BP7",
                 rule_type.SPLICING,
                 evidence_type.BENIGN,
                 result,
