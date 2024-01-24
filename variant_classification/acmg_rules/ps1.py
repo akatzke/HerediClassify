@@ -13,7 +13,8 @@ from var_type import VARTYPE_GROUPS
 from information import Classification_Info, Info
 from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_tool
 from clinvar_utils import ClinVar_Status, ClinVar_Type, ClinVar, get_affected_transcript
-from variant import TranscriptInfo
+from variant import TranscriptInfo, VariantInfo
+from custom_exceptions import No_transcript_with_var_type_found
 
 
 class Ps1_protein(abstract_rule):
@@ -146,20 +147,36 @@ class Ps1_splicing_clingen(abstract_rule):
     ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (class_info.VARIANT_CLINVAR_SPLICEAI_SPLICE, class_info.TRANSCRIPT),
+            (
+                class_info.VARIANT,
+                class_info.VARIANT_CLINVAR_SPLICEAI_SPLICE,
+                class_info.TRANSCRIPT,
+            ),
         )
 
     @classmethod
     def assess_rule(
         cls,
+        variant: VariantInfo,
         clinvar_result: dict[ClinVar_Type, ClinVar],
         transcripts: list[TranscriptInfo],
     ) -> RuleResult:
         clinvar_same_nucleotide = clinvar_result[ClinVar_Type.SAME_NUCLEOTIDE]
         clinvar_same_splice_site = clinvar_result[ClinVar_Type.SAME_SPLICE_SITE]
-        affected_transcript, _ = get_affected_transcript(
-            transcripts, VARTYPE_GROUPS.INTRONIC
-        )
+        try:
+            affected_transcript, _ = get_affected_transcript(
+                transcripts, VARTYPE_GROUPS.INTRONIC
+            )
+        except No_transcript_with_var_type_found:
+            return RuleResult(
+                "PS1",
+                rule_type.SPLICING,
+                evidence_type.PATHOGENIC,
+                False,
+                evidence_strength.STRONG,
+                f"PS1 splicing following ClinGen specifications does not apply to this variant, as PS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}.",
+            )
+
         if clinvar_same_nucleotide.pathogenic:
             result = True
             if (
@@ -198,7 +215,7 @@ class Ps1_splicing_clingen(abstract_rule):
         else:
             result = False
             strength = evidence_strength.STRONG
-            comment = "No ClinVar entries found that show splice variants at the same nucleotide position or at the same splice site as (likely) pathogenic.."
+            comment = "No ClinVar entries found that show splice variants at the same nucleotide position or at the same splice site as (likely) pathogenic."
         return RuleResult(
             "PS1",
             rule_type.SPLICING,
