@@ -118,10 +118,15 @@ class Pvs1_brca1(Pvs1):
                 f"Transcript {transcript.transcript_id} is predicted to undergo NMD."
             )
             if transcript.is_affected_exon_disease_relevant:
-                comment = comment + " Truncated region is disease relevant."
+                comment = (
+                    comment + " Variant is present in biologically relevant transcript."
+                )
                 result = True
             else:
-                comment = comment + " Truncated region is not disease relevant."
+                comment = (
+                    comment
+                    + " Variant is not present inbiologically relevant transcript."
+                )
                 result = False
             strength = evidence_strength.VERY_STRONG
         else:
