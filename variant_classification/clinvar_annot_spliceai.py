@@ -188,12 +188,17 @@ def annotate_clinvar_spliceai_splicing(
         f"{variant.chr}:{variant.genomic_start}-{variant.genomic_end}"
     )
     clinvar_same_pos_df = convert_vcf_gen_to_df(clinvar_same_pos)
-    clinvar_same_pos_spliceai = clinvar_same_pos_df[
-        clinvar_same_pos_df.SpliceAI_max <= var_spliceai
-    ]
-    ClinVar_same_pos = create_ClinVar(
-        clinvar_same_pos_spliceai, ClinVar_Type.SAME_NUCLEOTIDE
-    )
+    if not clinvar_same_pos_df.empty:
+        clinvar_same_pos_formatted = format_spliceai(clinvar_same_pos_df)
+        clinvar_same_pos_spliceai = clinvar_same_pos_formatted[
+            clinvar_same_pos_formatted.SpliceAI_max <= var_spliceai
+        ]
+        ClinVar_same_pos = create_ClinVar(
+            clinvar_same_pos_spliceai, ClinVar_Type.SAME_NUCLEOTIDE
+        )
+    else:
+        ClinVar_same_pos = create_ClinVar(pd.DataFrame(), ClinVar_Type.SAME_NUCLEOTIDE)
+
     ### Check ClinVar for pathogenic variant in same / closest splice site
     (start_splice_site, end_splice_site) = find_corresponding_splice_site(
         affected_transcript, ref_transcript, variant
@@ -202,12 +207,18 @@ def annotate_clinvar_spliceai_splicing(
         f"{variant.chr}:{start_splice_site}-{end_splice_site}"
     )
     clinvar_splice_site_df = convert_vcf_gen_to_df(clinvar_splice_site)
-    clinvar_splice_site_spliceai = clinvar_splice_site_df[
-        clinvar_splice_site_df.SpliceAI_max <= var_spliceai
-    ]
-    ClinVar_splice_site = create_ClinVar(
-        clinvar_splice_site_spliceai, ClinVar_Type.SAME_SPLICE_SITE
-    )
+    if not clinvar_splice_site_df.empty:
+        clinvar_splice_site_formatted = format_spliceai(clinvar_splice_site_df)
+        clinvar_splice_site_spliceai = clinvar_splice_site_formatted[
+            clinvar_splice_site_formatted.SpliceAI_max <= var_spliceai
+        ]
+        ClinVar_splice_site = create_ClinVar(
+            clinvar_splice_site_spliceai, ClinVar_Type.SAME_SPLICE_SITE
+        )
+    else:
+        ClinVar_splice_site = create_ClinVar(
+            pd.DataFrame(), ClinVar_Type.SAME_SPLICE_SITE
+        )
     return {
         ClinVar_Type.SAME_NUCLEOTIDE: ClinVar_same_pos,
         ClinVar_Type.SAME_SPLICE_SITE: ClinVar_splice_site,
