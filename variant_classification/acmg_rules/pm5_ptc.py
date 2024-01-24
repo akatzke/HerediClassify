@@ -11,7 +11,7 @@ from acmg_rules.utils import (
     summarise_results_per_transcript,
 )
 from information import Info, Classification_Info
-from variant import TranscriptInfo, VariantInfo
+from variant import FunctionalData, TranscriptInfo, VariantInfo
 from transcript_annotated import TranscriptInfo_exonic, TranscriptInfo_intronic
 
 
@@ -92,6 +92,7 @@ class Pm5_splicing_ptc(abstract_rule):
             (
                 class_info.VARIANT,
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
+                class_info.SPLICING_ASSAY,
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
             ),
         )
@@ -101,29 +102,44 @@ class Pm5_splicing_ptc(abstract_rule):
         cls,
         variant: VariantInfo,
         annotated_transcript: list[TranscriptInfo],
+        splice_assay: FunctionalData,
         pos_last_known_patho_ptc_dict: dict[str, int],
     ) -> RuleResult:
         results = []
         for transcript in annotated_transcript:
             if isinstance(transcript, TranscriptInfo_intronic):
-                try:
-                    pos_last_known_patho_ptc = pos_last_known_patho_ptc_dict[
-                        transcript.transcript_id
-                    ]
-                except KeyError:
-                    raise KeyError(
-                        f"Transcript {transcript.transcript_id} not in disease relevant transcripts: {pos_last_known_patho_ptc_dict.keys()}. Transcript should have been filtered out earlier."
+                if splice_assay.performed:
+                    try:
+                        pos_last_known_patho_ptc = pos_last_known_patho_ptc_dict[
+                            transcript.transcript_id
+                        ]
+                    except KeyError:
+                        raise KeyError(
+                            f"Transcript {transcript.transcript_id} not in disease relevant transcripts: {pos_last_known_patho_ptc_dict.keys()}. Transcript should have been filtered out earlier."
+                        )
+                    if (
+                        splice_assay.pathogenic
+                        and transcript.ptc <= pos_last_known_patho_ptc
+                    ):
+                        status = True
+                        comment = f"PTC ({transcript.ptc}) caused by variant is located upstream of last known pathogenic PTC {pos_last_known_patho_ptc}."
+                    else:
+                        status = False
+                        comment = "PM5 supporting does not apply, as RNA assay does not confirm pathogenicity of variant."
+                else:
+                    status = False
+                    comment = (
+                        "PM5 supporting does not apply, as no RNA data is available."
                     )
-                if transcript.ptc <= pos_last_known_patho_ptc:
-                    result = RuleResult(
-                        "PM5",
-                        rule_type.SPLICING,
-                        evidence_type.PATHOGENIC,
-                        True,
-                        evidence_strength.SUPPORTING,
-                        comment=f"PTC ({transcript.ptc}) caused by variant is located upstream of last known pathogenic PTC {pos_last_known_patho_ptc}.",
-                    )
-                    results.append(result)
+                result = RuleResult(
+                    "PM5",
+                    rule_type.SPLICING,
+                    evidence_type.PATHOGENIC,
+                    status,
+                    evidence_strength.SUPPORTING,
+                    comment,
+                )
+                results.append(result)
         if len(results) == 0:
             comment = f"PM5 does not apply to this variant, as PM5 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             final_result = RuleResult(
