@@ -27,7 +27,7 @@ from similarity_score import (
     get_similarity_score_clinvar,
 )
 from acmg_rules.computation_evidence_utils import Threshold
-from variant_classification.format_spliceai import format_spliceai
+from format_spliceai import format_spliceai
 
 logger = logging.getLogger("GenOtoScope_Classify.clinvar.missense_similarity_score")
 
