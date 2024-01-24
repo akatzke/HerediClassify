@@ -460,7 +460,10 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
             position_alternative_start_codon_genomic,
             position_alternative_start_codon_cDNA,
         ) = assess_alternative_start_codon(variant, ref_transcript, var_seq)
-        if path_critical_region is not None:
+        if not exists_alternative_start_codon:
+            is_truncated_region_disease_relevant = False
+            comment_truncated_region = "There is no alternative start codon."
+        elif path_critical_region is not None:
             is_truncated_region_disease_relevant = check_bed_intersect_start_loss(
                 variant,
                 ref_transcript,
