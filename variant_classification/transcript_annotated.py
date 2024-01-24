@@ -92,7 +92,7 @@ def annotate_transcripts(
             var_type in VARTYPE_GROUPS.START_LOST.value
             for var_type in transcript.var_type
         ):
-            annot_fun = fun_dict[VARTYPE_GROUPS.INTRONIC]
+            annot_fun = fun_dict[VARTYPE_GROUPS.START_LOST]
         else:
             continue
         try:
