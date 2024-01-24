@@ -11,15 +11,14 @@ def check_incompatible_rules(
     E.g. PVS1 is incompatible with PM4
     PVS1_splicing is incompatible with PS1_splicing
     """
-    pvs1_applies, pvs1_splicing_very_strong_applies = False, False
+    pvs1_applies, pvs1_splicing, pvs1_splicing_very_strong_applies = False, False, False
     for rule in rules:
-        if rule.name == "PVS1":
+        if rule.name == "PVS1" and rule.status:
             pvs1_applies = True
-            if (
-                rule.evidence_type == rule_type.SPLICING
-                and rule.strength == evidence_strength.VERY_STRONG
-            ):
-                pvs1_splicing_very_strong_applies = True
+            if rule.type == rule_type.SPLICING:
+                pvs1_splicing = True
+                if rule.strength == evidence_strength.VERY_STRONG:
+                    pvs1_splicing_very_strong_applies = True
             break
     if pvs1_applies:
         for rule in rules:
@@ -27,14 +26,29 @@ def check_incompatible_rules(
                 rule.status = False
                 rule.comment = (
                     rule.comment
-                    + " The rule does not apply, as PVS1 already applies to the variant."
+                    + " PM4 does not apply, as PVS1 already applies to the variant."
                 )
     if pvs1_splicing_very_strong_applies and "ps1_splicing_clingen" in rules_list:
         for rule in rules:
-            if rule.name == "PS1" and rule_type.SPLICING and rule.status:
+            if rule.name == "PS1" and rule.type == rule_type.SPLICING and rule.status:
                 rule.strength = evidence_strength.SUPPORTING
                 rule.comment = (
                     rule.comment
                     + " Correct evidence strength to supporting as PVS1 splicing applies with very strong evidence strength."
                 )
+    if name_config == "ACMG ATM":
+        if pvs1_splicing:
+            for rule in rules:
+                if (
+                    rule.name == "PP3"
+                    and rule.type == rule_type.SPLICING
+                    and rule.status
+                ):
+                    print("Changing PP3")
+                    rule.status = False
+                    rule.comment = (
+                        rule.comment
+                        + " PP3 splicing does not apply, as PVS1 splicing already applies to the variant."
+                    )
+                    print(f"PP3 after {rule}")
     return rules
