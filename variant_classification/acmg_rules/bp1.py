@@ -45,9 +45,9 @@ class Bp1_annotation_cold_spot_strong(abstract_rule):
     ) -> RuleResult:
         try:
             prediction_value = prediction_dict[threshold.name]
-            prediction = assess_prediction_tool(threshold, prediction_value)
+            prediction_benign = assess_prediction_tool(threshold, prediction_value)
         except KeyError:
-            prediction = None
+            prediction_benign = None
         variant_types = [
             VARTYPE.SYNONYMOUS_VARIANT,
             VARTYPE.MISSENSE_VARIANT,
@@ -56,7 +56,7 @@ class Bp1_annotation_cold_spot_strong(abstract_rule):
         ]
         if (
             coldspot
-            and not prediction
+            and prediction_benign
             and any(var_type in variant_types for var_type in variant.var_type)
         ):
             result = True
@@ -66,9 +66,9 @@ class Bp1_annotation_cold_spot_strong(abstract_rule):
         elif not coldspot:
             result = False
             comment = f"Variant is not located in coldspot region as defined in annotation file."
-        elif prediction:
+        elif not prediction_benign:
             result = False
-            comment = f"Variant is not predicted to not affect splicing."
+            comment = f"Variant is not predicted to not affect splicing. Therefore, BP1 does not apply."
         elif not any(var_type in variant_types for var_type in variant.var_type):
             result = False
             comment = f"BP1 does not apply to this variant, as BP1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
