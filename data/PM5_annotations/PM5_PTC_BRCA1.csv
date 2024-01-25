@@ -21,4 +21,4 @@ start	end	gene	rule_status	evidence_strength	comment
 1778	1802	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 21.
 1803	1823	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 22.
 1823	1854	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 23 upto c.5571.
-1855	1863	BRCA1	FALSE	moderate	PM5 does not apply to exon 23 downstream of c.
+1855	1863	BRCA1	FALSE	moderate	PM5 does not apply to exon 23 downstream of c.5571.

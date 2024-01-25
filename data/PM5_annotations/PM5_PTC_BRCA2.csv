@@ -24,5 +24,5 @@ start	end	gene	rule_status	evidence_strength	comment
 3040	3086	BRCA2	TRUE	strong	PM5 applies with strong evidence strength to exon 24.
 3086	3167	BRCA2	TRUE	strong	PM5 applies with strong evidence strength to exon 25.
 3168	3216	BRCA2	TRUE	supporting	PM5 applies with supporting evidence strength to exon 26.
-3217	3309	BRCA2	TRUE	strong	PM5 applies with strong evidence strength to exon 27 upto c.
-3310	3418	BRCA2	FALSE	moderate	PM5 does not apply to exon 27 downstream of c.
+3217	3309	BRCA2	TRUE	strong	PM5 applies with strong evidence strength to exon 27 upto c.9927.
+3310	3418	BRCA2	FALSE	moderate	PM5 does not apply to exon 27 downstream of c.9927.
