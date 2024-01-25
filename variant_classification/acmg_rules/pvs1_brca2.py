@@ -111,7 +111,7 @@ class Pvs1_brca2(Pvs1):
         cls, transcript: TranscriptInfo_exonic, pos_last_known_patho_ptc: int
     ) -> RuleResult:
         if transcript.is_NMD:
-            comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD and in a disease relevant transcript."
+            comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD and transcript is disease relevant."
             result = True
             strength = evidence_strength.VERY_STRONG
         else:
