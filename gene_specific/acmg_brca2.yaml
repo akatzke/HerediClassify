@@ -6,12 +6,14 @@ rules:
     - pvs1_brca2
     - ps1_protein_enigma
     - ps1_splicing_clingen
+    - ps3
     - pm2_supporting
     - pm5_enigma
     - pp3_protein
     - pp3_splicing
     - ba1
     - bs1_supporting
+    - bp1_annotation_cold_spot_strong
     - bp4_protein
     - bp4_splicing
     - bp7
