@@ -22,6 +22,7 @@ rules:
 disease_relevant_transcripts:
     - name: "ENST00000261769"
       nmd_threshold: 2385
+      pos_last_known_patho_ptc: 836
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:
@@ -65,4 +66,4 @@ annotation_files:
         file: "CDH1_splice_table_reformatted.csv"
     splice_site_table_pm5:
         root: "variant_classification/data/PM5_annotations"
-        file: "PM5_splicing_CDH1.bed"
+        file: "PM5_splicing_CDH1.csv"
