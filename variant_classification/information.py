@@ -286,9 +286,9 @@ class Classification_Info:
             config_location=("annotation_files", "splice_site_table", "file"),
             group=Classification_Info_Groups.PATH,
         )
-        self.SPLICE_RESULT_PM5 = Info("splice_result", optional=True)
+        self.SPLICE_RESULT_PM5 = Info("splice_result_pm5", optional=True)
         self.SPLICE_SITE_TABLE_PM5_PATH = Info(
-            "splice_site_table_path",
+            "splice_site_table_path_pm5",
             config_location=("annotation_files", "splice_site_table_pm5", "file"),
             group=Classification_Info_Groups.PATH,
         )
