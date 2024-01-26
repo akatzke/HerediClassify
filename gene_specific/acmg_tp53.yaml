@@ -6,7 +6,7 @@ rules:
     - pvs1
     - ps1_protein_tp53
     - ps1_splicing_tp53
-    - pm1
+    - pm1_defined_regions
     - pm2_supporting
     - pm5_protein_tp53
     - pp3_protein
