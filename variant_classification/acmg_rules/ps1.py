@@ -76,12 +76,12 @@ class Ps1_protein_spliceai(abstract_rule):
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ) -> RuleResult:
-        try:
-            prediction_value = prediction_dict[threshold.name]
-            prediction = assess_prediction_tool(threshold, prediction_value)
-        except KeyError:
-            prediction = None
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction = assess_prediction_tool(threshold, prediction_value)
         clinvar_same_aa = clinvar_result[ClinVar_Type.SAME_AA_CHANGE]
+        if prediction is None:
+            result = False
+            comment = "No splicing prediction is available. Therefore PS1_protein can not be evaluated."
         if clinvar_same_aa.pathogenic and not prediction:
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
             result = True

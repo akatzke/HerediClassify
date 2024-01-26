@@ -142,15 +142,12 @@ class Pvs1_atm(Pvs1):
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ) -> RuleResult:
-        try:
-            prediction_value = prediction_dict[threshold.name]
-            prediction = assess_prediction_tool(threshold, prediction_value)
-        except KeyError:
-            prediction = None
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction = assess_prediction_tool(threshold, prediction_value)
         disease_relevant_transcript = "ENST00000675843"
         if transcript.transcript_id != disease_relevant_transcript:
             raise ValueError(
-                f"Transcript {transcript.transcript_id} is not disease relevant transcript {disease_relevant_transcript}. This is hard coded and not changable. Transcript should have been filterd out earlier."
+                f"Transcript =transcript.transcript_id= is not disease relevant transcript {disease_relevant_transcript}. This is hard coded and not changable. Transcript should have been filterd out earlier."
             )
         if not transcript.are_exons_skipped or prediction:
             result = False

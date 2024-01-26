@@ -190,11 +190,8 @@ class Pvs1_palb2(Pvs1):
         threshold: Threshold,
         threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
-        try:
-            prediction_value = prediction_dict[threshold.name]
-            prediction = assess_prediction_tool(threshold, prediction_value)
-        except KeyError:
-            prediction = None
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction = assess_prediction_tool(threshold, prediction_value)
         if not transcript.are_exons_skipped or prediction:
             result = False
             strength = evidence_strength.VERY_STRONG

@@ -134,11 +134,8 @@ class Bp7_with_rna_assay(abstract_rule):
                 evidence_strength.SUPPORTING,
                 f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}.",
             )
-        try:
-            prediction_value = prediction_dict[threshold.name]
-            prediction = assess_prediction_tool(threshold, prediction_value)
-        except KeyError:
-            prediction = None
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction = assess_prediction_tool(threshold, prediction_value)
         if prediction is None:
             comment = f"No score was provided for {threshold.name}"
             result = False

@@ -29,10 +29,14 @@ class Threshold_evidence_strength:
     threshold_supporting: Optional[float] = None
 
 
-def assess_prediction_tool(threshold: Threshold, prediction_value: float) -> bool:
+def assess_prediction_tool(
+    threshold: Threshold, prediction_value: Optional[float]
+) -> Optional[bool]:
     """
     Assess prediction result
     """
+    if prediction_value is None:
+        return None
     if threshold.direction.value == THRESHOLD_DIRECTION.HIGHER.value:
         if prediction_value > threshold.threshold:
             return True

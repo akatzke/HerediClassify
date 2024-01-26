@@ -42,11 +42,8 @@ class Ps1_protein_tp53(abstract_rule):
         threshold: Threshold,
         splice_assay: FunctionalData,
     ) -> RuleResult:
-        try:
-            prediction_value = prediction_dict[threshold.name]
-            prediction = assess_prediction_tool(threshold, prediction_value)
-        except KeyError:
-            prediction = None
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction = assess_prediction_tool(threshold, prediction_value)
         clinvar_same_aa = clinvar_result[ClinVar_Type.SAME_AA_CHANGE]
         if (
             clinvar_same_aa.pathogenic
@@ -66,6 +63,10 @@ class Ps1_protein_tp53(abstract_rule):
             comment = f"A splice assay shows that the variant affects splicing."
             strength = evidence_strength.STRONG
             result = False
+        elif prediction is None:
+            result = False
+            strength = evidence_strength.STRONG
+            comment = "No splicing prediction is available. Therefore PS1_protein can not be evaluated."
         elif (
             clinvar_same_aa.pathogenic
             and not prediction
@@ -117,11 +118,8 @@ class Ps1_splicing_tp53(abstract_rule):
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ) -> RuleResult:
-        try:
-            prediction_value = prediction_dict[threshold.name]
-            prediction = assess_prediction_tool(threshold, prediction_value)
-        except KeyError:
-            prediction = None
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction = assess_prediction_tool(threshold, prediction_value)
         clinvar_same_nucleotide = clinvar_result[ClinVar_Type.SAME_NUCLEOTIDE]
         if clinvar_same_nucleotide.pathogenic and prediction:
             comment = f"The following ClinVar entries show splice variants at the same nucleotide position to be pathogenic: {clinvar_same_nucleotide.ids}."
