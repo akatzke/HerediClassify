@@ -153,18 +153,9 @@ def create_transcriptinfo(variant_json: dict) -> list[TranscriptInfo]:
         var_start = hgvs_c.pos.start.base
         var_stop = hgvs_c.pos.end.base
         var_type = get_vartype_list(trans_dict["variant_type"])
-        try:
-            hgvs_p = trans_dict["hgvs_p"]
-        except KeyError:
-            hgvs_p = None
-        try:
-            exon = trans_dict["exon"]
-        except KeyError:
-            exon = None
-        try:
-            intron = trans_dict["intron"]
-        except KeyError:
-            intron = None
+        hgvs_p = trans_dict.get("hgvs_p", None)
+        exon = trans_dict.get("exon", None)
+        intron = trans_dict.get("intron", None)
         transcript = TranscriptInfo(
             transcript_id=transcript_id,
             var_type=var_type,
@@ -198,45 +189,27 @@ def get_vartype_list(var_type_str: list[str]) -> list[VARTYPE]:
     return var_types
 
 
-def create_prediction_dict(variant_json: dict) -> Optional[dict[str, float]]:
+def create_prediction_dict(variant_json: dict) -> dict[str, float]:
     """
     Create predciton tool dictionary from variant_json
     """
-    try:
-        patho_prediction = variant_json["pathogenicity_prediction_tools"]
-    except KeyError:
-        patho_prediction = {}
-    try:
-        splice_prediction = variant_json["splicing_prediction_tools"]
-    except KeyError:
-        splice_prediction = {}
+    patho_prediction = variant_json.get("pathogenicity_prediction_tools", dict())
+    splice_prediction = variant_json.get("splicing_prediction_tools", dict())
     prediction = patho_prediction | splice_prediction
-    if not bool(prediction):
-        return None
     return prediction
 
 
-def create_gnomad(variant_json: dict) -> Optional[PopulationDatabases_gnomAD]:
+def create_gnomad(variant_json: dict) -> PopulationDatabases_gnomAD:
     """
     Create gnomAD object from variant_json
     """
-    try:
-        gnomad_dict = variant_json["gnomAD"]
-    except KeyError:
-        return PopulationDatabases_gnomAD(
-            name="gnomAD",
-            frequency=0,
-            count=0,
-            popmax="None",
-            popmax_frequency=0,
-            popmax_allele_count=0,
-        )
+    gnomad_dict = variant_json.get("gnomAD", dict())
     name = "gnomAD"
-    frequency = gnomad_dict["AF"]
-    allele_count = gnomad_dict["AC"]
-    popmax = gnomad_dict["popmax"]
-    popmax_AF = gnomad_dict["popmax_AF"]
-    popmax_AC = gnomad_dict["popmax_AC"]
+    frequency = gnomad_dict.get("AF", 0)
+    allele_count = gnomad_dict.get("AC", 0)
+    popmax = gnomad_dict.get("popmax", "None")
+    popmax_AF = gnomad_dict.get("popmax_AF", 0)
+    popmax_AC = gnomad_dict.get("popmax_AC", 0)
     gnomad = PopulationDatabases_gnomAD(
         name=name,
         frequency=frequency,
@@ -264,22 +237,13 @@ def create_flossies(variant_json: dict) -> Optional[PopulationDatabases]:
     return PopulationDatabases(name=name, count=count, frequency=None)
 
 
-def create_affected_region(variant_json: dict) -> Optional[AffectedRegion]:
+def create_affected_region(variant_json: dict) -> AffectedRegion:
     """
     Create AffectedRegion object from variant_json
     """
-    try:
-        crit_region = variant_json["VUS_task_force_domain"]
-    except KeyError:
-        crit_region = False
-    try:
-        cancer_hotspot = variant_json["cancer_hotspot"]
-    except KeyError:
-        cancer_hotspot = False
-    try:
-        cold_spot = variant_json["cold_spot"]
-    except KeyError:
-        cold_spot = False
+    crit_region = variant_json.get("VUS_task_force_domain", False)
+    cancer_hotspot = variant_json.get("cancer_hotspot", False)
+    cold_spot = variant_json.get("cold_spot", False)
     aff_reg = AffectedRegion(
         critical_region=crit_region, cancer_hotspot=cancer_hotspot, cold_spot=cold_spot
     )
@@ -292,22 +256,10 @@ def get_mutlifactorial_likelihood(
     """
     Create MultifactorialLikelihood object from variant_json
     """
-    try:
-        prior = variant_json["prior"]
-    except KeyError:
-        prior = None
-    try:
-        co_occurrence = variant_json["co-occurrence"]
-    except KeyError:
-        co_occurrence = None
-    try:
-        segregation = variant_json["segregation"]
-    except KeyError:
-        segregation = None
-    try:
-        multifactorial_likelihood = variant_json["multifactorial_log-likelihood"]
-    except KeyError:
-        multifactorial_likelihood = None
+    prior = variant_json.get("prior", None)
+    co_occurrence = variant_json.get("co-occurrence", None)
+    segregation = variant_json.get("segregation", None)
+    multifactorial_likelihood = variant_json.get("multifactorial_log-likelihood", None)
     if not any([prior, co_occurrence, segregation, multifactorial_likelihood]):
         return None
     multfaclike = MultifactorialLikelihood(
