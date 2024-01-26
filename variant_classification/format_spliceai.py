@@ -37,6 +37,7 @@ def format_spliceai_singel(df: pd.DataFrame) -> pd.DataFrame:
     df_non_empty["SpliceAI_max"] = df_non_empty[
         ["SpliceAI_score_1", "SpliceAI_score_2", "SpliceAI_score_3", "SpliceAI_score_4"]
     ].max(axis=1)
+    df_non_empty.SpliceAI_max = float(df_non_empty.SpliceAI_max.iloc[0])
     df_shortened = df_non_empty.drop(splice_ai_entries, axis=1)
     return df_shortened
 
