@@ -55,7 +55,7 @@ def check_clinvar_truncated_region(
     clinvar_region_indel_df = get_clinvar_region_df(
         variant, start, stop, path_clinvar_indel
     )
-    clinvar_region_df = clinvar_region_snv_df.append(clinvar_region_indel_df)
+    clinvar_region_df = pd.concat([clinvar_region_snv_df, clinvar_region_indel_df])
     if not clinvar_region_df.empty:
         clinvar_region_df_lof = filter_lof_variants(clinvar_region_df)
         ClinVar_truncated_region = create_ClinVar(
@@ -84,7 +84,7 @@ def check_clinvar_NMD_exon(
             clinvar_exon_indel_df = get_clinvar_region_df(
                 variant, exon["exon_start"], exon["exon_end"], path_clinvar_indel
             )
-            clinvar_exon_df = clinvar_exon_snv_df.append(clinvar_exon_indel_df)
+            clinvar_exon_df = pd.concat([clinvar_exon_snv_df, clinvar_exon_indel_df])
             if not clinvar_exon_df.empty:
                 clinvar_exon_df_lof = filter_lof_variants(clinvar_exon_df)
                 ClinVar_exon = create_ClinVar(clinvar_exon_df_lof, ClinVar_Type.REGION)
