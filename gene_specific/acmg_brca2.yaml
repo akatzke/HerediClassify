@@ -76,7 +76,7 @@ annotation_files:
         coldspot_region: "VCEP_coldspot.bed"
     splice_site_table:
         root: "variant_classification/data/splice_site_classification"
-        file: "BRCA1_splice_table.csv"
+        file: "BRCA2_splice_table_reformatted.csv"
     exon_pm5:
         root: "variant_classification/data/PM5_annotations"
-        file: "PM5_PTC_BRCA1.csv"
+        file: "PM5_PTC_BRCA2.csv"

@@ -60,4 +60,4 @@ annotation_files:
         critical_region: "VCEP_defined_critical_regions.bed"
     splice_site_table:
         root: "variant_classification/data/splice_site_classification"
-        file: "PALB2_splice_table.csv"
+        file: "PALB2_splice_table_reformatted.csv"
