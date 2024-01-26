@@ -85,7 +85,7 @@ def annotate_clinvar_spliceai_protein(
             clinvar_same_codon_aa, variant.gene_name
         )
         clinvar_same_codon_aa_spliceAI = clinvar_same_codon_aa_filtered[
-            clinvar_same_codon_aa_filtered.SpliceAI_max < threshold_spliceAI.threshold
+            clinvar_same_codon_aa_filtered.SpliceAI_max <= threshold_spliceAI.threshold
         ]
         clinvar_same_aa = clinvar_same_codon_aa_filtered[
             clinvar_same_codon_aa_filtered.prot_alt == var_codon_info["prot_alt"]
