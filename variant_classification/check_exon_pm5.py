@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import pathlib
+import logging
 from collections.abc import Callable
 from typing import Optional
 
@@ -18,6 +19,9 @@ from variant import TranscriptInfo, VariantInfo
 from var_type import VARTYPE_GROUPS
 
 
+logger = logging.getLogger("GenOtoScope_Classify.Check_exon_pm5")
+
+
 def annotate_exon_classification_pm5(
     variant: VariantInfo,
     annotated_transcripts: list[TranscriptInfo],
@@ -33,7 +37,7 @@ def annotate_exon_classification_pm5(
             var_type in VARTYPE_GROUPS.EXONIC.value for var_type in transcript.var_type
         ):
             exon_pm5 = pd.read_csv(path_exon_pm5, sep="\t")
-            exon_table_entries: pd.DataFrame = exon_pm5[
+            exon_table_entries = exon_pm5[
                 (exon_pm5.start <= transcript.ptc) & (exon_pm5.end >= transcript.ptc)
             ]
             if exon_table_entries.empty:
@@ -42,16 +46,26 @@ def annotate_exon_classification_pm5(
                 strongest_evidence_entry = select_entry_with_strongest_evidence(
                     exon_table_entries
                 )
+                result = RuleResult(
+                    "PM5",
+                    rule_type.PROTEIN,
+                    evidence_type.PATHOGENIC,
+                    bool(strongest_evidence_entry.rule_status),
+                    evidence_strength(strongest_evidence_entry.evidence_strength),
+                    str(strongest_evidence_entry.final_comment),
+                )
             else:
                 strongest_evidence_entry = exon_table_entries
-            result = RuleResult(
-                "PM5",
-                rule_type.PROTEIN,
-                evidence_type.PATHOGENIC,
-                bool(strongest_evidence_entry.rule_status.values[0]),
-                evidence_strength(strongest_evidence_entry.evidence_strength.values[0]),
-                strongest_evidence_entry.comment.values[0],
-            )
+                result = RuleResult(
+                    "PM5",
+                    rule_type.PROTEIN,
+                    evidence_type.PATHOGENIC,
+                    bool(strongest_evidence_entry.rule_status.values[0]),
+                    evidence_strength(
+                        strongest_evidence_entry.evidence_strength.values[0]
+                    ),
+                    strongest_evidence_entry.comment.values[0],
+                )
             results.append(result)
     if len(results) == 0:
         comment = f"Accessing PM5_enigma does not apply to this variant, as PM5_enigma does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
@@ -84,7 +98,7 @@ def get_annotate_exon_classification_pm5(
     )
 
 
-def select_entry_with_strongest_evidence(data: pd.DataFrame) -> pd.DataFrame:
+def select_entry_with_strongest_evidence(data: pd.DataFrame) -> pd.Series:
     """
     From table select entry with strongest evidence strength
     In case all entries have the same evidence strength, return the first
@@ -92,26 +106,46 @@ def select_entry_with_strongest_evidence(data: pd.DataFrame) -> pd.DataFrame:
     if not data[data.evidence_strength == "very_strong"].empty:
         very_strong = data[data.evidence_strength == "very_strong"]
         if very_strong.shape[0] == 1:
-            return very_strong
-        else:
+            very_strong["final_comment"] = very_strong["comment"]
             return very_strong.iloc[0, :]
+        else:
+            very_strong_comment = summarise_comments(very_strong)
+            return very_strong_comment.iloc[0, :]
     elif not data[data.evidence_strength == "strong"].empty:
         strong = data[data.evidence_strength == "strong"]
         if strong.shape[0] == 1:
-            return strong
-        else:
+            strong["final_comment"] = strong["comment"]
             return strong.iloc[0, :]
+        else:
+            strong_comment = summarise_comments(strong)
+            return strong_comment.iloc[0, :]
     elif not data[data.evidence_strength == "moderate"].empty:
         moderate = data[data.evidence_strength == "moderate"]
         if moderate.shape[0] == 1:
-            return moderate
-        else:
+            moderate["final_comment"] = moderate["comment"]
             return moderate.iloc[0, :]
+        else:
+            moderate_comment = summarise_comments(moderate)
+            return moderate_comment.iloc[0, :]
     elif data[data.evidence_strength == "supporting"].empty:
         supporting = data[data.evidence_strength == "supporting"]
         if supporting.shape[0] == 1:
-            return supporting
-        else:
+            supporting["final_comment"] = supporting["comment"]
             return supporting.iloc[0, :]
+        else:
+            supporting_comment = summarise_comments(supporting)
+            return supporting_comment.iloc[0, :]
     else:
         raise ValueError(f"The evidence strength does not match.")
+
+
+def summarise_comments(data: pd.DataFrame) -> pd.DataFrame:
+    """
+    In case of two entries with the same evidence strength
+    Join both entries
+    """
+    final_comment = ""
+    for _, entry in data.iterrows():
+        final_comment = final_comment + " " + entry.comment
+    data["final_comment"] = final_comment
+    return data
