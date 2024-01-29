@@ -29,11 +29,15 @@ prediction_tool_thresholds:
     pathogenicity_prediction:
         name: "BayesDel"
         benign: 0.15
+        benign_direction: "less_than_or_equal"
         pathogenic: 0.28
+        pathogenic_direction: "greater_than_or_equal"
     splicing_prediction:
         name: "SpliceAI"
         benign: 0.1
+        benign_direction: "less_than_or_equal"
         pathogenic: 0.2
+        pathogenic_direction: "greater_than_or_equal"
 
 
 ### Thresholds loglikelihood ###

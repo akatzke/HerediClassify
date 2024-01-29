@@ -464,39 +464,28 @@ def get_threshold_prediction_from_config(
     try:
         config_prediction_tool = reduce(op.getitem, config_location[:-1], config)
         name = config_prediction_tool["name"]
-        thr_benign = config_prediction_tool["benign"]
-        thr_pathogenic = config_prediction_tool["pathogenic"]
+        direction_str = config_prediction_tool[config_location[-1] + "_direction"]
+        threshold = config_prediction_tool[config_location[-1]]
     except KeyError:
         logger.warning(
             f"The location {config_location} could not be found in configuration."
         )
         return None
     try:
-        float(thr_benign)
-        float(thr_pathogenic)
+        float(threshold)
     except ValueError:
         logger.warning(
             f"The thresholds defined at {config_location[:-1]} is not a number. Please check your configuration."
         )
         return None
-    if thr_benign < thr_pathogenic:
-        if config_location[-1] == "benign":
-            return Threshold(
-                name,
-                thr_benign,
-                THRESHOLD_DIRECTION.LOWER,
-            )
-        else:
-            return Threshold(name, thr_pathogenic, THRESHOLD_DIRECTION.HIGHER)
-    else:
-        if config_location[-1] == "benign":
-            return Threshold(
-                name,
-                thr_benign,
-                THRESHOLD_DIRECTION.HIGHER,
-            )
-        else:
-            return Threshold(name, thr_pathogenic, THRESHOLD_DIRECTION.LOWER)
+    try:
+        direction = THRESHOLD_DIRECTION(direction_str)
+    except ValueError:
+        logger.warning(
+            f"The threshold direction {direction_str} is not defined. Please set one of the following threshold directions: {', '.join(THRESHOLD_DIRECTION.list())}"
+        )
+        return None
+    return Threshold(name, threshold, direction)
 
 
 def get_threshold_prediction_from_config_mult_strength(

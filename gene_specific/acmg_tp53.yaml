@@ -23,11 +23,15 @@ prediction_tool_thresholds:
     pathogenicity_prediction:
         name: "BayesDel"
         benign: 0.16
+        benign_direction: "less"
         pathogenic: 0.16
+        pathogenic_direction: "greater_than_or_equal"
     splicing_prediction:
         name: "SpliceAI"
         benign: 0.1
+        benign_direction: "less_than_or_equal"
         pathogenic: 0.2
+        pathogenic_direction: "greater_than_or_equal"
 
 ### Allelee frequency threshold for each gene ###
 allele_frequency_thresholds:
