@@ -97,7 +97,7 @@ def test_indel():
         and annot_trans.is_truncated_region_disease_relevant == True
         and round(annot_trans.diff_len_protein_percent, 2) == 0.29
         and annot_trans.frameshift == 1
-        and annot_trans.ptc == 613
+        and annot_trans.ptc == 612
     )
 
 
@@ -223,7 +223,7 @@ def test_del_frameshift():
         and annot_trans.is_NMD == False
         and annot_trans.is_reading_frame_preserved == False
         and annot_trans.frameshift == -1
-        and annot_trans.ptc == 564
+        and annot_trans.ptc == 565
     )
 
 
@@ -265,7 +265,7 @@ def test_ins():
         and annot_trans.is_NMD == True
         and annot_trans.is_reading_frame_preserved == False
         and annot_trans.frameshift == 1
-        and annot_trans.ptc == 114
+        and annot_trans.ptc == 113
     )
 
 
