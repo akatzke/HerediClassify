@@ -328,6 +328,18 @@ def test_gene_specific_tp53_missense():
     config_name, results = classify(path_config, var_str)
 
 
+def test_gene_specific_tp53_missense_2():
+    """
+    Test gene specific variant classification
+    """
+    path_variant = (
+        paths.TEST / "test_variants_gene_specific" / "TP53_missense_variant_2.json"
+    )
+    var_str = create_json_string_from_variant(path_variant)
+    path_config = paths.ROOT / "gene_specific" / "acmg_tp53.yaml"
+    config_name, results = classify(path_config, var_str)
+
+
 def test_gene_specific_tp53_splice():
     """
     Test gene specific variant classification
