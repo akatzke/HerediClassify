@@ -41,12 +41,18 @@
                         "benign": {
                             "type": "number"
                         },
+                        "benign_direction": {
+                            "type": "string"
+                        },
                         "pathogenic": {
                             "type": "number"
+                        },
+                        "pathogenic_direction": {
+                            "type": "string"
                         }
                     },
                     "required":
-                    ["name", "benign", "pathogenic"]
+                    ["name", "benign", "benign_direction", "pathogenic", "pathogenic_direction"]
                 },
                 "splicing_prediction" :{
                     "properties": {
@@ -56,12 +62,18 @@
                         "benign":{
                             "type": "number"
                         },
+                        "benign_direction": {
+                            "type": "string"
+                        },
                         "pathogenic":{
                             "type": "number"
+                        },
+                        "pathogenic_direction": {
+                            "type": "string"
                         }
                     },
                     "required":
-                    ["name", "benign", "pathogenic"]
+                    ["name", "benign", "benign_direction", "pathogenic", "pathogenic_direction"]
                 }
             }
         },
