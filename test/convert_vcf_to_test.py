@@ -227,6 +227,7 @@ def select_relevant_var_type(var_types: list[str]) -> str:
         "splice_donor",
         "splice_acceptor_variant",
         "splice_acceptor",
+        "intron_variant",
     ]
     rel_var_type = [
         var_type for var_type in var_types if var_type in relevant_variant_types
