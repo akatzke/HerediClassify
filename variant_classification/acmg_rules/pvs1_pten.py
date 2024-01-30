@@ -97,7 +97,10 @@ class Pvs1_pten(Pvs1):
             transcript.is_truncated_region_disease_relevant
             and transcript.is_reading_frame_preserved
         ):
-            comment = f"Transcript {transcript.transcript_id} is not predict to undergo NMD. Truncated region is disease relevant."
+            comment = (
+                f"Transcript {transcript.transcript_id} is not predict to undergo NMD. Truncated region is disease relevant. "
+                + transcript.comment_truncated_region
+            )
             result = True
             strength = evidence_strength.MODERATE
         else:
@@ -123,7 +126,10 @@ class Pvs1_pten(Pvs1):
             transcript.is_reading_frame_preserved
             and transcript.is_truncated_region_disease_relevant
         ):
-            comment = f"Transcript {transcript.transcript_id}'s reading frame is preserved and skipped exon is disease relevant."
+            comment = (
+                f"Transcript {transcript.transcript_id}'s reading frame is preserved and skipped exon is disease relevant. "
+                + transcript.comment_truncated_region
+            )
             result = True
             strength = evidence_strength.STRONG
         else:

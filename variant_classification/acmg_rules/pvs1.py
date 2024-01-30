@@ -90,7 +90,8 @@ class Pvs1(abstract_rule):
             if transcript.is_truncated_region_disease_relevant:
                 comment = (
                     comment
-                    + f" Alternative start codon leads to the exclusion of a disease relevant protein region."
+                    + f" Alternative start codon leads to the exclusion of a disease relevant protein region. "
+                    + transcript.comment_truncated_region
                 )
                 result = True
                 strength = evidence_strength.MODERATE
@@ -134,7 +135,11 @@ class Pvs1(abstract_rule):
         if transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} undergoes NMD."
             if transcript.is_truncated_region_disease_relevant:
-                comment = comment + f"Skipped exon is disease relevant."
+                comment = (
+                    comment
+                    + f"Skipped exon is disease relevant. "
+                    + transcript.comment_truncated_region
+                )
                 result = True
             else:
                 comment = (
@@ -149,7 +154,11 @@ class Pvs1(abstract_rule):
         ):
             comment = f"Transcript {transcript.transcript_id} does not undergo NMD and reading frame is not preserved."
             if transcript.is_truncated_region_disease_relevant:
-                comment = comment + f" Skipped exon is considered disease relevant."
+                comment = (
+                    comment
+                    + f" Skipped exon is considered disease relevant. "
+                    + transcript.comment_truncated_region
+                )
                 result = True
                 strength = evidence_strength.STRONG
             else:
@@ -173,7 +182,11 @@ class Pvs1(abstract_rule):
         elif transcript.are_exons_skipped and transcript.is_reading_frame_preserved:
             comment = f"Transcript {transcript.transcript_id} does not undergo NMD and reading frame is preserved."
             if transcript.is_truncated_region_disease_relevant:
-                comment = comment + f" Skipped exon is disease relevant."
+                comment = (
+                    comment
+                    + f" Skipped exon is considered disease relevant region."
+                    + transcript.comment_truncated_region
+                )
                 result = True
                 strength = evidence_strength.STRONG
             else:
@@ -219,7 +232,11 @@ class Pvs1(abstract_rule):
                 f"Transcript {transcript.transcript_id} is predicted to undergo NMD."
             )
             if transcript.is_truncated_region_disease_relevant:
-                comment = comment + "Truncated region is disease relevant."
+                comment = (
+                    comment
+                    + "Truncated region is disease relevant. "
+                    + transcript.comment_truncated_region
+                )
                 result = True
             else:
                 comment = comment + "Truncated region is not disease relevant."
@@ -228,7 +245,11 @@ class Pvs1(abstract_rule):
         else:
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD."
             if transcript.is_truncated_region_disease_relevant:
-                comment = comment + "Truncated region is disease relevant."
+                comment = (
+                    comment
+                    + "Truncated region is disease relevant. "
+                    + transcript.comment_truncated_region
+                )
                 result = True
                 strength = evidence_strength.STRONG
             else:

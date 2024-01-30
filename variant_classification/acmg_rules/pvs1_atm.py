@@ -118,8 +118,10 @@ class Pvs1_atm(Pvs1):
         Assess PVS1 for start lost variants
         """
         if transcript.is_truncated_region_disease_relevant:
-            comment = f"Alternative start codon leads to the exclusion of a disease relevant region."
-            comment = comment + " " + transcript.comment_truncated_region
+            comment = (
+                f"Alternative start codon leads to the exclusion of a disease relevant region. "
+                + transcript.comment_truncated_region
+            )
             result = True
             strength = evidence_strength.VERY_STRONG
         else:

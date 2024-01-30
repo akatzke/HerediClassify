@@ -147,7 +147,9 @@ class Pvs1_palb2(Pvs1):
             ):
                 comment = (
                     comment
-                    + f" Truncated region located in disease relevant region. PTC is located upstream of p.His1184."
+                    + f" Truncated region located in disease relevant region. "
+                    + transcript.comment_truncated_region
+                    + " PTC is located upstream of p.His1184."
                 )
                 result = True
                 strength = evidence_strength.STRONG
@@ -214,7 +216,9 @@ class Pvs1_palb2(Pvs1):
                 result = True
                 strength = evidence_strength.VERY_STRONG
                 comment = (
-                    comment + f" Truncated region is critical to protein function."
+                    comment
+                    + f" Truncated region is critical to protein function. "
+                    + transcript.comment_truncated_region
                 )
             else:
                 if (

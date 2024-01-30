@@ -192,7 +192,11 @@ class Pvs1_brca1(Pvs1):
             if transcript.is_truncated_region_disease_relevant:
                 result = True
                 strength = evidence_strength.VERY_STRONG
-                comment = comment + f" Target region is critical to protein function."
+                comment = (
+                    comment
+                    + f" Target region is critical to protein function. "
+                    + transcript.comment_truncated_region
+                )
             else:
                 comment = comment + " Role of target region is unknown."
                 if (
