@@ -80,7 +80,9 @@ class Bp7_with_rna_assay_deep_intronic_enigma(abstract_rule):
                 result = True
                 comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name}."
 
-            else:
+            elif any(
+                var_type is VARTYPE.INTRON_VARIANT for var_type in variant.var_type
+            ):
                 """
                 Check if variant is a deep intronic variant
                 """
@@ -106,7 +108,10 @@ class Bp7_with_rna_assay_deep_intronic_enigma(abstract_rule):
                 if result:
                     comment = " ".join(comments_all)
                 else:
-                    comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+                    comment = f"BP7 does not apply to this variant, as it is not located in the defined region for deep intronic region variants (<= -21 or >= 7)."
+            else:
+                result = False
+                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
         else:
             result = False
             comment = f"The variant is not predicted to not affect splicing by {threshold.name}."
@@ -183,7 +188,9 @@ class Bp7_with_rna_assay_deep_intronic_atm(abstract_rule):
                 result = True
                 comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name}."
 
-            else:
+            elif any(
+                var_type is VARTYPE.INTRON_VARIANT for var_type in variant.var_type
+            ):
                 """
                 Check if variant is a deep intronic variant
                 """
@@ -209,7 +216,10 @@ class Bp7_with_rna_assay_deep_intronic_atm(abstract_rule):
                 if result:
                     comment = " ".join(comments_all)
                 else:
-                    comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+                    comment = f"BP7 does not apply to this variant, as it is not located in the defined region for deep intronic region variants (< -40 or > 7)."
+            else:
+                result = False
+                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
         else:
             result = False
             comment = f"The variant is not predicted to not affect splicing by {threshold.name}."
@@ -286,7 +296,9 @@ class Bp7_with_rna_assay_deep_intronic_palb2(abstract_rule):
                 result = True
                 comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name}."
 
-            else:
+            elif any(
+                var_type is VARTYPE.INTRON_VARIANT for var_type in variant.var_type
+            ):
                 """
                 Check if variant is a deep intronic variant
                 """
@@ -312,7 +324,10 @@ class Bp7_with_rna_assay_deep_intronic_palb2(abstract_rule):
                 if result:
                     comment = " ".join(comments_all)
                 else:
-                    comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+                    comment = f"BP7 does not apply to this variant, as it is not located in the defined region for deep intronic region variants (< -21 or > 7)."
+            else:
+                result = False
+                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
         else:
             result = False
             comment = f"The variant is not predicted to not affect splicing by {threshold.name}."
