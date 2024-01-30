@@ -23,7 +23,7 @@ def check_prot_len_change_in_repetitive_region_exon(
         for exon in NMD_affected_exons:
             gen_start = exon["exon_start"]
             gen_end = exon["exon_end"]
-            is_exon_in_repetitive_region = check_intersection_with_bed(
+            is_exon_in_repetitive_region, _ = check_intersection_with_bed(
                 variant, gen_start, gen_end, ref_transcript, path_rep_uniprot
             )
             are_exons_in_repetitive_region.append(is_exon_in_repetitive_region)
