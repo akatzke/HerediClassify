@@ -18,6 +18,18 @@ def test_gene_specific_atm_frameshift():
     config_name, results = classify(path_config, var_str)
 
 
+def test_gene_specific_atm_intron():
+    """
+    Test gene specific variant classification
+    """
+    path_variant = (
+        paths.TEST / "test_variants_gene_specific" / "ATM_intron_variant.json"
+    )
+    var_str = create_json_string_from_variant(path_variant)
+    path_config = paths.ROOT / "gene_specific" / "acmg_atm.yaml"
+    config_name, results = classify(path_config, var_str)
+
+
 def test_gene_specific_atm_missense():
     """
     Test gene specific variant classification
@@ -64,6 +76,30 @@ def test_gene_specific_brca1_frameshift():
     config_name, results = classify(path_config, var_str)
 
 
+def test_gene_specific_brca1_intron():
+    """
+    Test gene specific variant classification
+    """
+    path_variant = (
+        paths.TEST / "test_variants_gene_specific" / "BRCA1_intron_variant.json"
+    )
+    var_str = create_json_string_from_variant(path_variant)
+    path_config = paths.ROOT / "gene_specific" / "acmg_brca1.yaml"
+    config_name, results = classify(path_config, var_str)
+
+
+def test_gene_specific_brca1_intron_2():
+    """
+    Test gene specific variant classification
+    """
+    path_variant = (
+        paths.TEST / "test_variants_gene_specific" / "BRCA1_intron_variant_2.json"
+    )
+    var_str = create_json_string_from_variant(path_variant)
+    path_config = paths.ROOT / "gene_specific" / "acmg_brca1.yaml"
+    config_name, results = classify(path_config, var_str)
+
+
 def test_gene_specific_brca1_missense():
     """
     Test gene specific variant classification
@@ -95,6 +131,18 @@ def test_gene_specific_brca1_stop_gained():
     Test gene specific variant classification
     """
     path_variant = paths.TEST / "test_variants_gene_specific" / "BRCA1_stop_gained.json"
+    var_str = create_json_string_from_variant(path_variant)
+    path_config = paths.ROOT / "gene_specific" / "acmg_brca1.yaml"
+    config_name, results = classify(path_config, var_str)
+
+
+def test_gene_specific_brca1_synonymous():
+    """
+    Test gene specific variant classification
+    """
+    path_variant = (
+        paths.TEST / "test_variants_gene_specific" / "BRCA1_synonymous_variant.json"
+    )
     var_str = create_json_string_from_variant(path_variant)
     path_config = paths.ROOT / "gene_specific" / "acmg_brca1.yaml"
     config_name, results = classify(path_config, var_str)
@@ -170,12 +218,12 @@ def test_gene_specific_cdh1_frameshift():
     config_name, results = classify(path_config, var_str)
 
 
-def test_gene_specific_cdh1_frameshift_2():
+def test_gene_specific_cdh1_intron():
     """
     Test gene specific variant classification
     """
     path_variant = (
-        paths.TEST / "test_variants_gene_specific" / "CDH1_frameshift_variant_2.json"
+        paths.TEST / "test_variants_gene_specific" / "CDH1_intron_variant.json"
     )
     var_str = create_json_string_from_variant(path_variant)
     path_config = paths.ROOT / "gene_specific" / "acmg_cdh1.yaml"
@@ -203,6 +251,18 @@ def test_gene_specific_cdh1_splice():
     )
     var_str = create_json_string_from_variant(path_variant)
     path_config = paths.ROOT / "gene_specific" / "acmg_cdh1.yaml"
+    config_name, results = classify(path_config, var_str)
+
+
+def test_gene_specific_palb2_intron():
+    """
+    Test gene specific variant classification
+    """
+    path_variant = (
+        paths.TEST / "test_variants_gene_specific" / "PALB2_intron_variant.json"
+    )
+    var_str = create_json_string_from_variant(path_variant)
+    path_config = paths.ROOT / "gene_specific" / "acmg_palb2.yaml"
     config_name, results = classify(path_config, var_str)
 
 
