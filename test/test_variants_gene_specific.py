@@ -218,12 +218,12 @@ def test_gene_specific_cdh1_frameshift():
     config_name, results = classify(path_config, var_str)
 
 
-def test_gene_specific_cdh1_intron():
+def test_gene_specific_cdh1_frameshift_2():
     """
     Test gene specific variant classification
     """
     path_variant = (
-        paths.TEST / "test_variants_gene_specific" / "CDH1_intron_variant.json"
+        paths.TEST / "test_variants_gene_specific" / "CDH1_frameshift_variant_2.json"
     )
     var_str = create_json_string_from_variant(path_variant)
     path_config = paths.ROOT / "gene_specific" / "acmg_cdh1.yaml"
