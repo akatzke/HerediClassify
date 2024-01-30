@@ -72,7 +72,7 @@ def check_intersection_with_bed_no_strand(
     path_bed: pathlib.Path,
 ) -> bool:
     """
-    Check if variant overlaps UniProt annotated repetitive region
+    Check if variant overlaps region in given bed file without checking for strand
     """
     variant_interval = BedTool(
         create_bed_line(variant, gen_start, gen_end, ref_transcript.strand),
