@@ -4,7 +4,9 @@ import pathlib
 
 import pyensembl
 
-from pybedtools import BedTool
+import pandas as pd
+
+from pybedtools import BedTool, Interval
 from variant import VariantInfo
 
 
@@ -13,7 +15,7 @@ def check_bed_intersect_start_loss(
     ref_transcript: pyensembl.transcript.Transcript,
     alt_start_codon: list[int],
     path_rep_uniprot: pathlib.Path,
-) -> bool:
+) -> tuple[bool, str]:
     """
     Assess if prot_len_change caused by alternative start codon is in repetitive region
     """
@@ -24,10 +26,10 @@ def check_bed_intersect_start_loss(
     else:
         gen_start = min(ref_start_codon)
         gen_end = max(alt_start_codon)
-    prot_len_in_repetitive_region = check_intersection_with_bed(
+    prot_len_in_repetitive_region, comment = check_intersection_with_bed(
         variant, gen_start, gen_end, ref_transcript, path_rep_uniprot
     )
-    return prot_len_in_repetitive_region
+    return prot_len_in_repetitive_region, comment
 
 
 def check_intersection_with_bed(
@@ -36,7 +38,7 @@ def check_intersection_with_bed(
     gen_end: int,
     ref_transcript: pyensembl.transcript.Transcript,
     path_bed: pathlib.Path,
-) -> bool:
+) -> tuple[bool, str]:
     """
     Check if variant overlaps UniProt annotated repetitive region
     """
@@ -47,8 +49,9 @@ def check_intersection_with_bed(
     bed = BedTool(path_bed).sort()
     annotation_hits = bed.all_hits(variant_interval, same_strand=True)
     if len(annotation_hits) > 0:
-        return True
-    return False
+        comment = create_comment_from_bed_file(annotation_hits, path_bed)
+        return True, comment
+    return False, ""
 
 
 def create_bed_line(
@@ -69,3 +72,27 @@ def create_bed_line(
         ]
     )
     return bed_line
+
+
+def create_comment_from_bed_file(hits: list[Interval], path_bed: pathlib.Path) -> str:
+    """
+    From intersections with bed file, create a comment
+    """
+    bed = pd.read_csv(path_bed, sep="\t")
+    hits_df = pd.DataFrame()
+    for hit in hits:
+        chr = hit[0]
+        start = int(hit[1])
+        end = int(hit[2])
+        bed_entries = bed[
+            (bed["#chr"] == chr) & (bed["start"] == start) & (bed["end"] == end)
+        ]
+        hits_df = pd.concat([hits_df, bed_entries])
+    if "domain_name" in bed.columns:
+        hits_df["comment"] = hits_df["domain_name"] + " in " + hits_df["gene"]
+        comment = " ".join(hits_df.comment)
+    elif "comment" in bed.columns:
+        comment = " ".join(hits_df.comment)
+    else:
+        comment = ""
+    return comment
