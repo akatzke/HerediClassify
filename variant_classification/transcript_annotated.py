@@ -182,19 +182,26 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         if path_critical_region is not None:
             # Check if variant is located in defined functionally relevant region from ACMG guidelines
             if is_NMD:
-                is_truncated_exon_relevant = check_variant_in_critical_region_exon(
+                (
+                    is_truncated_exon_relevant,
+                    comment_truncated_exon_relevant,
+                ) = check_variant_in_critical_region_exon(
                     variant, ref_transcript, NMD_affected_exons, path_critical_region
                 )
-                comment_truncated_exon_relevant = ""
             else:
-                is_truncated_exon_relevant = check_intersection_with_bed(
+                is_truncated_exon_relevant, comment = check_intersection_with_bed(
                     variant,
                     variant.genomic_start,
                     variant.genomic_end,
                     ref_transcript,
                     path_critical_region,
                 )
-                comment_truncated_exon_relevant = ""
+                if is_truncated_exon_relevant:
+                    comment_truncated_exon_relevant = f"Truncated region overlaps the following clinically significant domains: {comment}."
+                else:
+                    comment_truncated_exon_relevant = (
+                        "Truncated exon not located in critical region."
+                    )
         else:
             if is_NMD:
                 truncated_exon_ClinVar = check_clinvar_NMD_exon(
@@ -230,7 +237,7 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             ref_transcript, var_seq, diff_len
         )
         if diff_len_protein_percent != 0:
-            len_change_in_repetitive_region = check_intersection_with_bed(
+            len_change_in_repetitive_region, _ = check_intersection_with_bed(
                 variant,
                 variant.genomic_start,
                 variant.genomic_end,
@@ -348,15 +355,15 @@ class TranscriptInfo_intronic(TranscriptInfo_annot):
             diff_len,
         )
         if path_critical_region is not None:
-            is_truncated_region_disease_relevant = (
-                check_variant_in_critical_region_exon(
-                    variant,
-                    ref_transcript,
-                    NMD_affected_exons,
-                    path_critical_region,
-                )
+            (
+                is_truncated_region_disease_relevant,
+                comment_truncated_region_disease_relevant,
+            ) = check_variant_in_critical_region_exon(
+                variant,
+                ref_transcript,
+                NMD_affected_exons,
+                path_critical_region,
             )
-            comment_truncated_region_disease_relevant = ""
         else:
             skipped_exon_ClinVar = check_clinvar_NMD_exon(
                 variant, NMD_affected_exons, path_clinvar_snv, path_clinvar_indel
@@ -464,13 +471,19 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
             is_truncated_region_disease_relevant = False
             comment_truncated_region = "There is no alternative start codon."
         elif path_critical_region is not None:
-            is_truncated_region_disease_relevant = check_bed_intersect_start_loss(
+            (
+                is_truncated_region_disease_relevant,
+                comment,
+            ) = check_bed_intersect_start_loss(
                 variant,
                 ref_transcript,
                 position_alternative_start_codon_genomic,
                 path_critical_region,
             )
-            comment_truncated_region = ""
+            if is_truncated_region_disease_relevant:
+                comment_truncated_region = f"Truncated region overlaps the following clinically significant domains: {comment}."
+            else:
+                comment_truncated_region = "Truncated region does not overlap clincially significant protein domain."
         else:
             pathogenic_variants_between_start_and_alt_start = (
                 check_clinvar_start_alt_start(
@@ -488,7 +501,7 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
             ref_transcript, position_alternative_start_codon_cDNA
         )
         if diff_len != 0:
-            len_change_in_repetitive_region = check_bed_intersect_start_loss(
+            len_change_in_repetitive_region, _ = check_bed_intersect_start_loss(
                 variant,
                 ref_transcript,
                 position_alternative_start_codon_genomic,
