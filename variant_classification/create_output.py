@@ -10,17 +10,24 @@ from acmg_rules.utils import RuleResult
 from os import path
 
 
-def create_output(rule_results: list[RuleResult]) -> str:
+def create_rules_dict(rule_results: list[RuleResult]) -> dict[str, dict[str, str]]:
     """
-    From list of RuleResult object that meets the classified schema
+    Create dictionary from rule result list
     """
     out_dict = {}
     for result in rule_results:
         result_dict = result.create_dict()
         out_dict = out_dict | result_dict
-    if not validate_output(out_dict):
+    return out_dict
+
+
+def create_output(rule_results: dict[str, dict[str, str]]) -> str:
+    """
+    From list of RuleResult object that meets the classified schema
+    """
+    if not validate_output(rule_results):
         raise ValueError("Output could not be validated. Please check.")
-    result_json = json.dumps(out_dict)
+    result_json = json.dumps(rule_results)
     return result_json
 
 

@@ -1,59 +1,87 @@
 #!/usr/bin/env python3
 
-from acmg_rules.utils import RuleResult, evidence_strength, rule_type
+from acmg_rules.utils import evidence_strength, rule_type
 
 
 def check_incompatible_rules(
-    rules: list[RuleResult], name_config: str, rules_list: list[str]
-) -> list[RuleResult]:
+    rules: dict[str, dict], name_config: str, rules_list: list[str]
+) -> dict[str, dict]:
     """
     Filter out incompatible rules
-    E.g. PVS1 is incompatible with PM4
+    E.g. {PVS1 is incompatible with PM4
     PVS1_splicing is incompatible with PS1_splicing
     """
-    pvs1_applies, pvs1_splicing, pvs1_splicing_very_strong_applies = False, False, False
-    ba1_applies = False
-    for rule in rules:
-        if rule.name == "PVS1" and rule.status:
-            pvs1_applies = True
-            if rule.type == rule_type.SPLICING:
-                pvs1_splicing = True
-                if rule.strength == evidence_strength.VERY_STRONG:
-                    pvs1_splicing_very_strong_applies = True
-        if rule.name == "BA1" and rule.status:
-            ba1_applies = True
-    if pvs1_applies:
-        for rule in rules:
-            if rule.name == "PM4" and rule.status:
-                rule.status = False
-                rule.comment = (
-                    rule.comment
-                    + " PM4 does not apply, as PVS1 already applies to the variant."
-                )
-    if pvs1_splicing_very_strong_applies and "ps1_splicing_clingen" in rules_list:
-        for rule in rules:
-            if rule.name == "PS1" and rule.type == rule_type.SPLICING and rule.status:
-                rule.strength = evidence_strength.SUPPORTING
-                rule.comment = (
-                    rule.comment
-                    + " Correct evidence strength to supporting as PVS1 splicing applies with very strong evidence strength."
-                )
+    ba1_applies = rules.get("BA1", {}).get("status", False)
+    pvs1_applies = rules.get("PVS1", {}).get("status", False)
+    pvs1_splicing = (
+        pvs1_applies
+        and rules.get("PVS1", {}).get("rule_type", None) == rule_type.SPLICING.value
+    )
+    pvs1_splicing_very_strong = (
+        pvs1_splicing
+        and rules.get("PVS1", {}).get("strength", None)
+        == evidence_strength.VERY_STRONG.value
+    )
+    ## Disable PM4 in case PVS1 applies
+    if pvs1_applies and rules.get("PM4", {}).get("status", False):
+        rules["PM4"]["status"] = False
+        new_comment = (
+            rules["PM4"]["comment"]
+            + " PM4 does not apply, as PVS1 already applies to the variant."
+        )
+        rules["PM4"]["comment"] = new_comment
+    ## In case ClinGen specifications for splicing apply
+    ## Adjust evidence strength of PS1 in case PVS1 splicing very strong applies
+    if (
+        pvs1_splicing_very_strong
+        and "ps1_splicing_clingen" in rules_list
+        and (
+            rules.get("PS1", {}).get("status", False)
+            and rules.get("PS1", {}).get("rule_type", None) == rule_type.SPLICING.value
+        )
+    ):
+        rules["PS1"]["strength"] = evidence_strength.SUPPORTING.value
+        new_comment = (
+            rules["PS1"]["comment"]
+            + " Correct evidence strength to supporting as PVS1 splicing applies with very strong evidence strength."
+        )
+        rules["PS1"]["coment"] = new_comment
     if name_config == "ACMG ATM":
-        if pvs1_splicing:
-            for rule in rules:
-                if (
-                    rule.name == "PP3"
-                    and rule.type == rule_type.SPLICING
-                    and rule.status
-                ):
-                    rule.status = False
-                    rule.comment = (
-                        rule.comment
-                        + " PP3 splicing does not apply, as PVS1 splicing already applies to the variant."
-                    )
-    if ba1_applies:
-        for rule in rules:
-            if rule.name == "BS1" and rule.status:
-                rule.status = False
-                rule.comment = rule.comment + " BS1 does not apply when BA1 applies."
+        if pvs1_splicing and (
+            rules.get("PP3", {}).get("status", False)
+            and rules.get("PP3", {}).get("rule_type", None) == rule_type.SPLICING.value
+        ):
+            rules["PP3"]["status"] = False
+            new_comment = (
+                rules["PP3"]["comment"]
+                + " PP3 splicing does not apply, as PVS1 splicing already applies to the variant."
+            )
+            rules["PP3"]["comment"] = new_comment
+        if (
+            rules.get("BP7", {}).get("status", False)
+            and rules.get("BP7", {}).get("strength", None)
+            != evidence_strength.SUPPORTING.value
+            and rules.get("BP4", {}).get("status", False)
+        ):
+            rules["BP4"]["status"] = False
+            new_comment = (
+                rules["BP4"]["comment"]
+                + " As BP7 RNA analysis applies to this variant. Do not apply BP4 splicing."
+            )
+            rules["BP4"]["comment"] = new_comment
+    if name_config == "ACMG BRCA1" or name_config == "ACMG BRCA2":
+        if (
+            not pvs1_applies
+            and rules.get("PVS1", {}).get("rule_type") != rule_type.SPLICING.value
+            and rules.get("PM5", {}).get("status", False)
+        ):
+            rules["PM5"]["status"] = False
+            new_comment = (
+                rules["PM5"]["comment"]
+                + " As PM5 can only apply if PVS1 applies as well. As PVS1 does not apply PM5 is set to False."
+            )
+            rules["PM5"]["comment"] = new_comment
+    if ba1_applies and rules.get("BS1", {}).get("status", False):
+        rules["BS1"]["status"] = False
+        new_comment = rules["BS1"]["comment"] + " BS1 does not apply when BA1 applies."
     return rules
