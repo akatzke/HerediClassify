@@ -56,3 +56,6 @@ annotation_files:
     critical_region:
         root: "variant_classification/data/critical_region"
         file: "VUS-Task-Force_critical_protein_domains.bed"
+    mane_transcripts:
+        root: "databases/MANE"
+        file: "/MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"

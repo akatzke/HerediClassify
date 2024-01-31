@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from typing import Callable
 
+import pathlib
+
 from acmg_rules.utils import (
     RuleResult,
     evidence_strength,
@@ -13,6 +15,7 @@ from information import Info, Classification_Info
 from transcript_annotated import TranscriptInfo_annot
 from variant import VariantInfo
 from var_type import VARTYPE
+from utils import select_mane_transcript
 
 
 class Pm4(abstract_rule):
@@ -29,7 +32,7 @@ class Pm4(abstract_rule):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
-                class_info.VARIANT,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -37,50 +40,33 @@ class Pm4(abstract_rule):
     def assess_rule(
         cls,
         annotated_transcript_list: list[TranscriptInfo_annot],
+        mane_path: pathlib.Path,
         threshold_diff_len_prot_percent: float,
-        variant: VariantInfo,
     ) -> RuleResult:
-        results = []
-        for transcript in annotated_transcript_list:
-            if (
-                transcript.diff_len_protein_percent > threshold_diff_len_prot_percent
-                and transcript.is_truncated_region_disease_relevant
-                and not transcript.len_change_in_repetitive_region
-            ):
-                comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region does not overlap repetitive region."
-                result = True
-            elif (
-                transcript.diff_len_protein_percent > threshold_diff_len_prot_percent
-                and transcript.is_truncated_region_disease_relevant
-                and transcript.len_change_in_repetitive_region
-            ):
-                comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
-                result = False
-            else:
-                comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}"
-                result = False
-            rule_result = RuleResult(
-                "PM4",
-                rule_type.GENERAL,
-                evidence_type.PATHOGENIC,
-                result,
-                evidence_strength.MODERATE,
-                comment,
-            )
-            results.append(rule_result)
-        if len(results) == 0:
-            comment = "PM4 does not apply to this variant."
-            final_result = RuleResult(
-                "PM4",
-                rule_type.GENERAL,
-                evidence_type.PATHOGENIC,
-                False,
-                evidence_strength.MODERATE,
-                comment,
-            )
+        transcript = select_mane_transcript(annotated_transcript_list, mane_path)
+        if (
+            transcript.diff_len_protein_percent > threshold_diff_len_prot_percent
+            and not transcript.len_change_in_repetitive_region
+        ):
+            comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. A repetitive region is not affected."
+            result = True
+        elif (
+            transcript.diff_len_protein_percent > threshold_diff_len_prot_percent
+            and transcript.len_change_in_repetitive_region
+        ):
+            comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
+            result = False
         else:
-            final_result = summarise_results_per_transcript(results)
-        return final_result
+            comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}."
+            result = False
+        return RuleResult(
+            "PM4",
+            rule_type.GENERAL,
+            evidence_type.PATHOGENIC,
+            result,
+            evidence_strength.MODERATE,
+            comment,
+        )
 
 
 class Pm4_stoploss(abstract_rule):

@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
 import pathlib
+from typing import Optional
 
 import pyensembl
 
 import pandas as pd
 
 from pybedtools import BedTool, Interval
-from variant import VariantInfo
+from variant import TranscriptInfo, VariantInfo
 
 
 def check_bed_intersect_start_loss(
@@ -96,3 +97,17 @@ def create_comment_from_bed_file(hits: list[Interval], path_bed: pathlib.Path) -
     else:
         comment = ""
     return comment
+
+
+def select_mane_transcript(
+    transcripts: list[TranscriptInfo], mane_path: pathlib.Path
+) -> Optional[TranscriptInfo]:
+    """
+    From a list of transcripts select the MANE transcript
+    """
+    mane_transcripts_df = pd.read_csv(mane_path, sep="\t")
+    mane_transcripts = mane_transcripts_df.transcript.dropna()
+    for transcript in transcripts:
+        if any(mane_transcripts.str.contains(transcript.transcript_id)):
+            return transcript
+    return None

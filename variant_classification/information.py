@@ -80,6 +80,7 @@ class Classification_Info:
     SPLICE_RESULT_PM5: Info
     EXON_PM5_PATH: Info
     PM5_RESULTS_PTC: Info
+    MANE_TRANSCRIPT_LIST_PATH: Info
     FUNCTIONAL_ASSAY: Info
     SPLICING_ASSAY: Info
 
@@ -298,5 +299,10 @@ class Classification_Info:
             group=Classification_Info_Groups.PATH,
         )
         self.PM5_RESULTS_PTC = Info("pm5_results_ptc", optional=True)
+        self.MANE_TRANSCRIPT_LIST_PATH = Info(
+            "mane_transcript_list_path",
+            config_location=("annotation_files", "mane_transcripts", "file"),
+            group=Classification_Info_Groups.PATH,
+        )
         self.FUNCTIONAL_ASSAY = Info("functional_assay")
         self.SPLICING_ASSAY = Info("splicing_assay")
