@@ -53,3 +53,12 @@ unip=$dbs/Uniprot
 curl -L "http://api.genome.ucsc.edu/getData/track?genome=hg38;track=unipRepeat" > repeats_hg38_uniprot.json
 in_path_uniprot=$unip/repeats_hg38_uniprot.json
 python $basedir/variant_classification/install_dependencies/data_format_uniprot_rep.py -i $in_path_uniprot
+
+cd $dbs
+mkdir -p MANE
+cd MANE
+mane=$dbs/MANE
+
+wget https://ftp.ncbi.nlm.nih.gov/refseq/MANE/MANE_human/current/MANE.GRCh38.v1.3.ensembl_genomic.gtf.gz
+in_path_mane=$mane/MANE.GRCh38.v1.3.ensembl_genomic.gtf.gz
+python $basedir/variant_classification/install_dependencies/data_format_MANE_transcript_list.py -i $in_path_mane
