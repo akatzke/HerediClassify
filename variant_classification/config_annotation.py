@@ -79,6 +79,7 @@ def get_annotations_needed_from_rules(
         "pm1_defined_regions": Rules.Pm1_defined_regions,
         "pm2": Rules.Pm2,
         "pm2_supporting": Rules.Pm2_supporting,
+        "pm2_supporting_less": Rules.Pm2_supporting_less,
         "pm2_supporting_no_indel": Rules.Pm2_supporting_no_ins_del_indel,
         "pm4": Rules.Pm4,
         "pm4_pten": Rules.Pm4_pten,
