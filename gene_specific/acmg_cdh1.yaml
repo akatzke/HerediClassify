@@ -9,7 +9,7 @@ rules:
     - pm5_protein_cdh1
     - pm5_splicing_cdh1
     - pp3_protein
-    - pp3_splicing
+    - pp3_splicing_cdh1
     - ba1
     - bs1
     - bs2_supporting

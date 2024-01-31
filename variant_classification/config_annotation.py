@@ -94,6 +94,7 @@ def get_annotations_needed_from_rules(
         "pm5_protein_tp53": Rules.Pm5_protein_tp53,
         "pp2": Rules.Pp2,
         "pp3_splicing": Rules.Pp3_splicing,
+        "pp3_splicing_cdh1": Rules.Pp3_splicing_cdh1,
         "pp3_protein": Rules.Pp3_protein,
         "ba1": Rules.Ba1,
         "ba1_with_absolute": Rules.Ba1_with_absolute,
