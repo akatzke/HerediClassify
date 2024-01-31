@@ -6,7 +6,7 @@ rules:
     - pvs1_pten
     - ps1_protein_spliceai
     - ps1_splicing_pten
-    - pm1
+    - pm1_defined_regions
     - pm2_supporting
     - pm4_pten
     - pm5_protein_pten
