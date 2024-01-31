@@ -78,7 +78,7 @@ def check_incompatible_rules(
             rules["PM5"]["status"] = False
             new_comment = (
                 rules["PM5"]["comment"]
-                + " As PM5 can only apply if PVS1 applies as well. As PVS1 does not apply PM5 is set to False."
+                + " As PM5 can only apply if PVS1 applies as well and PVS1 does not apply, PM5 is set to False."
             )
             rules["PM5"]["comment"] = new_comment
     if ba1_applies and rules.get("BS1", {}).get("status", False):
