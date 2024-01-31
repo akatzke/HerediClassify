@@ -31,7 +31,7 @@ prediction_tool_thresholds:
         benign: 0.249
         benign_direction: "less_than_or_equal"
         pathogenic: 0.73333
-        pathogenic_direction: "greater_than"
+        pathogenic_direction: "greater"
     splicing_prediction:
         name: "SpliceAI"
         benign: 0.1

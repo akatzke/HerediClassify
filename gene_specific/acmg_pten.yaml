@@ -29,9 +29,9 @@ prediction_tool_thresholds:
     pathogenicity_prediction:
         name: "REVEL"
         benign: 0.5
-        benign_direction: "less_than"
+        benign_direction: "less"
         pathogenic: 0.7
-        pathogenic_direction: "greater_than"
+        pathogenic_direction: "greater"
     splicing_prediction:
         name: "SpliceAI"
         benign: 0.49
