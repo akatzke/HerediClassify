@@ -41,7 +41,7 @@ class Pvs1_palb2(Pvs1):
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.SPLICE_RESULT,
                 class_info.VARIANT_PREDICTION,
-                class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
+                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
                 class_info.SPLICING_ASSAY,
             ),
         )
@@ -193,8 +193,8 @@ class Pvs1_palb2(Pvs1):
         threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction = assess_prediction_tool(threshold, prediction_value)
-        if not transcript.are_exons_skipped or prediction:
+        prediction_pathogenic = assess_prediction_tool(threshold, prediction_value)
+        if not transcript.are_exons_skipped or not prediction_pathogenic:
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = (
