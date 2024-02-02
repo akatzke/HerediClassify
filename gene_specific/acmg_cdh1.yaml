@@ -4,6 +4,7 @@ name: "ACMG CDH1"
 ### Rules ###
 rules:
     - pvs1_cdh1
+    - ps1_splicing_clingen
     - pm2_supporting
     - pm4_stoploss
     - pm5_protein_cdh1
