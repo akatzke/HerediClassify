@@ -57,7 +57,6 @@ def get_annotations_needed_from_rules(
     """
     RULE_DICTIONARY = {
         "pvs1": Rules.Pvs1,
-        "pvs1_RNA": Rules.Pvs1_with_splice_assay,
         "pvs1_brca1": Rules.Pvs1_brca1,
         "pvs1_brca2": Rules.Pvs1_brca2,
         "pvs1_atm": Rules.Pvs1_atm,
