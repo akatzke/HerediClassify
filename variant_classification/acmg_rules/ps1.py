@@ -37,6 +37,16 @@ class Ps1_protein(abstract_rule):
         if clinvar_same_aa.pathogenic:
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
             result = True
+            if clinvar_same_aa.associated_ids:
+                comment = (
+                    comment
+                    + f" The following ClinVar entreis show splice variants at the same codon as likely pathogenic: {clinvar_same_aa.associated_ids}"
+                )
+            else:
+                comment = (
+                    comment
+                    + " No likely pathogenic ClinVar entries found for missense variant at the same codon position."
+                )
         else:
             comment = "No ClinVar entries found that show the same amino acid change as pathogneic."
             result = False
@@ -86,6 +96,16 @@ class Ps1_protein_spliceai(abstract_rule):
             elif prediction:
                 comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
                 result = True
+                if clinvar_same_aa.associated_ids:
+                    comment = (
+                        comment
+                        + f" The following ClinVar entreis show splice variants at the same codon as likely pathogenic: {clinvar_same_aa.associated_ids}"
+                    )
+                else:
+                    comment = (
+                        comment
+                        + " No likely pathogenic ClinVar entries found for missense variant at the same codon position."
+                    )
             else:
                 comment = f"Variant is not predicted to not affect splicing. PS1_protein is therehfore not applicable."
                 result = False
@@ -122,6 +142,16 @@ class Ps1_splicing(abstract_rule):
         if clinvar_same_nucleotide.pathogenic:
             comment = f"The following ClinVar entries show splice variants at the same nucleotide position to be pathogenic: {clinvar_same_nucleotide.ids}."
             result = True
+            if clinvar_same_nucleotide.associated_ids:
+                comment = (
+                    comment
+                    + f" The following ClinVar entreis show splice variants at the same nucleotide position as likely pathogenic: {clinvar_same_nucleotide.associated_ids}"
+                )
+            else:
+                comment = (
+                    comment
+                    + " No likely pathogenic ClinVar entries found for splice variant at the same nucleotide position."
+                )
         else:
             comment = "No ClinVar entries found that show splice variants at the same nucleotide position as pathogenic."
             result = False
@@ -186,6 +216,16 @@ class Ps1_splicing_clingen(abstract_rule):
             ):
                 comment = f"The following ClinVar entries show splice variants at the same nucleotide position to be pathogenic: {clinvar_same_nucleotide.ids}."
                 strength = evidence_strength.STRONG
+                if clinvar_same_nucleotide.associated_ids:
+                    comment = (
+                        comment
+                        + f" The following ClinVar entreis show splice variants at the same nucleotide position as likely pathogenic: {clinvar_same_nucleotide.associated_ids}"
+                    )
+                else:
+                    comment = (
+                        comment
+                        + " No likely pathogenic ClinVar entries found for splice variant at the same nucleotide position."
+                    )
             else:
                 if (
                     abs(affected_transcript.var_hgvs.pos.start.offset) > 2
@@ -208,10 +248,20 @@ class Ps1_splicing_clingen(abstract_rule):
                 clinvar_same_splice_site.highest_classification
                 == ClinVar_Status.PATHOGENIC
             ):
-                comment = f"The following ClinVar entries show splice variants at the same splice site to be pathogenic: {clinvar_same_nucleotide.ids}."
+                comment = f"The following ClinVar entries show splice variants at the same splice site to be pathogenic: {clinvar_same_splice_site.ids}."
                 strength = evidence_strength.MODERATE
+                if clinvar_same_splice_site.associated_ids:
+                    comment = (
+                        comment
+                        + f" The following ClinVar entreis show splice variants at the same splice site as likely pathogenic: {clinvar_same_splice_site.associated_ids}"
+                    )
+                else:
+                    comment = (
+                        comment
+                        + " No likely pathogenic ClinVar entries found for splice variant at the same splice site."
+                    )
             else:
-                comment = f"The following ClinVar entries show splice variants at the same splice site to be likely pathogenic: {clinvar_same_nucleotide.ids}."
+                comment = f"The following ClinVar entries show splice variants at the same splice site to be likely pathogenic: {clinvar_same_splice_site.ids}."
                 strength = evidence_strength.SUPPORTING
         else:
             result = False
