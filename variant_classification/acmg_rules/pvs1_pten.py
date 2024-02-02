@@ -17,6 +17,10 @@ from transcript_annotated import (
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
 )
+from acmg_rules.computation_evidence_utils import (
+    Threshold,
+    assess_prediction_tool,
+)
 
 
 class Pvs1_pten(Pvs1):
@@ -35,6 +39,8 @@ class Pvs1_pten(Pvs1):
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
                 class_info.SPLICING_ASSAY,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
             ),
         )
 
@@ -44,6 +50,8 @@ class Pvs1_pten(Pvs1):
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
         splice_assay: FunctionalData,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
     ):
         results = []
         for transcript in annotated_transcript:
@@ -66,7 +74,9 @@ class Pvs1_pten(Pvs1):
                         evidence_strength.VERY_STRONG,
                         comment,
                     )
-                result = cls.assess_pvs1_splice_pten(transcript)
+                result = cls.assess_pvs1_splice_pten(
+                    transcript, prediction_dict, threshold
+                )
                 results.append(result)
             elif isinstance(transcript, TranscriptInfo_start_loss):
                 result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
@@ -117,8 +127,19 @@ class Pvs1_pten(Pvs1):
         )
 
     @classmethod
-    def assess_pvs1_splice_pten(cls, transcript: TranscriptInfo_intronic) -> RuleResult:
-        if not transcript.is_reading_frame_preserved and transcript.is_NMD:
+    def assess_pvs1_splice_pten(
+        cls,
+        transcript: TranscriptInfo_intronic,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
+    ) -> RuleResult:
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction_pathogenic = assess_prediction_tool(threshold, prediction_value)
+        if not transcript.are_exons_skipped and not prediction_pathogenic:
+            result = False
+            strength = evidence_strength.VERY_STRONG
+            comment = f"No splicing alteration predicted for transcript {transcript.transcript_id}."
+        elif not transcript.is_reading_frame_preserved and transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} is predicted undergo NMD and is disease relevant"
             result = True
             strength = evidence_strength.VERY_STRONG

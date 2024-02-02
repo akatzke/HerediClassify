@@ -18,6 +18,9 @@ from transcript_annotated import (
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
 )
+from acmg_rules.computation_evidence_utils import (
+    Threshold,
+)
 from var_type import VARTYPE
 
 
@@ -39,6 +42,8 @@ class Pvs1_cdh1(Pvs1):
                 class_info.SPLICE_RESULT,
                 class_info.SPLICING_ASSAY,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
             ),
         )
 
@@ -50,6 +55,8 @@ class Pvs1_cdh1(Pvs1):
         splice_result: Optional[RuleResult],
         splice_assay: FunctionalData,
         threshold_diff_len_prot_percent: float,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
     ):
         results = []
         for transcript in annotated_transcript:
@@ -74,7 +81,10 @@ class Pvs1_cdh1(Pvs1):
                     )
                 if splice_result is None:
                     result = cls.assess_pvs1_splice(
-                        transcript, threshold_diff_len_prot_percent
+                        transcript,
+                        prediction_dict,
+                        threshold,
+                        threshold_diff_len_prot_percent,
                     )
                 else:
                     result = splice_result

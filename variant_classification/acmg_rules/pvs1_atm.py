@@ -39,7 +39,7 @@ class Pvs1_atm(Pvs1):
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
                 class_info.SPLICE_RESULT,
                 class_info.VARIANT_PREDICTION,
-                class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
+                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
                 class_info.SPLICING_ASSAY,
             ),
         )
@@ -145,13 +145,13 @@ class Pvs1_atm(Pvs1):
         threshold: Threshold,
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction = assess_prediction_tool(threshold, prediction_value)
+        prediction_pathogenic = assess_prediction_tool(threshold, prediction_value)
         disease_relevant_transcript = "ENST00000675843"
         if transcript.transcript_id != disease_relevant_transcript:
             raise ValueError(
-                f"Transcript =transcript.transcript_id= is not disease relevant transcript {disease_relevant_transcript}. This is hard coded and not changable. Transcript should have been filterd out earlier."
+                f"Transcript {transcript.transcript_id} is not disease relevant transcript {disease_relevant_transcript}. This is hard coded and not changable. Transcript should have been filterd out earlier."
             )
-        if not transcript.are_exons_skipped or prediction:
+        if not transcript.are_exons_skipped or not prediction_pathogenic:
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = (

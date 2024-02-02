@@ -17,6 +17,10 @@ from transcript_annotated import (
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
 )
+from acmg_rules.computation_evidence_utils import (
+    Threshold,
+    assess_prediction_tool,
+)
 
 
 class Pvs1_brca1(Pvs1):
@@ -38,6 +42,8 @@ class Pvs1_brca1(Pvs1):
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.SPLICE_RESULT,
                 class_info.SPLICING_ASSAY,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
             ),
         )
 
@@ -50,6 +56,8 @@ class Pvs1_brca1(Pvs1):
         threshold_diff_len_prot_percent: float,
         splice_result: Optional[RuleResult],
         splice_assay: FunctionalData,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
     ):
         results = []
         for transcript in annotated_transcript:
@@ -85,7 +93,10 @@ class Pvs1_brca1(Pvs1):
                     )
                 if splice_result is None:
                     result = cls.assess_pvs1_splice_brca1(
-                        transcript, threshold_diff_len_prot_percent
+                        transcript,
+                        prediction_dict,
+                        threshold,
+                        threshold_diff_len_prot_percent,
                     )
                 else:
                     result = splice_result
@@ -156,13 +167,19 @@ class Pvs1_brca1(Pvs1):
 
     @classmethod
     def assess_pvs1_splice_brca1(
-        cls, transcript: TranscriptInfo_intronic, threshold_diff_len_prot_percent: float
+        cls,
+        transcript: TranscriptInfo_intronic,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
+        threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
-        if not transcript.are_exons_skipped:
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction_pathogenic = assess_prediction_tool(threshold, prediction_value)
+        if not transcript.are_exons_skipped and not prediction_pathogenic:
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = f"No splicing alteration predicted for transcript {transcript.transcript_id}."
-        if not transcript.coding_exon_skipped:
+        elif not transcript.coding_exon_skipped:
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = f"Predicted alteration does not affect coding sequence {transcript.transcript_id}."

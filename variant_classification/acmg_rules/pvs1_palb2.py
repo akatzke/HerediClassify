@@ -19,7 +19,6 @@ from transcript_annotated import (
     TranscriptInfo_start_loss,
 )
 from var_type import VARTYPE
-from acmg_rules.computation_evidence_utils import Threshold
 
 
 class Pvs1_palb2(Pvs1):
@@ -40,9 +39,9 @@ class Pvs1_palb2(Pvs1):
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.SPLICE_RESULT,
+                class_info.SPLICING_ASSAY,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
-                class_info.SPLICING_ASSAY,
             ),
         )
 
@@ -54,9 +53,9 @@ class Pvs1_palb2(Pvs1):
         pos_last_known_patho_ptc_dict: dict[str, int],
         threshold_diff_len_prot_percent: float,
         splice_result: Optional[RuleResult],
+        splice_assay: FunctionalData,
         prediction_dict: dict[str, float],
         threshold: Threshold,
-        splice_assay: FunctionalData,
     ):
         results = []
         for transcript in annotated_transcript:
