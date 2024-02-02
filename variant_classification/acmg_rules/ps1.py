@@ -65,7 +65,7 @@ class Ps1_protein_spliceai(abstract_rule):
             (
                 class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN,
                 class_info.VARIANT_PREDICTION,
-                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
+                class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
             ),
         )
 
@@ -79,15 +79,16 @@ class Ps1_protein_spliceai(abstract_rule):
         prediction_value = prediction_dict.get(threshold.name, None)
         prediction = assess_prediction_tool(threshold, prediction_value)
         clinvar_same_aa = clinvar_result[ClinVar_Type.SAME_AA_CHANGE]
-        if prediction is None:
-            result = False
-            comment = "No splicing prediction is available. Therefore PS1_protein can not be evaluated."
-        if clinvar_same_aa.pathogenic and not prediction:
-            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
-            result = True
-        elif prediction:
-            comment = f"Variant is predicted to affect splicing."
-            result = False
+        if clinvar_same_aa.pathogenic:
+            if prediction is None:
+                result = True
+                comment = f"ATTENTION: No splicing prediction is available for variant under assessment. The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
+            elif prediction:
+                comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
+                result = True
+            else:
+                comment = f"Variant is not predicted to not affect splicing. PS1_protein is therehfore not applicable."
+                result = False
         else:
             comment = "No ClinVar entries found that show the same amino acid change as pathogneic."
             result = False
