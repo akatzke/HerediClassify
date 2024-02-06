@@ -3,13 +3,14 @@
 import pathlib
 import argparse
 import cyvcf2
+
+from typing import Generator
+
 import pandas as pd
 import numpy as np
 
 from cyvcf2 import VCF
 import pyensembl
-
-from variant_classification.clinvar_utils import convert_vcf_gen_to_df
 
 
 parser = argparse = argparse.ArgumentParser()
@@ -37,13 +38,13 @@ ensembl = pyensembl.EnsemblRelease(110)
 
 def create_uniprot_critical_domains(
     uniprot_path: pathlib.Path, clinvar_path: pathlib.Path, out_path: pathlib.Path
-):
+) -> None:
     """
     From UniProt and ClinVar create disease relevant transcript
     """
     clinvar = VCF(clinvar_path)
-    uniprot = pd.read_csv(uniprot_path, sep="\t")
-    uniprot.rename(columns={"#chrom": "chrom"}, inplace=True)
+    uniprot_json = pd.read_json(uniprot_path)
+    uniprot = pd.DataFrame(uniprot_json.unipDomain.tolist())
     uniprot_chrom = uniprot[uniprot.chrom.str.match("chr[0-9]+$")]
     uniprot_out = uniprot_chrom.assign(
         count_lp_p=np.nan,
@@ -56,10 +57,19 @@ def create_uniprot_critical_domains(
     )
     critical_domains = uniprot_patho_score[
         (uniprot_patho_score.pathogenicity_score >= 0.51)
-        & (uniprot_patho_score.count_lp_p >= 5)
         & (uniprot_patho_score.count_lb_b == 0)
     ]
-    return critical_domains
+    critical_domains_out = critical_domains[
+        [
+            "chrom",
+            "chromStart",
+            "chromEnd",
+            "uniProtId",
+            "pathogenicity_score",
+            "strand",
+        ]
+    ]
+    critical_domains_out.to_csv(out_path, sep="\t", header=True, index=False)
 
 
 def annotate_pathogenicity_score(
@@ -152,6 +162,35 @@ def calculate_pathogenicity_score(count_by_class: dict[str, int]) -> float:
     return (count_by_class["num_p_lp"] + delta) / total
 
 
+def convert_vcf_gen_to_df(vcf_generator: Generator) -> pd.DataFrame:
+    """
+    Covnerts cyvcf generator into a pd.DataFrame
+    """
+    names = ["chrom", "pos", "id", "ref", "alt", "qual", "filter", "info"]
+    df = pd.DataFrame(columns=names)
+    for entry in vcf_generator:
+        clinvar_split_str = str(entry).split("\t")
+        clinvar_dict = dict(zip(names, clinvar_split_str))
+        df = pd.concat([df, pd.DataFrame([clinvar_dict])], axis=0, ignore_index=True)
+    df_format_info = format_info(df)
+    return df_format_info
+
+
+def format_info(data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Format the info column from ClinVar.vcf file as depicted in cyvcf
+    """
+    info = data["info"]
+    info_split = [entry.split("=") for entry in info]
+    info_split = [entry.split("\n")[0].split(";") for entry in info]
+    processed_info = [[item.split("=") for item in entry] for entry in info_split]
+    dict_info = [
+        {item[0]: item[1] for item in entry if len(item) > 1}
+        for entry in processed_info
+    ]
+    return pd.concat([data, pd.DataFrame(dict_info)], axis=1)
+
+
 def main():
     if args.uniprot == "":
         raise ValueError("No uniprot file provided.")
@@ -160,7 +199,7 @@ def main():
         raise ValueError("No clinvar file provided.")
     clinvar_path = pathlib.Path(args.clinvar)
     if args.output == "":
-        file_name = f"{uniprot_path.stem}.bed"
+        file_name = f"{uniprot_path.stem}_hotspot_region.bed"
         out_path = uniprot_path.parent / file_name
     else:
         out_path = pathlib.Path(args.output)
