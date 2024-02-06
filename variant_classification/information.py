@@ -109,7 +109,7 @@ class Classification_Info:
         self.VARIANT_HOTSPOT_ANNOTATION = Info("variant_hotspot_annotation")
         self.VARIANT_HOTSPOT_ANNOTATION_PATH = Info(
             "variant_hotspot_annotation_path",
-            config_location=("annotation_files", "critical_regions", "hotspot_region"),
+            config_location=("annotation_files", "hotspot_region", "hotspot_region"),
             group=Classification_Info_Groups.PATH,
         )
         self.VARIANT_COLDSPOT_ANNOTATION = Info("variant_coldspot_annotation")
