@@ -6,7 +6,7 @@ rules:
     - pvs1
     - ps1_protein_tp53
     - ps1_splicing_tp53
-    - pm1_defined_regions
+    - pm1_tp53
     - pm2_supporting
     - pm5_protein_tp53
     - pp3_protein
@@ -42,6 +42,7 @@ allele_frequency_thresholds:
     threshold_bs2: 8
     threshold_bs2_supporting: 2
     threshold_pm2: 0
+    threshold_cancerhotspots_ac: 10
 
 ### Functional thresholds
 functional_thresholds:
