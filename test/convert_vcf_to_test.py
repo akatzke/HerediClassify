@@ -86,6 +86,14 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
     if len(flossies_score) > 0:
         json_dict["FLOSSIES"] = flossies_score
 
+    # Cancer hotspots
+    cancer_hotspots = {}
+    if all([type(x) is str for x in [data.cancerhotspots_af, data.cancerhotspots_ac]]):
+        cancer_hotspots["AF"] = float(data.cancerhotspots_af)
+        cancer_hotspots["AC"] = int(data.cancerhotspots_ac)
+    if len(cancer_hotspots) > 0:
+        json_dict["cancer_hotspots"] = cancer_hotspots
+
     # Functional assays
     json_dict["mRNA_analysis"] = {
         "performed": False,
@@ -97,12 +105,6 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
         "pathogenic": False,
         "benign": False,
     }
-
-    # Cancer hotspot
-    if not type(data.cancerhotspots_ac) is str:
-        json_dict["cancer_hotspot"] = True
-    else:
-        json_dict["cancer_hotspot"] = False
 
     # Cold spot
     json_dict["cold_spot"] = False
