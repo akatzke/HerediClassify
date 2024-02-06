@@ -47,7 +47,6 @@ class PopulationDatabases_gnomAD(PopulationDatabases):
 @dataclass
 class AffectedRegion:
     critical_region: Optional[bool] = None
-    cancer_hotspot: Optional[bool] = None
     cold_spot: Optional[bool] = None
 
 
@@ -88,6 +87,7 @@ class Variant:
     prediction_tools: dict[str, float]
     affected_region: AffectedRegion
     flossies: Optional[PopulationDatabases] = None
+    cancerhotspots: Optional[PopulationDatabases] = None
     multifactorial_likelihood: Optional[MultifactorialLikelihood] = None
     functional_assay: Optional[FunctionalData] = None
     splicing_assay: Optional[FunctionalData] = None

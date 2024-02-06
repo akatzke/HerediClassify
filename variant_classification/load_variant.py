@@ -64,6 +64,7 @@ def create_variant(variant_json: dict) -> Variant:
     prediction_tools = create_prediction_dict(variant_json)
     gnomad = create_gnomad(variant_json)
     flossies = create_flossies(variant_json)
+    cancer_hotspots = create_cancer_hotspots(variant_json)
     affected_region = create_affected_region(variant_json)
     mRNA_result = create_functional_data("mRNA_analysis", variant_json)
     functional_data = create_functional_data("functional_data", variant_json)
@@ -73,6 +74,7 @@ def create_variant(variant_json: dict) -> Variant:
         prediction_tools=prediction_tools,
         gnomad=gnomad,
         flossies=flossies,
+        cancerhotspots=cancer_hotspots,
         affected_region=affected_region,
         functional_assay=functional_data,
         splicing_assay=mRNA_result,
@@ -237,16 +239,30 @@ def create_flossies(variant_json: dict) -> Optional[PopulationDatabases]:
     return PopulationDatabases(name=name, count=count, frequency=None)
 
 
+def create_cancer_hotspots(variant_json: dict) -> Optional[PopulationDatabases]:
+    """
+    Create cancer hotspots object from variant_json
+    """
+    try:
+        cancer_hotspots_dict = variant_json["cancer_hotspots"]
+    except KeyError:
+        return None
+    count = cancer_hotspots_dict.get("AC", 0)
+    frequency = cancer_hotspots_dict.get("AF", 0)
+    return PopulationDatabases(
+        name="Cancer Hotspots",
+        count=count,
+        frequency=frequency,
+    )
+
+
 def create_affected_region(variant_json: dict) -> AffectedRegion:
     """
     Create AffectedRegion object from variant_json
     """
     crit_region = variant_json.get("VUS_task_force_domain", False)
-    cancer_hotspot = variant_json.get("cancer_hotspot", False)
     cold_spot = variant_json.get("cold_spot", False)
-    aff_reg = AffectedRegion(
-        critical_region=crit_region, cancer_hotspot=cancer_hotspot, cold_spot=cold_spot
-    )
+    aff_reg = AffectedRegion(critical_region=crit_region, cold_spot=cold_spot)
     return aff_reg
 
 
