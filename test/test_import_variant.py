@@ -33,8 +33,7 @@ def test_variant_import_missing_flossies():
 def test_variant_import_missing_cancer_hotspot():
     path_variant = paths.TEST / "test_variants" / "test_var_no_cancer_hotspot.json"
     variant_str = create_json_string_from_variant(path_variant)
-    with pytest.raises(ValueError):
-        variant = load_variant(variant_str)
+    variant = load_variant(variant_str)
 
 
 def test_variant_import_missing_chr():

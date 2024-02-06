@@ -705,6 +705,7 @@ def test_gene_specific_tp53_splice():
     key_list = [key for key in results_dict.keys()]
     rules_apply = [
         "PVS1_splicing",
+        "PM1",
         "PS1_splicing",
         "PM2",
         "PP3_splicing",
