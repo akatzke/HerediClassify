@@ -75,6 +75,7 @@ def get_annotations_needed_from_rules(
         "ps3_only_splice": Rules.Ps3_only_splice,
         "ps3_prot_splice": Rules.Ps3_prot_and_splice_assay,
         "pm1": Rules.Pm1,
+        "pm1_supporting": Rules.Pm1_supporting,
         "pm1_tp53": Rules.Pm1_tp53,
         "pm2": Rules.Pm2,
         "pm2_supporting": Rules.Pm2_supporting,
