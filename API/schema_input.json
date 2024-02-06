@@ -139,6 +139,20 @@
         "EUR"
       ]
     },
+    "cancer_hotspots": {
+      "type": "object",
+      "properties": {
+        "AF": {
+          "type": "number",
+          "minimum" : 0,
+          "maximum" : 1
+        },
+        "AC": {
+          "type": "integer",
+          "minimum" : 0
+        }
+      }
+    },
     "mRNA_analysis": {
       "type" : "object",
       "properties" : {
@@ -190,9 +204,6 @@
       "type": "number"
     },
     "VUS_task_force_domain": {
-      "type": "boolean"
-    },
-    "cancer_hotspot" : {
       "type": "boolean"
     },
     "cold_spot" :{

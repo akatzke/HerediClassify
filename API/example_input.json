@@ -33,6 +33,9 @@
     "FLOSSIES":
         {"AFR" : 9,
          "EUR" : 130},
+    "cancer_hotspots":
+        {"AF" : 0.000041,
+         "AC": 1},
     "mRNA_analysis" :
         {"performed": true,
          "pathogenic": true,
@@ -46,6 +49,5 @@
     "segregation" : 0.56,
     "multifactorial_log-likelihood": 0.56,
     "VUS_task_force_domain" : true,
-    "cancer_hotspot": true,
     "cold_spot": true
 }
