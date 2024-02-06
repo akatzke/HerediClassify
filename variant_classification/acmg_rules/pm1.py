@@ -45,6 +45,38 @@ class Pm1(abstract_rule):
         )
 
 
+class Pm1_supporting(abstract_rule):
+    """
+    PM1: Variant located in mutational hot spot or citical protein region
+    """
+
+    @classmethod
+    def get_assess_rule(
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
+        return (
+            cls.assess_rule,
+            (class_info.VARIANT_HOTSPOT_ANNOTATION,),
+        )
+
+    @classmethod
+    def assess_rule(cls, variant_in_hotspot: bool) -> RuleResult:
+        if variant_in_hotspot:
+            comment = f"Variant in mutational hotspot."
+            result = True
+        else:
+            comment = "Variant not in mutational hotspot"
+            result = False
+        return RuleResult(
+            "PM1",
+            rule_type.GENERAL,
+            evidence_type.PATHOGENIC,
+            result,
+            evidence_strength.SUPPORTING,
+            comment,
+        )
+
+
 class Pm1_tp53(abstract_rule):
     """
     PM1: Variant located in mutational hot spot or citical protein region
