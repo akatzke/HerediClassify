@@ -50,3 +50,15 @@ annotation_files:
     uniprot:
         root: "Uniprot"
         rep: "repeats_hg38_uniprot.bed"
+
+### Variant specific annotations
+### Define respective gene specific configuration in the given location
+gene_specific_configs:
+    root: "/home/katzkean/variant_classification/gene_specific/"
+    atm: "acmg_atm.yaml"
+    brca1: "acmg_brca1.yaml"
+    brca2: "acmg_brca2.yaml"
+    cdh1: "acmg_cdh1.yaml"
+    palb2: "acmg_palb2.yaml"
+    pten: "acmg_pten.yaml"
+    tp53: "acmg_tp53.yaml"
