@@ -38,7 +38,8 @@ class Classification_Info:
     VARIANT_CLINVAR_SIMILARITY: Info
     VARIANT_CLINVAR_SPLICEAI_PROTEIN: Info
     VARIANT_CLINVAR_SPLICEAI_SPLICE: Info
-    VARIANT_HOTSPOT: Info
+    VARIANT_CANCERHOTSPOTS: Info
+    THRESHOLD_CANCERHOTSPOTS_AC: Info
     VARIANT_HOTSPOT_ANNOTATION: Info
     VARIANT_HOTSPOT_ANNOTATION_PATH: Info
     VARIANT_COLDSPOT_ANNOTATION: Info
@@ -96,7 +97,15 @@ class Classification_Info:
             "variant_clinvar_spliceai_protein_similarity"
         )
         self.VARIANT_CLINVAR_SPLICEAI_SPLICE = Info("variant_clinvar_spliceai_splicing")
-        self.VARIANT_HOTSPOT = Info("variant_hotspot")
+        self.VARIANT_CANCERHOTSPOTS = Info("variant_cancerhotspots")
+        self.THRESHOLD_CANCERHOTSPOTS_AC = Info(
+            "cancerhotspots_threshold_ac",
+            config_location=(
+                "allele_frequency_thresholds",
+                "threshold_cancerhotspots_ac",
+            ),
+            group=Classification_Info_Groups.THRESHOLD_SINGLE,
+        )
         self.VARIANT_HOTSPOT_ANNOTATION = Info("variant_hotspot_annotation")
         self.VARIANT_HOTSPOT_ANNOTATION_PATH = Info(
             "variant_hotspot_annotation_path",

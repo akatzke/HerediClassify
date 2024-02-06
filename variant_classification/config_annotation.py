@@ -75,7 +75,7 @@ def get_annotations_needed_from_rules(
         "ps3_only_splice": Rules.Ps3_only_splice,
         "ps3_prot_splice": Rules.Ps3_prot_and_splice_assay,
         "pm1": Rules.Pm1,
-        "pm1_defined_regions": Rules.Pm1_defined_regions,
+        "pm1_tp53": Rules.Pm1_tp53,
         "pm2": Rules.Pm2,
         "pm2_supporting": Rules.Pm2_supporting,
         "pm2_supporting_less": Rules.Pm2_supporting_less,
@@ -165,10 +165,10 @@ def get_annotation_functions(
         class_info.TRANSCRIPT.name: lambda variant: partial(
             return_information, "transcript_info", variant.transcript_info
         ),
-        class_info.VARIANT_HOTSPOT.name: lambda variant: partial(
+        class_info.VARIANT_CANCERHOTSPOTS.name: lambda variant: partial(
             return_information,
-            "Critical region",
-            variant.affected_region.cancer_hotspot,
+            "Cancer hotspots",
+            variant.cancerhotspots,
         ),
         class_info.VARIANT_GNOMAD.name: lambda variant: partial(
             return_information, "GnomAD", variant.gnomad

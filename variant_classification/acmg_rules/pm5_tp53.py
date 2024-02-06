@@ -28,7 +28,7 @@ class Pm5_protein_tp53(abstract_rule):
             cls.assess_rule,
             (
                 class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN_SIMILARITY,
-                class_info.VARIANT_HOTSPOT,
+                class_info.VARIANT_HOTSPOT_ANNOTATION,
             ),
         )
 
@@ -36,7 +36,7 @@ class Pm5_protein_tp53(abstract_rule):
     def assess_rule(
         cls,
         clinvar_diff_aa: ClinVar,
-        variant_in_hotspot: AffectedRegion,
+        variant_in_hotspot: bool,
     ) -> RuleResult:
         if variant_in_hotspot:
             return RuleResult(
