@@ -11,7 +11,7 @@ import test.paths as paths
 def test_loading_gene_specific_config():
     path_config = paths.TEST / "config_no_path.yaml"
     config = load_config(path_config)
-    gene_config = get_gene_specific_config(config, "BRCA1")
+    _, gene_config = get_gene_specific_config(config, "BRCA1")
     assert config != gene_config
 
 

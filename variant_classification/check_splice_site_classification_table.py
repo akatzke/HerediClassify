@@ -51,7 +51,7 @@ def annotate_splice_site_classification(
             "PVS1",
             rule_type.SPLICING,
             evidence_type.PATHOGENIC,
-            splice_table_entry.rule_status.values[0],
+            bool(splice_table_entry.rule_status.values[0]),
             evidence_strength(splice_table_entry.evidence_strength.values[0]),
             splice_table_entry.comment.values[0],
         )

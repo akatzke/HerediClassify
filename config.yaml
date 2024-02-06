@@ -1,16 +1,15 @@
 ### Configuration name ###
-name: "ACMG standard + SVI PVS1 + SVI Splicing"
+name: "ACMG standard + SVI"
 
 ### Rules ###
 rules:
     - pvs1
-    - ps1_protein
-    - ps1_splicing
-    - pm1
+    - ps1_protein_spliceai
+    - ps1_splicing_clingen
+    - pm1_supporting
     - pm2_supporting
     - pm4
     - pm5_protein
-    - pm5_splicing
     - pp3_protein
     - pp3_splicing
     - ba1
@@ -41,7 +40,6 @@ allele_frequency_thresholds:
 
 ### Functional thresholds
 functional_thresholds:
-    threshold_nmd: 1234
     threshold_diff_len_prot_percent: 0.1
 
 
@@ -51,10 +49,29 @@ annotation_files:
     clinvar:
         root: "databases/Clinvar"
         clinvar_snv: "clinvar_snv_quality_filter.vcf.gz"
-        clinvar_small_indel: "clinvar_small_indel.vcf.gz"
+        clinvar_indel: "clinvar_small_indel.vcf.gz"
     uniprot:
         root: "databases/Uniprot"
         rep: "repeats_hg38_uniprot.bed"
     critical_region:
         root: "variant_classification/data/critical_region"
         file: "VUS-Task-Force_critical_protein_domains.bed"
+    mane_transcripts:
+        root: "databases/MANE"
+        file: "/MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"
+    hotspot_region:
+        root: "databases/Uniprot"
+        hotspot_region: "/domain_hg38_uniprot_hotspot_region.bed"
+
+
+### Variant specific annotations
+### Define respective gene specific configuration in the given location
+gene_specific_configs:
+    root: "/home/katzkean/variant_classification/gene_specific/"
+    atm: "acmg_atm.yaml"
+    brca1: "acmg_brca1.yaml"
+    brca2: "acmg_brca2.yaml"
+    cdh1: "acmg_cdh1.yaml"
+    palb2: "acmg_palb2.yaml"
+    pten: "acmg_pten.yaml"
+    tp53: "acmg_tp53.yaml"

@@ -46,7 +46,7 @@ def find_alternative_start_codons(
         all_downstream_codons = get_codons_downstream_start(
             var_coding_seq, len(var_coding_seq)
         )
-        cdna_alternative_start_codon = search_closest_start_codon(
+        codon_position_start_codon = search_closest_start_codon(
             all_downstream_codons, variant
         )
     if codon_position_start_codon >= 0:

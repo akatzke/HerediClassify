@@ -34,6 +34,17 @@ from check_coldspot_hotspot import (
     get_check_coldspot,
     get_check_hotspot,
 )
+from check_exon_pm5 import get_annotate_exon_classification_pm5
+from check_splice_site_pm5_classification_table import (
+    get_annotate_splice_site_classification_pm5,
+)
+from clinvar_annot_spliceai import (
+    get_annotate_clinvar_spliceai_protein,
+    get_annotate_clinvar_spliceai_splicing,
+)
+from clinvar_missense_similarity_score import (
+    get_check_clinvar_missense_similarity,
+)
 
 logger = logging.getLogger("Classify.config_annotation")
 
@@ -46,7 +57,6 @@ def get_annotations_needed_from_rules(
     """
     RULE_DICTIONARY = {
         "pvs1": Rules.Pvs1,
-        "pvs1_RNA": Rules.Pvs1_with_splice_assay,
         "pvs1_brca1": Rules.Pvs1_brca1,
         "pvs1_brca2": Rules.Pvs1_brca2,
         "pvs1_atm": Rules.Pvs1_atm,
@@ -54,24 +64,41 @@ def get_annotations_needed_from_rules(
         "pvs1_pten": Rules.Pvs1_pten,
         "pvs1_cdh1": Rules.Pvs1_cdh1,
         "ps1_protein": Rules.Ps1_protein,
+        "ps1_protein_spliceai": Rules.Ps1_protein_spliceai,
+        "ps1_protein_enigma": Rules.Ps1_protein_enigma,
         "ps1_splicing": Rules.Ps1_splicing,
+        "ps1_splicing_clingen": Rules.Ps1_splicing_clingen,
+        "ps1_protein_tp53": Rules.Ps1_protein_tp53,
+        "ps1_splicing_tp53": Rules.Ps1_splicing_tp53,
+        "ps1_splicing_pten": Rules.Ps1_splicing_pten,
         "ps3": Rules.Ps3,
         "ps3_only_splice": Rules.Ps3_only_splice,
         "ps3_prot_splice": Rules.Ps3_prot_and_splice_assay,
         "pm1": Rules.Pm1,
-        "pm1_defined_regions": Rules.Pm1_defined_regions,
+        "pm1_supporting": Rules.Pm1_supporting,
+        "pm1_tp53": Rules.Pm1_tp53,
         "pm2": Rules.Pm2,
         "pm2_supporting": Rules.Pm2_supporting,
+        "pm2_supporting_less": Rules.Pm2_supporting_less,
+        "pm2_supporting_no_indel": Rules.Pm2_supporting_no_ins_del_indel,
         "pm4": Rules.Pm4,
         "pm4_pten": Rules.Pm4_pten,
         "pm4_stoploss": Rules.Pm4_stoploss,
         "pm5_protein": Rules.Pm5_protein,
-        "pm5_splicing": Rules.Pm5_splicing,
+        "pm5_protein_pathogenic": Rules.Pm5_protein_pathogenic,
+        "pm5_protein_ptc": Rules.Pm5_protein_ptc,
+        "pm5_splicing_ptc": Rules.Pm5_splicing_ptc,
+        "pm5_protein_cdh1": Rules.Pm5_protein_cdh1,
+        "pm5_splicing_cdh1": Rules.Pm5_splicing_cdh1,
+        "pm5_enigma": Rules.Pm5_ptc_enigma,
+        "pm5_protein_pten": Rules.Pm5_protein_pten,
+        "pm5_protein_tp53": Rules.Pm5_protein_tp53,
         "pp2": Rules.Pp2,
         "pp3_splicing": Rules.Pp3_splicing,
+        "pp3_splicing_cdh1": Rules.Pp3_splicing_cdh1,
         "pp3_protein": Rules.Pp3_protein,
         "ba1": Rules.Ba1,
-        "ba1": Rules.Ba1_with_absolute,
+        "ba1_with_absolute": Rules.Ba1_with_absolute,
         "bs1": Rules.Bs1,
         "bs1_with_absolute": Rules.Bs1_with_absolute,
         "bs1_supporting": Rules.Bs1_with_supporting,
@@ -81,10 +108,16 @@ def get_annotations_needed_from_rules(
         "bs3": Rules.Bs3,
         "bs3_only_splice": Rules.Bs3_only_splice,
         "bs3_prot_splice": Rules.Bs3_prot_and_splice_assay,
+        "bp1": Rules.Bp1,
+        "bp1_annotation_cold_spot_strong": Rules.Bp1_annotation_cold_spot_strong,
         "bp3": Rules.Bp3,
         "bp4_splicing": Rules.Bp4_splicing,
         "bp4_protein": Rules.Bp4_protein,
         "bp7": Rules.Bp7,
+        "bp7_rna": Rules.Bp7_with_rna_assay,
+        "bp7_rna_deep_intronic_atm": Rules.Bp7_with_rna_assay_deep_intronic_atm,
+        "bp7_rna_deep_intronic_enigma": Rules.Bp7_with_rna_assay_deep_intronic_enigma,
+        "bp7_rna_deep_intronic_palb2": Rules.Bp7_with_rna_assay_deep_intronic_palb2,
     }
     rule_info_dict = {}
     for rule in rule_list:
@@ -133,10 +166,10 @@ def get_annotation_functions(
         class_info.TRANSCRIPT.name: lambda variant: partial(
             return_information, "transcript_info", variant.transcript_info
         ),
-        class_info.VARIANT_HOTSPOT.name: lambda variant: partial(
+        class_info.VARIANT_CANCERHOTSPOTS.name: lambda variant: partial(
             return_information,
-            "Critical region",
-            variant.affected_region.cancer_hotspot,
+            "Cancer hotspots",
+            variant.cancerhotspots,
         ),
         class_info.VARIANT_GNOMAD.name: lambda variant: partial(
             return_information, "GnomAD", variant.gnomad
@@ -147,13 +180,13 @@ def get_annotation_functions(
         class_info.VARIANT_PREDICTION.name: lambda variant: partial(
             return_information, "Prediction tools", variant.prediction_tools
         ),
-        class_info.FUNCTIONAL_ASSAY.name: lambda: partial(
+        class_info.FUNCTIONAL_ASSAY.name: lambda variant: partial(
             return_information, "Functional assay", variant.functional_assay
         ),
-        class_info.SPLICING_ASSAY.name: lambda: partial(
+        class_info.SPLICING_ASSAY.name: lambda variant: partial(
             return_information, "Splicing assay", variant.splicing_assay
         ),
-        class_info.VARIANT_MULTIFACTORIAL_LIKELIHOOD.name: lambda: partial(
+        class_info.VARIANT_MULTIFACTORIAL_LIKELIHOOD.name: lambda variant: partial(
             return_information,
             "Multifactorial likelihood",
             variant.multifactorial_likelihood,
@@ -168,6 +201,15 @@ def get_annotation_functions(
         class_info.VARIANT_CLINVAR.name: lambda variant, config: get_annotation_function(
             get_annotate_clinvar, variant, config, class_info
         ),
+        class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN.name: lambda variant, config: get_annotation_function(
+            get_annotate_clinvar_spliceai_protein, variant, config, class_info
+        ),
+        class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN_SIMILARITY.name: lambda variant, config: get_annotation_function(
+            get_check_clinvar_missense_similarity, variant, config, class_info
+        ),
+        class_info.VARIANT_CLINVAR_SPLICEAI_SPLICE.name: lambda variant, config: get_annotation_function(
+            get_annotate_clinvar_spliceai_splicing, variant, config, class_info
+        ),
         class_info.SPLICE_RESULT.name: lambda variant, config: get_annotation_function(
             get_annotate_splice_site_classification, variant, config, class_info
         ),
@@ -176,6 +218,12 @@ def get_annotation_functions(
         ),
         class_info.VARIANT_COLDSPOT_ANNOTATION.name: lambda variant, config: get_annotation_function(
             get_check_coldspot, variant, config, class_info
+        ),
+        class_info.SPLICE_RESULT_PM5.name: lambda variant, config: get_annotation_function(
+            get_annotate_splice_site_classification_pm5, variant, config, class_info
+        ),
+        class_info.PM5_RESULTS_PTC.name: lambda variant, config: get_annotation_function(
+            get_annotate_exon_classification_pm5, variant, config, class_info
         ),
     }
 
@@ -197,6 +245,9 @@ def get_annotation_functions(
         ),
         Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD: lambda annot, config: partial(
             get_disease_relevant_transcript_thresholds, annot.config_location, config
+        ),
+        Classification_Info_Groups.CONFIG_ENTRY_STR: lambda annot, config: partial(
+            get_config_entry_str, annot.config_location, config
         ),
     }
 
@@ -232,6 +283,10 @@ def get_annotation_functions(
             ):
                 annotation.compute_function = dict_annotation_groups[
                     Classification_Info_Groups.DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD
+                ](annotation, config)
+            elif annotation.group is Classification_Info_Groups.CONFIG_ENTRY_STR:
+                annotation.compute_function = dict_annotation_groups[
+                    Classification_Info_Groups.CONFIG_ENTRY_STR
                 ](annotation, config)
             else:
                 raise ValueError(f"No annotation function defined for {annotation}.")
@@ -416,39 +471,28 @@ def get_threshold_prediction_from_config(
     try:
         config_prediction_tool = reduce(op.getitem, config_location[:-1], config)
         name = config_prediction_tool["name"]
-        thr_benign = config_prediction_tool["benign"]
-        thr_pathogenic = config_prediction_tool["pathogenic"]
+        direction_str = config_prediction_tool[config_location[-1] + "_direction"]
+        threshold = config_prediction_tool[config_location[-1]]
     except KeyError:
         logger.warning(
             f"The location {config_location} could not be found in configuration."
         )
         return None
     try:
-        float(thr_benign)
-        float(thr_pathogenic)
+        float(threshold)
     except ValueError:
         logger.warning(
             f"The thresholds defined at {config_location[:-1]} is not a number. Please check your configuration."
         )
         return None
-    if thr_benign < thr_pathogenic:
-        if config_location[-1] == "benign":
-            return Threshold(
-                name,
-                thr_benign,
-                THRESHOLD_DIRECTION.LOWER,
-            )
-        else:
-            return Threshold(name, thr_pathogenic, THRESHOLD_DIRECTION.HIGHER)
-    else:
-        if config_location[-1] == "benign":
-            return Threshold(
-                name,
-                thr_benign,
-                THRESHOLD_DIRECTION.HIGHER,
-            )
-        else:
-            return Threshold(name, thr_pathogenic, THRESHOLD_DIRECTION.LOWER)
+    try:
+        direction = THRESHOLD_DIRECTION(direction_str)
+    except ValueError:
+        logger.warning(
+            f"The threshold direction {direction_str} is not defined. Please set one of the following threshold directions: {', '.join(THRESHOLD_DIRECTION.list())}"
+        )
+        return None
+    return Threshold(name, threshold, direction)
 
 
 def get_threshold_prediction_from_config_mult_strength(
@@ -517,5 +561,24 @@ def get_disease_relevant_transcript_thresholds(
     except KeyError:
         logger.warning(
             f"Either 'name' or {config_location[-1]} not defined for all disease relevant transcripts."
+        )
+        return None
+
+
+def get_config_entry_str(
+    config_location: Union[tuple[str, ...], None], config: dict
+) -> Union[str, None]:
+    """
+    Create dictionary containing the
+    """
+    if config_location is None:
+        logger.warning(f"No location in the configuration is defined.")
+        return None
+    try:
+        conf_str = reduce(op.getitem, config_location, config)
+        return conf_str
+    except KeyError:
+        logger.warning(
+            f"The location {config_location} could not be found in the configuration."
         )
         return None

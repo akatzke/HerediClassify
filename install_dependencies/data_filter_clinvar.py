@@ -23,23 +23,54 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-def prepare_clinvar_file(clinvar_path: pathlib.Path) -> None:
+def prepare_clinvar_file_snv(clinvar_path: pathlib.Path) -> None:
     """
-    Filter Clinvar for SNVs, indels and quality
+    Filter Clinvar for SNVs and quality
     """
-    quality = ["reviewed_by_expert_panel"]
-    clinvar_snv_path = filter_clinvar_snv(clinvar_path)
-    clinvar_quality_path = filter_clinvar_quality(clinvar_snv_path, quality)
+    quality_three_star = ["reviewed_by_expert_panel"]
+    quality_two_star = [
+        "reviewed_by_expert_panel",
+        "criteria_provided,_multiple_submitters,_no_conflicts",
+    ]
+    clinvar_snv_path = filter_clinvar_snv(
+        clinvar_path,
+    )
+    clinvar_quality_three_star_path = filter_clinvar_quality(
+        clinvar_snv_path, quality_three_star, "three_star"
+    )
+    clinvar_quality_two_star_path = filter_clinvar_quality(
+        clinvar_snv_path, quality_two_star, "two_star"
+    )
+
+
+def prepare_clinvar_file_indel(clinvar_path: pathlib.Path) -> None:
+    """
+    Filter ClinVar for indel and qualtiy
+    """
+    quality_three_star = ["reviewed_by_expert_panel"]
+    quality_two_star = [
+        "reviewed_by_expert_panel",
+        "criteria_provided,_multiple_submitters,_no_conflicts",
+    ]
+    clinvar_indel_path = filter_clinvar_small_indel(
+        clinvar_path,
+    )
+    clinvar_quality_three_star_path = filter_clinvar_quality(
+        clinvar_indel_path, quality_three_star, "three_star"
+    )
+    clinvar_quality_two_star_path = filter_clinvar_quality(
+        clinvar_indel_path, quality_two_star, "two_star"
+    )
 
 
 def filter_clinvar_quality(
-    clinvar_path: pathlib.Path, quality_filter: list[str]
+    clinvar_path: pathlib.Path, quality_filter: list[str], quality_filter_name: str
 ) -> pathlib.Path:
     """
     Filter clinvar for quality metric
     """
     clinvar = VCF(clinvar_path)
-    out_name = clinvar_path.stem.split(".")[0] + f"_quality_filter.vcf"
+    out_name = clinvar_path.stem.split(".")[0] + "_" + f"{quality_filter_name}.vcf"
     out_path = clinvar_path.parent / out_name
     w = Writer(out_path, clinvar)
     for entry in clinvar:
@@ -80,8 +111,10 @@ def filter_clinvar_small_indel(clinvar_path: pathlib.Path) -> pathlib.Path:
     out_path = clinvar_path.parent / out_name
     w = Writer(out_path, clinvar)
     for entry in clinvar:
-        if (len(entry.REF) > 1 and len(entry.REF) <= 15) and len(entry.ALT) == 1:
-            if len(entry.ALT[0]) > 1 and len(entry.ALT[0]) <= 15:
+        if len(entry.ALT) == 1:
+            if not (len(entry.REF) == 1 and len(entry.ALT[0]) == 1) and (
+                len(entry.REF) <= 15 and len(entry.ALT[0]) <= 15
+            ):
                 w.write_record(entry)
     w.close()
     clinvar.close()
@@ -113,7 +146,8 @@ def main():
     if args.input == "":
         raise ValueError("No input file provided")
     input_path = pathlib.Path(args.input)
-    prepare_clinvar_file(input_path)
+    prepare_clinvar_file_snv(input_path)
+    prepare_clinvar_file_indel(input_path)
 
 
 if __name__ == "__main__":

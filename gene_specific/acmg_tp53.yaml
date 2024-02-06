@@ -4,12 +4,11 @@ name: "ACMG TP53"
 ### Rules ###
 rules:
     - pvs1
-    - ps1_protein
-    - ps1_splicing
-    - pm1
+    - ps1_protein_tp53
+    - ps1_splicing_tp53
+    - pm1_tp53
     - pm2_supporting
-    - pm5_protein
-    - pm5_splicing
+    - pm5_protein_tp53
     - pp3_protein
     - pp3_splicing
     - ba1_with_absolute
@@ -17,18 +16,22 @@ rules:
     - bs2_supporting
     - bp4_protein
     - bp4_splicing
-    - bp7
+    - bp7_rna
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:
     pathogenicity_prediction:
         name: "BayesDel"
         benign: 0.16
+        benign_direction: "less"
         pathogenic: 0.16
+        pathogenic_direction: "greater_than_or_equal"
     splicing_prediction:
         name: "SpliceAI"
         benign: 0.1
+        benign_direction: "less_than_or_equal"
         pathogenic: 0.2
+        pathogenic_direction: "greater_than_or_equal"
 
 ### Allelee frequency threshold for each gene ###
 allele_frequency_thresholds:
@@ -39,6 +42,7 @@ allele_frequency_thresholds:
     threshold_bs2: 8
     threshold_bs2_supporting: 2
     threshold_pm2: 0
+    threshold_cancerhotspots_ac: 10
 
 ### Functional thresholds
 functional_thresholds:
@@ -50,11 +54,18 @@ annotation_files:
     clinvar:
         root: "databases/Clinvar"
         clinvar_snv: "clinvar_snv_quality_filter.vcf.gz"
-        clinvar_small_indel: "clinvar_small_indel.vcf.gz"
+        clinvar_snv_spliceai: "clinvar_spliceai_all_sorted_snv_three_star.vcf.gz"
+        clinvar_indel: "clinvar_small_indel_two_star.vcf.gz"
     uniprot:
         root: "databases/Uniprot"
         rep: "repeats_hg38_uniprot.bed"
     critical_regions:
         root: "variant_classification/data/critical_region"
         critical_region: "VUS-Task-Force_critical_protein_domains.bed"
-        hotspot_region: "VCEP_mutational_hotspots.csv"
+    hotspot_region:
+        root: "variant_classification/data/critical_region"
+        hotspot_region: "VCEP_mutational_hotspots.bed"
+    similarity_score:
+        root: "variant_classification/data/similarity_score"
+        similarity_score_file: "grantham_score_formatted.csv"
+        similarity_score_direction: "greater"

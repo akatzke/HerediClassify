@@ -10,12 +10,12 @@ from acmg_rules.utils import (
     rule_type,
 )
 from information import Classification_Info, Info
-from clinvar_utils import ClinVar_Type, ClinVar
+from clinvar_utils import ClinVar_Status, ClinVar_Type, ClinVar
 from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_tool
 from variant import FunctionalData
 
 
-class Ps1_protein_spliceai(abstract_rule):
+class Ps1_protein_tp53(abstract_rule):
     """
     PS1: Position is classified as pathogenic
     """
@@ -42,17 +42,36 @@ class Ps1_protein_spliceai(abstract_rule):
         threshold: Threshold,
         splice_assay: FunctionalData,
     ) -> RuleResult:
-        try:
-            prediction_value = prediction_dict[threshold.name]
-            prediction = assess_prediction_tool(threshold, prediction_value)
-        except KeyError:
-            prediction = None
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction = assess_prediction_tool(threshold, prediction_value)
         clinvar_same_aa = clinvar_result[ClinVar_Type.SAME_AA_CHANGE]
-        if clinvar_same_aa.pathogenic and splice_assay.benign:
-            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}. An RNA shows that the variant does not affect splicing."
+        if (
+            clinvar_same_aa.pathogenic
+            and splice_assay.performed
+            and splice_assay.benign
+            and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
+        ):
+            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}. A splice assays shows that the variant does not affect splicing."
             strength = evidence_strength.STRONG
             result = True
-        elif clinvar_same_aa.pathogenic and not prediction:
+        elif (
+            clinvar_same_aa.pathogenic
+            and splice_assay.performed
+            and splice_assay.pathogenic
+            and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
+        ):
+            comment = f"A splice assay shows that the variant affects splicing."
+            strength = evidence_strength.STRONG
+            result = False
+        elif prediction is None:
+            result = False
+            strength = evidence_strength.STRONG
+            comment = "No splicing prediction is available. Therefore PS1_protein can not be evaluated."
+        elif (
+            clinvar_same_aa.pathogenic
+            and not prediction
+            and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
+        ):
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}. SpliceAI does not predict an effect on splicing for this variant."
             strength = evidence_strength.MODERATE
             result = True
@@ -74,7 +93,7 @@ class Ps1_protein_spliceai(abstract_rule):
         )
 
 
-class Ps1_splicing_spliceai(abstract_rule):
+class Ps1_splicing_tp53(abstract_rule):
     """
     PS1 for splicing: Splice variant in same position has been show to be pathogenic
     """
@@ -86,7 +105,7 @@ class Ps1_splicing_spliceai(abstract_rule):
         return (
             cls.assess_rule,
             (
-                class_info.VARIANT_CLINVAR_SPLICEAI_SPLICING,
+                class_info.VARIANT_CLINVAR_SPLICEAI_SPLICE,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
             ),
@@ -99,11 +118,8 @@ class Ps1_splicing_spliceai(abstract_rule):
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ) -> RuleResult:
-        try:
-            prediction_value = prediction_dict[threshold.name]
-            prediction = assess_prediction_tool(threshold, prediction_value)
-        except KeyError:
-            prediction = None
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction = assess_prediction_tool(threshold, prediction_value)
         clinvar_same_nucleotide = clinvar_result[ClinVar_Type.SAME_NUCLEOTIDE]
         if clinvar_same_nucleotide.pathogenic and prediction:
             comment = f"The following ClinVar entries show splice variants at the same nucleotide position to be pathogenic: {clinvar_same_nucleotide.ids}."

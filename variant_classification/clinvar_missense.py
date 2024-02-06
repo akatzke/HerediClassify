@@ -597,12 +597,10 @@ def correct_observed_base_for_strand(strand: str, base: str) -> str:
     Depending on which strand the transcript is located on, correct observed base
     """
     comp_bases = {"C": "G", "G": "C", "A": "T", "T": "A"}
-    print(base)
     if strand == "+":
         corrected_base = base
     else:
         corrected_base = ""
         for entry in base:
-            print(entry)
             corrected_base += comp_bases[entry]
     return corrected_base

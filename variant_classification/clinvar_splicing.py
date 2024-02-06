@@ -40,9 +40,26 @@ def check_clinvar_splicing(
         logger.warning(
             "Variant is not a SNV. PS1/PM5 currently not implemented for delins."
         )
-        ClinVar_same_aa = create_ClinVar(pd.DataFrame(), ClinVar_Type.SAME_AA_CHANGE)
-        ClinVar_diff_aa = create_ClinVar(pd.DataFrame(), ClinVar_Type.DIFF_AA_CHANGE)
-        return (ClinVar_same_aa, ClinVar_diff_aa)
+        ClinVar_same_nucleotide = create_ClinVar(
+            pd.DataFrame(), ClinVar_Type.SAME_NUCLEOTIDE
+        )
+        ClinVar_same_splice_site = create_ClinVar(
+            pd.DataFrame(), ClinVar_Type.SAME_SPLICE_SITE
+        )
+        return (ClinVar_same_nucleotide, ClinVar_same_splice_site)
+    try:
+        affected_transcript, ref_transcript = get_affected_transcript(
+            transcripts, VARTYPE_GROUPS.INTRONIC
+        )
+    except No_transcript_with_var_type_found:
+        logger.warning("No transcript with variant type missense found.")
+        ClinVar_same_nucleotide = create_ClinVar(
+            pd.DataFrame(), ClinVar_Type.SAME_NUCLEOTIDE
+        )
+        ClinVar_same_splice_site = create_ClinVar(
+            pd.DataFrame(), ClinVar_Type.SAME_SPLICE_SITE
+        )
+        return (ClinVar_same_nucleotide, ClinVar_same_splice_site)
     clinvar = VCF(path_clinvar)
     ### Check ClinVar for pathogenic variants with same nucleotide change
     clinvar_same_pos = clinvar(
@@ -51,15 +68,6 @@ def check_clinvar_splicing(
     clinvar_same_pos_df = convert_vcf_gen_to_df(clinvar_same_pos)
     ClinVar_same_pos = create_ClinVar(clinvar_same_pos_df, ClinVar_Type.SAME_NUCLEOTIDE)
     ### Check ClinVar for pathogenic variant in same / closest splice site
-    try:
-        affected_transcript, ref_transcript = get_affected_transcript(
-            transcripts, VARTYPE_GROUPS.INTRONIC
-        )
-    except No_transcript_with_var_type_found:
-        logger.warning("No transcript with variant type missense found.")
-        ClinVar_same_aa = create_ClinVar(pd.DataFrame(), ClinVar_Type.SAME_AA_CHANGE)
-        ClinVar_diff_aa = create_ClinVar(pd.DataFrame(), ClinVar_Type.DIFF_AA_CHANGE)
-        return (ClinVar_same_aa, ClinVar_diff_aa)
     (start_splice_site, end_splice_site) = find_corresponding_splice_site(
         affected_transcript, ref_transcript, variant
     )

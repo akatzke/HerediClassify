@@ -4,6 +4,7 @@ import pathlib
 
 from cyvcf2 import VCF
 import pyensembl
+import pandas as pd
 
 from clinvar_utils import (
     ClinVar,
@@ -41,18 +42,35 @@ def check_clinvar_start_alt_start(
 def check_clinvar_truncated_region(
     variant: VariantInfo,
     ref_transcript: pyensembl.transcript.Transcript,
-    path_clinvar: pathlib.Path,
+    path_clinvar_snv: pathlib.Path,
+    path_clinvar_indel: pathlib.Path,
 ) -> ClinVar:
     """
     For exonic pvs1 variant coordinate appropriate clinvar entries
     """
     start, stop = define_range_truncation(ref_transcript, variant)
-    clinvar_exonic = check_clinvar_region(variant, start, stop, path_clinvar)
-    return clinvar_exonic
+    clinvar_region_snv_df = get_clinvar_region_df(
+        variant, start, stop, path_clinvar_snv
+    )
+    clinvar_region_indel_df = get_clinvar_region_df(
+        variant, start, stop, path_clinvar_indel
+    )
+    clinvar_region_df = pd.concat([clinvar_region_snv_df, clinvar_region_indel_df])
+    if not clinvar_region_df.empty:
+        clinvar_region_df_lof = filter_lof_variants(clinvar_region_df)
+        ClinVar_truncated_region = create_ClinVar(
+            clinvar_region_df_lof, ClinVar_Type.REGION
+        )
+    else:
+        ClinVar_truncated_region = create_ClinVar(pd.DataFrame(), ClinVar_Type.REGION)
+    return ClinVar_truncated_region
 
 
 def check_clinvar_NMD_exon(
-    variant: VariantInfo, NMD_affected_exons: list[dict], path_clinvar: pathlib.Path
+    variant: VariantInfo,
+    NMD_affected_exons: list[dict],
+    path_clinvar_snv: pathlib.Path,
+    path_clinvar_indel: pathlib.Path,
 ) -> ClinVar:
     """
     Check if exon contains any pathogenic variants
@@ -60,9 +78,18 @@ def check_clinvar_NMD_exon(
     if NMD_affected_exons:
         ClinVar_exons = []
         for exon in NMD_affected_exons:
-            ClinVar_exon = check_clinvar_region(
-                variant, exon["exon_start"], exon["exon_end"], path_clinvar
+            clinvar_exon_snv_df = get_clinvar_region_df(
+                variant, exon["exon_start"], exon["exon_end"], path_clinvar_snv
             )
+            clinvar_exon_indel_df = get_clinvar_region_df(
+                variant, exon["exon_start"], exon["exon_end"], path_clinvar_indel
+            )
+            clinvar_exon_df = pd.concat([clinvar_exon_snv_df, clinvar_exon_indel_df])
+            if not clinvar_exon_df.empty:
+                clinvar_exon_df_lof = filter_lof_variants(clinvar_exon_df)
+                ClinVar_exon = create_ClinVar(clinvar_exon_df_lof, ClinVar_Type.REGION)
+            else:
+                ClinVar_exon = create_ClinVar(pd.DataFrame(), ClinVar_Type.REGION)
             ClinVar_exons.append(ClinVar_exon)
         ClinVar_exon_summary = summarise_ClinVars(
             ClinVar_exons, type=ClinVar_Type.REGION
@@ -81,12 +108,36 @@ def check_clinvar_region(
     """
     Get ClinVar entries in region
     """
+    clinvar_region_filter = get_clinvar_region_df(
+        variant_info, start, end, path_clinvar
+    )
+    ClinVar_region = create_ClinVar(clinvar_region_filter, ClinVar_Type.REGION)
+    return ClinVar_region
+
+
+def get_clinvar_region_df(
+    variant_info: VariantInfo, start: int, end: int, path_clinvar: pathlib.Path
+) -> pd.DataFrame:
+    """
+    Get ClinVar dataframe for region
+    Filtered for gene of interest
+    """
     clinvar = VCF(path_clinvar)
     clinvar_region = clinvar(f"{variant_info.chr}:{start}-{end}")
     clinvar_region_df = convert_vcf_gen_to_df(clinvar_region)
     clinvar_region_filter = filter_gene(clinvar_region_df, variant_info.gene_name)
-    ClinVar_region = create_ClinVar(clinvar_region_filter, ClinVar_Type.REGION)
-    return ClinVar_region
+    return clinvar_region_filter
+
+
+def filter_lof_variants(clinvar_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Filter for loss of function variants in MC column
+    """
+    drop_na = clinvar_df.dropna(subset=["MC"])
+    lof_variants = drop_na[
+        drop_na.MC.str.contains("frameshift") | drop_na.MC.str.contains("nonsense")
+    ]
+    return lof_variants
 
 
 def define_range_truncation(

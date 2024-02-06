@@ -19,7 +19,6 @@ from transcript_annotated import (
     TranscriptInfo_start_loss,
 )
 from var_type import VARTYPE
-from acmg_rules.computation_evidence_utils import Threshold
 
 
 class Pvs1_palb2(Pvs1):
@@ -40,9 +39,9 @@ class Pvs1_palb2(Pvs1):
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.SPLICE_RESULT,
-                class_info.VARIANT_PREDICTION,
-                class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
                 class_info.SPLICING_ASSAY,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
             ),
         )
 
@@ -54,9 +53,9 @@ class Pvs1_palb2(Pvs1):
         pos_last_known_patho_ptc_dict: dict[str, int],
         threshold_diff_len_prot_percent: float,
         splice_result: Optional[RuleResult],
+        splice_assay: FunctionalData,
         prediction_dict: dict[str, float],
         threshold: Threshold,
-        splice_assay: FunctionalData,
     ):
         results = []
         for transcript in annotated_transcript:
@@ -82,7 +81,7 @@ class Pvs1_palb2(Pvs1):
                         result = False
                         comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
                     return RuleResult(
-                        "PVS1_RNA",
+                        "PVS1",
                         rule_type.SPLICING,
                         evidence_type.PATHOGENIC,
                         result,
@@ -126,16 +125,16 @@ class Pvs1_palb2(Pvs1):
             strength = evidence_strength.VERY_STRONG
         elif VARTYPE.STOP_GAINED in transcript.var_type:
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD. Variant type is nonsense."
-            if transcript.is_truncated_region_disease_relevant:
+            if transcript.ptc <= pos_last_known_patho_ptc:
                 comment = (
-                    comment + f"Truncated region located in disease relevant region."
+                    comment + f" Truncated region located in disease relevant region."
                 )
                 result = True
                 strength = evidence_strength.VERY_STRONG
             else:
                 comment = (
                     comment
-                    + f"Truncated region not located in disease relevnat region."
+                    + f" Truncated region not located in disease relevnat region."
                 )
                 result = True
                 strength = evidence_strength.MODERATE
@@ -147,21 +146,23 @@ class Pvs1_palb2(Pvs1):
             ):
                 comment = (
                     comment
-                    + f"Truncated region located in disease relevant region. PTC is located upstream of p.His1184."
+                    + f" Truncated region located in disease relevant region. "
+                    + transcript.comment_truncated_region
+                    + " PTC is located upstream of p.His1184."
                 )
                 result = True
                 strength = evidence_strength.STRONG
             elif transcript.var_start <= pos_last_known_patho_ptc:
                 comment = (
                     comment
-                    + f"Frameshift variant starts upstream of p.His1184 and is predicted to lead to an alternative C-terminal end."
+                    + f" Frameshift variant starts upstream of p.His1184 and is predicted to lead to an alternative C-terminal end."
                 )
                 result = True
                 strength = evidence_strength.STRONG
             elif transcript.var_start > pos_last_known_patho_ptc:
                 comment = (
                     comment
-                    + f"Frameshift variant starts downstream of p.Tyr1183 and is predicted to lead to an alternative C-terminal end."
+                    + f" Frameshift variant starts downstream of p.Tyr1183 and is predicted to lead to an alternative C-terminal end."
                 )
                 result = True
                 strength = evidence_strength.SUPPORTING
@@ -190,12 +191,9 @@ class Pvs1_palb2(Pvs1):
         threshold: Threshold,
         threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
-        try:
-            prediction_value = prediction_dict[threshold.name]
-            prediction = assess_prediction_tool(threshold, prediction_value)
-        except KeyError:
-            prediction = None
-        if not transcript.are_exons_skipped or prediction:
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction_pathogenic = assess_prediction_tool(threshold, prediction_value)
+        if not transcript.are_exons_skipped or not prediction_pathogenic:
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = (
@@ -210,14 +208,16 @@ class Pvs1_palb2(Pvs1):
         elif not transcript.is_reading_frame_preserved:
             result = True
             strength = evidence_strength.VERY_STRONG
-            comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD. Reading frame is not preserved and truncated/altered region is disease relevant."
+            comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD. Reading frame is not preserved and truncated/altered region is disease relevant."
         else:
-            comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD and reading frame is preserved."
+            comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is preserved."
             if transcript.is_truncated_region_disease_relevant:
                 result = True
                 strength = evidence_strength.VERY_STRONG
                 comment = (
-                    comment + f" Truncated region is critical to protein function."
+                    comment
+                    + f" Truncated region is critical to protein function. "
+                    + transcript.comment_truncated_region
                 )
             else:
                 if (
@@ -228,7 +228,7 @@ class Pvs1_palb2(Pvs1):
                     strength = evidence_strength.STRONG
                     comment = (
                         comment
-                        + f" Splicing alteration removes >{threshold_diff_len_prot_percent} of coding sequence."
+                        + f" Splicing alteration removes more than {threshold_diff_len_prot_percent} of coding sequence."
                     )
                 elif (
                     abs(transcript.diff_len_protein_percent)
@@ -239,18 +239,18 @@ class Pvs1_palb2(Pvs1):
                     strength = evidence_strength.MODERATE
                     comment = (
                         comment
-                        + f" Splicing alteration inserts >{threshold_diff_len_prot_percent} of coding sequence."
+                        + f" Splicing alteration inserts more than {threshold_diff_len_prot_percent} of coding sequence."
                     )
                 else:
                     result = True
                     strength = evidence_strength.SUPPORTING
                     comment = (
                         comment
-                        + f" Splicing alteration removes >{threshold_diff_len_prot_percent} of coding sequence."
+                        + f" Splicing alteration removes less then {threshold_diff_len_prot_percent} of coding sequence."
                     )
         return RuleResult(
             "PVS1",
-            rule_type.PROTEIN,
+            rule_type.SPLICING,
             evidence_type.PATHOGENIC,
             result,
             strength,

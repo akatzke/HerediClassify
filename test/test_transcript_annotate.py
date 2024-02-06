@@ -31,6 +31,8 @@ def test_splicing():
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
+    file_name_indel = "clinvar_small_indel.vcf.gz"
+    path_clinvar_indel = dir_clinvar / file_name_indel
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
@@ -40,7 +42,13 @@ def test_splicing():
         dir_critical_region / config["annotation_files"]["critical_region"]["file"]
     )
     annot_trans = TranscriptInfo_intronic.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, None, test_trans
+        test_var,
+        path_clinvar,
+        path_clinvar_indel,
+        path_uniprot,
+        None,
+        path_critical_region,
+        test_trans,
     )
     assert (
         annot_trans.are_exons_skipped == True
@@ -62,6 +70,8 @@ def test_indel():
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
+    file_name_indel = "clinvar_small_indel.vcf.gz"
+    path_clinvar_indel = dir_clinvar / file_name_indel
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
@@ -73,6 +83,7 @@ def test_indel():
     annot_trans = TranscriptInfo_exonic.annotate(
         test_var,
         path_clinvar,
+        path_clinvar_indel,
         path_uniprot,
         path_critical_region,
         None,
@@ -86,7 +97,7 @@ def test_indel():
         and annot_trans.is_truncated_region_disease_relevant == True
         and round(annot_trans.diff_len_protein_percent, 2) == 0.29
         and annot_trans.frameshift == 1
-        and annot_trans.ptc == 613
+        and annot_trans.ptc == 612
     )
 
 
@@ -101,6 +112,8 @@ def test_ter():
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
+    file_name_indel = "clinvar_small_indel.vcf.gz"
+    path_clinvar_indel = dir_clinvar / file_name_indel
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
@@ -112,6 +125,7 @@ def test_ter():
     annot_trans = TranscriptInfo_exonic.annotate(
         test_var,
         path_clinvar,
+        path_clinvar_indel,
         path_uniprot,
         path_critical_region,
         None,
@@ -140,6 +154,8 @@ def test_del_inframe():
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
+    file_name_indel = "clinvar_small_indel.vcf.gz"
+    path_clinvar_indel = dir_clinvar / file_name_indel
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
@@ -151,6 +167,7 @@ def test_del_inframe():
     annot_trans = TranscriptInfo_exonic.annotate(
         test_var,
         path_clinvar,
+        path_clinvar_indel,
         path_uniprot,
         path_critical_region,
         None,
@@ -179,6 +196,8 @@ def test_del_frameshift():
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
+    file_name_indel = "clinvar_small_indel.vcf.gz"
+    path_clinvar_indel = dir_clinvar / file_name_indel
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
@@ -190,6 +209,7 @@ def test_del_frameshift():
     annot_trans = TranscriptInfo_exonic.annotate(
         test_var,
         path_clinvar,
+        path_clinvar_indel,
         path_uniprot,
         path_critical_region,
         None,
@@ -203,7 +223,7 @@ def test_del_frameshift():
         and annot_trans.is_NMD == False
         and annot_trans.is_reading_frame_preserved == False
         and annot_trans.frameshift == -1
-        and annot_trans.ptc == 564
+        and annot_trans.ptc == 565
     )
 
 
@@ -218,6 +238,8 @@ def test_ins():
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
+    file_name_indel = "clinvar_small_indel.vcf.gz"
+    path_clinvar_indel = dir_clinvar / file_name_indel
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
@@ -229,6 +251,7 @@ def test_ins():
     annot_trans = TranscriptInfo_exonic.annotate(
         test_var,
         path_clinvar,
+        path_clinvar_indel,
         path_uniprot,
         path_critical_region,
         None,
@@ -242,7 +265,7 @@ def test_ins():
         and annot_trans.is_NMD == True
         and annot_trans.is_reading_frame_preserved == False
         and annot_trans.frameshift == 1
-        and annot_trans.ptc == 114
+        and annot_trans.ptc == 113
     )
 
 

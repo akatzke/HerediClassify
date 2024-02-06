@@ -47,7 +47,6 @@ class PopulationDatabases_gnomAD(PopulationDatabases):
 @dataclass
 class AffectedRegion:
     critical_region: Optional[bool] = None
-    cancer_hotspot: Optional[bool] = None
     cold_spot: Optional[bool] = None
 
 
@@ -84,10 +83,11 @@ class FunctionalData:
 class Variant:
     variant_info: VariantInfo
     transcript_info: list[TranscriptInfo]
-    prediction_tools: Optional[dict[str, float]] = None
-    gnomad: Optional[PopulationDatabases_gnomAD] = None
+    gnomad: PopulationDatabases_gnomAD
+    prediction_tools: dict[str, float]
+    affected_region: AffectedRegion
     flossies: Optional[PopulationDatabases] = None
-    affected_region: Optional[AffectedRegion] = None
+    cancerhotspots: Optional[PopulationDatabases] = None
     multifactorial_likelihood: Optional[MultifactorialLikelihood] = None
     functional_assay: Optional[FunctionalData] = None
     splicing_assay: Optional[FunctionalData] = None

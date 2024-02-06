@@ -8,14 +8,18 @@ from acmg_rules.utils import (
     evidence_strength,
     evidence_type,
     rule_type,
+    summarise_results_per_transcript,
 )
 from acmg_rules.pvs1 import Pvs1
 from information import Classification_Info, Info
-from variant import TranscriptInfo, VariantInfo
+from variant import TranscriptInfo, VariantInfo, FunctionalData
 from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
+)
+from acmg_rules.computation_evidence_utils import (
+    Threshold,
 )
 from var_type import VARTYPE
 
@@ -36,7 +40,10 @@ class Pvs1_cdh1(Pvs1):
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
                 class_info.SPLICE_RESULT,
+                class_info.SPLICING_ASSAY,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
             ),
         )
 
@@ -46,25 +53,46 @@ class Pvs1_cdh1(Pvs1):
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
         splice_result: Optional[RuleResult],
+        splice_assay: FunctionalData,
         threshold_diff_len_prot_percent: float,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
     ):
-        if len(annotated_transcript) != 1:
-            raise ValueError(
-                "For CDH1 more than one transcript is being used for assessment of PVS1, despite only one disease relevant transcript being defined."
-            )
-        transcript = annotated_transcript[0]
-        if isinstance(transcript, TranscriptInfo_exonic):
-            result = cls.assess_pvs1_frameshift_PTC_cdh1(transcript)
-        elif isinstance(transcript, TranscriptInfo_intronic):
-            if splice_result is None:
-                result = cls.assess_pvs1_splice(
-                    transcript, threshold_diff_len_prot_percent
-                )
-            else:
-                result = splice_result
-        elif isinstance(transcript, TranscriptInfo_start_loss):
-            result = cls.assess_pvs1_start_loss(transcript)
-        else:
+        results = []
+        for transcript in annotated_transcript:
+            if isinstance(transcript, TranscriptInfo_exonic):
+                result = cls.assess_pvs1_frameshift_PTC_cdh1(transcript)
+                results.append(result)
+            elif isinstance(transcript, TranscriptInfo_intronic):
+                if splice_assay.performed:
+                    if splice_assay.pathogenic:
+                        result = True
+                        comment = f"A splice assay was performed showing a detrimental effect on splicing by the variant."
+                    else:
+                        result = False
+                        comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
+                    return RuleResult(
+                        "PVS1",
+                        rule_type.SPLICING,
+                        evidence_type.PATHOGENIC,
+                        result,
+                        evidence_strength.VERY_STRONG,
+                        comment,
+                    )
+                if splice_result is None:
+                    result = cls.assess_pvs1_splice(
+                        transcript,
+                        prediction_dict,
+                        threshold,
+                        threshold_diff_len_prot_percent,
+                    )
+                else:
+                    result = splice_result
+                results.append(result)
+            elif isinstance(transcript, TranscriptInfo_start_loss):
+                result = cls.assess_pvs1_start_loss(transcript)
+                results.append(result)
+        if len(results) == 0:
             comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             result = RuleResult(
                 "PVS1",
@@ -74,6 +102,8 @@ class Pvs1_cdh1(Pvs1):
                 evidence_strength.VERY_STRONG,
                 comment,
             )
+        else:
+            result = summarise_results_per_transcript(results)
         return result
 
     @classmethod

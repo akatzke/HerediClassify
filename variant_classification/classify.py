@@ -16,7 +16,8 @@ from config_annotation import (
     remove_rules_with_missing_annotation,
     apply_rules,
 )
-from create_output import create_output
+from create_output import create_output, create_rules_dict
+from check_incompatible_rules import check_incompatible_rules
 
 from os import path
 import json
@@ -46,7 +47,11 @@ def classify(config_path: pathlib.Path, variant_str: str):
         annotations_needed_by_rules
     )
     rule_results = apply_rules(annotations_needed_by_rules_filtered)
-    out_result = create_output(rule_results)
+    rule_dict = create_rules_dict(rule_results)
+    rule_results_checked = check_incompatible_rules(
+        rule_dict, configuration_name, final_config["rules"]
+    )
+    out_result = create_output(rule_results_checked)
     ensembl.clear_cache()
     return configuration_name, out_result
 

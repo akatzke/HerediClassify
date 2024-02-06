@@ -4,11 +4,10 @@ name: "ACMG PALB2"
 ### Rules ###
 rules:
     - pvs1_palb2
-    - ps1_protein
-    - ps1_splicing
+    - ps1_splicing_clingen
     - pm2_supporting
-    - pm5_protein
-    - pm5_splicing
+    - pm5_protein_ptc
+    - pm5_splicing_ptc
     - pp3_protein
     - pp3_splicing
     - ba1
@@ -16,24 +15,28 @@ rules:
     - bp1
     - bp4_protein
     - bp4_splicing
-    - bp7
+    - bp7_rna_deep_intronic_enigma
 
 ### Disease relevant transcript ###
 disease_relevant_transcripts:
     - name: "ENST00000261584"
       nmd_threshold: 3300
-      pos_last_known_patho_ptc: 3549
+      pos_last_known_patho_ptc: 1183
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:
     pathogenicity_prediction:
         name: "REVEL"
         benign: 0.290
+        benign_direction: "less_than_or_equal"
         pathogenic: 0.644
+        pathogenic_direction: "greater_than_or_equal"
     splicing_prediction:
         name: "SpliceAI"
         benign: 0.1
+        benign_direction: "less_than_or_equal"
         pathogenic: 0.2
+        pathogenic_direction: "greater_than_or_equal"
 
 ### Allelee frequency threshold for each gene ###
 allele_frequency_thresholds:
@@ -51,7 +54,8 @@ annotation_files:
     clinvar:
         root: "databases/Clinvar"
         clinvar_snv: "clinvar_snv_quality_filter.vcf.gz"
-        clinvar_small_indel: "clinvar_small_indel.vcf.gz"
+        clinvar_snv_spliceai: "clinvar_spliceai_all_sorted_snv_two_star.vcf.gz"
+        clinvar_indel: "clinvar_small_indel_two_star.vcf.gz"
     uniprot:
         root: "databases/Uniprot"
         rep: "repeats_hg38_uniprot.bed"
@@ -60,4 +64,4 @@ annotation_files:
         critical_region: "VCEP_defined_critical_regions.bed"
     splice_site_table:
         root: "variant_classification/data/splice_site_classification"
-        file: "PALB2_splice_table.csv"
+        file: "PALB2_splice_table_reformatted.csv"

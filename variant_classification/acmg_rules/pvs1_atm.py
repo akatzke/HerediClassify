@@ -37,10 +37,9 @@ class Pvs1_atm(Pvs1):
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
-                class_info.THRESHOLD_NMD,
                 class_info.SPLICE_RESULT,
                 class_info.VARIANT_PREDICTION,
-                class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
+                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
                 class_info.SPLICING_ASSAY,
             ),
         )
@@ -51,7 +50,6 @@ class Pvs1_atm(Pvs1):
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
         pos_last_known_patho_ptc_dict: dict[str, int],
-        nmd_threshold_dict: Optional[dict[str, int]],
         splice_result: Optional[RuleResult],
         prediction_dict: dict[str, float],
         threshold: Threshold,
@@ -81,22 +79,16 @@ class Pvs1_atm(Pvs1):
                         result = False
                         comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
                     return RuleResult(
-                        "PVS1_RNA",
+                        "PVS1",
                         rule_type.SPLICING,
                         evidence_type.PATHOGENIC,
                         result,
                         evidence_strength.VERY_STRONG,
                         comment,
                     )
-                try:
-                    nmd_threshold = nmd_threshold_dict[transcript.transcript_id]
-                except KeyError or TypeError:
-                    raise KeyError(
-                        f"Transcript {transcript.transcript_id} not in disease relevant transcripts: {pos_last_known_patho_ptc_dict.keys()}. Transcript should have been filtered out earlier."
-                    )
                 if splice_result is None:
                     result = cls.assess_pvs1_splice_atm(
-                        transcript, prediction_dict, threshold, nmd_threshold
+                        transcript, prediction_dict, threshold
                     )
                 else:
                     result = splice_result
@@ -126,8 +118,10 @@ class Pvs1_atm(Pvs1):
         Assess PVS1 for start lost variants
         """
         if transcript.is_truncated_region_disease_relevant:
-            comment = f"Alternative start codon leads to the exclusion of a disease relevant region."
-            comment = comment + " " + transcript.comment_truncated_region
+            comment = (
+                f"Alternative start codon leads to the exclusion of a disease relevant region. "
+                + transcript.comment_truncated_region
+            )
             result = True
             strength = evidence_strength.VERY_STRONG
         else:
@@ -149,19 +143,15 @@ class Pvs1_atm(Pvs1):
         transcript: TranscriptInfo_intronic,
         prediction_dict: dict[str, float],
         threshold: Threshold,
-        nmd_threshold: int,
     ) -> RuleResult:
-        try:
-            prediction_value = prediction_dict[threshold.name]
-            prediction = assess_prediction_tool(threshold, prediction_value)
-        except KeyError:
-            prediction = None
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction_pathogenic = assess_prediction_tool(threshold, prediction_value)
         disease_relevant_transcript = "ENST00000675843"
         if transcript.transcript_id != disease_relevant_transcript:
             raise ValueError(
                 f"Transcript {transcript.transcript_id} is not disease relevant transcript {disease_relevant_transcript}. This is hard coded and not changable. Transcript should have been filterd out earlier."
             )
-        if not transcript.are_exons_skipped or prediction:
+        if not transcript.are_exons_skipped or not prediction_pathogenic:
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = (
@@ -187,17 +177,11 @@ class Pvs1_atm(Pvs1):
             transcript.affected_exon["exon_no"] >= 39
             and transcript.affected_exon["exon_no"] <= 63
         ):
-            if (
-                not transcript.is_reading_frame_preserved
-                and transcript.var_start <= nmd_threshold
-            ):
+            if not transcript.is_reading_frame_preserved and transcript.is_NMD:
                 result = True
                 strength = evidence_strength.VERY_STRONG
                 comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD."
-            elif (
-                not transcript.is_reading_frame_preserved
-                and transcript.var_start > nmd_threshold
-            ):
+            elif not transcript.is_reading_frame_preserved and not transcript.is_NMD:
                 result = True
                 strength = evidence_strength.VERY_STRONG
                 comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is not preserved. Truncated region is disease relevant."
@@ -215,7 +199,7 @@ class Pvs1_atm(Pvs1):
             comment = f"Splicing alteration in transcript {transcript.transcript_id} not predicted to be pathogenic."
         return RuleResult(
             "PVS1",
-            rule_type.PROTEIN,
+            rule_type.SPLICING,
             evidence_type.PATHOGENIC,
             result,
             strength,

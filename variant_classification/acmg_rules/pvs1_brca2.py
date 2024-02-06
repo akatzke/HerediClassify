@@ -17,6 +17,10 @@ from transcript_annotated import (
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
 )
+from acmg_rules.computation_evidence_utils import (
+    Threshold,
+    assess_prediction_tool,
+)
 
 
 class Pvs1_brca2(Pvs1):
@@ -38,6 +42,8 @@ class Pvs1_brca2(Pvs1):
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
                 class_info.SPLICE_RESULT,
                 class_info.SPLICING_ASSAY,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
             ),
         )
 
@@ -46,10 +52,12 @@ class Pvs1_brca2(Pvs1):
         cls,
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
-        pos_last_known_patho_ptc_dict: dict[str, int],
         threshold_diff_len_prot_percent: float,
+        pos_last_known_patho_ptc_dict: dict[str, int],
         splice_result: Optional[RuleResult],
         splice_assay: FunctionalData,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
     ):
         results = []
         for transcript in annotated_transcript:
@@ -75,7 +83,7 @@ class Pvs1_brca2(Pvs1):
                         result = False
                         comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
                     return RuleResult(
-                        "PVS1_RNA",
+                        "PVS1",
                         rule_type.SPLICING,
                         evidence_type.PATHOGENIC,
                         result,
@@ -84,7 +92,10 @@ class Pvs1_brca2(Pvs1):
                     )
                 if splice_result is None:
                     result = cls.assess_pvs1_splice_brca2(
-                        transcript, threshold_diff_len_prot_percent
+                        transcript,
+                        prediction_dict,
+                        threshold,
+                        threshold_diff_len_prot_percent,
                     )
                 else:
                     result = splice_result
@@ -111,12 +122,12 @@ class Pvs1_brca2(Pvs1):
         cls, transcript: TranscriptInfo_exonic, pos_last_known_patho_ptc: int
     ) -> RuleResult:
         if transcript.is_NMD:
-            comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD and in a disease relevant transcript."
+            comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD and transcript is disease relevant."
             result = True
             strength = evidence_strength.VERY_STRONG
         else:
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD."
-            if transcript.var_start <= pos_last_known_patho_ptc:
+            if transcript.ptc <= pos_last_known_patho_ptc:
                 comment = (
                     comment
                     + "Truncated/altered region is critical to protein function."
@@ -125,7 +136,8 @@ class Pvs1_brca2(Pvs1):
                 strength = evidence_strength.STRONG
             else:
                 comment = (
-                    "Role of truncated/alterend region in protein function is unknown."
+                    comment
+                    + "Role of truncated/alterend region in protein function is unknown."
                 )
                 result = False
                 strength = evidence_strength.VERY_STRONG
@@ -140,13 +152,19 @@ class Pvs1_brca2(Pvs1):
 
     @classmethod
     def assess_pvs1_splice_brca2(
-        cls, transcript: TranscriptInfo_intronic, threshold_diff_len_prot_percent: float
+        cls,
+        transcript: TranscriptInfo_intronic,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
+        threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
-        if not transcript.are_exons_skipped:
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction_pathogenic = assess_prediction_tool(threshold, prediction_value)
+        if not transcript.are_exons_skipped or not prediction_pathogenic:
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = f"No splicing alteration predicted for transcript {transcript.transcript_id}."
-        if not transcript.coding_exon_skipped:
+        elif not transcript.coding_exon_skipped:
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = f"Predicted alteration does not affect coding sequence {transcript.transcript_id}."
@@ -202,7 +220,7 @@ class Pvs1_brca2(Pvs1):
             comment = f"Splicing alteration in transcript {transcript.transcript_id} not predicted to be pathogenic."
         return RuleResult(
             "PVS1",
-            rule_type.PROTEIN,
+            rule_type.SPLICING,
             evidence_type.PATHOGENIC,
             result,
             strength,

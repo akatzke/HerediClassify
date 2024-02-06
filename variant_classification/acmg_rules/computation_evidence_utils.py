@@ -8,8 +8,17 @@ from acmg_rules.utils import evidence_strength
 
 
 class THRESHOLD_DIRECTION(Enum):
-    HIGHER = "higher"
-    LOWER = "lower"
+    GREATER = "greater"
+    GREATER_THAN_OR_EQUAL = "greater_than_or_equal"
+    LESS = "less"
+    LESS_THAN_OR_EQUAL = "less_than_or_equal"
+
+    @classmethod
+    def list(cls):
+        """
+        Return lisst of all possible Enum values
+        """
+        return list(map(lambda c: c.value, cls))
 
 
 @dataclass
@@ -29,17 +38,31 @@ class Threshold_evidence_strength:
     threshold_supporting: Optional[float] = None
 
 
-def assess_prediction_tool(threshold: Threshold, prediction_value: float) -> bool:
+def assess_prediction_tool(
+    threshold: Threshold, prediction_value: Optional[float]
+) -> Optional[bool]:
     """
     Assess prediction result
     """
-    if threshold.direction.value == THRESHOLD_DIRECTION.HIGHER.value:
+    if prediction_value is None:
+        return None
+    if threshold.direction.value == THRESHOLD_DIRECTION.GREATER.value:
         if prediction_value > threshold.threshold:
             return True
         else:
             return False
-    elif threshold.direction.value == THRESHOLD_DIRECTION.LOWER.value:
+    if threshold.direction.value == THRESHOLD_DIRECTION.GREATER_THAN_OR_EQUAL.value:
+        if prediction_value >= threshold.threshold:
+            return True
+        else:
+            return False
+    elif threshold.direction.value == THRESHOLD_DIRECTION.LESS.value:
         if prediction_value < threshold.threshold:
+            return True
+        else:
+            return False
+    elif threshold.direction.value == THRESHOLD_DIRECTION.LESS_THAN_OR_EQUAL.value:
+        if prediction_value <= threshold.threshold:
             return True
         else:
             return False
@@ -55,7 +78,7 @@ def assess_prediction_tool_diff_evidence_strength(
     """
     Return
     """
-    if threshold.direction.value == THRESHOLD_DIRECTION.HIGHER.value:
+    if threshold.direction.value == THRESHOLD_DIRECTION.GREATER.value:
         if (
             threshold.threshold_very_strong is not None
             and prediction_value > threshold.threshold_very_strong
@@ -78,7 +101,7 @@ def assess_prediction_tool_diff_evidence_strength(
             return (True, evidence_strength.SUPPORTING)
         else:
             return (False, evidence_strength.SUPPORTING)
-    elif threshold.direction.value == THRESHOLD_DIRECTION.LOWER.value:
+    elif threshold.direction.value == THRESHOLD_DIRECTION.LESS.value:
         if (
             threshold.threshold_very_strong is not None
             and prediction_value < threshold.threshold_very_strong

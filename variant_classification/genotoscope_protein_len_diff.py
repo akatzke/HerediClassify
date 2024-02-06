@@ -81,10 +81,10 @@ def correct_position_ptc_for_indels(
     if diff_len == 0:
         return codon_positon_ptc
     elif diff_len > 0:
-        codon_shift = math.ceil(diff_len / 3)
+        codon_shift = math.floor(diff_len / 3)
         return codon_positon_ptc + codon_shift
     elif diff_len < 0:
-        codon_shift = math.ceil(abs(diff_len) / 3) * -1
+        codon_shift = math.floor(abs(diff_len) / 3) * -1
         return codon_positon_ptc + codon_shift
     else:
         raise ValueError("Error whilst correcting PTC position.")

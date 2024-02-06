@@ -13,6 +13,7 @@ class Classification_Info_Groups(Enum):
     THRESHOLD_SINGLE = auto()
     THRESHOLD_PREDICTION = auto()
     THRESHOLD_MULT_STRENGTH = auto()
+    CONFIG_ENTRY_STR = auto()
     PATH = auto()
     DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD = auto()
 
@@ -34,7 +35,11 @@ class Classification_Info:
     ANNOTATED_TRANSCRIPT_LIST: Info
     ANNOTATED_TRANSCRIPT_LIST_ACMG_Spec: Info
     VARIANT_CLINVAR: Info
-    VARIANT_HOTSPOT: Info
+    VARIANT_CLINVAR_SIMILARITY: Info
+    VARIANT_CLINVAR_SPLICEAI_PROTEIN: Info
+    VARIANT_CLINVAR_SPLICEAI_SPLICE: Info
+    VARIANT_CANCERHOTSPOTS: Info
+    THRESHOLD_CANCERHOTSPOTS_AC: Info
     VARIANT_HOTSPOT_ANNOTATION: Info
     VARIANT_HOTSPOT_ANNOTATION_PATH: Info
     VARIANT_COLDSPOT_ANNOTATION: Info
@@ -63,11 +68,20 @@ class Classification_Info:
     VARIANT: Info
     TRANSCRIPT: Info
     CLINVAR_PATH: Info
+    CLINVAR_PATH_INDEL: Info
+    CLINVAR_PATH_SPLICEAI: Info
+    SIMILARITY_SCORE_PATH: Info
+    SIMILARITY_SOCRE_DIRECTION: Info
     UNIPROT_REP_REGION_PATH: Info
     CRITICAL_REGION_PATH: Info
     DISEASE_IRRELEVANT_EXONS_PATH: Info
     SPLICE_SITE_TABLE_PATH: Info
     SPLICE_RESULT: Info
+    SPLICE_SITE_TABLE_PM5_PATH: Info
+    SPLICE_RESULT_PM5: Info
+    EXON_PM5_PATH: Info
+    PM5_RESULTS_PTC: Info
+    MANE_TRANSCRIPT_LIST_PATH: Info
     FUNCTIONAL_ASSAY: Info
     SPLICING_ASSAY: Info
 
@@ -77,17 +91,31 @@ class Classification_Info:
             "annotated_transcript_list_acmg"
         )
         self.VARIANT_CLINVAR = Info("variant_clinvar")
-        self.VARIANT_HOTSPOT = Info("variant_hotspot")
+        self.VARIANT_CLINVAR_SIMILARITY = Info("variant_clinvar_similarity")
+        self.VARIANT_CLINVAR_SPLICEAI_PROTEIN = Info("variant_clinvar_spliceai_protein")
+        self.VARIANT_CLINVAR_SPLICEAI_PROTEIN_SIMILARITY = Info(
+            "variant_clinvar_spliceai_protein_similarity"
+        )
+        self.VARIANT_CLINVAR_SPLICEAI_SPLICE = Info("variant_clinvar_spliceai_splicing")
+        self.VARIANT_CANCERHOTSPOTS = Info("variant_cancerhotspots")
+        self.THRESHOLD_CANCERHOTSPOTS_AC = Info(
+            "cancerhotspots_threshold_ac",
+            config_location=(
+                "allele_frequency_thresholds",
+                "threshold_cancerhotspots_ac",
+            ),
+            group=Classification_Info_Groups.THRESHOLD_SINGLE,
+        )
         self.VARIANT_HOTSPOT_ANNOTATION = Info("variant_hotspot_annotation")
+        self.VARIANT_HOTSPOT_ANNOTATION_PATH = Info(
+            "variant_hotspot_annotation_path",
+            config_location=("annotation_files", "hotspot_region", "hotspot_region"),
+            group=Classification_Info_Groups.PATH,
+        )
         self.VARIANT_COLDSPOT_ANNOTATION = Info("variant_coldspot_annotation")
         self.VARIANT_COLDSPOT_ANNOTATION_PATH = Info(
             "variant_coldspot_annotation_path",
             config_location=("annotation_files", "critical_regions", "coldspot_region"),
-            group=Classification_Info_Groups.PATH,
-        )
-        self.VARIANT_HOTSPOT_ANNOTATION_PATH = Info(
-            "variant_hotspot_annotation_path",
-            config_location=("annotation_files", "critical_regions", "hotspot_region"),
             group=Classification_Info_Groups.PATH,
         )
         self.VARIANT_GNOMAD = Info("variant_gnomad")
@@ -137,8 +165,8 @@ class Classification_Info:
             config_location=("likelihood_thresholds", "pathogenic"),
             group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
         )
-        self.THRESHOLD_LIKELIHOOD_PATHOGENIC = Info(
-            "threshold_likelihood_pathogenic",
+        self.THRESHOLD_LIKELIHOOD_BENIGN = Info(
+            "threshold_likelihood_benign",
             config_location=("likelihood_thresholds", "benign"),
             group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
         )
@@ -211,6 +239,36 @@ class Classification_Info:
             config_location=("annotation_files", "clinvar", "clinvar_snv"),
             group=Classification_Info_Groups.PATH,
         )
+        self.CLINVAR_PATH_INDEL = Info(
+            "clinvar_path",
+            config_location=("annotation_files", "clinvar", "clinvar_indel"),
+            group=Classification_Info_Groups.PATH,
+        )
+        self.CLINVAR_PATH_SPLICEAI = Info(
+            "clinvar_path_spliceai",
+            config_location=("annotation_files", "clinvar", "clinvar_snv_spliceai"),
+            group=Classification_Info_Groups.PATH,
+        )
+        self.SIMILARITY_SCORE_PATH = Info(
+            "similarity_score_path",
+            config_location=(
+                "annotation_files",
+                "similarity_score",
+                "similarity_score_file",
+            ),
+            group=Classification_Info_Groups.PATH,
+        )
+        self.SIMILARITY_SOCRE_DIRECTION = Info(
+            ## Direction in which the similarity score has to be in order for a ClinVar entry to be admissable for PM5
+            ## "greater" and "less" always are interpreted as "greater or equal" or "less or equal"
+            "similarity_score_direction",
+            config_location=(
+                "annotation_files",
+                "similarity_score",
+                "similarity_score_direction",
+            ),
+            group=Classification_Info_Groups.CONFIG_ENTRY_STR,
+        )
         self.UNIPROT_REP_REGION_PATH = Info(
             "uniprot_rep_region_path",
             config_location=("annotation_files", "uniprot", "rep"),
@@ -232,11 +290,28 @@ class Classification_Info:
             group=Classification_Info_Groups.PATH,
             optional=True,
         )
+        self.SPLICE_RESULT = Info("splice_result", optional=True)
         self.SPLICE_SITE_TABLE_PATH = Info(
             "splice_site_table_path",
             config_location=("annotation_files", "splice_site_table", "file"),
             group=Classification_Info_Groups.PATH,
         )
-        self.SPLICE_RESULT = Info("splice_result", optional=True)
+        self.SPLICE_RESULT_PM5 = Info("splice_result_pm5", optional=True)
+        self.SPLICE_SITE_TABLE_PM5_PATH = Info(
+            "splice_site_table_path_pm5",
+            config_location=("annotation_files", "splice_site_table_pm5", "file"),
+            group=Classification_Info_Groups.PATH,
+        )
+        self.EXON_PM5_PATH = Info(
+            "exon_pm5_path",
+            config_location=("annotation_files", "exon_pm5", "file"),
+            group=Classification_Info_Groups.PATH,
+        )
+        self.PM5_RESULTS_PTC = Info("pm5_results_ptc", optional=True)
+        self.MANE_TRANSCRIPT_LIST_PATH = Info(
+            "mane_transcript_list_path",
+            config_location=("annotation_files", "mane_transcripts", "file"),
+            group=Classification_Info_Groups.PATH,
+        )
         self.FUNCTIONAL_ASSAY = Info("functional_assay")
         self.SPLICING_ASSAY = Info("splicing_assay")

@@ -17,6 +17,7 @@ from transcript_annotated import (
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
 )
+from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_tool
 
 
 class Pvs1(abstract_rule):
@@ -35,6 +36,9 @@ class Pvs1(abstract_rule):
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+                class_info.SPLICING_ASSAY,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
             ),
         )
 
@@ -44,21 +48,42 @@ class Pvs1(abstract_rule):
         annotated_transcripts: list[TranscriptInfo],
         variant: VariantInfo,
         threshold_diff_len_prot_percent: float,
+        splice_assay: FunctionalData,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
     ) -> RuleResult:
         results = []
         for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_exonic):
-                result_frameshift = cls.assess_pvs1_frameshift_PTC(
+                result_frameshift = Pvs1.assess_pvs1_frameshift_PTC(
                     transcript, threshold_diff_len_prot_percent
                 )
                 results.append(result_frameshift)
             elif isinstance(transcript, TranscriptInfo_intronic):
-                result_splice = cls.assess_pvs1_splice(
-                    transcript, threshold_diff_len_prot_percent
+                if splice_assay.performed:
+                    if splice_assay.pathogenic:
+                        result = True
+                        comment = f"A splice assay was performed showing a detrimental effect on splicing by the variant."
+                    else:
+                        result = False
+                        comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
+                    return RuleResult(
+                        "PVS1",
+                        rule_type.SPLICING,
+                        evidence_type.PATHOGENIC,
+                        result,
+                        evidence_strength.VERY_STRONG,
+                        comment,
+                    )
+                result_splice = Pvs1.assess_pvs1_splice(
+                    transcript,
+                    prediction_dict,
+                    threshold,
+                    threshold_diff_len_prot_percent,
                 )
                 results.append(result_splice)
             elif isinstance(transcript, TranscriptInfo_start_loss):
-                result_start_loss = cls.assess_pvs1_start_loss(transcript)
+                result_start_loss = Pvs1.assess_pvs1_start_loss(transcript)
                 results.append(result_start_loss)
         if len(results) == 0:
             comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
@@ -90,7 +115,8 @@ class Pvs1(abstract_rule):
             if transcript.is_truncated_region_disease_relevant:
                 comment = (
                     comment
-                    + f" Alternative start codon leads to the exclusion of a disease relevant protein region."
+                    + f" Alternative start codon leads to the exclusion of a disease relevant protein region. "
+                    + transcript.comment_truncated_region
                 )
                 result = True
                 strength = evidence_strength.MODERATE
@@ -126,15 +152,31 @@ class Pvs1(abstract_rule):
 
     @classmethod
     def assess_pvs1_splice(
-        cls, transcript: TranscriptInfo_intronic, threshold_diff_len_prot_percent: float
+        cls,
+        transcript: TranscriptInfo_intronic,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
+        threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
         """
         Assess PVS1 for splice variants
         """
-        if transcript.is_NMD:
+        prediction_value = prediction_dict.get(threshold.name, None)
+        prediction_pathogenic = assess_prediction_tool(threshold, prediction_value)
+        if not transcript.are_exons_skipped or not prediction_pathogenic:
+            result = False
+            strength = evidence_strength.VERY_STRONG
+            comment = (
+                f"No splicing alteration predicted for {transcript.transcript_id}."
+            )
+        elif transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} undergoes NMD."
             if transcript.is_truncated_region_disease_relevant:
-                comment = comment + f"Skipped exon is disease relevant."
+                comment = (
+                    comment
+                    + f"Skipped exon is disease relevant. "
+                    + transcript.comment_truncated_region
+                )
                 result = True
             else:
                 comment = (
@@ -149,7 +191,11 @@ class Pvs1(abstract_rule):
         ):
             comment = f"Transcript {transcript.transcript_id} does not undergo NMD and reading frame is not preserved."
             if transcript.is_truncated_region_disease_relevant:
-                comment = comment + f" Skipped exon is considered disease relevant."
+                comment = (
+                    comment
+                    + f" Skipped exon is considered disease relevant. "
+                    + transcript.comment_truncated_region
+                )
                 result = True
                 strength = evidence_strength.STRONG
             else:
@@ -173,7 +219,11 @@ class Pvs1(abstract_rule):
         elif transcript.are_exons_skipped and transcript.is_reading_frame_preserved:
             comment = f"Transcript {transcript.transcript_id} does not undergo NMD and reading frame is preserved."
             if transcript.is_truncated_region_disease_relevant:
-                comment = comment + f" Skipped exon is disease relevant."
+                comment = (
+                    comment
+                    + f" Skipped exon is considered disease relevant region."
+                    + transcript.comment_truncated_region
+                )
                 result = True
                 strength = evidence_strength.STRONG
             else:
@@ -219,7 +269,11 @@ class Pvs1(abstract_rule):
                 f"Transcript {transcript.transcript_id} is predicted to undergo NMD."
             )
             if transcript.is_truncated_region_disease_relevant:
-                comment = comment + "Truncated region is disease relevant."
+                comment = (
+                    comment
+                    + "Truncated region is disease relevant. "
+                    + transcript.comment_truncated_region
+                )
                 result = True
             else:
                 comment = comment + "Truncated region is not disease relevant."
@@ -228,7 +282,11 @@ class Pvs1(abstract_rule):
         else:
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD."
             if transcript.is_truncated_region_disease_relevant:
-                comment = comment + "Truncated region is disease relevant."
+                comment = (
+                    comment
+                    + "Truncated region is disease relevant. "
+                    + transcript.comment_truncated_region
+                )
                 result = True
                 strength = evidence_strength.STRONG
             else:
@@ -257,76 +315,3 @@ class Pvs1(abstract_rule):
             strength,
             comment,
         )
-
-
-class Pvs1_with_splice_assay(abstract_rule):
-    """
-    PVS1: Loss of function
-    Devided into three separate parts: Frameshift, splice and start_loss
-    """
-
-    @classmethod
-    def get_assess_rule(
-        cls, class_info: Classification_Info
-    ) -> tuple[Callable, tuple[Info, ...]]:
-        return (
-            cls.assess_rule,
-            (
-                class_info.ANNOTATED_TRANSCRIPT_LIST,
-                class_info.VARIANT,
-                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
-                class_info.SPLICING_ASSAY,
-            ),
-        )
-
-    @classmethod
-    def assess_rule(
-        cls,
-        annotated_transcripts: list[TranscriptInfo],
-        variant: VariantInfo,
-        threshold_diff_len_prot_percent: float,
-        splice_assay: FunctionalData,
-    ) -> RuleResult:
-        results = []
-        for transcript in annotated_transcripts:
-            if isinstance(transcript, TranscriptInfo_exonic):
-                result_frameshift = Pvs1.assess_pvs1_frameshift_PTC(
-                    transcript, threshold_diff_len_prot_percent
-                )
-                results.append(result_frameshift)
-            elif isinstance(transcript, TranscriptInfo_intronic):
-                if splice_assay.performed:
-                    if splice_assay.pathogenic:
-                        result = True
-                        comment = f"A splice assay was performed showing a detrimental effect on splicing by the variant."
-                    else:
-                        result = False
-                        comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
-                    return RuleResult(
-                        "PVS1_RNA",
-                        rule_type.SPLICING,
-                        evidence_type.PATHOGENIC,
-                        result,
-                        evidence_strength.VERY_STRONG,
-                        comment,
-                    )
-                result_splice = Pvs1.assess_pvs1_splice(
-                    transcript, threshold_diff_len_prot_percent
-                )
-                results.append(result_splice)
-            elif isinstance(transcript, TranscriptInfo_start_loss):
-                result_start_loss = Pvs1.assess_pvs1_start_loss(transcript)
-                results.append(result_start_loss)
-        if len(results) == 0:
-            comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
-            result = RuleResult(
-                "PVS1",
-                rule_type.GENERAL,
-                evidence_type.PATHOGENIC,
-                False,
-                evidence_strength.VERY_STRONG,
-                comment,
-            )
-        else:
-            result = summarise_results_per_transcript(results)
-        return result

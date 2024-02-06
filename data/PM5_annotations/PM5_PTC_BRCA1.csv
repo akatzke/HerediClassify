@@ -1,0 +1,24 @@
+start	end	gene	rule_status	evidence_strength	comment
+1	27	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 2.
+27	45	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 3.
+45	71	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 4.
+71	101	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 5.
+101	147	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 6.
+148	183	BRCA1	TRUE	supporting	PM5 applies with supporting evidence strength to exon 7.
+183	198	BRCA1	FALSE	moderate	PM5 does not apply to exon 8.
+198	224	BRCA1	FALSE	moderate	PM5 does not apply to exon 9.
+224	1366	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 10.
+1366	1395	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 11.
+1396	1453	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 12.
+1453	1495	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 13.
+1495	1559	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 14.
+1559	1662	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 15.
+1663	1692	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 16.
+1692	1718	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 17.
+1718	1731	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 18.
+1732	1759	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 19.
+1760	1778	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 20.
+1778	1802	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 21.
+1803	1823	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 22.
+1823	1854	BRCA1	TRUE	strong	PM5 applies with strong evidence strength to exon 23 upto c.5571.
+1855	1863	BRCA1	FALSE	moderate	PM5 does not apply to exon 23 downstream of c.5571.

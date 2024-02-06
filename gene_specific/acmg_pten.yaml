@@ -4,13 +4,12 @@ name: "ACMG PTEN"
 ### Rules ###
 rules:
     - pvs1_pten
-    - ps1_protein
-    - ps1_splicing
+    - ps1_protein_spliceai
+    - ps1_splicing_pten
     - pm1
-    - pm2_supporting
+    - pm2_supporting_less
     - pm4_pten
-    - pm5_protein
-    - pm5_splicing
+    - pm5_protein_pten
     - pp2
     - pp3_protein
     - pp3_splicing
@@ -18,24 +17,27 @@ rules:
     - bs1_supporting
     - bp4_protein
     - bp4_splicing
-    - bp7
+    - bp7_rna_deep_intronic_enigma
 
 ### Disease relevant transcript ###
 disease_relevant_transcripts:
-    - name: "ENST00000675843"
-      nmd_threshold: 3937
-      pos_last_known_patho_ptc: 9141
+    - name: "ENST00000371953"
+      nmd_threshold: 1121
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:
     pathogenicity_prediction:
         name: "REVEL"
         benign: 0.5
+        benign_direction: "less"
         pathogenic: 0.7
+        pathogenic_direction: "greater"
     splicing_prediction:
         name: "SpliceAI"
-        benign: 0.1
-        pathogenic: 0.2
+        benign: 0.49
+        benign_direction: "less_than_or_equal"
+        pathogenic: 0.5
+        pathogenic_direction: "greater_than_or_equal"
 
 ### Thresholds loglikelihood ###
 likelihood_thresholds:
@@ -65,11 +67,18 @@ annotation_files:
     clinvar:
         root: "databases/Clinvar"
         clinvar_snv: "clinvar_snv_quality_filter.vcf.gz"
-        clinvar_small_indel: "clinvar_small_indel.vcf.gz"
+        clinvar_snv_spliceai: "clinvar_spliceai_all_sorted_snv_two_star.vcf.gz"
+        clinvar_indel: "clinvar_small_indel_two_star.vcf.gz"
     uniprot:
         root: "databases/Uniprot"
         rep: "repeats_hg38_uniprot.bed"
     critical_regions:
         root: "variant_classification/data/critical_region"
         critical_region: "VCEP_defined_critical_regions.bed"
-        hotspot_region: "VCEP_mutational_hotspots.csv"
+    hotspot_region:
+        root: "variant_classification/data/critical_region"
+        hotspot_region: "VCEP_mutational_hotspots.bed"
+    similarity_score:
+        root: "variant_classification/data/similarity_score"
+        similarity_score_file: "blosum62_formatted.csv"
+        similarity_score_direction: "less"

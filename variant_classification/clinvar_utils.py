@@ -91,11 +91,15 @@ def create_ClinVar(clinvar: pd.DataFrame, type: ClinVar_Type) -> ClinVar:
     is_pathogenic = False
     highest_classification = None
     clinvar_ids = []
+    clinvar_associated_ids = []
     if not clinvar.empty:
         if any(clinvar.CLNSIG == "Pathogenic"):
             is_pathogenic = True
             highest_classification = ClinVar_Status.PATHOGENIC
             clinvar_ids = list(clinvar[clinvar.CLNSIG == "Pathogenic"].id)
+            clinvar_associated_ids = list(
+                clinvar[clinvar.CLNSIG.str.contains("Likely_pathogenic")].id
+            )
         elif any(clinvar.CLNSIG == "Likely_pathogenic") or any(
             clinvar.CLNSIG == "Pathogenic/Likely_pathogenic"
         ):
@@ -104,7 +108,9 @@ def create_ClinVar(clinvar: pd.DataFrame, type: ClinVar_Type) -> ClinVar:
             clinvar_ids = list(
                 clinvar[clinvar.CLNSIG.str.contains("Likely_pathogenic")].id
             )
-    return ClinVar(is_pathogenic, type, highest_classification, clinvar_ids)
+    return ClinVar(
+        is_pathogenic, type, highest_classification, clinvar_ids, clinvar_associated_ids
+    )
 
 
 def filter_gene(clinvar: pd.DataFrame, gene: str) -> pd.DataFrame:
