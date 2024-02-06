@@ -6,7 +6,7 @@ rules:
     - pvs1
     - ps1_protein_spliceai
     - ps1_splicing_clingen
-    - pm1
+    - pm1_supporting
     - pm2_supporting
     - pm4
     - pm5_protein
@@ -59,3 +59,6 @@ annotation_files:
     mane_transcripts:
         root: "databases/MANE"
         file: "/MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"
+    hotspot_region:
+        root: "databases/Uniprot"
+        hotspot_region: "/domain_hg38_uniprot_hotspot_region.bed"
