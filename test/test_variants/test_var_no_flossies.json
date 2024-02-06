@@ -43,6 +43,5 @@
     "segregation" : 0.56,
     "multifactorial_log-likelihood": 0.56,
     "VUS_task_force_domain" : true,
-    "cancer_hotspot": true,
     "cold_spot": true
 }
