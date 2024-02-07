@@ -42,7 +42,12 @@ clinvar=$dbs/Clinvar
 wget https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz
 wget https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz.tbi
 in_path_clinvar=$clinvar/clinvar.vcf.gz
-python $basedir/variant_classification/install_dependencies/data_filter_clinvar.py -i $in_path_clinvar
+python $basedir/variant_classification/install_dependencies/data_filter_clinvar.py -i $in_path_clinvar -f true
+#bash $basedir/variant_classification/install_dependencies/merge_clinvar_spliceai.sh
+#in_path_spliceai_clinvar = $clinvar/clinvar_spliceai_all_sorted.vcf.gz
+#python $basedir/variant_classification/install_dependencies/data_filter_clinvar.py -i $in_path_spliceai_clinvar
+
+
 
 cd $dbs
 mkdir -p Uniprot
