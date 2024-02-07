@@ -15,10 +15,10 @@ parser.add_argument(
     "-i", "--input", default="", help="path to input json file", type=str
 )
 parser.add_argument(
-    "-o",
-    "--output",
-    default="",
-    help="output file path. If not given will default to standard output.",
+    "-f",
+    "--filter_indel",
+    help="in addition to filtering for snvs, also filter for indels",
+    type=bool,
 )
 args = parser.parse_args()
 
@@ -147,7 +147,8 @@ def main():
         raise ValueError("No input file provided")
     input_path = pathlib.Path(args.input)
     prepare_clinvar_file_snv(input_path)
-    prepare_clinvar_file_indel(input_path)
+    if args.filter_indel:
+        prepare_clinvar_file_indel(input_path)
 
 
 if __name__ == "__main__":

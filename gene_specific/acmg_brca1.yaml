@@ -69,7 +69,7 @@ annotation_files:
     root: "/home/katzkean/"
     clinvar:
         root: "databases/Clinvar"
-        clinvar_snv: "clinvar_snv_quality_filter.vcf.gz"
+        clinvar_snv: "clinvar_snv_two_star.vcf.gz"
         clinvar_snv_spliceai: "clinvar_spliceai_all_sorted_snv_two_star.vcf.gz"
         clinvar_indel: "clinvar_small_indel_two_star.vcf.gz"
     uniprot:
