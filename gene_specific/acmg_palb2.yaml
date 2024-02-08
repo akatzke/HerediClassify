@@ -1,5 +1,6 @@
 ### Configuration name ###
 name: "ACMG PALB2"
+version: "1.0.0"
 
 ### Rules ###
 rules:

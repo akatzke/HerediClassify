@@ -1,5 +1,6 @@
 ### Configuration name ###
 name: "ACMG PTEN"
+version: "3.0.0"
 
 ### Rules ###
 rules:

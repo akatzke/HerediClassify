@@ -1,5 +1,6 @@
 ### Configuration name ###
 name: "ACMG ATM"
+version: "1.2.0"
 
 ### Rules ###
 rules:
