@@ -36,10 +36,11 @@ def test_splicing():
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
-        config["annotation_files"]["critical_region"]["root"]
+        config["annotation_files"]["critical_regions"]["root"]
     )
     path_critical_region = (
-        dir_critical_region / config["annotation_files"]["critical_region"]["file"]
+        dir_critical_region
+        / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_intronic.annotate(
         test_var,
@@ -75,10 +76,11 @@ def test_indel():
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
-        config["annotation_files"]["critical_region"]["root"]
+        config["annotation_files"]["critical_regions"]["root"]
     )
     path_critical_region = (
-        dir_critical_region / config["annotation_files"]["critical_region"]["file"]
+        dir_critical_region
+        / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
         test_var,
@@ -117,10 +119,11 @@ def test_ter():
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
-        config["annotation_files"]["critical_region"]["root"]
+        config["annotation_files"]["critical_regions"]["root"]
     )
     path_critical_region = (
-        dir_critical_region / config["annotation_files"]["critical_region"]["file"]
+        dir_critical_region
+        / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
         test_var,
@@ -159,10 +162,11 @@ def test_del_inframe():
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
-        config["annotation_files"]["critical_region"]["root"]
+        config["annotation_files"]["critical_regions"]["root"]
     )
     path_critical_region = (
-        dir_critical_region / config["annotation_files"]["critical_region"]["file"]
+        dir_critical_region
+        / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
         test_var,
@@ -201,10 +205,11 @@ def test_del_frameshift():
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
-        config["annotation_files"]["critical_region"]["root"]
+        config["annotation_files"]["critical_regions"]["root"]
     )
     path_critical_region = (
-        dir_critical_region / config["annotation_files"]["critical_region"]["file"]
+        dir_critical_region
+        / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
         test_var,
@@ -243,10 +248,11 @@ def test_ins():
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
-        config["annotation_files"]["critical_region"]["root"]
+        config["annotation_files"]["critical_regions"]["root"]
     )
     path_critical_region = (
-        dir_critical_region / config["annotation_files"]["critical_region"]["file"]
+        dir_critical_region
+        / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
         test_var,
@@ -283,10 +289,11 @@ def test_start_loss():
     dir_uniprot = root_dir / pathlib.Path(config["annotation_files"]["uniprot"]["root"])
     path_uniprot = dir_uniprot / config["annotation_files"]["uniprot"]["rep"]
     dir_critical_region = root_dir / pathlib.Path(
-        config["annotation_files"]["critical_region"]["root"]
+        config["annotation_files"]["critical_regions"]["root"]
     )
     path_critical_region = (
-        dir_critical_region / config["annotation_files"]["critical_region"]["file"]
+        dir_critical_region
+        / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_start_loss.annotate(
         test_var, path_clinvar, path_uniprot, path_critical_region, test_trans
