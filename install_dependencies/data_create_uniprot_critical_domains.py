@@ -69,6 +69,7 @@ def create_uniprot_critical_domains(
             "strand",
         ]
     ]
+    critical_domains_out = critical_domains_out.rename(columns={"chrom": "#chrom"})
     critical_domains_out.to_csv(out_path, sep="\t", header=True, index=False)
 
 
