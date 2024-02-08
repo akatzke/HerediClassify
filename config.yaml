@@ -25,11 +25,15 @@ prediction_tool_thresholds:
     pathogenicity_prediction:
         name: "REVEL"
         benign: 0.290
+        benign_direction: "less_than_or_equal"
         pathogenic: 0.644
+        pathogenic_direction: "greater_than_or_equal"
     splicing_prediction:
         name: "SpliceAI"
         benign: 0.1
+        benign_direction: "less_than_or_equal"
         pathogenic: 0.2
+        pathogenic_direction: "greater_than_or_equal"
 
 ### Allelee frequency threshold for each gene ###
 allele_frequency_thresholds:
@@ -54,15 +58,15 @@ annotation_files:
     uniprot:
         root: "databases/Uniprot"
         rep: "repeats_hg38_uniprot.bed"
-    critical_region:
+    critical_regions:
         root: "variant_classification/data/critical_region"
-        file: "VUS-Task-Force_critical_protein_domains.bed"
+        critical_region: "VUS-Task-Force_critical_protein_domains.bed"
     mane_transcripts:
         root: "databases/MANE"
-        file: "/MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"
+        file: "MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"
     hotspot_region:
         root: "databases/Uniprot"
-        hotspot_region: "/domain_hg38_uniprot_hotspot_region.bed"
+        hotspot_region: "domain_hg38_uniprot_hotspot_region.bed"
 
 
 ### Variant specific annotations
