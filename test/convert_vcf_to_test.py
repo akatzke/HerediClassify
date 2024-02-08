@@ -79,12 +79,15 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
 
     # FLOSSIES
     flossies_score = {}
-    if type(data.flossies_num_afr) is str:
-        flossies_score["AFR"] = int(data.flossies_num_afr)
-    if type(data.flossies_num_eur) is str:
-        flossies_score["EUR"] = int(data.flossies_num_eur)
-    if len(flossies_score) > 0:
-        json_dict["FLOSSIES"] = flossies_score
+    try:
+        if type(data.flossies_num_afr) is str:
+            flossies_score["AFR"] = int(data.flossies_num_afr)
+        if type(data.flossies_num_eur) is str:
+            flossies_score["EUR"] = int(data.flossies_num_eur)
+        if len(flossies_score) > 0:
+            json_dict["FLOSSIES"] = flossies_score
+    except AttributeError:
+        flossies_score = {}
 
     # Cancer hotspots
     cancer_hotspots = {}
@@ -141,7 +144,19 @@ def process_consequence(cons: str) -> tuple[list[dict], str, list]:
         cons_dict = dict(zip(keys, entry))
         cons_dict_list.append(cons_dict)
         affected_genes.append(cons_dict["gene"])
-    GOI = ["BRCA1", "BRCA2", "ATM", "CDH1", "PALB2", "PTEN", "TP53"]
+    GOI = [
+        "BRCA1",
+        "BRCA2",
+        "ATM",
+        "CDH1",
+        "PALB2",
+        "PTEN",
+        "TP53",
+        "MSH6",
+        "BARD1",
+        "PMS2",
+        "RAD51D",
+    ]
     gene = [gene for gene in GOI if gene in affected_genes][0]
     gene_transcript_list = []
     selected_keys = [
