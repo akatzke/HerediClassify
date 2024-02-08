@@ -31,8 +31,9 @@ class Pm4(abstract_rule):
             cls.assess_rule,
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
-                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+                class_info.VARIANT,
                 class_info.MANE_TRANSCRIPT_LIST_PATH,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
             ),
         )
 
@@ -40,11 +41,15 @@ class Pm4(abstract_rule):
     def assess_rule(
         cls,
         annotated_transcript_list: list[TranscriptInfo_annot],
+        variant: VariantInfo,
         mane_path: pathlib.Path,
         threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
         transcript = select_mane_transcript(annotated_transcript_list, mane_path)
-        if (
+        if transcript is None:
+            comment = f"PM4 does not apply to this variant, as PM4 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+            result = False
+        elif (
             transcript.diff_len_protein_percent > threshold_diff_len_prot_percent
             and not transcript.len_change_in_repetitive_region
         ):
