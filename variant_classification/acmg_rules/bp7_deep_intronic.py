@@ -21,7 +21,7 @@ from variant import RNAData, TranscriptInfo, VariantInfo
 from var_type import VARTYPE
 
 
-class Bp7_with_rna_assay_deep_intronic_enigma(abstract_rule):
+class Bp7_deep_intronic_enigma(abstract_rule):
     """
     BP7: Silent missense variant is predicted to have effect on splicing
     Expanded to include deep intronic variants
@@ -129,7 +129,7 @@ class Bp7_with_rna_assay_deep_intronic_enigma(abstract_rule):
         )
 
 
-class Bp7_with_rna_assay_deep_intronic_atm(abstract_rule):
+class Bp7_deep_intronic_atm(abstract_rule):
     """
     BP7: Silent missense variant is predicted to have effect on splicing
     Expanded to include deep intronic variants
@@ -237,7 +237,7 @@ class Bp7_with_rna_assay_deep_intronic_atm(abstract_rule):
         )
 
 
-class Bp7_with_rna_assay_deep_intronic_palb2(abstract_rule):
+class Bp7_deep_intronic_palb2(abstract_rule):
     """
     BP7: Silent missense variant is predicted to have effect on splicing
     Expanded to include deep intronic variants

@@ -17,7 +17,7 @@ rules:
     - bs2_supporting
     - bp4_protein
     - bp4_splicing
-    - bp7_rna
+    - bp7
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:

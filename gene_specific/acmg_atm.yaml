@@ -17,7 +17,7 @@ rules:
     - bs1
     - bp4_protein
     - bp4_splicing
-    - bp7_rna_deep_intronic_atm
+    - bp7_deep_intronic_atm
 
 ### Disease relevant transcript ###
 disease_relevant_transcripts:

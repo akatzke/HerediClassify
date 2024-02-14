@@ -110,10 +110,9 @@ def get_annotations_needed_from_rules(
         "bp4_splicing": Rules.Bp4_splicing,
         "bp4_protein": Rules.Bp4_protein,
         "bp7": Rules.Bp7,
-        "bp7_rna": Rules.Bp7_with_rna_assay,
-        "bp7_rna_deep_intronic_atm": Rules.Bp7_with_rna_assay_deep_intronic_atm,
-        "bp7_rna_deep_intronic_enigma": Rules.Bp7_with_rna_assay_deep_intronic_enigma,
-        "bp7_rna_deep_intronic_palb2": Rules.Bp7_with_rna_assay_deep_intronic_palb2,
+        "bp7_deep_intronic_atm": Rules.Bp7_deep_intronic_atm,
+        "bp7_deep_intronic_enigma": Rules.Bp7_deep_intronic_enigma,
+        "bp7_deep_intronic_palb2": Rules.Bp7_deep_intronic_palb2,
     }
     rule_info_dict = {}
     for rule in rule_list:
