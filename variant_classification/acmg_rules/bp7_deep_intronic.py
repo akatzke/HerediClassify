@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Callable
+from typing import Callable, Optional
 
 from acmg_rules.utils import (
     RuleResult,
@@ -14,7 +14,10 @@ from acmg_rules.computation_evidence_utils import (
     assess_prediction_tool,
     Threshold,
 )
-from variant import FunctionalData, TranscriptInfo, VariantInfo
+from acmg_rules.functional_splicing_assay_utils import (
+    assess_splicing_data_bp7,
+)
+from variant import RNAData, TranscriptInfo, VariantInfo
 from var_type import VARTYPE
 
 
@@ -46,24 +49,24 @@ class Bp7_with_rna_assay_deep_intronic_enigma(abstract_rule):
         transcripts: list[TranscriptInfo],
         prediction_dict: dict[str, float],
         threshold: Threshold,
-        splicing_assay: FunctionalData,
+        splicing_assay: Optional[list[RNAData]],
     ) -> RuleResult:
-        if splicing_assay.performed:
-            if splicing_assay.benign:
-                comment = f"Splicing assay shows no effect on splicing."
-                result = True
-            else:
-                comment = f"Splicing assay does not show no effect on splicing."
-                result = False
-            return RuleResult(
-                "BP7",
-                rule_type.SPLICING,
-                evidence_type.BENIGN,
-                result,
-                evidence_strength.STRONG,
-                comment,
+        # Check RNA data first
+        if splicing_assay:
+            performed, result_assay, comment_assay = assess_splicing_data_bp7(
+                splicing_assay
             )
+            if performed:
+                return RuleResult(
+                    "BP7_RNA",
+                    rule_type.SPLICING,
+                    evidence_type.BENIGN,
+                    result_assay,
+                    evidence_strength.STRONG,
+                    comment_assay,
+                )
 
+        # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
         prediction = assess_prediction_tool(threshold, prediction_value)
         if prediction is None:
@@ -154,24 +157,24 @@ class Bp7_with_rna_assay_deep_intronic_atm(abstract_rule):
         transcripts: list[TranscriptInfo],
         prediction_dict: dict[str, float],
         threshold: Threshold,
-        splicing_assay: FunctionalData,
+        splicing_assay: Optional[list[RNAData]],
     ) -> RuleResult:
-        if splicing_assay.performed:
-            if splicing_assay.benign:
-                comment = f"Splicing assay shows no effect on splicing."
-                result = True
-            else:
-                comment = f"Splicing assay does not show no effect on splicing."
-                result = False
-            return RuleResult(
-                "BP7",
-                rule_type.SPLICING,
-                evidence_type.BENIGN,
-                result,
-                evidence_strength.STRONG,
-                comment,
+        # Check RNA data first
+        if splicing_assay:
+            performed, result_assay, comment_assay = assess_splicing_data_bp7(
+                splicing_assay
             )
+            if performed:
+                return RuleResult(
+                    "BP7_RNA",
+                    rule_type.SPLICING,
+                    evidence_type.BENIGN,
+                    result_assay,
+                    evidence_strength.STRONG,
+                    comment_assay,
+                )
 
+        # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
         prediction = assess_prediction_tool(threshold, prediction_value)
         if prediction is None:
@@ -262,24 +265,24 @@ class Bp7_with_rna_assay_deep_intronic_palb2(abstract_rule):
         transcripts: list[TranscriptInfo],
         prediction_dict: dict[str, float],
         threshold: Threshold,
-        splicing_assay: FunctionalData,
+        splicing_assay: Optional[list[RNAData]],
     ) -> RuleResult:
-        if splicing_assay.performed:
-            if splicing_assay.benign:
-                comment = f"Splicing assay shows no effect on splicing."
-                result = True
-            else:
-                comment = f"Splicing assay does not show no effect on splicing."
-                result = False
-            return RuleResult(
-                "BP7",
-                rule_type.SPLICING,
-                evidence_type.BENIGN,
-                result,
-                evidence_strength.STRONG,
-                comment,
+        # Check RNA data first
+        if splicing_assay:
+            performed, result_assay, comment_assay = assess_splicing_data_bp7(
+                splicing_assay
             )
+            if performed:
+                return RuleResult(
+                    "BP7_RNA",
+                    rule_type.SPLICING,
+                    evidence_type.BENIGN,
+                    result_assay,
+                    evidence_strength.STRONG,
+                    comment_assay,
+                )
 
+        # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
         prediction = assess_prediction_tool(threshold, prediction_value)
         if prediction is None:

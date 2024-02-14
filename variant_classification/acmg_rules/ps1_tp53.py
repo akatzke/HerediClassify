@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Callable
+from typing import Callable, Optional
 
 from acmg_rules.utils import (
     RuleResult,
@@ -9,10 +9,13 @@ from acmg_rules.utils import (
     evidence_type,
     rule_type,
 )
+from acmg_rules.functional_splicing_assay_utils import (
+    assess_splicing_data_bp7,
+)
 from information import Classification_Info, Info
 from clinvar_utils import ClinVar_Status, ClinVar_Type, ClinVar
 from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_tool
-from variant import FunctionalData
+from variant import RNAData
 
 
 class Ps1_protein_tp53(abstract_rule):
@@ -40,15 +43,22 @@ class Ps1_protein_tp53(abstract_rule):
         clinvar_result: dict[ClinVar_Type, ClinVar],
         prediction_dict: dict[str, float],
         threshold: Threshold,
-        splice_assay: FunctionalData,
+        splicing_assay: Optional[list[RNAData]],
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
         prediction = assess_prediction_tool(threshold, prediction_value)
         clinvar_same_aa = clinvar_result[ClinVar_Type.SAME_AA_CHANGE]
+        if splicing_assay:
+            performed, result_assay, comment_assay = assess_splicing_data_bp7(
+                splicing_assay
+            )
+        else:
+            performed = False
+            result_assay = False
         if (
             clinvar_same_aa.pathogenic
-            and splice_assay.performed
-            and splice_assay.benign
+            and performed
+            and result_assay
             and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
         ):
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}. A splice assays shows that the variant does not affect splicing."
@@ -56,8 +66,8 @@ class Ps1_protein_tp53(abstract_rule):
             result = True
         elif (
             clinvar_same_aa.pathogenic
-            and splice_assay.performed
-            and splice_assay.pathogenic
+            and performed
+            and not result_assay
             and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
         ):
             comment = f"A splice assay shows that the variant affects splicing."

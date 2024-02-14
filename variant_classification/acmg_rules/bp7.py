@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Callable
+from typing import Callable, Optional
 
 from acmg_rules.utils import (
     RuleResult,
@@ -14,8 +14,11 @@ from acmg_rules.computation_evidence_utils import (
     assess_prediction_tool,
     Threshold,
 )
-from variant import FunctionalData, VariantInfo
+from variant import RNAData, VariantInfo
 from var_type import VARTYPE
+from acmg_rules.functional_splicing_assay_utils import (
+    assess_splicing_data_bp7,
+)
 
 
 class Bp7(abstract_rule):
@@ -105,24 +108,24 @@ class Bp7_with_rna_assay(abstract_rule):
         variant: VariantInfo,
         prediction_dict: dict[str, float],
         threshold: Threshold,
-        splicing_assay: FunctionalData,
+        splicing_assay: Optional[list[RNAData]],
     ) -> RuleResult:
-        if splicing_assay.performed:
-            if splicing_assay.benign:
-                comment = f"Splicing assay shows no effect on splicing."
-                result = True
-            else:
-                comment = f"Splicing assay does not show no effect on splicing."
-                result = False
-            return RuleResult(
-                "BP7",
-                rule_type.SPLICING,
-                evidence_type.BENIGN,
-                result,
-                evidence_strength.STRONG,
-                comment,
+        # Check RNA data first
+        if splicing_assay:
+            performed, result_assay, comment_assay = assess_splicing_data_bp7(
+                splicing_assay
             )
+            if performed:
+                return RuleResult(
+                    "BP7_RNA",
+                    rule_type.SPLICING,
+                    evidence_type.BENIGN,
+                    result_assay,
+                    evidence_strength.STRONG,
+                    comment_assay,
+                )
 
+        # Check prediction
         if not any(
             var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant.var_type
         ):

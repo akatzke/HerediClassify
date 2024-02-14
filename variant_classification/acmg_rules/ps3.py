@@ -9,6 +9,9 @@ from acmg_rules.utils import (
     rule_type,
     evidence_type,
 )
+from acmg_rules.functional_splicing_assay_utils import (
+    summarise_func_data,
+)
 from information import Info, Classification_Info
 from variant import FunctionalData
 
@@ -30,14 +33,26 @@ class Ps3(abstract_rule):
     @classmethod
     def assess_rule(
         cls,
-        func_data: FunctionalData,
+        func_data: list[FunctionalData],
     ) -> RuleResult:
-        if not func_data.performed:
+        pathogenic_count, benign_count, uncertain_count = summarise_func_data(func_data)
+        if not func_data:
             result = False
             comment = f"No functional assay performed."
-        elif func_data.performed and func_data.pathogenic:
+        elif pathogenic_count == 0:
+            result = False
+            comment = f"None of the {len(func_data)} functional assay(s) performed indicate pathogenicity of the variant."
+        elif benign_count > 0 and pathogenic_count > 0:
+            result = False
+            comment = f"{pathogenic_count} of the {len(func_data)} perforemd assays indicate that the variant is pathogenic and {benign_count} of the {len(func_data)} indicate that the variant is benign. Due to this conflicting evidenced PS3 can not be applied."
+        elif pathogenic_count > 0:
             result = True
-            comment = f"Functional assay performed and result indicates pathogenicity."
+            comment = f"{benign_count} of the {len(func_data)} performed assays indicate that the variant is pathogenic."
+            if uncertain_count != 0:
+                comment = (
+                    comment
+                    + f" ATTENTION: {uncertain_count} of the {len(func_data)} performed assays show no clear result."
+                )
         else:
             result = False
             comment = (

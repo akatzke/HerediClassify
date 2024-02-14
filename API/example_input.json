@@ -36,14 +36,22 @@
     "cancer_hotspots":
         {"AF" : 0.000041,
          "AC": 1},
-    "mRNA_analysis" :
+    "mRNA_analysis" : [
         {"performed": true,
-         "pathogenic": true,
-         "benign": true},
-    "functional_data":
+         "minigene": true,
+         "patient_rna": false,
+         "allelic" : "Construct",
+         "quantification": null}
+        ],
+    "functional_data": [
+
         {"performed": true,
-         "pathogenic": true,
+         "pathogenic": false,
          "benign": true},
+        {"performed": true,
+         "pathogenic": false,
+         "benign": true}
+        ],
     "prior": 0.25,
     "co-occurrence" : 0.56,
     "segregation" : 0.56,

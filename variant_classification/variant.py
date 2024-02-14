@@ -2,6 +2,8 @@
 
 from dataclasses import dataclass
 from typing import Optional
+from enum import Enum
+
 import hgvs.posedit
 
 from var_type import VARTYPE
@@ -79,6 +81,21 @@ class FunctionalData:
     benign: bool
 
 
+class ALLELIC(Enum):
+    TRUE = "true"
+    FALSE = "false"
+    CONSTRUCT = "construct"
+
+
+@dataclass
+class RNAData:
+    performed: bool
+    minigene: bool
+    patient_rna: bool
+    allelic: ALLELIC
+    quantification: Optional[float]
+
+
 @dataclass
 class Variant:
     variant_info: VariantInfo
@@ -89,5 +106,5 @@ class Variant:
     flossies: Optional[PopulationDatabases] = None
     cancerhotspots: Optional[PopulationDatabases] = None
     multifactorial_likelihood: Optional[MultifactorialLikelihood] = None
-    functional_assay: Optional[FunctionalData] = None
-    splicing_assay: Optional[FunctionalData] = None
+    functional_assay: Optional[list[FunctionalData]] = None
+    splicing_assay: Optional[list[RNAData]] = None

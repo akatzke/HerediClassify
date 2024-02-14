@@ -11,8 +11,10 @@ import hgvs.posedit
 import hgvs.exceptions
 from var_type import VARTYPE
 from variant import (
+    ALLELIC,
     FunctionalData,
     MultifactorialLikelihood,
+    RNAData,
     Variant,
     VariantInfo,
     TranscriptInfo,
@@ -66,7 +68,7 @@ def create_variant(variant_json: dict) -> Variant:
     flossies = create_flossies(variant_json)
     cancer_hotspots = create_cancer_hotspots(variant_json)
     affected_region = create_affected_region(variant_json)
-    mRNA_result = create_functional_data("mRNA_analysis", variant_json)
+    mRNA_result = create_rna_data("mRNA_analysis", variant_json)
     functional_data = create_functional_data("functional_data", variant_json)
     variant = Variant(
         variant_info=var_info,
@@ -287,7 +289,9 @@ def get_mutlifactorial_likelihood(
     return multfaclike
 
 
-def create_functional_data(key: str, variant_json: dict) -> Optional[FunctionalData]:
+def create_functional_data(
+    key: str, variant_json: dict
+) -> Optional[list[FunctionalData]]:
     """
     Create FunctionalData object from variant_json
     """
@@ -295,8 +299,37 @@ def create_functional_data(key: str, variant_json: dict) -> Optional[FunctionalD
         func_data = variant_json[key]
     except KeyError:
         return None
-    patho = func_data["pathogenic"]
-    ben = func_data["benign"]
-    performed = func_data["performed"]
-    func = FunctionalData(performed=performed, pathogenic=patho, benign=ben)
-    return func
+    func_list = []
+    for entry in func_data:
+        patho = entry["pathogenic"]
+        ben = entry["benign"]
+        performed = entry["performed"]
+        func = FunctionalData(performed=performed, pathogenic=patho, benign=ben)
+        func_list.append(func)
+    return func_list
+
+
+def create_rna_data(key: str, variant_json: dict) -> Optional[list[RNAData]]:
+    """
+    Create RNAData object from variant_json
+    """
+    try:
+        func_data = variant_json[key]
+    except KeyError:
+        return None
+    func_list = []
+    for entry in func_data:
+        performed = entry["performed"]
+        minigene = entry["minigene"]
+        patient_rna = entry["patient_rna"]
+        allelic = ALLELIC(entry["allelic"].lower().strip())
+        quantification = entry["quantification"]
+        func = RNAData(
+            performed=performed,
+            minigene=minigene,
+            patient_rna=patient_rna,
+            allelic=allelic,
+            quantification=quantification,
+        )
+        func_list.append(func)
+    return func_list

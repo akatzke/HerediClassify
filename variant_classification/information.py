@@ -314,4 +314,4 @@ class Classification_Info:
             group=Classification_Info_Groups.PATH,
         )
         self.FUNCTIONAL_ASSAY = Info("functional_assay")
-        self.SPLICING_ASSAY = Info("splicing_assay")
+        self.SPLICING_ASSAY = Info("splicing_assay", optional=True)

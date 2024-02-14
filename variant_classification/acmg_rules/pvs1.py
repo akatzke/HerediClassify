@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Callable
+from typing import Callable, Optional
 
 from acmg_rules.utils import (
     RuleResult,
@@ -11,13 +11,16 @@ from acmg_rules.utils import (
     summarise_results_per_transcript,
 )
 from information import Classification_Info, Info
-from variant import FunctionalData, TranscriptInfo, VariantInfo
+from variant import RNAData, TranscriptInfo, VariantInfo
 from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
 )
 from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_tool
+from acmg_rules.functional_splicing_assay_utils import (
+    adjust_strength_according_to_rna_data_pvs1,
+)
 
 
 class Pvs1(abstract_rule):
@@ -48,7 +51,7 @@ class Pvs1(abstract_rule):
         annotated_transcripts: list[TranscriptInfo],
         variant: VariantInfo,
         threshold_diff_len_prot_percent: float,
-        splice_assay: FunctionalData,
+        splice_assay: Optional[list[RNAData]],
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ) -> RuleResult:
@@ -60,27 +63,16 @@ class Pvs1(abstract_rule):
                 )
                 results.append(result_frameshift)
             elif isinstance(transcript, TranscriptInfo_intronic):
-                if splice_assay.performed:
-                    if splice_assay.pathogenic:
-                        result = True
-                        comment = f"A splice assay was performed showing a detrimental effect on splicing by the variant."
-                    else:
-                        result = False
-                        comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
-                    return RuleResult(
-                        "PVS1",
-                        rule_type.SPLICING,
-                        evidence_type.PATHOGENIC,
-                        result,
-                        evidence_strength.VERY_STRONG,
-                        comment,
-                    )
                 result_splice = Pvs1.assess_pvs1_splice(
                     transcript,
                     prediction_dict,
                     threshold,
                     threshold_diff_len_prot_percent,
                 )
+                if splice_assay:
+                    result_splice = adjust_strength_according_to_rna_data_pvs1(
+                        splice_assay, result_splice
+                    )
                 results.append(result_splice)
             elif isinstance(transcript, TranscriptInfo_start_loss):
                 result_start_loss = Pvs1.assess_pvs1_start_loss(transcript)

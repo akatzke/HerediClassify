@@ -154,41 +154,58 @@
       }
     },
     "mRNA_analysis": {
-      "type" : "object",
-      "properties" : {
-        "performed":{
-          "type": "boolean"
-        },
-        "pathogenic": {
-          "type": "boolean"
-        },
-        "benign": {
-          "type": "boolean"
+      "type": "array",
+      "items" : [
+        { "type": "object",
+          "properteis" :{
+            "performed":{
+              "type": "boolean"
+            },
+            "minigene" : {
+              "type": "boolean"
+            },
+            "patient_rna" : {
+              "type": "boolean"
+            },
+            "allelic" : {
+              "type": "str"
+            },
+            "quantification" :{
+              "type": ["float", "null"]
+            }
+          },
+          "required": [
+            "performed",
+            "minigene",
+            "patient_rna",
+            "allelic",
+            "quantification"
+          ]
         }
-      },
-      "required": [
-        "performed",
-        "pathogenic",
-        "benign"
       ]
     },
-    "functional_data": {
-      "type": "object",
-      "properties" : {
-        "performed" : {
-          "type": "boolean"
+    "functional_data" : {
+      "type" : "array",
+      "items": [
+        {
+        "type": "object",
+        "properties": {
+          "performed": {
+            "type": "boolean"
+          },
+          "pathogenic" :{
+            "type": "boolean"
+          },
+          "benign" : {
+            "type": "boolean"
+          }
         },
-        "pathogenic": {
-          "type": "boolean"
-        },
-        "benign": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "performed",
-        "pathogenic",
-        "benign"
+        "required": [
+          "performed",
+          "pathogenic",
+          "benign"
+        ]
+      }
       ]
     },
     "prior": {
@@ -218,8 +235,6 @@
     "alt",
     "variant_type",
     "variant_effect",
-    "mRNA_analysis",
-    "functional_data",
     "cold_spot"
   ]
 }

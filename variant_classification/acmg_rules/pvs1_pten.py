@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Callable
+from typing import Callable, Optional
 
 from acmg_rules.utils import (
     RuleResult,
@@ -11,7 +11,7 @@ from acmg_rules.utils import (
 )
 from acmg_rules.pvs1 import Pvs1
 from information import Classification_Info, Info
-from variant import FunctionalData, TranscriptInfo, VariantInfo
+from variant import RNAData, TranscriptInfo, VariantInfo
 from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
@@ -20,6 +20,9 @@ from transcript_annotated import (
 from acmg_rules.computation_evidence_utils import (
     Threshold,
     assess_prediction_tool,
+)
+from acmg_rules.functional_splicing_assay_utils import (
+    adjust_strength_according_to_rna_data_pvs1,
 )
 
 
@@ -49,7 +52,7 @@ class Pvs1_pten(Pvs1):
         cls,
         annotated_transcript: list[TranscriptInfo],
         variant: VariantInfo,
-        splice_assay: FunctionalData,
+        splice_assay: Optional[list[RNAData]],
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ):
@@ -59,25 +62,14 @@ class Pvs1_pten(Pvs1):
                 result = cls.assess_pvs1_frameshift_PTC_pten(transcript)
                 results.append(result)
             elif isinstance(transcript, TranscriptInfo_intronic):
-                if splice_assay.performed:
-                    if splice_assay.pathogenic:
-                        result = True
-                        comment = f"A splice assay was performed showing a detrimental effect on splicing by the variant."
-                    else:
-                        result = False
-                        comment = f"A splice assay was performed showing no detrimental effect on splicing by the variant."
-                    return RuleResult(
-                        "PVS1",
-                        rule_type.SPLICING,
-                        evidence_type.PATHOGENIC,
-                        result,
-                        evidence_strength.VERY_STRONG,
-                        comment,
-                    )
-                result = cls.assess_pvs1_splice_pten(
+                splice_result = cls.assess_pvs1_splice_pten(
                     transcript, prediction_dict, threshold
                 )
-                results.append(result)
+                if splice_assay:
+                    splice_result = adjust_strength_according_to_rna_data_pvs1(
+                        splice_assay, splice_result
+                    )
+                results.append(splice_result)
             elif isinstance(transcript, TranscriptInfo_start_loss):
                 result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
                 results.append(result)

@@ -70,6 +70,16 @@ def check_incompatible_rules(
                 + " As BP7 RNA analysis applies to this variant. Do not apply BP4 splicing."
             )
             rules["BP4_splicing"]["comment"] = new_comment
+    if name_config == "ACMG ATM" or name_config == "ACMG PALB2":
+        if not rules.get("PVS1_RNA", {}).get("status", False) and rules.get(
+            "PM5_splicing", {}
+        ).get("status", False):
+            rules["PM5_splicing"]["status"] = False
+            new_comment = (
+                rules["PM5_splicing"]["comment"]
+                + " As PVS1_RNA does not apply to this variant, PM5 splicing can not be applied."
+            )
+            rules["PM5_splicing"]["comment"] = new_comment
     if name_config == "ACMG BRCA1" or name_config == "ACMG BRCA2":
         if (
             not pvs1_applies

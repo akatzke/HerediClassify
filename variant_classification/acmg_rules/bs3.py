@@ -12,6 +12,9 @@ from acmg_rules.utils import (
 )
 from information import Info, Classification_Info
 from variant import FunctionalData
+from acmg_rules.functional_splicing_assay_utils import (
+    summarise_func_data,
+)
 
 
 class Bs3(abstract_rule):
@@ -31,14 +34,26 @@ class Bs3(abstract_rule):
     @classmethod
     def assess_rule(
         cls,
-        func_data: FunctionalData,
+        func_data: list[FunctionalData],
     ) -> RuleResult:
-        if not func_data.performed:
+        pathogenic_count, benign_count, uncertain_count = summarise_func_data(func_data)
+        if not func_data:
             result = False
             comment = f"No functional assay performed."
-        elif func_data.benign:
+        elif benign_count == 0:
+            result = False
+            comment = f"None of the {len(func_data)} functional assay(s) performed indicate benignity of the variant."
+        elif benign_count > 0 and pathogenic_count > 0:
+            result = False
+            comment = f"{pathogenic_count} of the {len(func_data)} perforemd assays indicate that the variant is pathogenic and {benign_count} of the {len(func_data)} indicate that the variant is benign. Due to this conflicting evidenced BS3 can not be applied."
+        elif benign_count > 0:
             result = True
-            comment = f"Functional assay performed and result indicates benignity."
+            comment = f"{benign_count} of the {len(func_data)} performed assays indicate that the variant is benign."
+            if uncertain_count != 0:
+                comment = (
+                    comment
+                    + f" ATTENTION: {uncertain_count} of the {len(func_data)} performed assays show no clear result."
+                )
         else:
             result = False
             comment = (
@@ -70,7 +85,7 @@ class Bs3_prot_and_splice_assay(abstract_rule):
 
     @classmethod
     def assess_rule(
-        cls, func_data: FunctionalData, splice_data: FunctionalData
+        cls, func_data: list[FunctionalData], splice_data: list[FunctionalData]
     ) -> RuleResult:
         if not func_data.performed and not splice_data.performed:
             result = False
