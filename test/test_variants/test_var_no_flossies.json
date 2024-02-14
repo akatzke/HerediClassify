@@ -30,14 +30,6 @@
          "popmax": "EAS",
          "popmax_AF" : 0.009,
          "popmax_AC" : 5},
-    "mRNA_analysis" :
-        {"performed": true,
-         "pathogenic": true,
-         "benign": true},
-    "functional_data":
-        {"performed": true,
-         "pathogenic": true,
-         "benign": true},
     "prior": 0.25,
     "co-occurrence" : 0.56,
     "segregation" : 0.56,

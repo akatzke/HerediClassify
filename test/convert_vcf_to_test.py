@@ -97,18 +97,6 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
     if len(cancer_hotspots) > 0:
         json_dict["cancer_hotspots"] = cancer_hotspots
 
-    # Functional assays
-    json_dict["mRNA_analysis"] = {
-        "performed": False,
-        "pathogenic": False,
-        "benign": False,
-    }
-    json_dict["functional_data"] = {
-        "performed": False,
-        "pathogenic": False,
-        "benign": False,
-    }
-
     # Cold spot
     json_dict["cold_spot"] = False
     return json_dict

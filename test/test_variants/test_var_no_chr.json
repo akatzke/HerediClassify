@@ -32,14 +32,6 @@
     "FLOSSIES":
         {"AFR" : 9,
          "EUR" : 130},
-    "mRNA_analysis" :
-        {"performed": true,
-         "pathogenic": true,
-         "benign": true},
-    "functional_data":
-        {"performed": true,
-         "pathogenic": true,
-         "benign": true},
     "prior": 0.25,
     "co-occurrence" : 0.56,
     "segregation" : 0.56,
