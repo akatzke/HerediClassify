@@ -35,7 +35,7 @@ def adjust_strength_according_to_rna_data_pvs1(
     """
     Modify strength of PVS1 according to available RNA data
     """
-    no_performed, no_quantification = 0, 0
+    no_quantification = 0
     minigene_90, minigene, patient_90, patient, patient_no_allele_specific = (
         0,
         0,
@@ -44,9 +44,7 @@ def adjust_strength_according_to_rna_data_pvs1(
         0,
     )
     for entry in rna_data:
-        if not entry.performed:
-            no_performed += 1
-        elif not entry.quantification or entry.quantification is None:
+        if not entry.quantification or entry.quantification is None:
             no_quantification += 1
         if entry.minigene and entry.allelic is ALLELIC.CONSTRUCT:
             if entry.quantification >= 0.9:
@@ -79,17 +77,12 @@ def adjust_strength_according_to_rna_data_pvs1(
         evidence_strength.MODERATE: evidence_strength.MODERATE,
         evidence_strength.SUPPORTING: evidence_strength.MODERATE,
     }
-    if no_performed == len(rna_data):
+    if not rna_data:
         result.comment = result.comment + " No RNA assay performed."
     elif no_quantification == len(rna_data):
         result.comment = (
             result.comment
             + " No quantification available for the RNA assay. Please check resulst of RNA assay manually."
-        )
-    elif no_performed + no_quantification == len(rna_data):
-        result.comment = (
-            result.comment
-            + " Either no RNA assay performed or no quantification available for RNA assay."
         )
     if patient_90 > 0 and patient == 0:
         result.name = "PVS1_RNA"
@@ -134,12 +127,10 @@ def assess_splicing_data_bp7(
     Assess splicing data for applicability to BP7
     """
     performed = True
-    no_performed, no_quantification = 0, 0
+    no_quantification = 0, 0
     bp7_allele, bp7_allele_not, bp7, bp7_no = 0, 0, 0, 0
     for entry in rna_data:
-        if not entry.performed:
-            no_performed += 1
-        elif not entry.quantification or entry.quantification is None:
+        if not entry.quantification or entry.quantification is None:
             no_quantification = +1
         elif (entry.patient_rna and entry.allelic is ALLELIC.TRUE) or entry.minigene:
             if entry.quantification < 0.7:
@@ -151,16 +142,13 @@ def assess_splicing_data_bp7(
                 bp7 += 1
             else:
                 bp7_no += 1
-    if no_performed == len(rna_data):
+    if not rna_data:
         performed = False
         result = False
         comment = "No RNA assay performed."
     elif no_quantification == len(rna_data):
         result = False
         comment = "No quantification available for the RNA assay. Please check results of RNA assay manually."
-    elif no_performed + no_quantification == len(rna_data):
-        result = False
-        comment = "Either no RNA assay performed or no quantification available for RNA assay. Plase check resulst of RNA assay manually."
     elif (bp7_allele_not > 0 or bp7_no > 0) and (bp7 > 0 or bp7_allele > 0):
         result = False
         comment = "Multiple RNA Assays were performed with contradictory results. Please check results manually."

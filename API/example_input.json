@@ -37,8 +37,7 @@
         {"AF" : 0.000041,
          "AC": 1},
     "mRNA_analysis" : [
-        {"performed": true,
-         "minigene": true,
+        {"minigene": true,
          "patient_rna": false,
          "allelic" : "Construct",
          "quantification": null}

@@ -88,7 +88,6 @@ class ALLELIC(Enum):
 
 @dataclass
 class RNAData:
-    performed: bool
     minigene: bool
     patient_rna: bool
     allelic: ALLELIC

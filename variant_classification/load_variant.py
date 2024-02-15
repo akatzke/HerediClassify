@@ -318,13 +318,11 @@ def create_rna_data(key: str, variant_json: dict) -> Optional[list[RNAData]]:
         return None
     func_list = []
     for entry in func_data:
-        performed = entry["performed"]
         minigene = entry["minigene"]
         patient_rna = entry["patient_rna"]
         allelic = ALLELIC(entry["allelic"].lower().strip())
         quantification = entry["quantification"]
         func = RNAData(
-            performed=performed,
             minigene=minigene,
             patient_rna=patient_rna,
             allelic=allelic,
