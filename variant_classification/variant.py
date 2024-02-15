@@ -76,7 +76,6 @@ class MultifactorialLikelihood:
 
 @dataclass
 class FunctionalData:
-    performed: bool
     pathogenic: bool
     benign: bool
 

@@ -16,8 +16,6 @@ def summarise_func_data(fun_data: list[FunctionalData]) -> tuple[int, int, int]:
     benign_count = 0
     uncertain_count = 0
     for entry in fun_data:
-        if not entry.performed:
-            continue
         if entry.pathogenic and entry.benign:
             raise AttributeError(
                 f"The result of a functional assay is set to benign and pathogenic. This is not allowed. Please check the input data."

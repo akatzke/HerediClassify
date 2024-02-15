@@ -190,9 +190,6 @@
         {
         "type": "object",
         "properties": {
-          "performed": {
-            "type": "boolean"
-          },
           "pathogenic" :{
             "type": "boolean"
           },
@@ -201,7 +198,6 @@
           }
         },
         "required": [
-          "performed",
           "pathogenic",
           "benign"
         ]

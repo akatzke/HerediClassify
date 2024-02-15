@@ -45,11 +45,9 @@
         ],
     "functional_data": [
 
-        {"performed": true,
-         "pathogenic": false,
+        {"pathogenic": false,
          "benign": true},
-        {"performed": true,
-         "pathogenic": false,
+        {"pathogenic": false,
          "benign": true}
         ],
     "prior": 0.25,

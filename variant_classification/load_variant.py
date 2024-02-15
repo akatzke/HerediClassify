@@ -303,8 +303,7 @@ def create_functional_data(
     for entry in func_data:
         patho = entry["pathogenic"]
         ben = entry["benign"]
-        performed = entry["performed"]
-        func = FunctionalData(performed=performed, pathogenic=patho, benign=ben)
+        func = FunctionalData(pathogenic=patho, benign=ben)
         func_list.append(func)
     return func_list
 
