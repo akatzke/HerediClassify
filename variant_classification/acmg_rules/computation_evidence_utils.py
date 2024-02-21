@@ -24,107 +24,63 @@ class THRESHOLD_DIRECTION(Enum):
 @dataclass
 class Threshold:
     name: str
-    threshold: float
     direction: THRESHOLD_DIRECTION
+    thresholds: list[float]
+    strengths: list[evidence_strength]
 
 
-@dataclass
-class Threshold_evidence_strength:
-    name: str
-    direction: THRESHOLD_DIRECTION
-    threshold_very_strong: Optional[float] = None
-    threshold_strong: Optional[float] = None
-    threshold_moderate: Optional[float] = None
-    threshold_supporting: Optional[float] = None
+def assess_thresholds(thresholds: Threshold, prediction_value: Optional[float]) -> int:
+    if prediction_value is None:
+        return 0
+    count = 0
+    for single_threshold in thresholds.thresholds:
+        result = asses_threshold(
+            single_threshold, thresholds.direction, prediction_value
+        )
+        if result is None:
+            raise ValueError(
+                f"No (valid) direction for the assessment of the prediction tool {thresholds.name} was provided."
+            )
+        if result:
+            count += 1
+    return count
 
 
-def assess_prediction_tool(
-    threshold: Threshold, prediction_value: Optional[float]
+# def assess_prediction_tool(
+def asses_threshold(
+    threshold: float, threshold_direction: THRESHOLD_DIRECTION, prediction_value: float
 ) -> Optional[bool]:
     """
     Assess prediction result
     """
-    if prediction_value is None:
+    if threshold_direction.value == THRESHOLD_DIRECTION.GREATER.value:
+        if prediction_value > threshold:
+            return True
+        else:
+            return False
+    if threshold_direction.value == THRESHOLD_DIRECTION.GREATER_THAN_OR_EQUAL.value:
+        if prediction_value >= threshold:
+            return True
+        else:
+            return False
+    elif threshold_direction.value == THRESHOLD_DIRECTION.LESS.value:
+        if prediction_value < threshold:
+            return True
+        else:
+            return False
+    elif threshold_direction.value == THRESHOLD_DIRECTION.LESS_THAN_OR_EQUAL.value:
+        if prediction_value <= threshold:
+            return True
+        else:
+            return False
+    else:
         return None
-    if threshold.direction.value == THRESHOLD_DIRECTION.GREATER.value:
-        if prediction_value > threshold.threshold:
-            return True
-        else:
-            return False
-    if threshold.direction.value == THRESHOLD_DIRECTION.GREATER_THAN_OR_EQUAL.value:
-        if prediction_value >= threshold.threshold:
-            return True
-        else:
-            return False
-    elif threshold.direction.value == THRESHOLD_DIRECTION.LESS.value:
-        if prediction_value < threshold.threshold:
-            return True
-        else:
-            return False
-    elif threshold.direction.value == THRESHOLD_DIRECTION.LESS_THAN_OR_EQUAL.value:
-        if prediction_value <= threshold.threshold:
-            return True
-        else:
-            return False
-    else:
-        raise ValueError(
-            f"No direction for the assessment of the prediction tool {threshold.name} was provided."
-        )
 
 
-def assess_prediction_tool_diff_evidence_strength(
-    threshold: Threshold_evidence_strength, prediction_value: float
-) -> tuple[bool, evidence_strength]:
+def get_evidence_strength_from_prediction_count(
+    strength_order: list[evidence_strength], count: int
+) -> evidence_strength:
     """
-    Return
+    Depending on number of thresholds met, return evidence strength
     """
-    if threshold.direction.value == THRESHOLD_DIRECTION.GREATER.value:
-        if (
-            threshold.threshold_very_strong is not None
-            and prediction_value > threshold.threshold_very_strong
-        ):
-            return (True, evidence_strength.VERY_STRONG)
-        elif (
-            threshold.threshold_strong is not None
-            and prediction_value > threshold.threshold_strong
-        ):
-            return (True, evidence_strength.STRONG)
-        elif (
-            threshold.threshold_moderate is not None
-            and prediction_value > threshold.threshold_moderate
-        ):
-            return (True, evidence_strength.MODERATE)
-        elif (
-            threshold.threshold_supporting is not None
-            and prediction_value > threshold.threshold_supporting
-        ):
-            return (True, evidence_strength.SUPPORTING)
-        else:
-            return (False, evidence_strength.SUPPORTING)
-    elif threshold.direction.value == THRESHOLD_DIRECTION.LESS.value:
-        if (
-            threshold.threshold_very_strong is not None
-            and prediction_value < threshold.threshold_very_strong
-        ):
-            return (True, evidence_strength.VERY_STRONG)
-        elif (
-            threshold.threshold_strong is not None
-            and prediction_value < threshold.threshold_strong
-        ):
-            return (True, evidence_strength.STRONG)
-        elif (
-            threshold.threshold_moderate is not None
-            and prediction_value < threshold.threshold_moderate
-        ):
-            return (True, evidence_strength.MODERATE)
-        elif (
-            threshold.threshold_supporting is not None
-            and prediction_value < threshold.threshold_supporting
-        ):
-            return (True, evidence_strength.SUPPORTING)
-        else:
-            return (False, evidence_strength.SUPPORTING)
-    else:
-        raise ValueError(
-            f"No direction for the assessment of the prediction tool {threshold.name} was provided."
-        )
+    return strength_order[count - 1]

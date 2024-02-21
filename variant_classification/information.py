@@ -11,7 +11,6 @@ ValueType = TypeVar("ValueType")
 
 class Classification_Info_Groups(Enum):
     THRESHOLD_SINGLE = auto()
-    THRESHOLD_PREDICTION = auto()
     THRESHOLD_MULT_STRENGTH = auto()
     CONFIG_ENTRY_STR = auto()
     PATH = auto()
@@ -131,7 +130,7 @@ class Classification_Info:
                 "pathogenicity_prediction",
                 "benign",
             ),
-            group=Classification_Info_Groups.THRESHOLD_PREDICTION,
+            group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
         )
         self.THRESHOLD_PATHOGENICITY_PREDICTION_PATHOGENIC = Info(
             "prediction_pathogenicity_pathogenic",
@@ -140,7 +139,7 @@ class Classification_Info:
                 "pathogenicity_prediction",
                 "pathogenic",
             ),
-            group=Classification_Info_Groups.THRESHOLD_PREDICTION,
+            group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
         )
         self.THRESHOLD_SPLICING_PREDICTION_BENIGN = Info(
             "prediction_splicing_benign",
@@ -149,7 +148,7 @@ class Classification_Info:
                 "splicing_prediction",
                 "benign",
             ),
-            group=Classification_Info_Groups.THRESHOLD_PREDICTION,
+            group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
         )
         self.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC = Info(
             "prediction_splicing_pathogenic",
@@ -158,7 +157,7 @@ class Classification_Info:
                 "splicing_prediction",
                 "pathogenic",
             ),
-            group=Classification_Info_Groups.THRESHOLD_PREDICTION,
+            group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
         )
         self.THRESHOLD_LIKELIHOOD_PATHOGENIC = Info(
             "threshold_likelihood_pathogenic",
