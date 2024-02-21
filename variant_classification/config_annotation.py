@@ -513,9 +513,9 @@ def get_threshold_prediction_from_config_mult_strength(
     thr_str = config_prediction_tool.get("strong")
     thr_very_str = config_prediction_tool.get("very_strong")
     if config_location[-1] == "pathogenic":
-        dir = THRESHOLD_DIRECTION.HIGHER
+        dir = THRESHOLD_DIRECTION.GREATER
     elif config_location[-1] == "benign":
-        dir = THRESHOLD_DIRECTION.LOWER
+        dir = THRESHOLD_DIRECTION.LESS
     else:
         raise ValueError(f"The direction of the threshold could not be determined")
     return Threshold_evidence_strength(
