@@ -44,11 +44,13 @@ prediction_tool_thresholds:
 ### Thresholds loglikelihood ###
 likelihood_thresholds:
     benign:
+        direction: "less"
         supporting: 0.48
         moderate: 0.25
         strong: 0.05
         very_strong: 0.00285
     pathogenic:
+        direction: "greater"
         supporting: 2.08
         moderate: 4.3
         strong: 18.7
