@@ -10,7 +10,7 @@ from acmg_rules.utils import (
     evidence_type,
 )
 from information import Classification_Info, Info
-from acmg_rules.computation_evidence_utils import Threshold_evidence_strength
+from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 from variant import MultifactorialLikelihood
 
 
@@ -36,7 +36,7 @@ class Bs4(abstract_rule):
     def assess_rule(
         cls,
         multifactorial_likelihood: MultifactorialLikelihood,
-        thresholds: Threshold_evidence_strength,
+        threshold: Threshold,
     ) -> RuleResult:
         if (
             multifactorial_likelihood.co_segregation is None
@@ -65,38 +65,15 @@ class Bs4(abstract_rule):
                 evidence_strength.STRONG,
                 "No Co-segregation or multifactorial likelihood given for variant.",
             )
-        if (
-            thresholds.threshold_very_strong is not None
-            and likelihood > thresholds.threshold_very_strong
-        ):
-            result = True
-            strength = evidence_strength.VERY_STRONG
-            comment = f"{name} given for variant {likelihood} meets threshold for very strong pathogenic evidence strength {thresholds.threshold_very_strong}."
-        elif (
-            thresholds.threshold_strong is not None
-            and likelihood > thresholds.threshold_strong
-        ):
-            result = True
-            strength = evidence_strength.STRONG
-            comment = f"{name} given for variant {likelihood} meets threshold for strong pathogenic evidence strength {thresholds.threshold_strong}."
-        elif (
-            thresholds.threshold_moderate is not None
-            and likelihood > thresholds.threshold_moderate
-        ):
-            result = True
-            strength = evidence_strength.MODERATE
-            comment = f"{name} given for variant {likelihood} meets threshold for moderate pathogenic evidence strength {thresholds.threshold_moderate}."
-        elif (
-            thresholds.threshold_supporting is not None
-            and likelihood > thresholds.threshold_supporting
-        ):
-            result = True
-            strength = evidence_strength.SUPPORTING
-            comment = f"{name} given for variant {likelihood} meets threshold for supporting pathogenic evidence strength {thresholds.threshold_supporting}."
-        else:
+        num_thresholds_met = assess_thresholds(threshold, likelihood)
+        if num_thresholds_met is None:
             result = False
             strength = evidence_strength.STRONG
-            comment = f"{name} given for variant {likelihood} does not meet any threshold for pathogenic evidence."
+            comment = f"No {name} was provided. BS4 could not be evaluated."
+        elif num_thresholds_met == 0:
+            result = False
+            strength = evidence_strength.STRONG
+            comment = f"No {name} was provided. BS4 could not be evaluated."
 
         return RuleResult(
             "BS4",

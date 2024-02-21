@@ -9,7 +9,7 @@ from acmg_rules.utils import (
     rule_type,
     summarise_results_per_transcript,
 )
-from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_tool
+from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 from acmg_rules.pvs1 import Pvs1
 from information import Classification_Info, Info
 from variant import RNAData, TranscriptInfo, VariantInfo
@@ -182,8 +182,8 @@ class Pvs1_palb2(Pvs1):
         threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction_pathogenic = assess_prediction_tool(threshold, prediction_value)
-        if not transcript.are_exons_skipped or not prediction_pathogenic:
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        if not transcript.are_exons_skipped or not num_thresholds_met:
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = (

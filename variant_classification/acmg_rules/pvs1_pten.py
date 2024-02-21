@@ -19,7 +19,7 @@ from transcript_annotated import (
 )
 from acmg_rules.computation_evidence_utils import (
     Threshold,
-    assess_prediction_tool,
+    assess_thresholds,
 )
 from acmg_rules.functional_splicing_assay_utils import (
     adjust_strength_according_to_rna_data_pvs1,
@@ -126,8 +126,8 @@ class Pvs1_pten(Pvs1):
         threshold: Threshold,
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction_pathogenic = assess_prediction_tool(threshold, prediction_value)
-        if not transcript.are_exons_skipped and not prediction_pathogenic:
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        if not transcript.are_exons_skipped and not num_thresholds_met:
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = f"No splicing alteration predicted for transcript {transcript.transcript_id}."

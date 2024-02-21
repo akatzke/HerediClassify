@@ -9,7 +9,7 @@ from acmg_rules.utils import (
     rule_type,
     summarise_results_per_transcript,
 )
-from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_tool
+from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 from acmg_rules.pvs1 import Pvs1
 from acmg_rules.pvs1_brca2 import Pvs1_brca2
 from information import Classification_Info, Info
@@ -135,13 +135,13 @@ class Pvs1_atm(Pvs1):
         threshold: Threshold,
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction_pathogenic = assess_prediction_tool(threshold, prediction_value)
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
         disease_relevant_transcript = "ENST00000675843"
         if transcript.transcript_id != disease_relevant_transcript:
             raise ValueError(
                 f"Transcript {transcript.transcript_id} is not disease relevant transcript {disease_relevant_transcript}. This is hard coded and not changable. Transcript should have been filterd out earlier."
             )
-        if not transcript.are_exons_skipped or not prediction_pathogenic:
+        if not transcript.are_exons_skipped or not num_thresholds_met:
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = (

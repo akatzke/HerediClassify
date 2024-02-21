@@ -11,7 +11,7 @@ from acmg_rules.utils import (
 )
 from information import Info, Classification_Info
 from acmg_rules.computation_evidence_utils import (
-    assess_prediction_tool,
+    assess_thresholds,
     Threshold,
 )
 from variant import RNAData, VariantInfo
@@ -76,11 +76,11 @@ class Bp7(abstract_rule):
                 f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}.",
             )
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction = assess_prediction_tool(threshold, prediction_value)
-        if prediction is None:
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        if num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}"
             result = False
-        elif prediction:
+        elif num_thresholds_met > 0:
             comment = (
                 f"Variant is predicted to have no splicing effect by {threshold.name}."
             )

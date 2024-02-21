@@ -11,7 +11,7 @@ from acmg_rules.utils import (
 )
 from var_type import VARTYPE_GROUPS
 from information import Classification_Info, Info
-from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_tool
+from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 from clinvar_utils import ClinVar_Status, ClinVar_Type, ClinVar, get_affected_transcript
 from variant import TranscriptInfo, VariantInfo
 from custom_exceptions import No_transcript_with_var_type_found
@@ -87,13 +87,13 @@ class Ps1_protein_spliceai(abstract_rule):
         threshold: Threshold,
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction = assess_prediction_tool(threshold, prediction_value)
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
         clinvar_same_aa = clinvar_result[ClinVar_Type.SAME_AA_CHANGE]
         if clinvar_same_aa.pathogenic:
-            if prediction is None:
+            if num_thresholds_met is None:
                 result = True
                 comment = f"ATTENTION: No splicing prediction is available for variant under assessment. The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
-            elif prediction:
+            elif num_thresholds_met > 0:
                 comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
                 result = True
                 if clinvar_same_aa.associated_ids:

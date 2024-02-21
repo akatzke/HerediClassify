@@ -9,10 +9,7 @@ from acmg_rules.utils import (
     abstract_rule,
     rule_type,
 )
-from acmg_rules.computation_evidence_utils import (
-    Threshold,
-    assess_prediction_tool,
-)
+from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 from information import Classification_Info, Info
 from var_type import VARTYPE_GROUPS
 from variant import TranscriptInfo
@@ -43,13 +40,13 @@ class Pp3_protein(abstract_rule):
     ) -> RuleResult:
         try:
             prediction_value = prediction_dict[threshold.name]
-            prediction = assess_prediction_tool(threshold, prediction_value)
+            num_thresholds_met = assess_thresholds(threshold, prediction_value)
         except KeyError:
-            prediction = None
-        if prediction is None:
+            num_thresholds_met = None
+        if num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}"
             result = False
-        elif prediction:
+        elif num_thresholds_met > 0:
             comment = f"Variant is predicted to be pathogenic by {threshold.name}."
             result = True
         else:
@@ -89,11 +86,11 @@ class Pp3_splicing(abstract_rule):
         threshold: Threshold,
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction = assess_prediction_tool(threshold, prediction_value)
-        if prediction is None:
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        if num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}"
             result = False
-        elif prediction:
+        elif num_thresholds_met > 0:
             comment = (
                 f"Variant is predicted to have a splice effect by {threshold.name}."
             )
@@ -139,11 +136,11 @@ class Pp3_splicing_cdh1(abstract_rule):
         threshold: Threshold,
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction = assess_prediction_tool(threshold, prediction_value)
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
         variant_types = [
             var_type for transcript in transcripts for var_type in transcript.var_type
         ]
-        if prediction is None:
+        if num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}"
             result = False
         elif any(
@@ -151,7 +148,7 @@ class Pp3_splicing_cdh1(abstract_rule):
         ):
             comment = f"Variant is located within cannonical splice site. PP3 does not apply here."
             result = False
-        elif prediction:
+        elif num_thresholds_met > 0:
             comment = (
                 f"Variant is predicted to have a splice effect by {threshold.name}."
             )

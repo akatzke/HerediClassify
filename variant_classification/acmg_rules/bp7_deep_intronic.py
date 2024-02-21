@@ -11,7 +11,7 @@ from acmg_rules.utils import (
 )
 from information import Info, Classification_Info
 from acmg_rules.computation_evidence_utils import (
-    assess_prediction_tool,
+    assess_thresholds,
     Threshold,
 )
 from acmg_rules.functional_splicing_assay_utils import (
@@ -68,11 +68,11 @@ class Bp7_deep_intronic_enigma(abstract_rule):
 
         # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction = assess_prediction_tool(threshold, prediction_value)
-        if prediction is None:
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        if num_thresholds_met is None:
             result = False
             comment = f"No score was provided for {threshold.name}"
-        elif prediction:
+        elif num_thresholds_met > 0:
             """
             Variant is predicted to have splicing effect
             Now check if variant type applies
@@ -89,8 +89,6 @@ class Bp7_deep_intronic_enigma(abstract_rule):
                 """
                 Check if variant is a deep intronic variant
                 """
-                prediction_value = prediction_dict.get(threshold.name, None)
-                prediction = assess_prediction_tool(threshold, prediction_value)
                 result = False
                 comments_all = []
                 for transcript in transcripts:
@@ -176,11 +174,11 @@ class Bp7_deep_intronic_atm(abstract_rule):
 
         # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction = assess_prediction_tool(threshold, prediction_value)
-        if prediction is None:
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        if num_thresholds_met is None:
             result = False
             comment = f"No score was provided for {threshold.name}"
-        elif prediction:
+        elif num_thresholds_met > 0:
             """
             Variant is predicted to have splicing effect
             Now check if variant type applies
@@ -197,8 +195,6 @@ class Bp7_deep_intronic_atm(abstract_rule):
                 """
                 Check if variant is a deep intronic variant
                 """
-                prediction_value = prediction_dict.get(threshold.name, None)
-                prediction = assess_prediction_tool(threshold, prediction_value)
                 result = False
                 comments_all = []
                 for transcript in transcripts:
@@ -284,11 +280,11 @@ class Bp7_deep_intronic_palb2(abstract_rule):
 
         # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction = assess_prediction_tool(threshold, prediction_value)
-        if prediction is None:
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        if num_thresholds_met is None:
             result = False
             comment = f"No score was provided for {threshold.name}"
-        elif prediction:
+        elif num_thresholds_met > 0:
             """
             Variant is predicted to have splicing effect
             Now check if variant type applies
@@ -305,8 +301,6 @@ class Bp7_deep_intronic_palb2(abstract_rule):
                 """
                 Check if variant is a deep intronic variant
                 """
-                prediction_value = prediction_dict.get(threshold.name, None)
-                prediction = assess_prediction_tool(threshold, prediction_value)
                 result = False
                 comments_all = []
                 for transcript in transcripts:
