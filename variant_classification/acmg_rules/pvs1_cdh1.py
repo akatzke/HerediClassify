@@ -18,9 +18,7 @@ from transcript_annotated import (
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
 )
-from acmg_rules.computation_evidence_utils import (
-    Threshold,
-)
+from acmg_rules.computation_evidence_utils import Threshold
 from acmg_rules.functional_splicing_assay_utils import (
     adjust_strength_according_to_rna_data_pvs1,
 )

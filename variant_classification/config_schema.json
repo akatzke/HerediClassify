@@ -38,21 +38,49 @@
                         "name" : {
                             "type" : "string"
                         },
-                        "benign": {
-                            "type": "number"
+                        "benign":{
+                            "properties" : {
+                                "direction" : {
+                                    "type" : "string"
+                                },
+                                "supporting" : {
+                                    "type" :  "number"
+                                },
+                                "moderate" : {
+                                    "type" :  "number"
+                                },
+                                "strong" : {
+                                    "type" :  "number"
+                                },
+                                "very_strong" : {
+                                    "type" :  "number"
+                                }
+                            },
+                            "required" : ["direction"]
                         },
-                        "benign_direction": {
-                            "type": "string"
-                        },
-                        "pathogenic": {
-                            "type": "number"
-                        },
-                        "pathogenic_direction": {
-                            "type": "string"
+                        "pathogenic":{
+                            "properties" : {
+                                "direction" : {
+                                    "type" : "string"
+                                },
+                                "supporting" : {
+                                    "type" :  "number"
+                                },
+                                "moderate" : {
+                                    "type" :  "number"
+                                },
+                                "strong" : {
+                                    "type" :  "number"
+                                },
+                                "very_strong" : {
+                                    "type" :  "number"
+                                }
+                            },
+                            "required" : ["direction"]
                         }
                     },
                     "required":
-                    ["name", "benign", "benign_direction", "pathogenic", "pathogenic_direction"]
+                    ["name", "benign", "pathogenic"]
                 },
                 "splicing_prediction" :{
                     "properties": {
@@ -60,20 +88,48 @@
                             "type": "string"
                         },
                         "benign":{
-                            "type": "number"
-                        },
-                        "benign_direction": {
-                            "type": "string"
+                            "properties" : {
+                                "direction" : {
+                                    "type" : "string"
+                                },
+                                "supporting" : {
+                                    "type" :  "number"
+                                },
+                                "moderate" : {
+                                    "type" :  "number"
+                                },
+                                "strong" : {
+                                    "type" :  "number"
+                                },
+                                "very_strong" : {
+                                    "type" :  "number"
+                                }
+                            },
+                            "required" : ["direction"]
                         },
                         "pathogenic":{
-                            "type": "number"
-                        },
-                        "pathogenic_direction": {
-                            "type": "string"
+                            "properties" : {
+                                "direction" : {
+                                    "type" : "string"
+                                },
+                                "supporting" : {
+                                    "type" :  "number"
+                                },
+                                "moderate" : {
+                                    "type" :  "number"
+                                },
+                                "strong" : {
+                                    "type" :  "number"
+                                },
+                                "very_strong" : {
+                                    "type" :  "number"
+                                }
+                            },
+                            "required" : ["direction"]
                         }
                     },
                     "required":
-                    ["name", "benign", "benign_direction", "pathogenic", "pathogenic_direction"]
+                    ["name", "benign", "pathogenic"]
                 }
             }
         },
@@ -81,6 +137,9 @@
             "properties": {
                 "benign": {
                     "properties": {
+                        "direction": {
+                            "type": "string"
+                        },
                         "supproting": {
                             "type": "number"
                         },
@@ -97,6 +156,9 @@
                 },
                 "pathogenic": {
                     "properties": {
+                        "direction": {
+                            "type": "string"
+                        },
                         "supproting": {
                             "type": "number"
                         },

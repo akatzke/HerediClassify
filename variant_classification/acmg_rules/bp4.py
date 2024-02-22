@@ -11,7 +11,7 @@ from acmg_rules.utils import (
 )
 from information import Classification_Info, Info
 from acmg_rules.computation_evidence_utils import (
-    assess_prediction_tool,
+    assess_thresholds,
     Threshold,
 )
 
@@ -40,11 +40,11 @@ class Bp4_protein(abstract_rule):
         threshold: Threshold,
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction = assess_prediction_tool(threshold, prediction_value)
-        if prediction is None:
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        if num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}"
             result = False
-        elif prediction:
+        elif num_thresholds_met > 0:
             comment = f"Variant is predicted to be benign by {threshold.name}."
             result = True
         else:
@@ -84,11 +84,11 @@ class Bp4_splicing(abstract_rule):
         threshold: Threshold,
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction = assess_prediction_tool(threshold, prediction_value)
-        if prediction is None:
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        if num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}"
             result = False
-        elif prediction:
+        elif num_thresholds_met > 0:
             comment = (
                 f"Variant is predicted to have no splicing effect by {threshold.name}."
             )

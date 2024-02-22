@@ -10,7 +10,7 @@ from acmg_rules.utils import (
     evidence_type,
 )
 from information import Classification_Info, Info
-from acmg_rules.computation_evidence_utils import Threshold_evidence_strength
+from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 from variant import MultifactorialLikelihood
 
 
@@ -36,47 +36,24 @@ class Pp1(abstract_rule):
     def assess_rule(
         cls,
         multifactorial_likelihood: MultifactorialLikelihood,
-        thresholds: Threshold_evidence_strength,
+        thresholds: Threshold,
     ) -> RuleResult:
-        if multifactorial_likelihood.co_segregation is None:
+        num_thresholds_met = assess_thresholds(
+            thresholds, multifactorial_likelihood.co_segregation
+        )
+        if num_thresholds_met is None:
             result = False
             comment = "No Co-segregation given for variant."
             strength = evidence_strength.SUPPORTING
-        elif (
-            thresholds.threshold_very_strong is not None
-            and multifactorial_likelihood.co_segregation
-            > thresholds.threshold_very_strong
-        ):
-            result = True
-            strength = evidence_strength.VERY_STRONG
-            comment = f"Co-segregation given for variant {multifactorial_likelihood.co_segregation} meets threshold for very strong pathogenic evidence strength {thresholds.threshold_very_strong}."
-        elif (
-            thresholds.threshold_strong is not None
-            and multifactorial_likelihood.co_segregation > thresholds.threshold_strong
-        ):
-            result = True
-            strength = evidence_strength.STRONG
-            comment = f"Co-segregation given for variant {multifactorial_likelihood.co_segregation} meets threshold for strong pathogenic evidence strength {thresholds.threshold_strong}."
-        elif (
-            thresholds.threshold_moderate is not None
-            and multifactorial_likelihood.co_segregation > thresholds.threshold_moderate
-        ):
-            result = True
-            strength = evidence_strength.MODERATE
-            comment = f"Co-segregation given for variant {multifactorial_likelihood.co_segregation} meets threshold for moderate pathogenic evidence strength {thresholds.threshold_moderate}."
-        elif (
-            thresholds.threshold_supporting is not None
-            and multifactorial_likelihood.co_segregation
-            > thresholds.threshold_supporting
-        ):
-            result = True
-            strength = evidence_strength.SUPPORTING
-            comment = f"Co-segregation given for variant {multifactorial_likelihood.co_segregation} meets threshold for supporting pathogenic evidence strength {thresholds.threshold_supporting}."
-        else:
+
+        elif num_thresholds_met == 0:
             result = False
             strength = evidence_strength.SUPPORTING
-            comment = f"Co-segregation given for variant {multifactorial_likelihood.co_segregation} does not meet any threshold for pathogenic evidence."
-
+            comment = f"Co-segregation of {multifactorial_likelihood.co_segregation} given for the variant meets no threshold for pathogenic evidence."
+        else:
+            result = True
+            strength = thresholds.strengths[num_thresholds_met - 1]
+            comment = f"Co-segregation of {multifactorial_likelihood.co_segregation} given for variant meets threshold for {strength.value} pathogenic evidence."
         return RuleResult(
             "PP1",
             rule_type.GENERAL,

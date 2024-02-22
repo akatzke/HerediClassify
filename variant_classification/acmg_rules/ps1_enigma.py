@@ -10,7 +10,7 @@ from acmg_rules.utils import (
     rule_type,
 )
 from information import Classification_Info, Info
-from acmg_rules.computation_evidence_utils import Threshold, assess_prediction_tool
+from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 from clinvar_utils import ClinVar_Status, ClinVar_Type, ClinVar
 
 
@@ -40,15 +40,15 @@ class Ps1_protein_enigma(abstract_rule):
         threshold: Threshold,
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
-        prediction = assess_prediction_tool(threshold, prediction_value)
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
         clinvar_same_aa = clinvar_result[ClinVar_Type.SAME_AA_CHANGE]
-        if prediction is None:
+        if num_thresholds_met is None:
             result = False
             strength = evidence_strength.STRONG
             comment = "No splicing prediction is available. Therefore PS1_protein can not be evaluated."
         if (
             clinvar_same_aa.pathogenic
-            and not prediction
+            and num_thresholds_met == 0
             and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
         ):
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
@@ -56,14 +56,14 @@ class Ps1_protein_enigma(abstract_rule):
             result = True
         elif (
             clinvar_same_aa.pathogenic
-            and not prediction
+            and num_thresholds_met == 0
             and clinvar_same_aa.highest_classification
             == ClinVar_Status.LIKELY_PATHOGENIC
         ):
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
             strength = evidence_strength.MODERATE
             result = True
-        elif prediction:
+        elif num_thresholds_met > 0:
             comment = f"Variant is predicted to affect splicing"
             strength = evidence_strength.STRONG
             result = False

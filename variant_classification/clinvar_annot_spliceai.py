@@ -36,12 +36,13 @@ def annotate_clinvar_spliceai_protein(
     variant: VariantInfo,
     transcripts: list[TranscriptInfo],
     path_clinvar: pathlib.Path,
-    threshold_spliceAI: Threshold,
+    threshold: Threshold,
 ) -> dict[ClinVar_Type, ClinVar]:
     """
     Manage ClinVar annotation
     For both splicing and missense variants
     """
+    threshold_spliceAI = max(threshold.thresholds)
     if len(variant.var_obs) != 1 or len(variant.var_ref) != 1:
         logger.warning(
             "Variant is not a SNV. PS1/PM5 currently not implemented for delins."
@@ -85,7 +86,7 @@ def annotate_clinvar_spliceai_protein(
             clinvar_same_codon_aa, variant.gene_name
         )
         clinvar_same_codon_aa_spliceAI = clinvar_same_codon_aa_filtered[
-            clinvar_same_codon_aa_filtered.SpliceAI_max <= threshold_spliceAI.threshold
+            clinvar_same_codon_aa_filtered.SpliceAI_max <= threshold_spliceAI
         ]
         clinvar_same_aa = clinvar_same_codon_aa_filtered[
             clinvar_same_codon_aa_filtered.prot_alt == var_codon_info["prot_alt"]

@@ -38,13 +38,14 @@ def check_clinvar_missense_similarity(
     path_clinvar: pathlib.Path,
     path_similarity_score: pathlib.Path,
     direction_similarity_score: str,
-    threshold_spliceAI: Threshold,
+    threshold: Threshold,
 ) -> ClinVar:
     """
     Check ClinVar for entries supporting pathogenicity of missense variant
     Only looks for different amino acids
     Also ensures that splicing is not predicted for any of the already classified variants
     """
+    threshold_spliceAI = max(threshold.thresholds)
     # In case the variant is not an SNV, return empty ClinVar result
     if len(variant.var_obs) != 1 or len(variant.var_ref) != 1:
         logger.warning(
@@ -90,8 +91,7 @@ def check_clinvar_missense_similarity(
             clinvar_diff_aa = pd.DataFrame()
         else:
             clinvar_same_codon_aa_spliceAI = clinvar_same_codon_aa_similarity[
-                clinvar_same_codon_aa_similarity.SpliceAI_max
-                < threshold_spliceAI.threshold
+                clinvar_same_codon_aa_similarity.SpliceAI_max < threshold_spliceAI
             ]
             clinvar_diff_aa = clinvar_same_codon_aa_spliceAI[
                 clinvar_same_codon_aa_spliceAI.prot_alt != var_codon_info["prot_alt"]

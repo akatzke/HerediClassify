@@ -11,7 +11,8 @@ ValueType = TypeVar("ValueType")
 
 class Classification_Info_Groups(Enum):
     THRESHOLD_SINGLE = auto()
-    THRESHOLD_MULT_STRENGTH = auto()
+    THRESHOLDS_LIKELIHOOD = auto()
+    THRESHOLDS_PREDICTION = auto()
     CONFIG_ENTRY_STR = auto()
     PATH = auto()
     DISEASE_RELEVANT_TRANSCRIPT_THRESHOLD = auto()
@@ -130,7 +131,7 @@ class Classification_Info:
                 "pathogenicity_prediction",
                 "benign",
             ),
-            group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
+            group=Classification_Info_Groups.THRESHOLDS_PREDICTION,
         )
         self.THRESHOLD_PATHOGENICITY_PREDICTION_PATHOGENIC = Info(
             "prediction_pathogenicity_pathogenic",
@@ -139,7 +140,7 @@ class Classification_Info:
                 "pathogenicity_prediction",
                 "pathogenic",
             ),
-            group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
+            group=Classification_Info_Groups.THRESHOLDS_PREDICTION,
         )
         self.THRESHOLD_SPLICING_PREDICTION_BENIGN = Info(
             "prediction_splicing_benign",
@@ -148,7 +149,7 @@ class Classification_Info:
                 "splicing_prediction",
                 "benign",
             ),
-            group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
+            group=Classification_Info_Groups.THRESHOLDS_PREDICTION,
         )
         self.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC = Info(
             "prediction_splicing_pathogenic",
@@ -157,17 +158,17 @@ class Classification_Info:
                 "splicing_prediction",
                 "pathogenic",
             ),
-            group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
+            group=Classification_Info_Groups.THRESHOLDS_PREDICTION,
         )
         self.THRESHOLD_LIKELIHOOD_PATHOGENIC = Info(
             "threshold_likelihood_pathogenic",
             config_location=("likelihood_thresholds", "pathogenic"),
-            group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
+            group=Classification_Info_Groups.THRESHOLDS_LIKELIHOOD,
         )
         self.THRESHOLD_LIKELIHOOD_BENIGN = Info(
             "threshold_likelihood_benign",
             config_location=("likelihood_thresholds", "benign"),
-            group=Classification_Info_Groups.THRESHOLD_MULT_STRENGTH,
+            group=Classification_Info_Groups.THRESHOLDS_LIKELIHOOD,
         )
         self.THRESHOLD_PM2 = Info(
             "threshold_pm2",

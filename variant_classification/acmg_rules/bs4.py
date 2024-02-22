@@ -73,8 +73,11 @@ class Bs4(abstract_rule):
         elif num_thresholds_met == 0:
             result = False
             strength = evidence_strength.STRONG
-            comment = f"No {name} was provided. BS4 could not be evaluated."
-
+            comment = f"{name} of {likelihood} given for variant does not meet any threshold for benign evidence."
+        else:
+            result = True
+            strength = threshold.strengths[num_thresholds_met - 1]
+            comment = f"{name} of {likelihood} given for variant meets threshold for {strength.value} benign evidence."
         return RuleResult(
             "BS4",
             rule_type.GENERAL,

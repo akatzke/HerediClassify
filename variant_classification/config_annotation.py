@@ -229,8 +229,13 @@ def get_annotation_functions(
         Classification_Info_Groups.THRESHOLD_SINGLE: lambda annot, config: partial(
             get_threshold_from_config, annot.config_location, config
         ),
-        Classification_Info_Groups.THRESHOLD_MULT_STRENGTH: lambda annot, config: partial(
-            get_threshold_prediction_from_config_mult_strength,
+        Classification_Info_Groups.THRESHOLDS_LIKELIHOOD: lambda annot, config: partial(
+            get_thresholds_likelihood,
+            annot.config_location,
+            config,
+        ),
+        Classification_Info_Groups.THRESHOLDS_PREDICTION: lambda annot, config: partial(
+            get_thresholds_prediction,
             annot.config_location,
             config,
         ),
@@ -260,9 +265,13 @@ def get_annotation_functions(
                 annotation.compute_function = dict_annotation_groups[
                     Classification_Info_Groups.THRESHOLD_SINGLE
                 ](annotation, config)
-            elif annotation.group is Classification_Info_Groups.THRESHOLD_MULT_STRENGTH:
+            elif annotation.group is Classification_Info_Groups.THRESHOLDS_LIKELIHOOD:
                 annotation.compute_function = dict_annotation_groups[
-                    Classification_Info_Groups.THRESHOLD_MULT_STRENGTH
+                    Classification_Info_Groups.THRESHOLDS_LIKELIHOOD
+                ](annotation, config)
+            elif annotation.group is Classification_Info_Groups.THRESHOLDS_PREDICTION:
+                annotation.compute_function = dict_annotation_groups[
+                    Classification_Info_Groups.THRESHOLDS_PREDICTION
                 ](annotation, config)
             elif (
                 annotation.group
@@ -444,7 +453,7 @@ def get_threshold_from_config(
     return None
 
 
-def get_threshold_prediction_from_config_mult_strength(
+def get_thresholds_likelihood(
     config_location: Union[tuple[str, ...], None], config: dict
 ) -> Union[Threshold, None]:
     """
@@ -480,6 +489,50 @@ def get_threshold_prediction_from_config_mult_strength(
     strengths = [evidence_strength(key) for key in keys_sorted]
     return Threshold(
         name=config_location[0],
+        direction=dir,
+        thresholds=thresholds,
+        strengths=strengths,
+    )
+
+
+def get_thresholds_prediction(
+    config_location: Union[tuple[str, ...], None], config: dict
+) -> Union[Threshold, None]:
+    """
+    Get thresholds when multiple evidence strengths are defined
+    """
+    if config_location is None:
+        logger.warning(
+            f"No location in the configuration is defined for this threshold. Please check information.py."
+        )
+        return None
+    try:
+        config_prediction_tool: dict[str, Any] = reduce(
+            op.getitem, config_location, config
+        )
+    except KeyError:
+        logger.warning(
+            f"The location {config_location} could not be found in configuration."
+        )
+        return None
+    threshold_dict = dict(config_prediction_tool)
+    name_location = (*config_location[:-1], "name")
+    name: str = reduce(op.getitem, name_location, config)
+    try:
+        dir = THRESHOLD_DIRECTION(threshold_dict["direction"])
+    except ValueError:
+        raise ValueError(
+            f"The direction {threshold_dict['direction']} in {config_location} is not valid. Pleace check config."
+        )
+    del threshold_dict["direction"]
+    thresholds = list(threshold_dict.values())
+    if "greater" in dir.value:
+        keys_sorted = sorted(threshold_dict, key=threshold_dict.get, reverse=False)
+    else:
+        keys_sorted = sorted(threshold_dict, key=threshold_dict.get, reverse=True)
+    strengths = [evidence_strength(key) for key in keys_sorted]
+    return Threshold(
+        name=name,
         direction=dir,
         thresholds=thresholds,
         strengths=strengths,
