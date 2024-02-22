@@ -29,16 +29,20 @@ disease_relevant_transcripts:
 prediction_tool_thresholds:
     pathogenicity_prediction:
         name: "REVEL"
-        benign: 0.5
-        benign_direction: "less"
-        pathogenic: 0.7
-        pathogenic_direction: "greater"
+        benign:
+                supporting: 0.5
+                direction: "less"
+        pathogenic:
+                supporting: 0.7
+                direction: "greater"
     splicing_prediction:
         name: "SpliceAI"
-        benign: 0.49
-        benign_direction: "less_than_or_equal"
-        pathogenic: 0.5
-        pathogenic_direction: "greater_than_or_equal"
+        benign:
+                supporting: 0.49
+                direction: "less_than_or_equal"
+        pathogenic:
+                supporting: 0.5
+                direction: "greater_than_or_equal"
 
 ### Thresholds loglikelihood ###
 likelihood_thresholds:

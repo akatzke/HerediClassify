@@ -30,16 +30,20 @@ disease_relevant_transcripts:
 prediction_tool_thresholds:
     pathogenicity_prediction:
         name: "REVEL"
-        benign: 0.290
-        benign_direction: "less_than_or_equal"
-        pathogenic: 0.644
-        pathogenic_direction: "greater_than_or_equal"
+        benign:
+                supporting: 0.290
+                direction: "less_than_or_equal"
+        pathogenic:
+                supporting: 0.644
+                direction: "greater_than_or_equal"
     splicing_prediction:
         name: "SpliceAI"
-        benign: 0.1
-        benign_direction: "less_than_or_equal"
-        pathogenic: 0.2
-        pathogenic_direction: "greater_than_or_equal"
+        benign:
+                supporting: 0.1
+                direction: "less_than_or_equal"
+        pathogenic:
+                supporting: 0.2
+                direction: "greater_than_or_equal"
 
 ### Allelee frequency threshold for each gene ###
 allele_frequency_thresholds:
