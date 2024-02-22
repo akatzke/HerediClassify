@@ -8,6 +8,7 @@ from acmg_rules.bs4 import *
 from acmg_rules.bp1 import *
 from acmg_rules.bp3 import *
 from acmg_rules.bp4 import *
+from acmg_rules.bp4_mult_strength import *
 from acmg_rules.bp7 import *
 from acmg_rules.bp7_deep_intronic import *
 from acmg_rules.pvs1 import *
@@ -34,4 +35,5 @@ from acmg_rules.pm5_tp53 import *
 from acmg_rules.pp1 import *
 from acmg_rules.pp2 import *
 from acmg_rules.pp3 import *
+from acmg_rules.pp3_mult_strength import *
 from acmg_rules.pp4 import *
