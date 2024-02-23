@@ -185,7 +185,7 @@ def test_del_inframe():
         and annot_trans.is_NMD == False
         and annot_trans.is_reading_frame_preserved == True
         and annot_trans.frameshift == 0
-        and annot_trans.ptc == 392
+        and annot_trans.ptc == 394
     )
 
 

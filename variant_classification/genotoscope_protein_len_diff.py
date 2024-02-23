@@ -81,10 +81,12 @@ def correct_position_ptc_for_indels(
     if diff_len == 0:
         return codon_positon_ptc
     elif diff_len > 0:
-        codon_shift = math.floor(diff_len / 3)
+        # In case of an insertion the number of codons inserted needs to be substraced to get the position of the PTC in the original transcript
+        codon_shift = math.floor(diff_len / 3) * -1
         return codon_positon_ptc + codon_shift
     elif diff_len < 0:
-        codon_shift = math.floor(abs(diff_len) / 3) * -1
+        # In case of a deletion the number of codons deleted needs to be added to get the position of the PTC in the original transcript
+        codon_shift = math.floor(abs(diff_len) / 3)
         return codon_positon_ptc + codon_shift
     else:
         raise ValueError("Error whilst correcting PTC position.")
