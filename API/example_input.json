@@ -29,7 +29,10 @@
          "AC" : 12,
          "popmax": "EAS",
          "popmax_AF" : 0.009,
-         "popmax_AC" : 5},
+         "popmax_AC" : 5,
+         "faf": "EAS",
+         "faf_AF" : 0.005,
+         "faf_AC" : 4},
     "FLOSSIES":
         {"AFR" : 9,
          "EUR" : 130},

@@ -112,6 +112,19 @@
         "popmax_AC": {
           "type" : "integer",
           "minimum": 0
+        },
+        "faf": {
+          "type": "string",
+          "pattern" : "[A-Z]{3}"
+        },
+        "faf_AF": {
+          "type": "number",
+          "minimum" : 0,
+          "maximum" : 1
+        },
+        "faf_AC": {
+          "type" : "integer",
+          "minimum": 0
         }
       },
       "required": [
@@ -119,7 +132,10 @@
         "AC",
         "popmax",
         "popmax_AF",
-        "popmax_AC"
+        "popmax_AC",
+        "faf",
+        "faf_AF",
+        "faf_AC"
       ]
     },
     "FLOSSIES": {
