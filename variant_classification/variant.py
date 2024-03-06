@@ -41,9 +41,9 @@ class PopulationDatabases:
 
 @dataclass
 class PopulationDatabases_gnomAD(PopulationDatabases):
-    popmax: str
-    popmax_frequency: float
-    popmax_allele_count: int
+    subpopulation: str
+    subpopulation_frequency: float
+    subpopulation_allele_count: int
 
 
 @dataclass
@@ -98,7 +98,8 @@ class RNAData:
 class Variant:
     variant_info: VariantInfo
     transcript_info: list[TranscriptInfo]
-    gnomad: PopulationDatabases_gnomAD
+    gnomad_popmax: PopulationDatabases_gnomAD
+    gnomad_faf: PopulationDatabases_gnomAD
     prediction_tools: dict[str, float]
     affected_region: AffectedRegion
     flossies: Optional[PopulationDatabases] = None

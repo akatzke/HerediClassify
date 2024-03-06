@@ -78,6 +78,7 @@ def get_annotations_needed_from_rules(
         "pm2_supporting": Rules.Pm2_supporting,
         "pm2_supporting_less": Rules.Pm2_supporting_less,
         "pm2_supporting_no_indel": Rules.Pm2_supporting_no_ins_del_indel,
+        "pm2_supporting_no_indel_faf": Rules.Pm2_supporting_no_ins_del_indel_faf,
         "pm4": Rules.Pm4,
         "pm4_pten": Rules.Pm4_pten,
         "pm4_stoploss": Rules.Pm4_stoploss,
@@ -97,10 +98,12 @@ def get_annotations_needed_from_rules(
         "pp3_protein": Rules.Pp3_protein,
         "pp3_protein_mult_strength": Rules.Pp3_protein_mult_strength,
         "ba1": Rules.Ba1,
+        "ba1_faf": Rules.Ba1_faf,
         "ba1_with_absolute": Rules.Ba1_with_absolute,
         "bs1": Rules.Bs1,
         "bs1_with_absolute": Rules.Bs1_with_absolute,
         "bs1_supporting": Rules.Bs1_with_supporting,
+        "bs1_supporting_faf": Rules.Bs1_with_supporting_faf,
         "bs1_absolute": Rules.Bs1_with_absolute,
         "bs2": Rules.Bs2,
         "bs2_supporting": Rules.Bs2_with_supporting,
@@ -169,8 +172,11 @@ def get_annotation_functions(
             "Cancer hotspots",
             variant.cancerhotspots,
         ),
-        class_info.VARIANT_GNOMAD.name: lambda variant: partial(
-            return_information, "GnomAD", variant.gnomad
+        class_info.VARIANT_GNOMAD_POPMAX.name: lambda variant: partial(
+            return_information, "GnomAD popmax", variant.gnomad_popmax
+        ),
+        class_info.VARIANT_GNOMAD_FAF.name: lambda variant: partial(
+            return_information, "GnomAD faf", variant.gnomad_faf
         ),
         class_info.VARIANT_FLOSSIES.name: lambda variant: partial(
             return_information, "FLOSSIES", variant.flossies
@@ -395,7 +401,6 @@ def return_information(info_name: str, info):
     if info is None:
         logger.warning(f"{info_name} is not accessible.")
         return None
-    return info
 
 
 def get_path_from_config(

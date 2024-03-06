@@ -64,7 +64,8 @@ def create_variant(variant_json: dict) -> Variant:
     var_info = create_variantInfo(variant_json)
     trans_info_list = create_transcriptinfo(variant_json)
     prediction_tools = create_prediction_dict(variant_json)
-    gnomad = create_gnomad(variant_json)
+    gnomad_popmax = create_gnomad(variant_json, "popmax")
+    gnomad_faf = create_gnomad(variant_json, "faf")
     flossies = create_flossies(variant_json)
     cancer_hotspots = create_cancer_hotspots(variant_json)
     affected_region = create_affected_region(variant_json)
@@ -74,7 +75,8 @@ def create_variant(variant_json: dict) -> Variant:
         variant_info=var_info,
         transcript_info=trans_info_list,
         prediction_tools=prediction_tools,
-        gnomad=gnomad,
+        gnomad_popmax=gnomad_popmax,
+        gnomad_faf=gnomad_faf,
         flossies=flossies,
         cancerhotspots=cancer_hotspots,
         affected_region=affected_region,
@@ -203,7 +205,7 @@ def create_prediction_dict(variant_json: dict) -> dict[str, float]:
     return prediction
 
 
-def create_gnomad(variant_json: dict) -> PopulationDatabases_gnomAD:
+def create_gnomad(variant_json: dict, type: str) -> PopulationDatabases_gnomAD:
     """
     Create gnomAD object from variant_json
     """
@@ -211,16 +213,16 @@ def create_gnomad(variant_json: dict) -> PopulationDatabases_gnomAD:
     name = "gnomAD"
     frequency = gnomad_dict.get("AF", 0)
     allele_count = gnomad_dict.get("AC", 0)
-    popmax = gnomad_dict.get("popmax", "None")
-    popmax_AF = gnomad_dict.get("popmax_AF", 0)
-    popmax_AC = gnomad_dict.get("popmax_AC", 0)
+    subpopulation = gnomad_dict.get(type, "None")
+    subpopulation_AF = gnomad_dict.get(f"{type}_AF", 0)
+    subpopulation_AC = gnomad_dict.get(f"{type}_AC", 0)
     gnomad = PopulationDatabases_gnomAD(
         name=name,
         frequency=frequency,
         count=allele_count,
-        popmax=popmax,
-        popmax_frequency=popmax_AF,
-        popmax_allele_count=popmax_AC,
+        subpopulation=subpopulation,
+        subpopulation_frequency=subpopulation_AF,
+        subpopulation_allele_count=subpopulation_AC,
     )
     return gnomad
 

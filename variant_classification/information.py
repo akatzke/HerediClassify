@@ -44,7 +44,8 @@ class Classification_Info:
     VARIANT_HOTSPOT_ANNOTATION_PATH: Info
     VARIANT_COLDSPOT_ANNOTATION: Info
     VARIANT_COLDSPOT_ANNOTATION_PATH: Info
-    VARIANT_GNOMAD: Info
+    VARIANT_GNOMAD_POPMAX: Info
+    VARIANT_GNOMAD_FAF: Info
     VARIANT_FLOSSIES: Info
     VARIANT_PREDICTION: Info
     VARIANT_MULTIFACTORIAL_LIKELIHOOD: Info
@@ -118,7 +119,8 @@ class Classification_Info:
             config_location=("annotation_files", "critical_regions", "coldspot_region"),
             group=Classification_Info_Groups.PATH,
         )
-        self.VARIANT_GNOMAD = Info("variant_gnomad")
+        self.VARIANT_GNOMAD_POPMAX = Info("variant_gnomad_popmax")
+        self.VARIANT_GNOMAD_FAF = Info("variant_gnomad_faf")
         self.VARIANT_FLOSSIES = Info("variant_flossies")
         self.VARIANT_PREDICTION = Info("variant_prediction")
         self.VARIANT_MULTIFACTORIAL_LIKELIHOOD = Info(
