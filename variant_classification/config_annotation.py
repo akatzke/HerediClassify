@@ -401,6 +401,7 @@ def return_information(info_name: str, info):
     if info is None:
         logger.warning(f"{info_name} is not accessible.")
         return None
+    return info
 
 
 def get_path_from_config(
