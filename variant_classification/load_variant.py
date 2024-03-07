@@ -65,7 +65,7 @@ def create_variant(variant_json: dict) -> Variant:
     trans_info_list = create_transcriptinfo(variant_json)
     prediction_tools = create_prediction_dict(variant_json)
     gnomad_popmax = create_gnomad(variant_json, "popmax")
-    gnomad_faf = create_gnomad(variant_json, "faf")
+    gnomad_faf = create_gnomad(variant_json, "faf_popmax")
     flossies = create_flossies(variant_json)
     cancer_hotspots = create_cancer_hotspots(variant_json)
     affected_region = create_affected_region(variant_json)
@@ -213,9 +213,9 @@ def create_gnomad(variant_json: dict, type: str) -> PopulationDatabases_gnomAD:
     name = "gnomAD"
     frequency = gnomad_dict.get("AF", 0)
     allele_count = gnomad_dict.get("AC", 0)
-    subpopulation = gnomad_dict.get(type, "None")
+    subpopulation = gnomad_dict.get("subpopulation", "None")
     subpopulation_AF = gnomad_dict.get(f"{type}_AF", 0)
-    subpopulation_AC = gnomad_dict.get(f"{type}_AC", 0)
+    subpopulation_AC = gnomad_dict.get(f"popmax_AC", 0)
     gnomad = PopulationDatabases_gnomAD(
         name=name,
         frequency=frequency,
