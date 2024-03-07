@@ -24,7 +24,7 @@ import json
 import sys
 
 
-def classify(config_path: pathlib.Path, variant_str: str):
+def classify(config_path: pathlib.Path, variant_str: str) -> tuple[str, str]:
     """
     Perform classification
     """
