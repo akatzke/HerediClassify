@@ -100,7 +100,7 @@
           "type": "integer",
           "minimum" : 0
         },
-        "popmax": {
+        "subpopulation": {
           "type": "string",
           "pattern" : "[A-Z]{3}"
         },
@@ -113,29 +113,19 @@
           "type" : "integer",
           "minimum": 0
         },
-        "faf": {
-          "type": "string",
-          "pattern" : "[A-Z]{3}"
-        },
-        "faf_AF": {
+        "faf_popmax_AF": {
           "type": "number",
           "minimum" : 0,
           "maximum" : 1
-        },
-        "faf_AC": {
-          "type" : "integer",
-          "minimum": 0
         }
       },
       "required": [
         "AF",
         "AC",
-        "popmax",
+        "subpopulation",
         "popmax_AF",
         "popmax_AC",
-        "faf",
-        "faf_AF",
-        "faf_AC"
+        "faf_popmax_AF"
       ]
     },
     "FLOSSIES": {
