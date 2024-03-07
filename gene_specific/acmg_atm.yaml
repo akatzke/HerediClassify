@@ -7,14 +7,14 @@ rules:
     - pvs1_atm
     - ps1_protein_spliceai
     - ps1_splicing_clingen
-    - pm2_supporting
+    - pm2_supporting_faf
     - pm4_stoploss
     - pm5_protein_ptc
     - pm5_splicing_ptc
     - pp3_protein
     - pp3_splicing
-    - ba1
-    - bs1
+    - ba1_faf
+    - bs1_faf
     - bp4_protein
     - bp4_splicing
     - bp7_deep_intronic_atm

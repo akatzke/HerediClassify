@@ -6,13 +6,13 @@ version: "1.0.0"
 rules:
     - pvs1_palb2
     - ps1_splicing_clingen
-    - pm2_supporting
+    - pm2_supporting_faf
     - pm5_protein_ptc
     - pm5_splicing_ptc
     - pp3_protein
     - pp3_splicing
-    - ba1
-    - bs1
+    - ba1_faf
+    - bs1_faf
     - bp1
     - bp4_protein
     - bp4_splicing

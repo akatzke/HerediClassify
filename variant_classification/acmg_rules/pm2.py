@@ -114,6 +114,26 @@ class Pm2_supporting(abstract_rule):
         )
 
 
+class Pm2_supporting_faf(abstract_rule):
+    """
+    PM2: Varinat is absent from control population
+    In case of recessive disorders: Variant occurres less than expected carrier rate
+    Default strength of PM2 is set to supporting following SVI recommendations
+    """
+
+    @classmethod
+    def get_assess_rule(
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
+        return (
+            Pm2_supporting.assess_rule,
+            (
+                class_info.VARIANT_GNOMAD_FAF,
+                class_info.THRESHOLD_PM2,
+            ),
+        )
+
+
 class Pm2_supporting_less(abstract_rule):
     """
     PM2: Varinat is absent from control population
@@ -162,6 +182,26 @@ class Pm2_supporting_less(abstract_rule):
             result,
             evidence_strength.SUPPORTING,
             comment,
+        )
+
+
+class Pm2_supporting_less_faf(abstract_rule):
+    """
+    PM2: Varinat is absent from control population
+    In case of recessive disorders: Variant occurres less than expected carrier rate
+    Default strength of PM2 is set to supporting following SVI recommendations
+    """
+
+    @classmethod
+    def get_assess_rule(
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
+        return (
+            Pm2_supporting_less.assess_rule,
+            (
+                class_info.VARIANT_GNOMAD_FAF,
+                class_info.THRESHOLD_PM2,
+            ),
         )
 
 

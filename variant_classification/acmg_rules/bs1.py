@@ -58,6 +58,24 @@ class Bs1(abstract_rule):
         )
 
 
+class Bs1_faf(abstract_rule):
+    """
+    BS1: Frequency of variant higher in population than expected based on disease frequency
+    """
+
+    @classmethod
+    def get_assess_rule(
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
+        return (
+            Bs1.assess_rule,
+            (
+                class_info.VARIANT_GNOMAD_FAF,
+                class_info.THRESHOLD_BS1,
+            ),
+        )
+
+
 class Bs1_with_absolute(abstract_rule):
     """
     BS1: Frequency of variant higher in population than expected based on disease frequency

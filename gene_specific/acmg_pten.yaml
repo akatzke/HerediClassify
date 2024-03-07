@@ -8,14 +8,14 @@ rules:
     - ps1_protein_spliceai
     - ps1_splicing_pten
     - pm1
-    - pm2_supporting_less
+    - pm2_supporting_less_faf
     - pm4_pten
     - pm5_protein_pten
     - pp2
     - pp3_protein
     - pp3_splicing
-    - ba1
-    - bs1_supporting
+    - ba1_faf
+    - bs1_supporting_faf
     - bp4_protein
     - bp4_splicing
     - bp7_deep_intronic_enigma
