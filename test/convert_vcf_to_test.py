@@ -67,13 +67,15 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
                 ]
             ]
         ):
-            gnomad_scores["popmax"] = data.gnomad_popmax
+            gnomad_scores["subpopulation"] = data.gnomad_popmax
             gnomad_scores["popmax_AC"] = int(data.gnomad_popmax_AC)
             gnomad_scores["popmax_AF"] = float(data.gnomad_popmax_AF)
+            gnomad_scores["faf_popmax_AF"] = float(data.gnomad_popmax_AF)
         else:  # if the data is missing popmax values simply use the standard af and ac
-            gnomad_scores["popmax"] = "ALL"
+            gnomad_scores["subpopulation"] = "ALL"
             gnomad_scores["popmax_AC"] = int(data.gnomad_ac)
             gnomad_scores["popmax_AF"] = float(data.gnomad_af)
+            gnomad_scores["faf_popmax_AF"] = float(data.gnomad_af)
     if len(gnomad_scores) > 0:
         json_dict["gnomAD"] = gnomad_scores
 
@@ -91,10 +93,15 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
 
     # Cancer hotspots
     cancer_hotspots = {}
-    if all([type(x) is str for x in [data.cancerhotspots_af, data.cancerhotspots_ac]]):
-        cancer_hotspots["AF"] = float(data.cancerhotspots_af)
-        cancer_hotspots["AC"] = int(data.cancerhotspots_ac)
-    if len(cancer_hotspots) > 0:
+    try:
+        if all(
+            [type(x) is str for x in [data.cancerhotspots_af, data.cancerhotspots_ac]]
+        ):
+            cancer_hotspots["AF"] = float(data.cancerhotspots_af)
+            cancer_hotspots["AC"] = int(data.cancerhotspots_ac)
+        if len(cancer_hotspots) > 0:
+            json_dict["cancer_hotspots"] = cancer_hotspots
+    except AttributeError:
         json_dict["cancer_hotspots"] = cancer_hotspots
 
     # Cold spot
@@ -144,6 +151,9 @@ def process_consequence(cons: str) -> tuple[list[dict], str, list]:
         "BARD1",
         "PMS2",
         "RAD51D",
+        "MLH1",
+        "APC",
+        "RAD51B",
     ]
     gene = [gene for gene in GOI if gene in affected_genes][0]
     gene_transcript_list = []
