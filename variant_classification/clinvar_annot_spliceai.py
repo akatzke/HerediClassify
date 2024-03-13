@@ -88,11 +88,11 @@ def annotate_clinvar_spliceai_protein(
         clinvar_same_codon_aa_spliceAI = clinvar_same_codon_aa_filtered[
             clinvar_same_codon_aa_filtered.SpliceAI_max <= threshold_spliceAI
         ]
-        clinvar_same_aa = clinvar_same_codon_aa_filtered[
-            clinvar_same_codon_aa_filtered.prot_alt == var_codon_info["prot_alt"]
+        clinvar_same_aa = clinvar_same_codon_aa_spliceAI[
+            clinvar_same_codon_aa_spliceAI.prot_alt == var_codon_info["prot_alt"]
         ]
         clinvar_diff_aa = clinvar_same_codon_aa_spliceAI[
-            clinvar_same_codon_aa_filtered.prot_alt != var_codon_info["prot_alt"]
+            clinvar_same_codon_aa_spliceAI.prot_alt != var_codon_info["prot_alt"]
         ]
     else:
         clinvar_diff_aa = pd.DataFrame()
