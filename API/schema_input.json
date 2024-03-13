@@ -34,7 +34,7 @@
             },
             "hgvs_c": {
               "type": "string",
-              "pattern" : "[cC]\\.\\S+"
+              "pattern" : "[ncC]\\.\\S+"
             },
             "hgvs_p": {
               "type": ["string", "null"],
