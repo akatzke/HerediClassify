@@ -43,12 +43,23 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
 
     # Pathogenicity prediction
     pathogenicity_prediction = {}
-    if type(data.revel) is str:
+    if isinstance(data.revel, str):
         revel_by_transcript = data.revel.split("|")
         revel_max_val = max([float(x.split("$")[1]) for x in revel_by_transcript])
         pathogenicity_prediction["REVEL"] = revel_max_val
-    if not math.isnan(float(data.bayesdel)):
-        pathogenicity_prediction["BayesDel"] = float(data.bayesdel)
+    if isinstance(data.bayesdel, str):
+        try:
+            pathogenicity_prediction["BayesDel"] = float(data.bayesdel)
+        except ValueError:
+            scores_bayesdel = data.bayesdel.split("%26")
+            float_scores = []
+            for score in scores_bayesdel:
+                try:
+                    float_scores.append(float(score))
+                except ValueError:
+                    continue
+            if float:
+                pathogenicity_prediction["BayesDel"] = max(float_scores)
     if len(pathogenicity_prediction) > 0:
         json_dict["pathogenicity_prediction_tools"] = pathogenicity_prediction
 
