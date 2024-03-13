@@ -75,7 +75,11 @@ def annotate_clinvar_spliceai_protein(
         var_codon_info["genomic_pos"],
         var_codon_info["intersects_intron_at"],
     )
-    if not clinvar_same_codon.empty:
+    if "SpliceAI" not in clinvar_same_codon.columns and not clinvar_same_codon.empty:
+        logger.warning(f"No SpliceAI column availabel for ClinVar entries.")
+        clinvar_diff_aa = pd.DataFrame()
+        clinvar_same_aa = pd.DataFrame()
+    elif not clinvar_same_codon.empty:
         clinvar_same_codon_splicing = format_spliceai(clinvar_same_codon)
         clinvar_same_codon_aa: pd.DataFrame = clinvar_same_codon_splicing.apply(
             construct_clinvar_prot_change,
