@@ -10,8 +10,14 @@ def format_spliceai(df: pd.DataFrame) -> pd.DataFrame:
     df_nonan.SpliceAI = df_nonan.SpliceAI.str.replace("&", ",")
     two_spliceai = df_nonan[df_nonan.SpliceAI.str.contains(",", na=False)]
     one_spliceai = df_nonan[~df_nonan.SpliceAI.str.contains(",", na=False)]
-    one_max_spliceai = format_spliceai_singel(one_spliceai)
-    two_max_spliceai = format_spliceai_multiple(two_spliceai)
+    if not one_spliceai.empty:
+        one_max_spliceai = format_spliceai_singel(one_spliceai)
+    else:
+        one_max_spliceai = pd.DataFrame()
+    if not two_spliceai.empty:
+        two_max_spliceai = format_spliceai_multiple(two_spliceai)
+    else:
+        two_max_spliceai = pd.DataFrame()
     df_spliceai_max = pd.concat([one_max_spliceai, two_max_spliceai])
     return df_spliceai_max
 
