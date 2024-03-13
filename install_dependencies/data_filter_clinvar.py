@@ -74,7 +74,11 @@ def filter_clinvar_quality(
     out_path = clinvar_path.parent / out_name
     w = Writer(out_path, clinvar)
     for entry in clinvar:
-        if entry.INFO["CLNREVSTAT"] in quality_filter:
+        try:
+            rev_stat = entry.INFO["CLNREVSTAT"]
+        except KeyError:
+            continue
+        if rev_stat in quality_filter:
             w.write_record(entry)
     w.close()
     clinvar.close()

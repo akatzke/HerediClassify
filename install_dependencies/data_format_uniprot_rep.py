@@ -26,7 +26,9 @@ def format_uniprot_rep(path: pathlib.Path, out_path: pathlib.Path) -> None:
     json = pd.read_json(path)
     data = pd.DataFrame(json.unipRepeat.tolist())
     red_data = data.iloc[:, 0:16]
-    red_data = red_data.rename(columns={"chrom": "#chrom"})
+    red_data = red_data.rename(
+        columns={"chrom": "#chr", "chromStart": "start", "chromEnd": "end"}
+    )
     red_data.to_csv(out_path, sep="\t", index=False)
 
 
