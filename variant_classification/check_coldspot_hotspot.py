@@ -99,26 +99,46 @@ def get_variant_strand(transcripts: list[TranscriptInfo], variant: VariantInfo) 
         return strand
     except Exception:
         # In case getting strand from transcript fails, try getting strand from gene
-        try:
-            genes = ensembl.genes_by_name(variant.gene_name)
-            for gene in genes:
-                # Check if variant location matches genen location
-                if (
-                    gene.contig in gene.chr
-                    and (
-                        variant.genomic_start >= gene.start
-                        and gene.end >= variant.genomic_start
-                    )
-                    and (
-                        gene.end >= variant.genomic_end
-                        and variant.genomic_end >= gene.start
-                    )
-                ):
-                    return gene.strand
+        genes = ensembl.genes_by_name(variant.gene_name)
+        # If there is only one gene matching, assume it's the correct one and return strand
+        if len(genes) == 1:
+            return genes[0].strand
+        # If more than one gene was found, check if any of the genes is on the same chromosome as the variant
+        genes_same_chr = []
+        for gene in genes:
+            if gene.contig in variant.chr:
+                genes_same_chr.append(gene)
+        if not len(genes_same_chr):
             raise ValueError(
-                f"None of the genes identified for {variant.gene_name} could be matched to the variant location {variant.chr}:{variant.genomic_start}-{variant.genomic_end}."
+                "The reconstruction of the varaint strand failed. None of the matching genes is located on the same strand as the variant."
             )
-        except Exception:
-            raise ValueError(
-                "The reconstruction of the variant strand failed. Please check."
-            )
+        elif len(genes_same_chr) == 1:
+            return genes_same_chr[0].strand
+        else:
+            # If more than one gene is on the same chromosome, check the location, pick the closest gene
+            closest_gene = find_gene_closest_to_variant(variant, genes_same_chr)
+            return closest_gene.strand
+
+
+def find_gene_closest_to_variant(
+    variant: VariantInfo, genes: list[pyensembl.gene.Gene]
+) -> pyensembl.gene.Gene:
+    """
+    Find the gene located clostest to the variant
+    """
+    distance_dict = {}
+    for gene in genes:
+        dist_to_start = min(
+            abs(variant.genomic_start - gene.start),
+            abs(variant.genomic_end - gene.start),
+        )
+        dist_to_end = min(
+            abs(variant.genomic_start - gene.end),
+            abs(variant.genomic_end - gene.end),
+        )
+        dist = min(dist_to_start, dist_to_end)
+        distance_dict[gene.id] = dist
+    gene_id_closest = min(distance_dict, key=distance_dict.get)
+    for gene in genes:
+        if gene.id == gene_id_closest:
+            return gene
