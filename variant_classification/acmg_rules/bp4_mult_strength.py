@@ -46,7 +46,7 @@ class Bp4_protein_mult_strength(abstract_rule):
             result = False
             strength = evidence_strength.SUPPORTING
         elif num_thresholds_met == 0:
-            comment = f"Variant is not predicted to be benign {threshold.name}."
+            comment = f"Variant is not predicted to be benign by {threshold.name}."
             result = False
             strength = evidence_strength.SUPPORTING
         else:

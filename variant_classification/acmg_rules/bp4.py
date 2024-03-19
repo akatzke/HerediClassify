@@ -48,7 +48,7 @@ class Bp4_protein(abstract_rule):
             comment = f"Variant is predicted to be benign by {threshold.name}."
             result = True
         else:
-            comment = f"Variant is not predicted to be benign {threshold.name}."
+            comment = f"Variant is not predicted to be benign by {threshold.name}."
             result = False
         return RuleResult(
             "BP4",
