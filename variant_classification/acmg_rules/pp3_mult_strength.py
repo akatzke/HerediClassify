@@ -36,11 +36,8 @@ class Pp3_protein_mult_strength(abstract_rule):
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ) -> RuleResult:
-        try:
-            prediction_value = prediction_dict[threshold.name]
-            num_thresholds_met = assess_thresholds(threshold, prediction_value)
-        except KeyError:
-            num_thresholds_met = None
+        prediction_value = prediction_dict.get(threshold.name, None)
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}"
             strength = evidence_strength.SUPPORTING
