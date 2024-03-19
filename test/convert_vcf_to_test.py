@@ -43,24 +43,27 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
 
     # Pathogenicity prediction
     pathogenicity_prediction = {}
-    if isinstance(data.revel, str):
-        revel_by_transcript = data.revel.split("|")
-        revel_max_val = max([float(x.split("$")[1]) for x in revel_by_transcript])
-        pathogenicity_prediction["REVEL"] = revel_max_val
-    if isinstance(data.bayesdel, str):
-        try:
-            pathogenicity_prediction["BayesDel"] = float(data.bayesdel)
-        except ValueError:
-            scores_bayesdel = data.bayesdel.split("%26")
-            float_scores = []
-            for score in scores_bayesdel:
-                try:
-                    float_scores.append(float(score))
-                except ValueError:
-                    continue
-            if float:
-                pathogenicity_prediction["BayesDel"] = max(float_scores)
-    if len(pathogenicity_prediction) > 0:
+    try:
+        if isinstance(data.revel, str):
+            revel_by_transcript = data.revel.split("|")
+            revel_max_val = max([float(x.split("$")[1]) for x in revel_by_transcript])
+            pathogenicity_prediction["REVEL"] = revel_max_val
+        if isinstance(data.bayesdel, str):
+            try:
+                pathogenicity_prediction["BayesDel"] = float(data.bayesdel)
+            except ValueError:
+                scores_bayesdel = data.bayesdel.split("%26")
+                float_scores = []
+                for score in scores_bayesdel:
+                    try:
+                        float_scores.append(float(score))
+                    except ValueError:
+                        continue
+                if float:
+                    pathogenicity_prediction["BayesDel"] = max(float_scores)
+        if len(pathogenicity_prediction) > 0:
+            json_dict["pathogenicity_prediction_tools"] = pathogenicity_prediction
+    except Exception:
         json_dict["pathogenicity_prediction_tools"] = pathogenicity_prediction
 
     # gnomAD
@@ -162,6 +165,7 @@ def process_consequence(cons: str) -> tuple[list[dict], str, list]:
         "BARD1",
         "PMS2",
         "RAD51D",
+        "PALB2",
         "MLH1",
         "APC",
         "RAD51B",
@@ -254,6 +258,8 @@ def select_relevant_var_type(var_types: list[str]) -> str:
         "splice_acceptor_variant",
         "splice_acceptor",
         "intron_variant",
+        "upstream_gene_variant",
+        "downstream_gene_variant",
     ]
     rel_var_type = [
         var_type for var_type in var_types if var_type in relevant_variant_types
