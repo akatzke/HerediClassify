@@ -31,7 +31,7 @@ class Threshold:
 
 def assess_thresholds(thresholds: Threshold, prediction_value: Optional[float]) -> int:
     if prediction_value is None:
-        return 0
+        return None
     count = 0
     for single_threshold in thresholds.thresholds:
         result = asses_threshold(
