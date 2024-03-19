@@ -20,7 +20,7 @@ app = FastAPI()
 async def my_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=500,
-        content={"message": ''.join(traceback.format_tb(exc.__traceback__)).replace('\n', '')}
+        content={"message": ''.join(traceback.format_exc()).replace('\n', '')}
     )
 
 class Input(BaseModel):
