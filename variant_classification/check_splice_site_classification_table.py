@@ -23,6 +23,8 @@ def annotate_splice_site_classification(
     """
     Check if variant is listed in the preclassified splice sites by VCEP
     """
+    if not len(transcripts):
+        return None
     if len(transcripts) != 1:
         raise ValueError(
             "There should be only one disease relevant transcript defined for variants with a Splice Site Classificaton Table."
