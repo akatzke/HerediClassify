@@ -51,7 +51,10 @@ class Bp1_annotation_cold_spot_strong(abstract_rule):
             VARTYPE.INFRAME_DELETION,
             VARTYPE.INFRAME_INSERTION,
         ]
-        if (
+        if num_thresholds_met is None:
+            result = False
+            comment = f"No splicing prediction is available for variant. Therefore, BP1 does not apply."
+        elif (
             coldspot
             and num_thresholds_met > 0
             and any(var_type in variant_types for var_type in variant.var_type)
@@ -63,9 +66,6 @@ class Bp1_annotation_cold_spot_strong(abstract_rule):
         elif not coldspot:
             result = False
             comment = f"Variant is not located in coldspot region as defined in annotation file."
-        elif num_thresholds_met is None:
-            result = False
-            comment = f"No splicing prediction is available for variant. Therefore, BP1 does not apply."
         elif num_thresholds_met == 0:
             result = False
             comment = f"Variant is not predicted to not affect splicing. Therefore, BP1 does not apply."
