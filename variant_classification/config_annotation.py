@@ -453,8 +453,10 @@ def get_threshold_from_config(
     try:
         config_value = reduce(op.getitem, config_location, config)
         try:
-            config_value_float = float(config_value)
-            return config_value_float
+            assert isinstance(
+                config_value, float
+            ), f"Entry in configuration in location {' '.join(config_location)} is not of type float."
+            return config_value
         except ValueError:
             logger.warning(
                 f"The value at {config_location} is not a number. Please check your configuration."
@@ -495,6 +497,9 @@ def get_thresholds_likelihood(
         )
     del threshold_dict["direction"]
     thresholds = list(threshold_dict.values())
+    assert all(
+        isinstance(threshold, float) for threshold in thresholds
+    ), f"Not all thresholds defined for {config_location[0]} are of type float. Please check."
     if "greater" in dir.value:
         keys_sorted = sorted(threshold_dict, key=threshold_dict.get, reverse=False)
     else:
@@ -595,6 +600,9 @@ def get_config_entry_str(
         return None
     try:
         conf_str = reduce(op.getitem, config_location, config)
+        assert isinstance(
+            conf_str, str
+        ), f"Entry in configuration in location {' '.join(config_location)} is not of type string."
         return conf_str
     except KeyError:
         logger.warning(
