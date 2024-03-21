@@ -167,13 +167,26 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         var_seq, diff_len = construct_variant_coding_seq_exonic_variant(
             transcript, variant, ref_transcript
         )
+        diff_len_protein_percent, ptc = calculate_prot_len_diff(
+            ref_transcript, var_seq, diff_len
+        )
+        if diff_len_protein_percent != 0:
+            len_change_in_repetitive_region, _ = check_intersection_with_bed(
+                variant,
+                variant.genomic_start,
+                variant.genomic_end,
+                ref_transcript,
+                path_uniprot_rep,
+            )
+        else:
+            len_change_in_repetitive_region = False
         if nmd_threshold_dict is not None:
             try:
                 nmd_threshold = nmd_threshold_dict[transcript.transcript_id]
             except KeyError:
                 raise Not_disease_relevant_transcript
             is_NMD, NMD_affected_exons = assess_NMD_threshold(
-                transcript, variant, ref_transcript, diff_len, nmd_threshold
+                transcript, variant, ptc, ref_transcript, diff_len, nmd_threshold
             )
         else:
             is_NMD, NMD_affected_exons = assess_NMD_exonic_variant(
@@ -233,19 +246,6 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
         is_reading_frame_preserved, frameshift = assess_reading_frame_preservation(
             diff_len
         )
-        diff_len_protein_percent, ptc = calculate_prot_len_diff(
-            ref_transcript, var_seq, diff_len
-        )
-        if diff_len_protein_percent != 0:
-            len_change_in_repetitive_region, _ = check_intersection_with_bed(
-                variant,
-                variant.genomic_start,
-                variant.genomic_end,
-                ref_transcript,
-                path_uniprot_rep,
-            )
-        else:
-            len_change_in_repetitive_region = False
         return TranscriptInfo_exonic(
             transcript_id=transcript.transcript_id,
             var_type=transcript.var_type,

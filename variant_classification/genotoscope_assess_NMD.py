@@ -41,6 +41,7 @@ def get_affected_exon(
 def assess_NMD_threshold(
     transcript: TranscriptInfo,
     variant: VariantInfo,
+    ptc: int,
     ref_transcript: pyensembl.transcript.Transcript,
     diff_len: int,
     threshold: int,
@@ -48,7 +49,7 @@ def assess_NMD_threshold(
     """
     Examine if position of variant is located before or after given threshold for NMD
     """
-    if transcript.var_start <= threshold:
+    if ptc * 3 <= threshold:
         NMD_affected_exon = get_affected_exon(
             ref_transcript, transcript, variant, diff_len
         )

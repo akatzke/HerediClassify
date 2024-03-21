@@ -11,6 +11,7 @@ from variant_classification.ensembl import ensembl
 from variant_classification.genotoscope_construct_variant_sequence import (
     construct_variant_coding_seq_exonic_variant,
 )
+from variant_classification.genotoscope_protein_len_diff import calculate_prot_len_diff
 from variant_classification.genotoscope_assess_NMD import assess_NMD_threshold
 from variant_classification.check_exon_disease_relevant import (
     check_exon_disease_relevant,
@@ -36,6 +37,9 @@ def test_NMD_threshold_true():
     var_seq, diff_len = construct_variant_coding_seq_exonic_variant(
         transcript, variant_disease_relevant.variant_info, ref_transcript
     )
+    diff_len_protein_percent, ptc = calculate_prot_len_diff(
+        ref_transcript, var_seq, diff_len
+    )
     NMD_threshold = {"ENST00000357654": 5418}
     try:
         nmd_threshold = NMD_threshold[transcript.transcript_id]
@@ -44,6 +48,7 @@ def test_NMD_threshold_true():
     is_NMD, NMD_affected_exons = assess_NMD_threshold(
         transcript,
         variant_disease_relevant.variant_info,
+        ptc,
         ref_transcript,
         diff_len,
         nmd_threshold,
@@ -68,6 +73,9 @@ def test_NMD_threshold_false():
         transcript, variant_disease_relevant.variant_info, ref_transcript
     )
     NMD_threshold = {"ENST00000357654": 5418}
+    diff_len_protein_percent, ptc = calculate_prot_len_diff(
+        ref_transcript, var_seq, diff_len
+    )
     try:
         nmd_threshold = NMD_threshold[transcript.transcript_id]
     except KeyError:
@@ -75,6 +83,7 @@ def test_NMD_threshold_false():
     is_NMD, NMD_affected_exons = assess_NMD_threshold(
         transcript,
         variant_disease_relevant.variant_info,
+        ptc,
         ref_transcript,
         diff_len,
         nmd_threshold,
@@ -120,6 +129,9 @@ def test_exon_not_disease_relevant():
         transcript, variant_disease_relevant.variant_info, ref_transcript
     )
     NMD_threshold = {"ENST00000357654": 5418}
+    diff_len_protein_percent, ptc = calculate_prot_len_diff(
+        ref_transcript, var_seq, diff_len
+    )
     try:
         nmd_threshold = NMD_threshold[transcript.transcript_id]
     except KeyError:
@@ -127,6 +139,7 @@ def test_exon_not_disease_relevant():
     is_NMD, NMD_affected_exons = assess_NMD_threshold(
         transcript,
         variant_disease_relevant.variant_info,
+        ptc,
         ref_transcript,
         diff_len,
         nmd_threshold,
