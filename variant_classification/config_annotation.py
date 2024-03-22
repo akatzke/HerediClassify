@@ -453,8 +453,8 @@ def get_threshold_from_config(
     try:
         config_value = reduce(op.getitem, config_location, config)
         try:
-            assert isinstance(
-                config_value, float
+            assert isinstance(config_value, float) or isinstance(
+                config_value, int
             ), f"Entry in configuration in location {' '.join(config_location)} is not of type float."
             return config_value
         except ValueError:
