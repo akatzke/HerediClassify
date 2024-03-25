@@ -76,8 +76,15 @@ def check_clinvar_missense_similarity(
         var_codon_info=var_codon_info,
         axis=1,
     )
+    # Filter out all ClinVar entries with termination codon
     if not clinvar_same_codon_aa.empty:
-        clinvar_same_codon_aa_splicing = format_spliceai(clinvar_same_codon_aa)
+        clinvar_same_codon_no_ter = clinvar_same_codon_aa[
+            clinvar_same_codon_aa.prot_alt != "Ter"
+        ]
+    else:
+        clinvar_same_codon_no_ter = clinvar_same_codon_aa
+    if not clinvar_same_codon_no_ter.empty:
+        clinvar_same_codon_aa_splicing = format_spliceai(clinvar_same_codon_no_ter)
         clinvar_same_codon_aa_filtered = filter_gene(
             clinvar_same_codon_aa_splicing, variant.gene_name
         )

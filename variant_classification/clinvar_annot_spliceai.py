@@ -86,8 +86,15 @@ def annotate_clinvar_spliceai_protein(
             var_codon_info=var_codon_info,
             axis=1,
         )
+        # Filter out all ClinVar entries with termination codon
+        if not clinvar_same_codon_aa.empty:
+            clinvar_same_codon_no_ter = clinvar_same_codon_aa[
+                clinvar_same_codon_aa.prot_alt != "Ter"
+            ]
+        else:
+            clinvar_same_codon_no_ter = clinvar_same_codon_aa
         clinvar_same_codon_aa_filtered = filter_gene(
-            clinvar_same_codon_aa, variant.gene_name
+            clinvar_same_codon_no_ter, variant.gene_name
         )
         clinvar_same_codon_aa_spliceAI = clinvar_same_codon_aa_filtered[
             clinvar_same_codon_aa_filtered.SpliceAI_max <= threshold_spliceAI
