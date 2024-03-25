@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import pathlib
+import logging
+
 from collections.abc import Callable
 from typing import Optional
 
@@ -16,6 +18,8 @@ from information import Classification_Info, Info
 from variant import TranscriptInfo
 from var_type import VARTYPE_GROUPS
 
+logger = logging.getLogger("GenOtoScope_Classify.check_splice_table_pm5")
+
 
 def annotate_splice_site_classification_pm5(
     transcripts: list[TranscriptInfo], path_splice_table: pathlib.Path
@@ -25,9 +29,10 @@ def annotate_splice_site_classification_pm5(
     Here the PM5 classification is accessed
     """
     if len(transcripts) != 1:
-        raise ValueError(
-            "There should be only one disease relevant transcript defined for variants with a Splice Site PM5 Classificaton Table."
+        logger.warning(
+            f"There should be only on disease relevant transcript defined for variants with a SpliceSite PM5 Classification Table."
         )
+        return None
     transcript = transcripts[0]
     if not any(
         var_type in VARTYPE_GROUPS.INTRONIC.value for var_type in transcript.var_type
@@ -41,10 +46,13 @@ def annotate_splice_site_classification_pm5(
             f"Accessing PM5_splice does not apply to this variant, as PM5_splice does not apply to variant types {', '.join([var_type.value for var_type in transcript.var_type])}.",
         )
     splice_table = pd.read_csv(path_splice_table, sep="\t")
-    splice_table_entry = splice_table[
-        (splice_table.position == str(transcript.var_hgvs.pos))
-        & (splice_table.alternative_allele == transcript.var_hgvs.edit.alt)
-    ]
+    try:
+        splice_table_entry = splice_table[
+            (splice_table.position == str(transcript.var_hgvs.pos))
+            & (splice_table.alternative_allele == transcript.var_hgvs.edit.alt)
+        ]
+    except AttributeError:
+        return None
     if splice_table_entry.empty:
         return None
     else:
