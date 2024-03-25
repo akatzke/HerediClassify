@@ -38,8 +38,12 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
 
     # Splicing prediction
     if type(data.spliceai_max_delta) is str:
-        splice_ai_score = max([float(x) for x in data.spliceai_max_delta.split(",")])
-        json_dict["splicing_prediction_tools"] = {"SpliceAI": splice_ai_score}
+        all_scores = []
+        for spliceai_score in data.spliceai_max_delta.split(","):
+            if spliceai_score != ".":
+                all_scores.append(float(spliceai_score))
+        if all_scores:
+            json_dict["splicing_prediction_tools"] = {"SpliceAI": max(all_scores)}
 
     # Pathogenicity prediction
     pathogenicity_prediction = {}
@@ -185,7 +189,10 @@ def process_consequence(cons: str) -> tuple[list[dict], str, list]:
             select_transcript = {key: entry[key] for key in selected_keys}
             gene_transcript_list.append(select_transcript)
     reformatted_dict = reformat_consequence(gene_transcript_list)
-    var_type = get_vartype_from_consequence(reformatted_dict)
+    if not reformatted_dict:
+        var_type = get_vartype_from_consequence(gene_transcript_list)
+    else:
+        var_type = get_vartype_from_consequence(reformatted_dict)
     return reformatted_dict, gene, var_type
 
 
@@ -220,8 +227,11 @@ def get_vartype_from_consequence(cons_list_dict: list[dict]) -> list:
     """
     var_types = set()
     for cons_dict in cons_list_dict:
-        var_type_list = cons_dict["variant_type"]
-        var_types.update(var_type_list)
+        if isinstance(cons_dict["variant_type"], str):
+            var_type = [cons_dict["variant_type"]]
+        else:
+            var_type = cons_dict["variant_type"]
+        var_types.update(var_type)
     return list(var_types)
 
 
@@ -257,11 +267,22 @@ def select_relevant_var_type(var_types: list[str]) -> str:
         "splice_donor",
         "splice_acceptor_variant",
         "splice_acceptor",
-        "intron_variant",
-        "upstream_gene_variant",
-        "downstream_gene_variant",
     ]
     rel_var_type = [
         var_type for var_type in var_types if var_type in relevant_variant_types
     ]
-    return rel_var_type[0]
+    if rel_var_type:
+        return rel_var_type[0]
+    relevant_variant_types_bk = [
+        "upstream_gene_variant",
+        "downstream_gene_variant",
+        "intron_variant",
+        "3_prime_UTR_variant",
+    ]
+    rel_var_type_bk = [
+        var_type for var_type in var_types if var_type in relevant_variant_types_bk
+    ]
+    if not rel_var_type_bk:
+        print("This is the original var_type")
+        print(var_types)
+    return rel_var_type_bk[0]
