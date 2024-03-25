@@ -46,7 +46,7 @@ class Ps1_protein_enigma(abstract_rule):
             result = False
             strength = evidence_strength.STRONG
             comment = "No splicing prediction is available. Therefore PS1_protein can not be evaluated."
-        if (
+        elif (
             clinvar_same_aa.pathogenic
             and num_thresholds_met == 0
             and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
