@@ -29,7 +29,9 @@ class Threshold:
     strengths: list[evidence_strength]
 
 
-def assess_thresholds(thresholds: Threshold, prediction_value: Optional[float]) -> int:
+def assess_thresholds(
+    thresholds: Threshold, prediction_value: Optional[float]
+) -> Optional[int]:
     if prediction_value is None:
         return None
     count = 0
