@@ -50,14 +50,14 @@ class Pvs1_pten(Pvs1):
     @classmethod
     def assess_rule(
         cls,
-        annotated_transcript: list[TranscriptInfo],
+        annotated_transcripts: list[TranscriptInfo],
         variant: VariantInfo,
         splice_assay: Optional[list[RNAData]],
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ):
         results = []
-        for transcript in annotated_transcript:
+        for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_exonic):
                 result = cls.assess_pvs1_frameshift_PTC_pten(transcript)
                 results.append(result)
@@ -74,7 +74,10 @@ class Pvs1_pten(Pvs1):
                 result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
                 results.append(result)
         if len(results) == 0:
-            comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+            if not annotated_transcripts:
+                comment = "No annotated transcripts provided, PVS1 can not be applied."
+            else:
+                comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             result = RuleResult(
                 "PVS1",
                 rule_type.GENERAL,

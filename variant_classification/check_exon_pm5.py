@@ -68,7 +68,12 @@ def annotate_exon_classification_pm5(
                 )
             results.append(result)
     if len(results) == 0:
-        comment = f"Accessing PM5_enigma does not apply to this variant, as PM5_enigma does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+        if not annotated_transcripts:
+            comment = (
+                "No annotated transcripts provided, PM5_enigma can not be applied."
+            )
+        else:
+            comment = f"Accessing PM5_enigma does not apply to this variant, as PM5_enigma does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
         result = RuleResult(
             "PM5",
             rule_type.PROTEIN,

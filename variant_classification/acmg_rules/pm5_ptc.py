@@ -105,11 +105,11 @@ class Pm5_splicing_ptc(abstract_rule):
     def assess_rule(
         cls,
         variant: VariantInfo,
-        annotated_transcript: list[TranscriptInfo],
+        annotated_transcripts: list[TranscriptInfo],
         pos_last_known_patho_ptc_dict: dict[str, int],
     ) -> RuleResult:
         results = []
-        for transcript in annotated_transcript:
+        for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_intronic):
                 try:
                     pos_last_known_patho_ptc = pos_last_known_patho_ptc_dict[
@@ -135,7 +135,10 @@ class Pm5_splicing_ptc(abstract_rule):
                 )
                 results.append(result)
         if len(results) == 0:
-            comment = f"PM5 does not apply to this variant, as PM5 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+            if not annotated_transcripts:
+                comment = "No annotated transcripts provided, PM5 can not be applied."
+            else:
+                comment = f"PM5 does not apply to this variant, as PM5 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             final_result = RuleResult(
                 "PM5",
                 rule_type.SPLICING,

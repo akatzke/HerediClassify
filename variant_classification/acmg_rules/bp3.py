@@ -69,7 +69,10 @@ class Bp3(abstract_rule):
             )
             results.append(rule_result)
         if len(results) == 0:
-            comment = f"BP3 does not apply to this variant, as BP3 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+            if not annotated_transcripts:
+                comment = "No annotated transcripts provided, BP3 an not be applied."
+            else:
+                comment = f"BP3 does not apply to this variant, as BP3 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             final_result = RuleResult(
                 "BP3",
                 rule_type.GENERAL,

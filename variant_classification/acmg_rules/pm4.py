@@ -45,6 +45,15 @@ class Pm4(abstract_rule):
         mane_path: pathlib.Path,
         threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
+        if not annotated_transcript_list:
+            return RuleResult(
+                "PM4",
+                rule_type.GENERAL,
+                evidence_type.PATHOGENIC,
+                False,
+                evidence_strength.MODERATE,
+                f"No annotated transcripts provided, PM4 can not be applied",
+            )
         transcript = select_mane_transcript(annotated_transcript_list, mane_path)
         if transcript is None:
             comment = f"PM4 does not apply to this variant, as PM4 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."

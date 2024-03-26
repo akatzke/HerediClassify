@@ -50,7 +50,7 @@ class Pvs1_atm(Pvs1):
     @classmethod
     def assess_rule(
         cls,
-        annotated_transcript: list[TranscriptInfo],
+        annotated_transcripts: list[TranscriptInfo],
         variant: VariantInfo,
         pos_last_known_patho_ptc_dict: dict[str, int],
         splice_result: Optional[RuleResult],
@@ -59,7 +59,7 @@ class Pvs1_atm(Pvs1):
         splice_assay: Optional[list[RNAData]],
     ):
         results = []
-        for transcript in annotated_transcript:
+        for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_exonic):
                 try:
                     pos_last_known_patho_ptc = pos_last_known_patho_ptc_dict[
@@ -87,7 +87,10 @@ class Pvs1_atm(Pvs1):
                 result = cls.assess_pvs1_start_loss_atm(transcript)
                 results.append(result)
         if len(results) == 0:
-            comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+            if not annotated_transcripts:
+                comment = "No annotated transcripts provided, PVS1 can not be applied."
+            else:
+                comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             final_result = RuleResult(
                 "PVS1",
                 rule_type.GENERAL,
