@@ -78,17 +78,13 @@ class Pvs1(abstract_rule):
                 result_start_loss = Pvs1.assess_pvs1_start_loss(transcript)
                 results.append(result_start_loss)
         if len(results) == 0:
-            if not annotated_transcripts:
-                comment = "No annotated transcripts provided, PVS1 can not be applied."
-            else:
-                comment = f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             result = RuleResult(
                 "PVS1",
                 rule_type.GENERAL,
                 evidence_type.PATHOGENIC,
                 False,
                 evidence_strength.VERY_STRONG,
-                comment,
+                comment=f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}.",
             )
         else:
             result = summarise_results_per_transcript(results)
