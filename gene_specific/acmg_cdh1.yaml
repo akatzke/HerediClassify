@@ -51,7 +51,7 @@ allele_frequency_thresholds:
     threshold_bs1: 0.001
     threshold_bs2: 10
     threshold_bs2_supporting: 3
-    threshold_pm2: 0
+    threshold_pm2: 0.00001
 
 ### Functional thresholds
 functional_thresholds:
