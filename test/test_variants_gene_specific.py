@@ -121,7 +121,7 @@ def test_gene_specific_brca1_frameshift():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["PVS1_protein", "PM5_protein", "BP4_splicing"]
+    rules_apply = ["PVS1_protein", "PM5_protein"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
@@ -207,8 +207,6 @@ def test_gene_specific_brca1_splicing():
         "PVS1_splicing",
         "PS1_splicing",
         "PM2",
-        "PP3_protein",
-        "PP3_splicing",
     ]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
@@ -227,7 +225,7 @@ def test_gene_specific_brca1_stop_gained():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["PVS1_protein", "PM2", "PM5_protein", "PP3_protein", "BP4_splicing"]
+    rules_apply = ["PVS1_protein", "PM2", "PM5_protein"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
@@ -267,7 +265,7 @@ def test_gene_specific_brca2_frameshift():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["PVS1_protein", "PM5_protein", "BP4_splicing"]
+    rules_apply = ["PVS1_protein", "PM5_protein"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
@@ -287,7 +285,7 @@ def test_gene_specific_brca2_frameshift_2():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["PVS1_protein", "PM5_protein", "BP4_splicing"]
+    rules_apply = ["PVS1_protein", "PM5_protein"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
@@ -331,8 +329,6 @@ def test_gene_specific_brca2_splice():
         "PVS1_splicing",
         "PS1_splicing",
         "PM2",
-        "PP3_splicing",
-        "BP4_protein",
     ]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
@@ -355,8 +351,6 @@ def test_gene_specific_brca2_stop_gained():
         "PVS1_protein",
         "PM2",
         "PM5_protein",
-        "PP3_protein",
-        "BP4_splicing",
     ]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
