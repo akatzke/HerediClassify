@@ -14,7 +14,7 @@ from acmg_rules.computation_evidence_utils import (
     assess_thresholds,
     Threshold,
 )
-from variant import RNAData, VariantInfo
+from variant import RNAData, TranscriptInfo, VariantInfo
 from var_type import VARTYPE
 from acmg_rules.functional_splicing_assay_utils import (
     assess_splicing_data_bp7,
@@ -33,6 +33,7 @@ class Bp7(abstract_rule):
         return (
             cls.assess_rule,
             (
+                class_info.TRANSCRIPT,
                 class_info.VARIANT,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
@@ -43,6 +44,7 @@ class Bp7(abstract_rule):
     @classmethod
     def assess_rule(
         cls,
+        transcripts: list[TranscriptInfo],
         variant: VariantInfo,
         prediction_dict: dict[str, float],
         threshold: Threshold,
@@ -62,10 +64,31 @@ class Bp7(abstract_rule):
                     evidence_strength.STRONG,
                     comment_assay,
                 )
+        # In case one disase variant transcripts is defined, use type of variant in that transcript
+        # Otherwise use all variant types defined for variant
+        if len(transcripts) == 1:
+            variant_types = transcripts[0].var_type
+        else:
+            synonymous_count = 0
+            for transcript in transcripts:
+                if not any(
+                    var_type is VARTYPE.SYNONYMOUS_VARIANT
+                    for var_type in transcript.var_type
+                ):
+                    synonymous_count += 1
+            if synonymous_count < 1:
+                variant_types = []
+                for var_type in variant.var_type:
+                    if var_type.value != VARTYPE.SYNONYMOUS_VARIANT.value:
+                        variant_types.append(var_type)
+                if not variant_types:
+                    variant_types = variant.var_type
+            else:
+                variant_types = variant.var_type
 
         # Check prediction
         if not any(
-            var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant.var_type
+            var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant_types
         ):
             return RuleResult(
                 "BP7",

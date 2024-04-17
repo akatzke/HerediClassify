@@ -66,6 +66,12 @@ class Bp7_deep_intronic_enigma(abstract_rule):
                     comment_assay,
                 )
 
+        # In case one disase variant transcripts is defined, use type of variant in that transcript
+        # Otherwise use all variant types defined for variant
+        if len(transcripts) == 1:
+            variant_types = transcripts[0].var_type
+        else:
+            variant_types = variant.var_type
         # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
@@ -78,14 +84,12 @@ class Bp7_deep_intronic_enigma(abstract_rule):
             Now check if variant type applies
             """
             if any(
-                var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant.var_type
+                var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant_types
             ):
                 result = True
                 comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name}."
 
-            elif any(
-                var_type is VARTYPE.INTRON_VARIANT for var_type in variant.var_type
-            ):
+            elif any(var_type is VARTYPE.INTRON_VARIANT for var_type in variant_types):
                 """
                 Check if variant is a deep intronic variant
                 """
@@ -112,7 +116,7 @@ class Bp7_deep_intronic_enigma(abstract_rule):
                     comment = f"BP7 does not apply to this variant, as it is not located in the defined region for deep intronic region variants (<= -21 or >= 7)."
             else:
                 result = False
-                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         else:
             result = False
             comment = f"The variant is not predicted to not affect splicing by {threshold.name}."
@@ -172,6 +176,12 @@ class Bp7_deep_intronic_atm(abstract_rule):
                     comment_assay,
                 )
 
+        # In case one disase variant transcripts is defined, use type of variant in that transcript
+        # Otherwise use all variant types defined for variant
+        if len(transcripts) == 1:
+            variant_types = transcripts[0].var_type
+        else:
+            variant_types = variant.var_type
         # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
@@ -184,14 +194,12 @@ class Bp7_deep_intronic_atm(abstract_rule):
             Now check if variant type applies
             """
             if any(
-                var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant.var_type
+                var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant_types
             ):
                 result = True
                 comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name}."
 
-            elif any(
-                var_type is VARTYPE.INTRON_VARIANT for var_type in variant.var_type
-            ):
+            elif any(var_type is VARTYPE.INTRON_VARIANT for var_type in variant_types):
                 """
                 Check if variant is a deep intronic variant
                 """
@@ -218,7 +226,7 @@ class Bp7_deep_intronic_atm(abstract_rule):
                     comment = f"BP7 does not apply to this variant, as it is not located in the defined region for deep intronic region variants (< -40 or > 7)."
             else:
                 result = False
-                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         else:
             result = False
             comment = f"The variant is not predicted to not affect splicing by {threshold.name}."
@@ -278,6 +286,12 @@ class Bp7_deep_intronic_palb2(abstract_rule):
                     comment_assay,
                 )
 
+        # In case one disase variant transcripts is defined, use type of variant in that transcript
+        # Otherwise use all variant types defined for variant
+        if len(transcripts) == 1:
+            variant_types = transcripts[0].var_type
+        else:
+            variant_types = variant.var_type
         # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
@@ -290,14 +304,12 @@ class Bp7_deep_intronic_palb2(abstract_rule):
             Now check if variant type applies
             """
             if any(
-                var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant.var_type
+                var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant_types
             ):
                 result = True
                 comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name}."
 
-            elif any(
-                var_type is VARTYPE.INTRON_VARIANT for var_type in variant.var_type
-            ):
+            elif any(var_type is VARTYPE.INTRON_VARIANT for var_type in variant_types):
                 """
                 Check if variant is a deep intronic variant
                 """
@@ -324,7 +336,7 @@ class Bp7_deep_intronic_palb2(abstract_rule):
                     comment = f"BP7 does not apply to this variant, as it is not located in the defined region for deep intronic region variants (< -21 or > 7)."
             else:
                 result = False
-                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         else:
             result = False
             comment = f"The variant is not predicted to not affect splicing by {threshold.name}."
