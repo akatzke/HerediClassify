@@ -199,7 +199,7 @@ position	alternative_allele	rule_status	evidence_strength	comment
 135-2	T	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
 135-1	A	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
 135-1	C	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
-135-1	I	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
+135-1	T	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
 5075-2	G	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
 5075-2	C	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
 5075-2	T	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
@@ -217,7 +217,7 @@ position	alternative_allele	rule_status	evidence_strength	comment
 5194-2	T	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
 5194-1	A	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
 5194-1	C	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
-5194-1	I	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
+5194-1	T	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
 5277+1	A	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
 5277+1	T	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
 5277+1	C	True	very_strong	In-frame splicing alteration predicted that affects region critical to protein function (BRCT or RING domain).
