@@ -11,9 +11,8 @@ from acmg_rules.utils import (
 )
 from information import Classification_Info, Info
 from var_type import VARTYPE, VARTYPE_GROUPS
-from variant import VariantInfo
+from variant import TranscriptInfo, VariantInfo
 from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
-from var_type import VARTYPE
 
 
 class Bp1_annotation_cold_spot_strong(abstract_rule):
@@ -29,6 +28,7 @@ class Bp1_annotation_cold_spot_strong(abstract_rule):
             cls.assess_rule,
             (
                 class_info.VARIANT,
+                class_info.TRANSCRIPT,
                 class_info.VARIANT_COLDSPOT_ANNOTATION,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
@@ -39,13 +39,21 @@ class Bp1_annotation_cold_spot_strong(abstract_rule):
     def assess_rule(
         cls,
         variant: VariantInfo,
+        transcripts: list[TranscriptInfo],
         coldspot: bool,
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ) -> RuleResult:
+        # In case one disase variant transcripts is defined, use type of variant in that transcript
+        # Otherwise use all variant types defined for variant
+        if len(transcripts) == 1:
+            variant_types = transcripts[0].var_type
+        else:
+            variant_types = variant.var_type
+        # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
-        variant_types = [
+        variant_types_bp1 = [
             VARTYPE.SYNONYMOUS_VARIANT,
             VARTYPE.MISSENSE_VARIANT,
             VARTYPE.INFRAME_DELETION,
@@ -57,7 +65,7 @@ class Bp1_annotation_cold_spot_strong(abstract_rule):
         elif (
             coldspot
             and num_thresholds_met > 0
-            and any(var_type in variant_types for var_type in variant.var_type)
+            and any(var_type in variant_types_bp1 for var_type in variant_types)
         ):
             result = True
             comment = (
@@ -69,9 +77,9 @@ class Bp1_annotation_cold_spot_strong(abstract_rule):
         elif num_thresholds_met == 0:
             result = False
             comment = f"Variant is not predicted to not affect splicing. Therefore, BP1 does not apply."
-        elif not any(var_type in variant_types for var_type in variant.var_type):
+        elif not any(var_type in variant_types_bp1 for var_type in variant_types):
             result = False
-            comment = f"BP1 does not apply to this variant, as BP1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+            comment = f"BP1 does not apply to this variant, as BP1 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         else:
             result = False
             comment = f"Variant is not located in coldspot region as defined in annotation file."
@@ -96,19 +104,25 @@ class Bp1(abstract_rule):
     ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (class_info.VARIANT,),
+            (class_info.VARIANT, class_info.TRANSCRIPT),
         )
 
     @classmethod
-    def assess_rule(cls, variant: VariantInfo) -> RuleResult:
-        if any(
-            var_type in VARTYPE_GROUPS.MISSENSE.value for var_type in variant.var_type
-        ):
+    def assess_rule(
+        cls, variant: VariantInfo, transcripts: list[TranscriptInfo]
+    ) -> RuleResult:
+        # In case one disase variant transcripts is defined, use type of variant in that transcript
+        # Otherwise use all variant types defined for variant
+        if len(transcripts) == 1:
+            variant_types = transcripts[0].var_type
+        else:
+            variant_types = variant.var_type
+        if any(var_type in VARTYPE_GROUPS.MISSENSE.value for var_type in variant_types):
             result = True
             comment = f"Missense variants in {variant.gene_name} where primarily truncating variants are known to cause disease."
         else:
             result = False
-            comment = f"BP1 does not apply to this variant, as BP1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+            comment = f"BP1 does not apply to this variant, as BP1 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         return RuleResult(
             "BP1",
             rule_type.GENERAL,
