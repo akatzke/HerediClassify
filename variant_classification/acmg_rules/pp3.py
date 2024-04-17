@@ -243,6 +243,7 @@ class Pp3_splicing_cdh1(abstract_rule):
             cls.assess_rule,
             (
                 class_info.TRANSCRIPT,
+                class_info.VARIANT,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
             ),
@@ -252,14 +253,16 @@ class Pp3_splicing_cdh1(abstract_rule):
     def assess_rule(
         cls,
         transcripts: list[TranscriptInfo],
+        variant: VariantInfo,
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ) -> RuleResult:
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
-        variant_types = [
-            var_type for transcript in transcripts for var_type in transcript.var_type
-        ]
+        if len(transcripts) == 1:
+            variant_types = transcripts[0].var_type
+        else:
+            variant_types = variant.var_type
         if num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}."
             result = False

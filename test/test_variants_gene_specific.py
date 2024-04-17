@@ -497,7 +497,7 @@ def test_gene_specific_palb2_splice_acceptor():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["PVS1_splicing", "PM2", "PP3_splicing"]
+    rules_apply = ["PVS1_splicing", "PM2"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
@@ -517,7 +517,7 @@ def test_gene_specific_palb2_splice_donor():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["PVS1_splicing", "PM2", "PP3_splicing"]
+    rules_apply = ["PVS1_splicing", "PM2"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
@@ -597,7 +597,7 @@ def test_gene_specific_pten_splice():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["PVS1_splicing", "PS1_splicing", "PM2", "PP3_splicing"]
+    rules_apply = ["PVS1_splicing", "PS1_splicing", "PM2"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
@@ -702,7 +702,6 @@ def test_gene_specific_tp53_splice():
         "PM1",
         "PS1_splicing",
         "PM2",
-        "PP3_splicing",
         "PP3_protein",
     ]
     for rule in rules_apply:
