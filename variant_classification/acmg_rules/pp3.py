@@ -54,13 +54,13 @@ class Pp3_protein(abstract_rule):
             result = False
             comment = f"PP3 does not apply to this variant, as PP3 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         elif num_thresholds_met is None:
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
             result = False
         elif num_thresholds_met > 0:
-            comment = f"Variant is predicted to be pathogenic by {threshold.name}."
+            comment = f"Variant is predicted to be pathogenic by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
             result = True
         else:
-            comment = f"Variant is not predicted to be pathogenic by {threshold.name}."
+            comment = f"Variant is not predicted to be pathogenic by {threshold.name} (threshold: {threshold.thresholds[0]}, value: {prediction_value})."
             result = False
         return RuleResult(
             "PP3",
@@ -111,8 +111,6 @@ class Pp3_protein_enigma(abstract_rule):
             result = False
             comment = f"PP3 does not apply to this variant, as PP3 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         elif num_thresholds_met is None:
-            comment = f"No score was provided for {threshold.name}"
-        if num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}."
             result = False
         elif num_thresholds_met > 0:
@@ -214,17 +212,13 @@ class Pp3_splicing_enigma(abstract_rule):
             result = False
             comment = f"PP3 does not apply to this variant, as PP3 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         elif num_thresholds_met is None:
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
             result = False
         elif num_thresholds_met > 0:
-            comment = (
-                f"Variant is predicted to have a splice effect by {threshold.name}."
-            )
+            comment = f"Variant is predicted to have a splice effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
             result = True
         else:
-            comment = (
-                f"Variant is not predicted to have a splice effect by {threshold.name}."
-            )
+            comment = f"Variant is not predicted to have a splice effect by {threshold.name} (threshold: {threshold.thresholds[0]}, value: {prediction_value})."
             result = False
         return RuleResult(
             "PP3",
