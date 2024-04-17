@@ -71,7 +71,7 @@ class Bp7_deep_intronic_enigma(abstract_rule):
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if num_thresholds_met is None:
             result = False
-            comment = f"No score was provided for {threshold.name}."
+            comment = f"No score was provided for {threshold.name}"
         elif num_thresholds_met > 0:
             """
             Variant is predicted to have splicing effect
@@ -81,7 +81,7 @@ class Bp7_deep_intronic_enigma(abstract_rule):
                 var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant.var_type
             ):
                 result = True
-                comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
+                comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name}."
 
             elif any(
                 var_type is VARTYPE.INTRON_VARIANT for var_type in variant.var_type
@@ -97,14 +97,14 @@ class Bp7_deep_intronic_enigma(abstract_rule):
                         and transcript.var_hgvs.pos.end.offset >= 7
                     ):
                         result = True
-                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
+                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name}."
                         comments_all.append(comment_tmp)
                     elif (
                         transcript.var_hgvs.pos.start.offset <= -21
                         and transcript.var_hgvs.pos.end.offset <= -21
                     ):
                         result = True
-                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
+                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name}."
                         comments_all.append(comment_tmp)
                 if result:
                     comment = " ".join(comments_all)
@@ -187,7 +187,7 @@ class Bp7_deep_intronic_atm(abstract_rule):
                 var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant.var_type
             ):
                 result = True
-                comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
+                comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name}."
 
             elif any(
                 var_type is VARTYPE.INTRON_VARIANT for var_type in variant.var_type
@@ -203,14 +203,14 @@ class Bp7_deep_intronic_atm(abstract_rule):
                         and transcript.var_hgvs.pos.end.offset > 7
                     ):
                         result = True
-                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
+                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name}."
                         comments_all.append(comment_tmp)
                     elif (
                         transcript.var_hgvs.pos.start.offset < -40
                         and transcript.var_hgvs.pos.end.offset < -40
                     ):
                         result = True
-                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
+                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name}."
                         comments_all.append(comment_tmp)
                 if result:
                     comment = " ".join(comments_all)
@@ -293,7 +293,7 @@ class Bp7_deep_intronic_palb2(abstract_rule):
                 var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant.var_type
             ):
                 result = True
-                comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
+                comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name}."
 
             elif any(
                 var_type is VARTYPE.INTRON_VARIANT for var_type in variant.var_type
@@ -309,14 +309,14 @@ class Bp7_deep_intronic_palb2(abstract_rule):
                         and transcript.var_hgvs.pos.end.offset > 7
                     ):
                         result = True
-                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
+                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name}."
                         comments_all.append(comment_tmp)
                     elif (
                         transcript.var_hgvs.pos.start.offset < -21
                         and transcript.var_hgvs.pos.end.offset < -21
                     ):
                         result = True
-                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
+                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name}."
                         comments_all.append(comment_tmp)
                 if result:
                     comment = " ".join(comments_all)

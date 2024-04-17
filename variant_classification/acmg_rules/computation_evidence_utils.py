@@ -65,17 +65,18 @@ def asses_threshold(
             return True
         else:
             return False
-    if threshold_direction.value == THRESHOLD_DIRECTION.LESS.value:
+    elif threshold_direction.value == THRESHOLD_DIRECTION.LESS.value:
         if prediction_value < threshold:
             return True
         else:
             return False
-    if threshold_direction.value == THRESHOLD_DIRECTION.LESS_THAN_OR_EQUAL.value:
+    elif threshold_direction.value == THRESHOLD_DIRECTION.LESS_THAN_OR_EQUAL.value:
         if prediction_value <= threshold:
             return True
         else:
             return False
-    return None
+    else:
+        return None
 
 
 def get_evidence_strength_from_prediction_count(

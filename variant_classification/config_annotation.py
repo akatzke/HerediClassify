@@ -546,10 +546,8 @@ def get_thresholds_prediction(
     thresholds = list(threshold_dict.values())
     if "greater" in dir.value:
         keys_sorted = sorted(threshold_dict, key=threshold_dict.get, reverse=False)
-        thresholds.sort()
     else:
         keys_sorted = sorted(threshold_dict, key=threshold_dict.get, reverse=True)
-        thresholds.sort(reverse=True)
     strengths = [evidence_strength(key) for key in keys_sorted]
     return Threshold(
         name=name,
