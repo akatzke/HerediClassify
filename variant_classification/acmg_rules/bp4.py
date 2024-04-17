@@ -44,13 +44,13 @@ class Bp4_protein(abstract_rule):
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if num_thresholds_met is None:
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
             result = False
         elif num_thresholds_met > 0:
-            comment = f"Variant is predicted to be benign by {threshold.name}."
+            comment = f"Variant is predicted to be benign by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
             result = True
         else:
-            comment = f"Variant is not predicted to be benign by {threshold.name}."
+            comment = f"Variant is not predicted to be benign by {threshold.name} (threshold: {threshold.thresholds[0]}, value: {prediction_value})."
             result = False
         return RuleResult(
             "BP4",
@@ -145,15 +145,13 @@ class Bp4_splicing(abstract_rule):
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if num_thresholds_met is None:
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
             result = False
         elif num_thresholds_met > 0:
-            comment = (
-                f"Variant is predicted to have no splicing effect by {threshold.name}."
-            )
+            comment = f"Variant is predicted to have no splice effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
             result = True
         else:
-            comment = f"Variant is not predicted to have no splicing effect by {threshold.name}."
+            comment = f"Variant is not predicted to have no splice effect by {threshold.name} (threshold: {threshold.thresholds[0]}, value: {prediction_value})."
             result = False
         return RuleResult(
             "BP4",
