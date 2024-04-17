@@ -83,7 +83,7 @@ class Pm5_protein_cdh1(abstract_rule):
 class Pm5_splicing_cdh1(abstract_rule):
     """
     PM5: Pathogenic missense variant to different amino acid in same position classified as pathogenic in ClinVar
-    Implementing the rule specifications for ATM
+    Implementing the rule specifications for CDH1
     """
 
     @classmethod
