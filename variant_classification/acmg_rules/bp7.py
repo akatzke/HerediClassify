@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import pathlib
+
 from typing import Callable, Optional
 
 from acmg_rules.utils import (
@@ -19,6 +21,7 @@ from var_type import VARTYPE
 from acmg_rules.functional_splicing_assay_utils import (
     assess_splicing_data_bp7,
 )
+from utils import select_mane_transcript
 
 
 class Bp7(abstract_rule):
@@ -38,6 +41,7 @@ class Bp7(abstract_rule):
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
                 class_info.SPLICING_ASSAY,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -49,6 +53,7 @@ class Bp7(abstract_rule):
         prediction_dict: dict[str, float],
         threshold: Threshold,
         splicing_assay: Optional[list[RNAData]],
+        mane_path: pathlib.Path,
     ) -> RuleResult:
         # Check RNA data first
         if splicing_assay:
@@ -69,22 +74,8 @@ class Bp7(abstract_rule):
         if len(transcripts) == 1:
             variant_types = transcripts[0].var_type
         else:
-            synonymous_count = 0
-            for transcript in transcripts:
-                if not any(
-                    var_type is VARTYPE.SYNONYMOUS_VARIANT
-                    for var_type in transcript.var_type
-                ):
-                    synonymous_count += 1
-            if synonymous_count < 1:
-                variant_types = []
-                for var_type in variant.var_type:
-                    if var_type.value != VARTYPE.SYNONYMOUS_VARIANT.value:
-                        variant_types.append(var_type)
-                if not variant_types:
-                    variant_types = variant.var_type
-            else:
-                variant_types = variant.var_type
+            transcript = select_mane_transcript(transcripts, mane_path)
+            variant_types = transcript.var_type
 
         # Check prediction
         if not any(
