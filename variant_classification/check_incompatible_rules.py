@@ -11,6 +11,7 @@ def check_incompatible_rules(
     E.g. {PVS1 is incompatible with PM4
     PVS1_splicing is incompatible with PS1_splicing
     """
+    ## Setup status PVS1 and BA1
     ba1_applies = rules.get("BA1", {}).get("status", False)
     pvs1_applies = rules.get("PVS1_splicing", {}).get("status", False) or rules.get(
         "PVS1_protein", {}
@@ -46,6 +47,7 @@ def check_incompatible_rules(
             + " Correct evidence strength to supporting as PVS1 splicing applies with very strong evidence strength."
         )
         rules["PS1_splicing"]["coment"] = new_comment
+    ## Disable PP3 in case PVS1 applies
     if pvs1_splicing and (
         rules.get("PP3_splicing", {}).get("status", False)
         and rules.get("PP3_splicing", {}).get("rule_type", None)
@@ -57,20 +59,17 @@ def check_incompatible_rules(
             + " PP3 splicing does not apply, as PVS1 splicing already applies to the variant."
         )
         rules["PP3_splicing"]["comment"] = new_comment
-    if name_config == "ACMG ATM":
-        if (
-            rules.get("BP7_splicing", {}).get("status", False)
-            and rules.get("BP7_splicing", {}).get("strength", None)
-            != evidence_strength.SUPPORTING.value
-            and rules.get("BP4_splicing", {}).get("status", False)
-        ):
-            rules["BP4_splicing"]["status"] = False
-            new_comment = (
-                rules["BP4_splicing"]["comment"]
-                + " As BP7 RNA analysis applies to this variant. Do not apply BP4 splicing."
-            )
-            rules["BP4_splicing"]["comment"] = new_comment
+    ## Incompatibility BA1 and BS1
+    if ba1_applies and rules.get("BS1", {}).get("status", False):
+        rules["BS1"]["status"] = False
+        new_comment = rules["BS1"]["comment"] + " BS1 does not apply when BA1 applies."
+        rules["BS1"]["comment"] = new_comment
+
+    ## ---- Start gene specific incompatibilities ----
+
+    ## For ATM and PALB2
     if name_config == "ACMG ATM" or name_config == "ACMG PALB2":
+        ## Incompatibility of PVS1_RNA and PM5_splicing
         if not rules.get("PVS1_RNA", {}).get("status", False) and rules.get(
             "PM5_splicing", {}
         ).get("status", False):
@@ -80,6 +79,7 @@ def check_incompatible_rules(
                 + " As PVS1_RNA does not apply to this variant, PM5 splicing can not be applied."
             )
             rules["PM5_splicing"]["comment"] = new_comment
+        ## Incompatibility of BP7_RNA and BP4_splicing
         if rules.get("BP7_RNA", {}).get("status", False) and rules.get(
             "BP4_splicing", {}
         ).get("status", False):
@@ -89,7 +89,9 @@ def check_incompatible_rules(
                 + " As BP4 splicing can only apply if BP7_RNA does not apply, BP4 is set to False."
             )
 
+    ## For BRCA1 and BRCA2
     if name_config == "ACMG BRCA1" or name_config == "ACMG BRCA2":
+        ## Incomatibility of PVS1 and PM5
         if (
             not pvs1_applies
             and rules.get("PVS1", {}).get("rule_type") != rule_type.SPLICING.value
@@ -101,14 +103,11 @@ def check_incompatible_rules(
                 + " As PM5 can only apply if PVS1 applies as well and PVS1 does not apply, PM5 is set to False."
             )
             rules["PM5"]["comment"] = new_comment
+        ## Application of BP7 requries application of BP4
         if not rules.get("BP4_splicing", False) and rules.get("BP7_splicing", False):
             rules["BP7_splicing"]["status"] = False
             rules["BP7_splicing"]["comment"] = (
                 rules["BP7_splicing"]["comment"]
                 + " As BP7 can only apply if BP4 applies as well and BP4 does not apply, BP7 is set to False."
             )
-    if ba1_applies and rules.get("BS1", {}).get("status", False):
-        rules["BS1"]["status"] = False
-        new_comment = rules["BS1"]["comment"] + " BS1 does not apply when BA1 applies."
-        rules["BS1"]["comment"] = new_comment
     return rules
