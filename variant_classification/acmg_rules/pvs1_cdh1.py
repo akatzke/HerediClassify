@@ -78,7 +78,7 @@ class Pvs1_cdh1(Pvs1):
                     )
                 results.append(splice_result)
             elif isinstance(transcript, TranscriptInfo_start_loss):
-                result = cls.assess_pvs1_start_loss(transcript)
+                result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
                 results.append(result)
         if len(results) == 0:
             result = RuleResult(
