@@ -41,6 +41,7 @@ class Pvs1_pten(Pvs1):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.SPLICING_ASSAY,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
@@ -52,6 +53,7 @@ class Pvs1_pten(Pvs1):
         cls,
         annotated_transcripts: list[TranscriptInfo],
         variant: VariantInfo,
+        threshold_diff_len_prot_percent: float,
         splice_assay: Optional[list[RNAData]],
         prediction_dict: dict[str, float],
         threshold: Threshold,
@@ -59,7 +61,9 @@ class Pvs1_pten(Pvs1):
         results = []
         for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_exonic):
-                result = cls.assess_pvs1_frameshift_PTC_pten(transcript)
+                result = cls.assess_pvs1_frameshift_PTC_pten(
+                    transcript, threshold_diff_len_prot_percent
+                )
                 results.append(result)
             elif isinstance(transcript, TranscriptInfo_intronic):
                 splice_result = cls.assess_pvs1_splice_pten(
@@ -88,7 +92,7 @@ class Pvs1_pten(Pvs1):
 
     @classmethod
     def assess_pvs1_frameshift_PTC_pten(
-        cls, transcript: TranscriptInfo_exonic
+        cls, transcript: TranscriptInfo_exonic, threshold_diff_len_prot_percent: float
     ) -> RuleResult:
         if transcript.is_NMD and not transcript.is_reading_frame_preserved:
             comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD and in a disease relevant transcript."
@@ -97,6 +101,7 @@ class Pvs1_pten(Pvs1):
         elif (
             transcript.is_truncated_region_disease_relevant
             and transcript.is_reading_frame_preserved
+            and (transcript.diff_len_protein_percent > threshold_diff_len_prot_percent)
         ):
             comment = (
                 f"Transcript {transcript.transcript_id} is not predict to undergo NMD. Truncated region is disease relevant. "
