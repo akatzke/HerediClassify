@@ -165,7 +165,7 @@ class Pvs1(abstract_rule):
             if transcript.is_truncated_region_disease_relevant:
                 comment = (
                     comment
-                    + f"Skipped exon is disease relevant. "
+                    + f" Skipped exon is disease relevant. "
                     + transcript.comment_truncated_region
                 )
                 result = True

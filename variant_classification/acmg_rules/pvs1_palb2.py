@@ -123,7 +123,7 @@ class Pvs1_palb2(Pvs1):
             else:
                 comment = (
                     comment
-                    + f" Truncated region not located in disease relevnat region."
+                    + f" Truncated region not located in disease relevant region."
                 )
                 result = True
                 strength = evidence_strength.MODERATE
