@@ -203,7 +203,7 @@ def annotate_clinvar_spliceai_splicing(
     if not clinvar_same_pos_df.empty:
         clinvar_same_pos_formatted = format_spliceai(clinvar_same_pos_df)
         clinvar_same_pos_spliceai = clinvar_same_pos_formatted[
-            clinvar_same_pos_formatted.SpliceAI_max <= var_spliceai
+            clinvar_same_pos_formatted.SpliceAI_max >= var_spliceai
         ]
         ClinVar_same_pos = create_ClinVar(
             clinvar_same_pos_spliceai, ClinVar_Type.SAME_NUCLEOTIDE
@@ -222,7 +222,7 @@ def annotate_clinvar_spliceai_splicing(
     if not clinvar_splice_site_df.empty:
         clinvar_splice_site_formatted = format_spliceai(clinvar_splice_site_df)
         clinvar_splice_site_spliceai = clinvar_splice_site_formatted[
-            clinvar_splice_site_formatted.SpliceAI_max <= var_spliceai
+            clinvar_splice_site_formatted.SpliceAI_max >= var_spliceai
         ]
         ClinVar_splice_site = create_ClinVar(
             clinvar_splice_site_spliceai, ClinVar_Type.SAME_SPLICE_SITE
