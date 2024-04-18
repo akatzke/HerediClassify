@@ -141,7 +141,7 @@ class Ps1_splicing_tp53(abstract_rule):
             comment = f"The variant is not predicted to affect splicing."
             result = False
         else:
-            comment = "No ClinVar entries found that show splice variants at the same nucleotide position as pathogenic.."
+            comment = "No ClinVar entries found that show splice variants at the same nucleotide position as pathogenic."
             result = False
         return RuleResult(
             "PS1",
