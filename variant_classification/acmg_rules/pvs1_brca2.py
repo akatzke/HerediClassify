@@ -119,7 +119,7 @@ class Pvs1_brca2(Pvs1):
             if transcript.ptc <= pos_last_known_patho_ptc:
                 comment = (
                     comment
-                    + "Truncated/altered region is critical to protein function."
+                    + " Truncated/altered region is critical to protein function."
                 )
                 result = True
                 strength = evidence_strength.STRONG
