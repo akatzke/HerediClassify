@@ -102,7 +102,7 @@ class Pvs1(abstract_rule):
             result = True
             strength = evidence_strength.MODERATE
         else:
-            comment = f"Alternative start codon observed."
+            comment = f"Alternative start codon observed in transcript {transcript.transcript_id}."
             if transcript.is_truncated_region_disease_relevant:
                 comment = (
                     comment
