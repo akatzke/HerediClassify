@@ -140,15 +140,15 @@ class Pvs1_palb2(Pvs1):
                     + " PTC is located upstream of p.His1184."
                 )
                 result = True
-                strength = evidence_strength.STRONG
-            elif transcript.var_start <= pos_last_known_patho_ptc:
+                strength = evidence_strength.VERY_STRONG
+            elif transcript.var_start <= (pos_last_known_patho_ptc * 3):
                 comment = (
                     comment
                     + f" Frameshift variant starts upstream of p.His1184 and is predicted to lead to an alternative C-terminal end."
                 )
                 result = True
                 strength = evidence_strength.STRONG
-            elif transcript.var_start > pos_last_known_patho_ptc:
+            elif transcript.var_start > (pos_last_known_patho_ptc * 3):
                 comment = (
                     comment
                     + f" Frameshift variant starts downstream of p.Tyr1183 and is predicted to lead to an alternative C-terminal end."
