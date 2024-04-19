@@ -94,7 +94,7 @@ class Pvs1_pten(Pvs1):
     def assess_pvs1_frameshift_PTC_pten(
         cls, transcript: TranscriptInfo_exonic, threshold_diff_len_prot_percent: float
     ) -> RuleResult:
-        if transcript.is_NMD and not transcript.is_reading_frame_preserved:
+        if transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD and in a disease relevant transcript."
             result = True
             strength = evidence_strength.VERY_STRONG
@@ -135,7 +135,7 @@ class Pvs1_pten(Pvs1):
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = f"No splicing alteration predicted for transcript {transcript.transcript_id}."
-        elif not transcript.is_reading_frame_preserved and transcript.is_NMD:
+        elif transcript.is_NMD and not transcript.is_reading_frame_preserved:
             comment = f"Transcript {transcript.transcript_id} is predicted undergo NMD and is disease relevant"
             result = True
             strength = evidence_strength.VERY_STRONG
