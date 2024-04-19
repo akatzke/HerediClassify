@@ -51,6 +51,7 @@ class Pm2(abstract_rule):
             result = True
             if gnomad.subpopulation == "None":
                 comment = f"Variant is absent from gnomAD."
+                result = False
             if gnomad.subpopulation == "ALL":
                 comment = f"Variant has no entry for subpopulation. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
         return RuleResult(
