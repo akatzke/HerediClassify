@@ -117,7 +117,7 @@ class Bp1(abstract_rule):
             variant_types = transcripts[0].var_type
         else:
             variant_types = variant.var_type
-        if any(var_type in VARTYPE_GROUPS.MISSENSE.value for var_type in variant_types):
+        if all(var_type in VARTYPE_GROUPS.MISSENSE.value for var_type in variant_types):
             result = True
             comment = f"Missense variants in {variant.gene_name} where primarily truncating variants are known to cause disease."
         else:
