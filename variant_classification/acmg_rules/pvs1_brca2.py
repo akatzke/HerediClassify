@@ -122,7 +122,7 @@ class Pvs1_brca2(Pvs1):
                     + " Truncated/altered region is critical to protein function."
                 )
                 result = True
-                strength = evidence_strength.STRONG
+                strength = evidence_strength.VERY_STRONG
             else:
                 comment = (
                     comment
