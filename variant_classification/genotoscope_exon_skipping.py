@@ -344,21 +344,7 @@ def parse_variant_intron_pos(var_coding: hgvs.posedit.PosEdit) -> tuple[str, int
     var_edit = str(var_coding.edit)
     intron_offset_pos, direction2closest_exon, split_symbol = 0, 0, "+"
     # find the direction of the closest exon
-    if "_" in var_coding_str:
-        # for duplication, insertion and deletion
-        # split on '_' character before finding direction
-        for edit_part in var_coding_str.split(var_edit)[0].split("_"):
-            if "+" in edit_part:  # after exon in start of the intron
-                split_symbol = "+"
-                direction2closest_exon = -1
-            elif "-" in edit_part:  # before exon in the end of the intron
-                split_symbol = "-"
-                direction2closest_exon = +1
-            else:
-                continue
-            # get position of edit part inside the exon
-            intron_offset_pos = int(edit_part.split(split_symbol)[1])
-    else:
+    if ">" in var_coding_str:
         # for SNP find direction symbol
         if "+" in var_coding_str:  # after exon in start of the intron
             split_symbol = "+"
@@ -371,6 +357,23 @@ def parse_variant_intron_pos(var_coding: hgvs.posedit.PosEdit) -> tuple[str, int
         intron_offset_pos = int(
             var_coding_str.split(split_symbol)[-1].split(var_edit)[0]
         )
+    else:
+        # for duplication, insertion and deletion
+        # split on '_' character before finding direction
+        if "_" in var_coding_str:
+            for edit_part in var_coding_str.split(var_edit)[0].split("_"):
+                if "+" in edit_part:  # after exon in start of the intron
+                    split_symbol = "+"
+                    direction2closest_exon = -1
+                elif "-" in edit_part:  # before exon in the end of the intron
+                    split_symbol = "-"
+                    direction2closest_exon = +1
+                else:
+                    continue
+                # get position of edit part inside the exon
+                intron_offset_pos = int(edit_part.split(split_symbol)[1])
+        else:
+            edit_part = 1
     logger.debug(
         f"split_symbol: {split_symbol}, intron_offset_pos: {intron_offset_pos}, direction2exon: {direction2closest_exon}"
     )
