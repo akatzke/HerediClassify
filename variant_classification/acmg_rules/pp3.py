@@ -271,7 +271,7 @@ class Pp3_splicing_cdh1(abstract_rule):
         elif (
             any(var_type in VARTYPE_GROUPS.INTRONIC.value for var_type in variant_types)
             and not ("2dup" in str(transcript.var_hgvs))
-            or (
+            and (
                 "+2" in str(transcript.var_hgvs.pos)
                 or "+1" in str(transcript.var_hgvs.pos)
             )
