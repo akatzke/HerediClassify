@@ -261,13 +261,20 @@ class Pp3_splicing_cdh1(abstract_rule):
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if len(transcripts) == 1:
             variant_types = transcripts[0].var_type
+            transcript = transcripts[0]
         else:
             variant_types = variant.var_type
+            transcript = transcripts[0]
         if num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}."
             result = False
-        elif any(
-            var_type in VARTYPE_GROUPS.INTRONIC.value for var_type in variant_types
+        elif (
+            any(var_type in VARTYPE_GROUPS.INTRONIC.value for var_type in variant_types)
+            and not ("2dup" in str(transcript.var_hgvs))
+            or (
+                "+2" in str(transcript.var_hgvs.pos)
+                or "+1" in str(transcript.var_hgvs.pos)
+            )
         ):
             comment = f"Variant is located within cannonical splice site. PP3 does not apply here."
             result = False
