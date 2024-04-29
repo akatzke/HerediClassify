@@ -78,6 +78,7 @@ class Classification_Info:
     DISEASE_IRRELEVANT_EXONS_PATH: Info
     SPLICE_SITE_TABLE_PATH: Info
     SPLICE_RESULT: Info
+    SPLICE_RESULT_INCLUDE_LAST_EXON_POS: Info
     SPLICE_SITE_TABLE_PM5_PATH: Info
     SPLICE_RESULT_PM5: Info
     EXON_PM5_PATH: Info
@@ -293,6 +294,9 @@ class Classification_Info:
             optional=True,
         )
         self.SPLICE_RESULT = Info("splice_result", optional=True)
+        self.SPLICE_RESULT_INCLUDE_LAST_EXON_POS = Info(
+            "splice_result_include_last_exon_pos", optional=True
+        )
         self.SPLICE_SITE_TABLE_PATH = Info(
             "splice_site_table_path",
             config_location=("annotation_files", "splice_site_table", "file"),

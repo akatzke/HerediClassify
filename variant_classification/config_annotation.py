@@ -23,6 +23,9 @@ from clinvar_annot import get_annotate_clinvar
 from check_splice_site_classification_table import (
     get_annotate_splice_site_classification,
 )
+from check_splice_site_classification_table_include_last_exon_pos import (
+    get_annotate_splice_site_classification_include_last_exon_pos,
+)
 from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
@@ -223,6 +226,12 @@ def get_annotation_functions(
         ),
         class_info.SPLICE_RESULT.name: lambda variant, config: get_annotation_function(
             get_annotate_splice_site_classification, variant, config, class_info
+        ),
+        class_info.SPLICE_RESULT_INCLUDE_LAST_EXON_POS.name: lambda variant, config: get_annotation_function(
+            get_annotate_splice_site_classification_include_last_exon_pos,
+            variant,
+            config,
+            class_info,
         ),
         class_info.VARIANT_HOTSPOT_ANNOTATION.name: lambda variant, config: get_annotation_function(
             get_check_hotspot, variant, config, class_info

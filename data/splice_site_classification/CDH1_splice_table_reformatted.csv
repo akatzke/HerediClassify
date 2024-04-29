@@ -1,4 +1,7 @@
 position	alternative_allele	rule_status	evidence_strength	comment
+48	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+48	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+48	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 48+1	A	True	strong	Likely cryptic splice site.
 48+1	C	True	strong	Likely cryptic splice site.
 48+1	T	True	strong	Likely cryptic splice site.
@@ -11,6 +14,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 49-2	C	True	strong	Skipping of exon 2 causes frameshift.
 49-2	T	True	strong	Skipping of exon 2 causes frameshift.
 49-2	G	True	strong	Skipping of exon 2 causes frameshift.
+163	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+163	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+163	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 163+1	C	True	strong	Skipping of exon 2 causes frameshift.
 163+1	T	True	strong	Skipping of exon 2 causes frameshift.
 163+1	A	True	strong	Skipping of exon 2 causes frameshift.
@@ -23,6 +29,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 164-2	G	True	strong	Splicing alteration predicted to cause frameshift.
 164-2	C	True	strong	Splicing alteration predicted to cause frameshift.
 164-2	T	True	strong	Splicing alteration predicted to cause frameshift.
+387	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+387	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+387	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 387+1	C	True	moderate	Splicing alteration predicted to cause in-frame transcript.
 387+1	T	True	moderate	Splicing alteration predicted to cause in-frame transcript.
 387+1	A	True	moderate	Splicing alteration predicted to cause in-frame transcript.
@@ -35,6 +44,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 388-2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
 388-2	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
 388-2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+531	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+531	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+531	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 531+1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
 531+1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
 531+1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
@@ -47,6 +59,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 532-2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
 532-2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
 532-2	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+687	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+687	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+687	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 687+1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
 687+1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
 687+1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
@@ -59,6 +74,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 688-2	C	True	strong	Splicing alteration predicted to cause frameshift.
 688-2	T	True	strong	Splicing alteration predicted to cause frameshift.
 688-2	G	True	strong	Splicing alteration predicted to cause frameshift.
+832	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+832	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+832	G	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 832+1	A	True	strong	Splicing alteration predicted to cause frameshift.
 832+1	C	True	strong	Splicing alteration predicted to cause frameshift.
 832+1	T	True	strong	Splicing alteration predicted to cause frameshift.
@@ -71,6 +89,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 833-2	C	True	strong	Splicing alteration predicted to cause frameshift.
 833-2	G	True	strong	Splicing alteration predicted to cause frameshift.
 833-2	T	True	strong	Splicing alteration predicted to cause frameshift.
+1008	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+1008	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+1008	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 1008+1	A	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
 1008+1	C	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
 1008+1	T	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
@@ -83,6 +104,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 1009-2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
 1009-2	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
 1009-2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1137	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+1137	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+1137	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 1137+1	C	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
 1137+1	T	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
 1137+1	A	True	strong	Splicing alteration predicted to cause frameshift with cryptic splice site.
@@ -95,6 +119,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 1138-2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
 1138-2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
 1138-2	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
+1320	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+1320	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+1320	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 1320+1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
 1320+1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
 1320+1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
@@ -107,6 +134,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 1321-2	C	True	strong	Splicing alteration predicted to cause frameshift.
 1321-2	T	True	strong	Splicing alteration predicted to cause frameshift.
 1321-2	G	True	strong	Splicing alteration predicted to cause frameshift.
+1565	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+1565	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+1565	G	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 1565+1	A	True	strong	Splicing alteration predicted to cause frameshift.
 1565+1	C	True	strong	Splicing alteration predicted to cause frameshift.
 1565+1	T	True	strong	Splicing alteration predicted to cause frameshift.
@@ -119,6 +149,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 1566-2	C	True	moderate	Splicing alteration predicted in-frame insertion with potential rescue transcript.
 1566-2	T	True	moderate	Splicing alteration predicted in-frame insertion with potential rescue transcript.
 1566-2	G	True	moderate	Splicing alteration predicted in-frame insertion with potential rescue transcript.
+1711	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+1711	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+1711	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 1711+1	A	True	strong	Splicing alteration predicted to cause frameshift.
 1711+1	C	True	strong	Splicing alteration predicted to cause frameshift.
 1711+1	T	True	strong	Splicing alteration predicted to cause frameshift.
@@ -131,6 +164,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 1712-2	C	True	moderate	Splicing alteration predicted to cause in-frame transcript.
 1712-2	G	True	moderate	Splicing alteration predicted to cause in-frame transcript.
 1712-2	T	True	moderate	Splicing alteration predicted to cause in-frame transcript.
+1936	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+1936	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+1936	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 1936+1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
 1936+1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
 1936+1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
@@ -143,6 +179,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 1937-2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
 1937-2	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
 1937-2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2164	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+2164	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+2164	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 2164+1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
 2164+1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
 2164+1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.
@@ -155,6 +194,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 2165-2	C	True	strong	Splicing alteration predicted to cause frameshift.
 2165-2	T	True	strong	Splicing alteration predicted to cause frameshift.
 2165-2	G	True	strong	Splicing alteration predicted to cause frameshift.
+2295	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+2295	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+2295	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 2295+1	C	True	strong	Splicing alteration predicted to cause frameshift.
 2295+1	T	True	strong	Splicing alteration predicted to cause frameshift.
 2295+1	A	True	strong	Splicing alteration predicted to cause frameshift.
@@ -167,6 +209,9 @@ position	alternative_allele	rule_status	evidence_strength	comment
 2296-2	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
 2296-2	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
 2296-2	G	True	strong	Splicing alteration predicted to cause in-frame transcript.
+2439	A	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+2439	C	True	moderate	G to non-G variant disrupts last nucleotide of exon.
+2439	T	True	moderate	G to non-G variant disrupts last nucleotide of exon.
 2439+1	C	True	strong	Splicing alteration predicted to cause in-frame transcript.
 2439+1	T	True	strong	Splicing alteration predicted to cause in-frame transcript.
 2439+1	A	True	strong	Splicing alteration predicted to cause in-frame transcript.

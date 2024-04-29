@@ -40,7 +40,7 @@ class Pvs1_cdh1(Pvs1):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
-                class_info.SPLICE_RESULT,
+                class_info.SPLICE_RESULT_INCLUDE_LAST_EXON_POS,
                 class_info.SPLICING_ASSAY,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.VARIANT_PREDICTION,
@@ -64,7 +64,10 @@ class Pvs1_cdh1(Pvs1):
             if isinstance(transcript, TranscriptInfo_exonic):
                 result = cls.assess_pvs1_frameshift_PTC_cdh1(transcript)
                 results.append(result)
-            elif isinstance(transcript, TranscriptInfo_intronic):
+            elif (
+                isinstance(transcript, TranscriptInfo_intronic)
+                or splice_result is not None
+            ):
                 if splice_result is None:
                     splice_result = cls.assess_pvs1_splice(
                         transcript,
