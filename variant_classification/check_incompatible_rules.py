@@ -94,7 +94,7 @@ def check_incompatible_rules(
         ## Incomatibility of PVS1 and PM5
         if (
             not pvs1_applies
-            and rules.get("PVS1", {}).get("rule_type") != rule_type.SPLICING.value
+            and rules.get("PVS1", {}).get("rule_type", "") != rule_type.SPLICING.value
             and rules.get("PM5", {}).get("status", False)
         ):
             rules["PM5"]["status"] = False
