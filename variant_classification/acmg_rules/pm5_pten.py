@@ -25,27 +25,14 @@ class Pm5_protein_pten(abstract_rule):
     ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (
-                class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN_SIMILARITY,
-                class_info.VARIANT_HOTSPOT_ANNOTATION,
-            ),
+            (class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN_SIMILARITY,),
         )
 
     @classmethod
     def assess_rule(
         cls,
         clinvar_diff_aa: ClinVar,
-        variant_in_hotspot: bool,
     ) -> RuleResult:
-        if variant_in_hotspot:
-            return RuleResult(
-                "PM5",
-                rule_type.PROTEIN,
-                evidence_type.PATHOGENIC,
-                False,
-                evidence_strength.MODERATE,
-                comment=f"Variant located in mutational hotspot. PM5 is not applicable.",
-            )
         if (
             clinvar_diff_aa.pathogenic
             and clinvar_diff_aa.highest_classification == ClinVar_Status.PATHOGENIC
