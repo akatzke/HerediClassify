@@ -92,17 +92,20 @@ def check_incompatible_rules(
     ## For BRCA1 and BRCA2
     if name_config == "ACMG BRCA1" or name_config == "ACMG BRCA2":
         ## Incomatibility of PVS1 and PM5
-        if (
-            not pvs1_applies
-            and rules.get("PVS1", {}).get("rule_type", "") != rule_type.SPLICING.value
-            and rules.get("PM5", {}).get("status", False)
-        ):
-            rules["PM5"]["status"] = False
+        if not pvs1_applies and rules.get("PM5_protein", {}).get("status", False):
+            rules["PM5_protein"]["status"] = False
             new_comment = (
-                rules["PM5"]["comment"]
+                rules["PM5_protein"]["comment"]
                 + " As PM5 can only apply if PVS1 applies as well and PVS1 does not apply, PM5 is set to False."
             )
-            rules["PM5"]["comment"] = new_comment
+            rules["PM5_protein"]["comment"] = new_comment
+        if not pvs1_splicing and rules.get("PM5_splicing", {}).get("status", False):
+            rules["PM5_splicing"]["status"] = False
+            new_comment = (
+                rules["PM5_splicing"]["comment"]
+                + " As PM5 can only apply if PVS1 applies as well and PVS1 does not apply, PM5 is set to False."
+            )
+            rules["PM5_splicing"]["comment"] = new_comment
         ## Application of BP7 requries application of BP4
         if not rules.get("BP4_splicing", False) and rules.get("BP7_splicing", False):
             rules["BP7_splicing"]["status"] = False
