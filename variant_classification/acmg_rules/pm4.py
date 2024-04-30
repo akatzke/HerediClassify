@@ -54,7 +54,10 @@ class Pm4(abstract_rule):
                 evidence_strength.MODERATE,
                 f"No annotated transcripts provided, PM4 can not be applied",
             )
-        transcript = select_mane_transcript(annotated_transcript_list, mane_path)
+        if len(annotated_transcript_list):
+            transcript = annotated_transcript_list[0]
+        else:
+            transcript = select_mane_transcript(annotated_transcript_list, mane_path)
         if transcript is None:
             comment = f"PM4 does not apply to this variant, as PM4 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             result = False
@@ -187,20 +190,16 @@ class Pm4_pten(abstract_rule):
         for transcript in annotated_transcript_list:
             if any(var_type is VARTYPE.STOP_LOST for var_type in transcript.var_type):
                 if (
-                    transcript.diff_len_protein_percent
-                    > threshold_diff_len_prot_percent
-                    and transcript.is_truncated_region_disease_relevant
+                    transcript.is_truncated_region_disease_relevant
                     and not transcript.len_change_in_repetitive_region
                 ):
-                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region does not overlap repetitive region."
+                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is increased by {abs(transcript.diff_len_protein_percent)}. Deleted region does not overlap repetitive region."
                     result = True
                 elif (
-                    transcript.diff_len_protein_percent
-                    > threshold_diff_len_prot_percent
-                    and transcript.is_truncated_region_disease_relevant
+                    transcript.is_truncated_region_disease_relevant
                     and transcript.len_change_in_repetitive_region
                 ):
-                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
+                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is increased by {abs(transcript.diff_len_protein_percent)}. Deleted region overlaps repetitive region."
                     result = False
                 else:
                     comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}"
@@ -219,19 +218,12 @@ class Pm4_pten(abstract_rule):
                 for var_type in transcript.var_type
             ):
                 if (
-                    transcript.diff_len_protein_percent
-                    > threshold_diff_len_prot_percent
-                    and not transcript.len_change_in_repetitive_region
+                    not transcript.len_change_in_repetitive_region
                     and variant_in_hotspot
                 ):
                     comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region is overlaps mutational hotspot."
                     result = True
-                elif (
-                    transcript.diff_len_protein_percent
-                    > threshold_diff_len_prot_percent
-                    and variant_in_hotspot
-                    and transcript.len_change_in_repetitive_region
-                ):
+                elif variant_in_hotspot and transcript.len_change_in_repetitive_region:
                     comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
                     result = False
                 else:
@@ -246,6 +238,35 @@ class Pm4_pten(abstract_rule):
                     comment,
                 )
                 results.append(rule_result)
+            elif any(
+                var_type is VARTYPE.FRAMESHIFT_VARIANT
+                for var_type in transcript.var_type
+            ):
+                if transcript.diff_len_protein_percent > 0:
+                    result = False
+                    comment = f"Frameshift variant decreases the length of the transcript, PM4 only applyes to extensions of the protein."
+                elif (
+                    not transcript.len_change_in_repetitive_region
+                    and transcript.is_truncated_region_disease_relevant
+                ):
+                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is increased by {abs(transcript.diff_len_protein_percent)}."
+                    result = True
+                elif transcript.len_change_in_repetitive_region:
+                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is increased by {abs(transcript.diff_len_protein_percent)}. Deleted region overlaps repetitive region."
+                    result = False
+                else:
+                    comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}"
+                    result = False
+                rule_result = RuleResult(
+                    "PM4",
+                    rule_type.GENERAL,
+                    evidence_type.PATHOGENIC,
+                    result,
+                    evidence_strength.MODERATE,
+                    comment,
+                )
+                results.append(rule_result)
+
         if len(results) == 0:
             comment = f"PM4 does not apply to this variant, as PM4 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             final_result = RuleResult(
