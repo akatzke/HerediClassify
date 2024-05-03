@@ -93,17 +93,28 @@ def annotate_clinvar_spliceai_protein(
             ]
         else:
             clinvar_same_codon_no_ter = clinvar_same_codon_aa
+        # Select all ClinVar entries affecting the same gene
         clinvar_same_codon_aa_filtered = filter_gene(
             clinvar_same_codon_no_ter, variant.gene_name
         )
+        # Select ClinVar entries that are not predicted to affect splicing
         clinvar_same_codon_aa_spliceAI = clinvar_same_codon_aa_filtered[
             clinvar_same_codon_aa_filtered.SpliceAI_max <= threshold_spliceAI
         ]
-        clinvar_same_aa = clinvar_same_codon_aa_spliceAI[
-            clinvar_same_codon_aa_spliceAI.prot_alt == var_codon_info["prot_alt"]
+        # Filter out ClinVar variants with the same nucleotide change
+        clinvar_not_same_nucleotide = clinvar_same_codon_aa_spliceAI[
+            ~(
+                (clinvar_same_codon_aa_spliceAI.alt == variant.var_obs)
+                & (clinvar_same_codon_aa_spliceAI.pos == str(variant.genomic_start))
+            )
         ]
-        clinvar_diff_aa = clinvar_same_codon_aa_spliceAI[
-            clinvar_same_codon_aa_spliceAI.prot_alt != var_codon_info["prot_alt"]
+        # Filter for ClinVar variant with the same amino acid change
+        clinvar_same_aa = clinvar_not_same_nucleotide[
+            clinvar_not_same_nucleotide.prot_alt == var_codon_info["prot_alt"]
+        ]
+        # Filter for ClinVar variant with a different amino acid change
+        clinvar_diff_aa = clinvar_not_same_nucleotide[
+            clinvar_not_same_nucleotide.prot_alt != var_codon_info["prot_alt"]
         ]
     else:
         clinvar_diff_aa = pd.DataFrame()
@@ -202,11 +213,19 @@ def annotate_clinvar_spliceai_splicing(
     clinvar_same_pos_df = convert_vcf_gen_to_df(clinvar_same_pos)
     if not clinvar_same_pos_df.empty:
         clinvar_same_pos_formatted = format_spliceai(clinvar_same_pos_df)
+        # Filter ClinVar entries for SpliceAI score
         clinvar_same_pos_spliceai = clinvar_same_pos_formatted[
             clinvar_same_pos_formatted.SpliceAI_max >= var_spliceai
         ]
+        # Filter out ClinVar variants with the same nucleotide change
+        clinvar_not_same_nucleotide = clinvar_same_pos_spliceai[
+            ~(
+                (clinvar_same_pos_spliceai.alt == variant.var_obs)
+                & (clinvar_same_pos_spliceai.pos == str(variant.genomic_start))
+            )
+        ]
         ClinVar_same_pos = create_ClinVar(
-            clinvar_same_pos_spliceai, ClinVar_Type.SAME_NUCLEOTIDE
+            clinvar_not_same_nucleotide, ClinVar_Type.SAME_NUCLEOTIDE
         )
     else:
         ClinVar_same_pos = create_ClinVar(pd.DataFrame(), ClinVar_Type.SAME_NUCLEOTIDE)
@@ -221,11 +240,19 @@ def annotate_clinvar_spliceai_splicing(
     clinvar_splice_site_df = convert_vcf_gen_to_df(clinvar_splice_site)
     if not clinvar_splice_site_df.empty:
         clinvar_splice_site_formatted = format_spliceai(clinvar_splice_site_df)
+        # Filter ClinVar entries for SpliceAI score
         clinvar_splice_site_spliceai = clinvar_splice_site_formatted[
             clinvar_splice_site_formatted.SpliceAI_max >= var_spliceai
         ]
+        # Filter out ClinVar entries with the same nucleotide change
+        clinvar_not_same_nucleotide = clinvar_splice_site_spliceai[
+            ~(
+                (clinvar_splice_site_spliceai.alt == variant.var_obs)
+                & (clinvar_splice_site_spliceai.pos == str(variant.genomic_start))
+            )
+        ]
         ClinVar_splice_site = create_ClinVar(
-            clinvar_splice_site_spliceai, ClinVar_Type.SAME_SPLICE_SITE
+            clinvar_not_same_nucleotide, ClinVar_Type.SAME_SPLICE_SITE
         )
     else:
         ClinVar_splice_site = create_ClinVar(
