@@ -191,7 +191,7 @@ def annotate_clinvar_spliceai_splicing(
     try:
         var_spliceai = prediction_dict["SpliceAI"]
     except KeyError:
-        logger.logging(
+        logger.warning(
             "No SpliceAI prediction is given for the variant. ClinVar for splicing variants with SpliceAI assessment can not be assessed."
         )
         ClinVar_same_nucleotide = create_ClinVar(
@@ -208,7 +208,7 @@ def annotate_clinvar_spliceai_splicing(
     prediction_value = prediction_dict.get(threshold.name, None)
     num_thresholds_met = assess_thresholds(threshold, prediction_value)
     if num_thresholds_met is None or not num_thresholds_met > 0:
-        logger.logging(
+        logger.warning(
             "Variant is not predicted to have an effect on splicing. Therefore, PS1_splicing does not apply."
         )
         ClinVar_same_nucleotide = create_ClinVar(
