@@ -26,7 +26,7 @@ from clinvar_missense import (
     construct_clinvar_prot_change,
 )
 from clinvar_splicing import find_corresponding_splice_site
-from acmg_rules.computation_evidence_utils import Threshold
+from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 from format_spliceai import format_spliceai
 
 logger = logging.getLogger("GenOtoScope_Classify.clinvar_annot_spliceai")
@@ -150,6 +150,7 @@ def annotate_clinvar_spliceai_splicing(
     transcripts: list[TranscriptInfo],
     path_clinvar: pathlib.Path,
     prediction_dict: dict[str, float],
+    threshold: Threshold,
 ) -> dict[ClinVar_Type, ClinVar]:
     """
     Manage ClinVar annotation
@@ -171,7 +172,7 @@ def annotate_clinvar_spliceai_splicing(
         }
     try:
         affected_transcript, ref_transcript = get_affected_transcript(
-            transcripts, VARTYPE_GROUPS.INTRONIC
+            transcripts, VARTYPE_GROUPS.PS1_SPLICING
         )
     except No_transcript_with_var_type_found:
         logger.warning(
@@ -203,6 +204,23 @@ def annotate_clinvar_spliceai_splicing(
             ClinVar_Type.SAME_NUCLEOTIDE: ClinVar_same_nucleotide,
             ClinVar_Type.SAME_SPLICE_SITE: ClinVar_same_splice_site,
         }
+    # Check if variatn is predicted to have a splice effect
+    prediction_value = prediction_dict.get(threshold.name, None)
+    num_thresholds_met = assess_thresholds(threshold, prediction_value)
+    if num_thresholds_met is None or not num_thresholds_met > 0:
+        logger.logging(
+            "Variant is not predicted to have an effect on splicing. Therefore, PS1_splicing does not apply."
+        )
+        ClinVar_same_nucleotide = create_ClinVar(
+            pd.DataFrame(), ClinVar_Type.SAME_NUCLEOTIDE
+        )
+        ClinVar_same_splice_site = create_ClinVar(
+            pd.DataFrame(), ClinVar_Type.SAME_SPLICE_SITE
+        )
+        return {
+            ClinVar_Type.SAME_NUCLEOTIDE: ClinVar_same_nucleotide,
+            ClinVar_Type.SAME_SPLICE_SITE: ClinVar_same_splice_site,
+        }
 
     clinvar = VCF(path_clinvar)
     ### Check ClinVar for pathogenic variants with same nucleotide change
@@ -215,7 +233,7 @@ def annotate_clinvar_spliceai_splicing(
         clinvar_same_pos_formatted = format_spliceai(clinvar_same_pos_df)
         # Filter ClinVar entries for SpliceAI score
         clinvar_same_pos_spliceai = clinvar_same_pos_formatted[
-            clinvar_same_pos_formatted.SpliceAI_max >= var_spliceai
+            clinvar_same_pos_formatted.SpliceAI_max <= var_spliceai
         ]
         # Filter out ClinVar variants with the same nucleotide change
         clinvar_not_same_nucleotide = clinvar_same_pos_spliceai[
@@ -242,7 +260,7 @@ def annotate_clinvar_spliceai_splicing(
         clinvar_splice_site_formatted = format_spliceai(clinvar_splice_site_df)
         # Filter ClinVar entries for SpliceAI score
         clinvar_splice_site_spliceai = clinvar_splice_site_formatted[
-            clinvar_splice_site_formatted.SpliceAI_max >= var_spliceai
+            clinvar_splice_site_formatted.SpliceAI_max <= var_spliceai
         ]
         # Filter out ClinVar entries with the same nucleotide change
         clinvar_not_same_nucleotide = clinvar_splice_site_spliceai[
@@ -277,5 +295,6 @@ def get_annotate_clinvar_spliceai_splicing(
             class_info.TRANSCRIPT,
             class_info.CLINVAR_PATH_SPLICEAI,
             class_info.VARIANT_PREDICTION,
+            class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
         ),
     )
