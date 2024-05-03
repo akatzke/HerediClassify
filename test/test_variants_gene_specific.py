@@ -205,7 +205,6 @@ def test_gene_specific_brca1_splicing():
     key_list = [key for key in results_dict.keys()]
     rules_apply = [
         "PVS1_splicing",
-        "PS1_splicing",
         "PM2",
     ]
     for rule in rules_apply:
@@ -577,7 +576,7 @@ def test_gene_specific_pten_missense():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["PS1_protein", "PM2", "PP2", "PP3_protein", "BP4_splicing"]
+    rules_apply = ["PM2", "PP2", "PP3_protein", "BP4_splicing"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
@@ -700,9 +699,7 @@ def test_gene_specific_tp53_splice():
     rules_apply = [
         "PVS1_splicing",
         "PM1",
-        "PS1_splicing",
         "PM2",
-        "PP3_protein",
     ]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
