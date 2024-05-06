@@ -70,3 +70,6 @@ annotation_files:
     splice_site_table:
         root: "variant_classification/data/splice_site_classification"
         file: "PALB2_splice_table_reformatted.csv"
+    mane_transcripts:
+        root: "databases/MANE"
+        file: "MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"

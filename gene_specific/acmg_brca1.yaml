@@ -93,3 +93,6 @@ annotation_files:
     exon_pm5:
         root: "variant_classification/data/PM5_annotations"
         file: "PM5_PTC_BRCA1.csv"
+    mane_transcripts:
+        root: "databases/MANE"
+        file: "MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"
