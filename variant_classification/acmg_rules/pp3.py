@@ -264,11 +264,14 @@ class Pp3_splicing_cdh1(abstract_rule):
             transcript = transcripts[0]
         else:
             variant_types = variant.var_type
-            transcript = transcripts[0]
+            if len(transcripts) == 0:
+                transcript = None
+            else:
+                transcript = transcripts[0]
         if num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}."
             result = False
-        elif (
+        elif transcript is not None and (
             any(var_type in VARTYPE_GROUPS.INTRONIC.value for var_type in variant_types)
             and not ("2dup" in str(transcript.var_hgvs))
             and (
