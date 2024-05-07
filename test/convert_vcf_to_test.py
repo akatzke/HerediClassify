@@ -88,7 +88,7 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
             gnomad_scores["subpopulation"] = data.gnomad_popmax
             gnomad_scores["popmax_AC"] = int(data.gnomad_popmax_AC)
             gnomad_scores["popmax_AF"] = float(data.gnomad_popmax_AF)
-            gnomad_scores["faf_popmax_AF"] = float(data.gnomad_popmax_AF)
+            gnomad_scores["faf_popmax_AF"] = float(data.faf95_popmax)
         else:  # if the data is missing popmax values simply use the standard af and ac
             gnomad_scores["subpopulation"] = "ALL"
             gnomad_scores["popmax_AC"] = int(data.gnomad_ac)
