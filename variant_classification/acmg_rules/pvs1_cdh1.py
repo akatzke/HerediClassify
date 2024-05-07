@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import pathlib
 
 from typing import Callable, Optional
 
@@ -45,6 +46,7 @@ class Pvs1_cdh1(Pvs1):
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -58,12 +60,13 @@ class Pvs1_cdh1(Pvs1):
         threshold_diff_len_prot_percent: float,
         prediction_dict: dict[str, float],
         threshold: Threshold,
+        mane_path: pathlib.Path,
     ):
-        results = []
+        results = {}
         for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_exonic):
                 result = cls.assess_pvs1_frameshift_PTC_cdh1(transcript)
-                results.append(result)
+                results[transcript.transcript_id] = result
             elif isinstance(transcript, TranscriptInfo_intronic):
                 if splice_result is None:
                     splice_result = cls.assess_pvs1_splice_cdh1(
@@ -76,12 +79,12 @@ class Pvs1_cdh1(Pvs1):
                     splice_result = adjust_strength_according_to_rna_data_pvs1(
                         splice_assay, splice_result
                     )
-                results.append(splice_result)
+                results[transcript.transcript_id] = splice_result
             elif isinstance(transcript, TranscriptInfo_start_loss):
                 result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
-                results.append(result)
+                results[transcript.transcript_id] = result
         if len(results) == 0 and splice_result is not None:
-            results.append(splice_result)
+            return splice_result
         if len(results) == 0:
             result = RuleResult(
                 "PVS1",
@@ -92,7 +95,7 @@ class Pvs1_cdh1(Pvs1):
                 comment=f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}.",
             )
         else:
-            result = summarise_results_per_transcript(results)
+            result = summarise_results_per_transcript(results, mane_path)
         return result
 
     @classmethod

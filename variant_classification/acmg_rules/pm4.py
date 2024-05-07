@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 from typing import Callable
 
 import pathlib
@@ -102,6 +103,7 @@ class Pm4_stoploss(abstract_rule):
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.VARIANT,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -111,8 +113,9 @@ class Pm4_stoploss(abstract_rule):
         annotated_transcript_list: list[TranscriptInfo_annot],
         threshold_diff_len_prot_percent: float,
         variant: VariantInfo,
+        mane_path: pathlib.Path,
     ) -> RuleResult:
-        results = []
+        results = {}
         for transcript in annotated_transcript_list:
             if any(var_type is VARTYPE.STOP_LOST for var_type in transcript.var_type):
                 if (
@@ -142,7 +145,7 @@ class Pm4_stoploss(abstract_rule):
                     evidence_strength.MODERATE,
                     comment,
                 )
-                results.append(rule_result)
+                results[transcript.transcript_id] = rule_result
         if len(results) == 0:
             comment = f"PM4 does not apply to this variant, as PM4 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             final_result = RuleResult(
@@ -154,7 +157,7 @@ class Pm4_stoploss(abstract_rule):
                 comment,
             )
         else:
-            final_result = summarise_results_per_transcript(results)
+            final_result = summarise_results_per_transcript(results, mane_path)
         return final_result
 
 
@@ -172,9 +175,9 @@ class Pm4_pten(abstract_rule):
             cls.assess_rule,
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
-                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.VARIANT,
                 class_info.VARIANT_HOTSPOT_ANNOTATION,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -182,11 +185,11 @@ class Pm4_pten(abstract_rule):
     def assess_rule(
         cls,
         annotated_transcript_list: list[TranscriptInfo_annot],
-        threshold_diff_len_prot_percent: float,
         variant: VariantInfo,
         variant_in_hotspot: bool,
+        mane_path: pathlib.Path,
     ) -> RuleResult:
-        results = []
+        results = {}
         for transcript in annotated_transcript_list:
             if any(var_type is VARTYPE.STOP_LOST for var_type in transcript.var_type):
                 if (
@@ -212,7 +215,7 @@ class Pm4_pten(abstract_rule):
                     evidence_strength.MODERATE,
                     comment,
                 )
-                results.append(rule_result)
+                results[transcript.transcript_id] = rule_result
             elif any(
                 var_type in [VARTYPE.INFRAME_DELETION, VARTYPE.INFRAME_INSERTION]
                 for var_type in transcript.var_type
@@ -237,7 +240,7 @@ class Pm4_pten(abstract_rule):
                     evidence_strength.MODERATE,
                     comment,
                 )
-                results.append(rule_result)
+                results[transcript.transcript_id] = rule_result
             elif any(
                 var_type is VARTYPE.FRAMESHIFT_VARIANT
                 for var_type in transcript.var_type
@@ -265,7 +268,7 @@ class Pm4_pten(abstract_rule):
                     evidence_strength.MODERATE,
                     comment,
                 )
-                results.append(rule_result)
+                results[transcript.transcript_id] = rule_result
 
         if len(results) == 0:
             comment = f"PM4 does not apply to this variant, as PM4 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
@@ -278,5 +281,5 @@ class Pm4_pten(abstract_rule):
                 comment,
             )
         else:
-            final_result = summarise_results_per_transcript(results)
+            final_result = summarise_results_per_transcript(results, mane_path)
         return final_result

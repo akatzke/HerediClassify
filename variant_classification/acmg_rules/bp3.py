@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+import pathlib
+
 from typing import Callable
 
 from acmg_rules.utils import (
@@ -32,6 +35,7 @@ class Bp3(abstract_rule):
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.VARIANT,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -41,8 +45,9 @@ class Bp3(abstract_rule):
         annotated_transcripts: list[TranscriptInfo],
         threshold_diff_len_prot_percent: float,
         variant: VariantInfo,
+        mane_path: pathlib.Path,
     ) -> RuleResult:
-        results = []
+        results = {}
         for transcript in annotated_transcripts:
             if (
                 type(transcript) != TranscriptInfo_exonic
@@ -67,7 +72,7 @@ class Bp3(abstract_rule):
                 evidence_strength.SUPPORTING,
                 comment,
             )
-            results.append(rule_result)
+            results[transcript.transcript_id] = rule_result
         if len(results) == 0:
             if not annotated_transcripts:
                 comment = "No annotated transcripts provided, BP3 an not be applied."
@@ -82,5 +87,5 @@ class Bp3(abstract_rule):
                 comment,
             )
         else:
-            final_result = summarise_results_per_transcript(results)
+            final_result = summarise_results_per_transcript(results, mane_path)
         return final_result

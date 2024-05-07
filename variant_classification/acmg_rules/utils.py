@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
+import pathlib
+
 from abc import ABC, abstractmethod
-from typing import Callable
+from typing import Callable, Optional
 from dataclasses import dataclass
 from enum import Enum
+
+import pandas as pd
 
 from information import Classification_Info, Info
 
@@ -72,35 +76,76 @@ class abstract_rule(ABC):
         pass
 
 
-def summarise_results_per_transcript(results: list[RuleResult]) -> RuleResult:
+def summarise_results_per_transcript(
+    results: dict[str, RuleResult], mane_path: pathlib.Path
+) -> RuleResult:
+    # If dict has only one entry, return that entry as final result
     if len(results) == 1:
-        return results[0]
-    strength_values = {
-        evidence_strength.STAND_ALONE.value: 5,
-        evidence_strength.VERY_STRONG.value: 4,
-        evidence_strength.STRONG.value: 3,
-        evidence_strength.MODERATE.value: 2,
-        evidence_strength.SUPPORTING.value: 1,
-    }
-    final_result = None
-    max_strength = 0
-    for result in results:
-        if not result.status:
-            continue
-        current_strength = strength_values[result.strength.value]
-        if current_strength > max_strength:
-            max_strength = current_strength
-            final_result = result
-    if final_result is None:
-        final_comment = ""
-        for result in results:
-            final_result = final_comment + ", " + result.comment
+        return list(results.values())[0]
+    # When there is mor
+    mane_transcript_id = get_mane_transcript_id(list(results.keys()), mane_path)
+    try:
+        final_result = results[mane_transcript_id]
+        del results[mane_transcript_id]
+        compound_comment = construct_compound_comment_for_all_assessed_transcripts(
+            results
+        )
+        final_result.comment = final_result.comment + " " + compound_comment
+    except KeyError:
+        compound_comment = construct_compound_comment_for_all_assessed_transcripts(
+            results
+        )
         final_result = RuleResult(
-            results[0].name,
+            "PVS1",
             rule_type.GENERAL,
-            results[0].evidence_type,
+            evidence_type.PATHOGENIC,
             False,
-            results[0].strength,
-            final_comment,
+            evidence_strength.VERY_STRONG,
+            comment=f"No MANE transcript has been classified for this variant. Therefore PVS1 is set to False. Other transcripts that were classified give the following assessments: "
+            + compound_comment,
         )
     return final_result
+
+
+def get_mane_transcript_id(
+    transcript_ids: list[str], mane_path: pathlib.Path
+) -> Optional[str]:
+    """
+    From a list of transcript, select get the MANE transcript id
+    """
+    mane_transcripts_df = pd.read_csv(mane_path, sep="\t")
+    mane_transcripts = mane_transcripts_df.transcript.dropna()
+    for transcript_id in transcript_ids:
+        if any(mane_transcripts.str.contains(transcript_id)):
+            return transcript_id
+    return None
+
+
+def construct_compound_comment_for_all_assessed_transcripts(
+    results: dict[str, RuleResult]
+) -> str:
+    """
+    From a dictionary of results, construct a compound comment
+    """
+    comment = ""
+    for transcript_id, result in results.items():
+        if result.status:
+            tmp_comment = (
+                transcript_id
+                + ": "
+                + result.name
+                + " "
+                + result.strength.value
+                + " applies: "
+                + result.comment
+            )
+        else:
+            tmp_comment = (
+                transcript_id
+                + ": "
+                + result.name
+                + " does not applies: "
+                + result.comment
+            )
+        comment = comment + tmp_comment + " "
+    return comment
