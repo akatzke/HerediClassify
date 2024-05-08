@@ -18,6 +18,19 @@ from information import Classification_Info, Info
 from variant import TranscriptInfo
 from var_type import VARTYPE_GROUPS
 
+
+def get_annotate_splice_site_classification_pm5(
+    class_info: Classification_Info,
+) -> tuple[Callable, tuple[Info, ...]]:
+    """
+    Get function for checking for entries in splice site classification table
+    """
+    return (
+        annotate_splice_site_classification_pm5,
+        (class_info.TRANSCRIPT, class_info.SPLICE_SITE_TABLE_PM5_PATH),
+    )
+
+
 logger = logging.getLogger("GenOtoScope_Classify.check_splice_table_pm5")
 
 
@@ -47,10 +60,32 @@ def annotate_splice_site_classification_pm5(
         )
     splice_table = pd.read_csv(path_splice_table, sep="\t")
     try:
-        splice_table_entry = splice_table[
-            (splice_table.position == str(transcript.var_hgvs.pos))
-            & (splice_table.alternative_allele == transcript.var_hgvs.edit.alt)
-        ]
+        non_snp = ["ins", "del", "dup"]
+        if any(entry in str(transcript.var_hgvs) for entry in non_snp):
+            # In case of a larger deletion, find the position with the smallest offset from the exon
+            if "_" in str(transcript.var_hgvs) and "del" in str(transcript.var_hgvs):
+                if abs(transcript.var_hgvs.pos.start.offset) < abs(
+                    transcript.var_hgvs.pos.end.offset
+                ):
+                    splice_table_entry = splice_table[
+                        splice_table.position == str(transcript.var_hgvs.pos.start)
+                    ]
+                else:
+                    splice_table_entry = splice_table[
+                        splice_table.position == str(transcript.var_hgvs.pos.end)
+                    ]
+
+            # In case only a single nucleotide is deletet, inserted or duplicated
+            else:
+                splice_table_entry = splice_table[
+                    splice_table.position == str(transcript.var_hgvs.pos)
+                ]
+        # Select correct row for single nucleotide exchanges
+        else:
+            splice_table_entry = splice_table[
+                (splice_table.position == str(transcript.var_hgvs.pos))
+                & (splice_table.alternative_allele == transcript.var_hgvs.edit.alt)
+            ]
     except AttributeError:
         return None
     if splice_table_entry.empty:
@@ -64,15 +99,3 @@ def annotate_splice_site_classification_pm5(
             evidence_strength(splice_table_entry.evidence_strength.values[0]),
             splice_table_entry.comment.values[0],
         )
-
-
-def get_annotate_splice_site_classification_pm5(
-    class_info: Classification_Info,
-) -> tuple[Callable, tuple[Info, ...]]:
-    """
-    Get function for checking for entries in splice site classification table
-    """
-    return (
-        annotate_splice_site_classification_pm5,
-        (class_info.TRANSCRIPT, class_info.SPLICE_SITE_TABLE_PM5_PATH),
-    )
