@@ -88,6 +88,20 @@ def check_incompatible_rules(
                 rules["BP4_splicing"]["comment"]
                 + " As BP4 splicing can only apply if BP7_RNA does not apply, BP4 is set to False."
             )
+            rules["BP4_splicing"]["comment"] = new_comment
+
+    ## For PALB2
+    if name_config == "ACMG PALB2":
+        ## In order for BP1 to apply, BP4_splicing must apply to the variant
+        if rules.get("BP1", {}).get("status", False) and not rules.get(
+            "BP4_splicing", {}
+        ).get("status", False):
+            rules["BP1"]["status"] = False
+            new_comment = (
+                rules["BP1"]["comment"]
+                + " In order for BP1 to apply to a variant, any effect on splicing must be excluded. As splice effect can not be excluded for this variant, BP1 can not be applied."
+            )
+            rules["BP1"]["comment"] = new_comment
 
     ## For BRCA1 and BRCA2
     if name_config == "ACMG BRCA1" or name_config == "ACMG BRCA2":
