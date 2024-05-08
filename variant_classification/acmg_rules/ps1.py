@@ -84,7 +84,10 @@ class Ps1_protein_spliceai(abstract_rule):
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         clinvar_same_aa = clinvar_result[ClinVar_Type.SAME_AA_CHANGE]
-        if clinvar_same_aa.pathogenic:
+        if (
+            clinvar_same_aa.pathogenic
+            and clinvar_same_aa.highest_classification is ClinVar_Status.PATHOGENIC
+        ):
             if num_thresholds_met is None:
                 result = True
                 comment = f"ATTENTION: No splicing prediction is available for variant under assessment. The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
