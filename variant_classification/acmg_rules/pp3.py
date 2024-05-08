@@ -48,9 +48,7 @@ class Pp3_protein(abstract_rule):
             variant_types = variant.var_type
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
-        if any(
-            type in VARTYPE_GROUPS.PREDICTION_NO_PROTEIN.value for type in variant_types
-        ):
+        if not any(type in VARTYPE_GROUPS.MISSENSE.value for type in variant_types):
             result = False
             comment = f"PP3 does not apply to this variant, as PP3 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         elif num_thresholds_met is None:
