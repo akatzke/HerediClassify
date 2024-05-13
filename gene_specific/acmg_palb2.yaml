@@ -1,6 +1,6 @@
 ### Configuration name ###
 name: "ACMG PALB2"
-version: "1.0.0"
+version: "1.1.0"
 
 ### Rules ###
 rules:
@@ -9,12 +9,10 @@ rules:
     - pm2_supporting_faf
     - pm5_protein_ptc
     - pm5_splicing_ptc
-    - pp3_protein
     - pp3_splicing
     - ba1_faf
     - bs1_faf
     - bp1
-    - bp4_protein
     - bp4_splicing
     - bp7_deep_intronic_enigma
 
