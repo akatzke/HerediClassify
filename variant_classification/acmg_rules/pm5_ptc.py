@@ -56,7 +56,7 @@ class Pm5_protein_ptc(abstract_rule):
                     raise KeyError(
                         f"Transcript {transcript.transcript_id} not in disease relevant transcripts: {pos_last_known_patho_ptc_dict.keys()}. Transcript should have been filtered out earlier."
                     )
-                if transcript.ptc <= pos_last_known_patho_ptc:
+                if transcript.ptc < pos_last_known_patho_ptc:
                     status = True
                     comment = f"PTC ({transcript.ptc}) caused by variant is located upstream of last known pathogenic PTC {pos_last_known_patho_ptc}."
                 else:
@@ -125,7 +125,7 @@ class Pm5_splicing_ptc(abstract_rule):
                     raise KeyError(
                         f"Transcript {transcript.transcript_id} not in disease relevant transcripts: {pos_last_known_patho_ptc_dict.keys()}. Transcript should have been filtered out earlier."
                     )
-                if transcript.ptc <= pos_last_known_patho_ptc:
+                if transcript.ptc < pos_last_known_patho_ptc:
                     status = True
                     comment = f"PTC ({transcript.ptc}) caused by variant is located upstream of last known pathogenic PTC {pos_last_known_patho_ptc}."
                 else:
