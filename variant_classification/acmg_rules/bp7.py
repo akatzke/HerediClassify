@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import pathlib
+
 from typing import Callable, Optional
 
 from acmg_rules.utils import (
@@ -14,11 +16,12 @@ from acmg_rules.computation_evidence_utils import (
     assess_thresholds,
     Threshold,
 )
-from variant import RNAData, VariantInfo
+from variant import RNAData, TranscriptInfo, VariantInfo
 from var_type import VARTYPE
 from acmg_rules.functional_splicing_assay_utils import (
     assess_splicing_data_bp7,
 )
+from utils import select_mane_transcript
 
 
 class Bp7(abstract_rule):
@@ -33,20 +36,24 @@ class Bp7(abstract_rule):
         return (
             cls.assess_rule,
             (
+                class_info.TRANSCRIPT,
                 class_info.VARIANT,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
                 class_info.SPLICING_ASSAY,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
     @classmethod
     def assess_rule(
         cls,
+        transcripts: list[TranscriptInfo],
         variant: VariantInfo,
         prediction_dict: dict[str, float],
         threshold: Threshold,
         splicing_assay: Optional[list[RNAData]],
+        mane_path: pathlib.Path,
     ) -> RuleResult:
         # Check RNA data first
         if splicing_assay:
@@ -62,10 +69,17 @@ class Bp7(abstract_rule):
                     evidence_strength.STRONG,
                     comment_assay,
                 )
+        # In case one disase variant transcripts is defined, use type of variant in that transcript
+        # Otherwise use all variant types defined for variant
+        if len(transcripts) == 1:
+            variant_types = transcripts[0].var_type
+        else:
+            transcript = select_mane_transcript(transcripts, mane_path)
+            variant_types = transcript.var_type
 
         # Check prediction
         if not any(
-            var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant.var_type
+            var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant_types
         ):
             return RuleResult(
                 "BP7",

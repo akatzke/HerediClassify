@@ -1,6 +1,6 @@
 ### Configuration name ###
 name: "ACMG ATM"
-version: "1.2.0"
+version: "1.3.0"
 
 ### Rules ###
 rules:
@@ -22,8 +22,8 @@ rules:
 ### Disease relevant transcript ###
 disease_relevant_transcripts:
     - name: "ENST00000675843"
-      nmd_threshold: 8937
-      pos_last_known_patho_ptc: 3046
+      nmd_threshold: 8940
+      pos_last_known_patho_ptc: 3047
 
 ### Thresholds splicing and pathogenicity prediction tools ###
 prediction_tool_thresholds:
@@ -72,3 +72,6 @@ annotation_files:
     splice_site_table:
         root: "variant_classification/data/splice_site_classification"
         file: "ATM_splice_table_reformatted.csv"
+    mane_transcripts:
+        root: "databases/MANE"
+        file: "MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"

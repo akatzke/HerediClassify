@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import pathlib
+
 from typing import Callable, Optional
 
 from acmg_rules.utils import (
@@ -41,9 +43,11 @@ class Pvs1_pten(Pvs1):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.SPLICING_ASSAY,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -52,15 +56,19 @@ class Pvs1_pten(Pvs1):
         cls,
         annotated_transcripts: list[TranscriptInfo],
         variant: VariantInfo,
+        threshold_diff_len_prot_percent: float,
         splice_assay: Optional[list[RNAData]],
         prediction_dict: dict[str, float],
         threshold: Threshold,
+        mane_path: pathlib.Path,
     ):
-        results = []
+        results = {}
         for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_exonic):
-                result = cls.assess_pvs1_frameshift_PTC_pten(transcript)
-                results.append(result)
+                result = cls.assess_pvs1_frameshift_PTC_pten(
+                    transcript, threshold_diff_len_prot_percent
+                )
+                results[transcript.transcript_id] = result
             elif isinstance(transcript, TranscriptInfo_intronic):
                 splice_result = cls.assess_pvs1_splice_pten(
                     transcript, prediction_dict, threshold
@@ -69,10 +77,10 @@ class Pvs1_pten(Pvs1):
                     splice_result = adjust_strength_according_to_rna_data_pvs1(
                         splice_assay, splice_result
                     )
-                results.append(splice_result)
+                results[transcript.transcript_id] = splice_result
             elif isinstance(transcript, TranscriptInfo_start_loss):
                 result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
-                results.append(result)
+                results[transcript.transcript_id] = result
         if len(results) == 0:
             result = RuleResult(
                 "PVS1",
@@ -83,20 +91,21 @@ class Pvs1_pten(Pvs1):
                 comment=f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}.",
             )
         else:
-            result = summarise_results_per_transcript(results)
+            result = summarise_results_per_transcript(results, mane_path)
         return result
 
     @classmethod
     def assess_pvs1_frameshift_PTC_pten(
-        cls, transcript: TranscriptInfo_exonic
+        cls, transcript: TranscriptInfo_exonic, threshold_diff_len_prot_percent: float
     ) -> RuleResult:
-        if transcript.is_NMD and not transcript.is_reading_frame_preserved:
+        if transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD and in a disease relevant transcript."
             result = True
             strength = evidence_strength.VERY_STRONG
         elif (
             transcript.is_truncated_region_disease_relevant
             and transcript.is_reading_frame_preserved
+            and (transcript.diff_len_protein_percent > threshold_diff_len_prot_percent)
         ):
             comment = (
                 f"Transcript {transcript.transcript_id} is not predict to undergo NMD. Truncated region is disease relevant. "
@@ -130,7 +139,7 @@ class Pvs1_pten(Pvs1):
             result = False
             strength = evidence_strength.VERY_STRONG
             comment = f"No splicing alteration predicted for transcript {transcript.transcript_id}."
-        elif not transcript.is_reading_frame_preserved and transcript.is_NMD:
+        elif transcript.is_NMD and not transcript.is_reading_frame_preserved:
             comment = f"Transcript {transcript.transcript_id} is predicted undergo NMD and is disease relevant"
             result = True
             strength = evidence_strength.VERY_STRONG

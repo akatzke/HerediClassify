@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import pathlib
+
 from typing import Callable, Optional
 
 from acmg_rules.utils import (
@@ -19,6 +21,7 @@ from acmg_rules.functional_splicing_assay_utils import (
 )
 from variant import RNAData, TranscriptInfo, VariantInfo
 from var_type import VARTYPE
+from utils import select_mane_transcript
 
 
 class Bp7_deep_intronic_enigma(abstract_rule):
@@ -39,6 +42,7 @@ class Bp7_deep_intronic_enigma(abstract_rule):
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
                 class_info.SPLICING_ASSAY,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -50,6 +54,7 @@ class Bp7_deep_intronic_enigma(abstract_rule):
         prediction_dict: dict[str, float],
         threshold: Threshold,
         splicing_assay: Optional[list[RNAData]],
+        mane_path: pathlib.Path,
     ) -> RuleResult:
         # Check RNA data first
         if splicing_assay:
@@ -66,6 +71,17 @@ class Bp7_deep_intronic_enigma(abstract_rule):
                     comment_assay,
                 )
 
+        # In case one disase variant transcripts is defined, use type of variant in that transcript
+        # Otherwise use all variant types defined for variant
+        if len(transcripts) == 1:
+            transcript = transcripts[0]
+            variant_types = transcript.var_type
+        else:
+            transcript = select_mane_transcript(transcripts, mane_path)
+            if transcript is None:
+                variant_types = variant.var_type
+            else:
+                variant_types = transcript.var_type
         # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
@@ -78,41 +94,51 @@ class Bp7_deep_intronic_enigma(abstract_rule):
             Now check if variant type applies
             """
             if any(
-                var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant.var_type
+                var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant_types
             ):
                 result = True
-                comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name}."
+                comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
+                if transcript is None:
+                    result = False
+                    comment = (
+                        comment
+                        + " The variant is not located in the MANE transcript. Therefore BP7 is disabled."
+                    )
 
-            elif any(
-                var_type is VARTYPE.INTRON_VARIANT for var_type in variant.var_type
-            ):
+            elif any(var_type is VARTYPE.INTRON_VARIANT for var_type in variant_types):
                 """
                 Check if variant is a deep intronic variant
                 """
                 result = False
                 comments_all = []
-                for transcript in transcripts:
+                for trans in transcripts:
                     if (
-                        transcript.var_hgvs.pos.start.offset >= 7
-                        and transcript.var_hgvs.pos.end.offset >= 7
+                        trans.var_hgvs.pos.start.offset >= 7
+                        and trans.var_hgvs.pos.end.offset >= 7
                     ):
                         result = True
-                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name}."
+                        comment_tmp = f"The deep intronic variant in {trans.transcript_id} is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
                         comments_all.append(comment_tmp)
                     elif (
-                        transcript.var_hgvs.pos.start.offset <= -21
-                        and transcript.var_hgvs.pos.end.offset <= -21
+                        trans.var_hgvs.pos.start.offset <= -21
+                        and trans.var_hgvs.pos.end.offset <= -21
                     ):
                         result = True
-                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name}."
+                        comment_tmp = f"The deep intronic variant in {trans.transcript_id} is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
                         comments_all.append(comment_tmp)
                 if result:
                     comment = " ".join(comments_all)
                 else:
                     comment = f"BP7 does not apply to this variant, as it is not located in the defined region for deep intronic region variants (<= -21 or >= 7)."
+                if transcript is None:
+                    result = False
+                    comment = (
+                        comment
+                        + " The variant is not located in the MANE transcript. Therefore BP7 is disabled."
+                    )
             else:
                 result = False
-                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         else:
             result = False
             comment = f"The variant is not predicted to not affect splicing by {threshold.name}."
@@ -145,6 +171,7 @@ class Bp7_deep_intronic_atm(abstract_rule):
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
                 class_info.SPLICING_ASSAY,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -156,6 +183,7 @@ class Bp7_deep_intronic_atm(abstract_rule):
         prediction_dict: dict[str, float],
         threshold: Threshold,
         splicing_assay: Optional[list[RNAData]],
+        mane_path: pathlib.Path,
     ) -> RuleResult:
         # Check RNA data first
         if splicing_assay:
@@ -172,6 +200,17 @@ class Bp7_deep_intronic_atm(abstract_rule):
                     comment_assay,
                 )
 
+        # In case one disase variant transcripts is defined, use type of variant in that transcript
+        # Otherwise use all variant types defined for variant
+        if len(transcripts) == 1:
+            transcript = transcripts[0]
+            variant_types = transcript.var_type
+        else:
+            transcript = select_mane_transcript(transcripts, mane_path)
+            if transcript is None:
+                variant_types = variant.var_type
+            else:
+                variant_types = transcript.var_type
         # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
@@ -184,41 +223,51 @@ class Bp7_deep_intronic_atm(abstract_rule):
             Now check if variant type applies
             """
             if any(
-                var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant.var_type
+                var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant_types
             ):
                 result = True
-                comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name}."
+                comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
+                if transcript is None:
+                    result = False
+                    comment = (
+                        comment
+                        + " The variant is not located in the MANE transcript. Therefore BP7 is disabled."
+                    )
 
-            elif any(
-                var_type is VARTYPE.INTRON_VARIANT for var_type in variant.var_type
-            ):
+            elif any(var_type is VARTYPE.INTRON_VARIANT for var_type in variant_types):
                 """
                 Check if variant is a deep intronic variant
                 """
                 result = False
                 comments_all = []
-                for transcript in transcripts:
+                for trans in transcripts:
                     if (
-                        transcript.var_hgvs.pos.start.offset > 7
-                        and transcript.var_hgvs.pos.end.offset > 7
+                        trans.var_hgvs.pos.start.offset > 7
+                        and trans.var_hgvs.pos.end.offset > 7
                     ):
                         result = True
-                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name}."
+                        comment_tmp = f"The deep intronic variant in {trans.transcript_id} is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
                         comments_all.append(comment_tmp)
                     elif (
-                        transcript.var_hgvs.pos.start.offset < -40
-                        and transcript.var_hgvs.pos.end.offset < -40
+                        trans.var_hgvs.pos.start.offset < -40
+                        and trans.var_hgvs.pos.end.offset < -40
                     ):
                         result = True
-                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name}."
+                        comment_tmp = f"The deep intronic variant in {trans.transcript_id} is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
                         comments_all.append(comment_tmp)
                 if result:
                     comment = " ".join(comments_all)
                 else:
                     comment = f"BP7 does not apply to this variant, as it is not located in the defined region for deep intronic region variants (< -40 or > 7)."
+                if transcript is None:
+                    result = False
+                    comment = (
+                        comment
+                        + " The variant is not located in the MANE transcript. Therefore BP7 is disabled."
+                    )
             else:
                 result = False
-                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         else:
             result = False
             comment = f"The variant is not predicted to not affect splicing by {threshold.name}."
@@ -251,6 +300,7 @@ class Bp7_deep_intronic_palb2(abstract_rule):
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
                 class_info.SPLICING_ASSAY,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -262,6 +312,7 @@ class Bp7_deep_intronic_palb2(abstract_rule):
         prediction_dict: dict[str, float],
         threshold: Threshold,
         splicing_assay: Optional[list[RNAData]],
+        mane_path: pathlib.Path,
     ) -> RuleResult:
         # Check RNA data first
         if splicing_assay:
@@ -278,6 +329,17 @@ class Bp7_deep_intronic_palb2(abstract_rule):
                     comment_assay,
                 )
 
+        # In case one disase variant transcripts is defined, use type of variant in that transcript
+        # Otherwise use all variant types defined for variant
+        if len(transcripts) == 1:
+            transcript = transcripts[0]
+            variant_types = transcript.var_type
+        else:
+            transcript = select_mane_transcript(transcripts, mane_path)
+            if transcript is None:
+                variant_types = variant.var_type
+            else:
+                variant_types = transcript.var_type
         # Check prediction
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
@@ -290,41 +352,51 @@ class Bp7_deep_intronic_palb2(abstract_rule):
             Now check if variant type applies
             """
             if any(
-                var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant.var_type
+                var_type is VARTYPE.SYNONYMOUS_VARIANT for var_type in variant_types
             ):
                 result = True
-                comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name}."
+                comment = f"The synonymous variant is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
+                if transcript is None:
+                    result = False
+                    comment = (
+                        comment
+                        + " The variant is not located in the MANE transcript. Therefore BP7 is disabled."
+                    )
 
-            elif any(
-                var_type is VARTYPE.INTRON_VARIANT for var_type in variant.var_type
-            ):
+            elif any(var_type is VARTYPE.INTRON_VARIANT for var_type in variant_types):
                 """
                 Check if variant is a deep intronic variant
                 """
                 result = False
                 comments_all = []
-                for transcript in transcripts:
+                for trans in transcripts:
                     if (
-                        transcript.var_hgvs.pos.start.offset > 7
-                        and transcript.var_hgvs.pos.end.offset > 7
+                        trans.var_hgvs.pos.start.offset > 7
+                        and trans.var_hgvs.pos.end.offset > 7
                     ):
                         result = True
-                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name}."
+                        comment_tmp = f"The deep intronic variant in {trans.transcript_id} is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
                         comments_all.append(comment_tmp)
                     elif (
-                        transcript.var_hgvs.pos.start.offset < -21
-                        and transcript.var_hgvs.pos.end.offset < -21
+                        trans.var_hgvs.pos.start.offset < -21
+                        and trans.var_hgvs.pos.end.offset < -21
                     ):
                         result = True
-                        comment_tmp = f"The deep intronic variant in {transcript.transcript_id} is predicted to have no splicing effect by {threshold.name}."
+                        comment_tmp = f"The deep intronic variant in {trans.transcript_id} is predicted to have no splicing effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met-1]}, value: {prediction_value})."
                         comments_all.append(comment_tmp)
                 if result:
                     comment = " ".join(comments_all)
                 else:
                     comment = f"BP7 does not apply to this variant, as it is not located in the defined region for deep intronic region variants (< -21 or > 7)."
+                if transcript is None:
+                    result = False
+                    comment = (
+                        comment
+                        + " The variant is not located in the MANE transcript. Therefore BP7 is disabled."
+                    )
             else:
                 result = False
-                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+                comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         else:
             result = False
             comment = f"The variant is not predicted to not affect splicing by {threshold.name}."

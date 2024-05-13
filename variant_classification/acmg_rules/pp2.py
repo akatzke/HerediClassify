@@ -11,7 +11,7 @@ from acmg_rules.utils import (
 )
 from information import Classification_Info, Info
 from var_type import VARTYPE_GROUPS
-from variant import VariantInfo
+from variant import TranscriptInfo, VariantInfo
 
 
 class Pp2(abstract_rule):
@@ -25,14 +25,20 @@ class Pp2(abstract_rule):
     ) -> tuple[Callable, tuple[Info, ...]]:
         return (
             cls.assess_rule,
-            (class_info.VARIANT,),
+            (class_info.VARIANT, class_info.TRANSCRIPT),
         )
 
     @classmethod
-    def assess_rule(cls, variant: VariantInfo) -> RuleResult:
-        if any(
-            var_type in VARTYPE_GROUPS.MISSENSE.value for var_type in variant.var_type
-        ):
+    def assess_rule(
+        cls, variant: VariantInfo, transcripts: list[TranscriptInfo]
+    ) -> RuleResult:
+        # In case one disase variant transcripts is defined, use type of variant in that transcript
+        # Otherwise use all variant types defined for variant
+        if len(transcripts) == 1:
+            variant_types = transcripts[0].var_type
+        else:
+            variant_types = variant.var_type
+        if any(var_type in VARTYPE_GROUPS.MISSENSE.value for var_type in variant_types):
             result = True
             comment = f"Missense variants in {variant.gene_name} are a known mechanism of disease."
         else:

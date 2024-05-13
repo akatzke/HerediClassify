@@ -127,11 +127,11 @@ def filter_similarity(
     var_score = get_similarity_score(var_codon_info, path_similarity_score)
     if direction == "less":
         clinvar_filtered = clinvar_similarity[
-            clinvar_similarity.similarity_score <= var_score
+            clinvar_similarity.similarity_score >= var_score
         ]
     elif direction == "greater":
         clinvar_filtered = clinvar_similarity[
-            clinvar_similarity.similarity_score >= var_score
+            clinvar_similarity.similarity_score <= var_score
         ]
     else:
         raise ValueError(

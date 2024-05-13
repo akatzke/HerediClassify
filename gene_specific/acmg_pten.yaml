@@ -1,6 +1,6 @@
 ### Configuration name ###
 name: "ACMG PTEN"
-version: "3.0.0"
+version: "3.1.0"
 
 ### Rules ###
 rules:
@@ -38,7 +38,7 @@ prediction_tool_thresholds:
     splicing_prediction:
         name: "SpliceAI"
         benign:
-                supporting: 0.49
+                supporting: 0.2
                 direction: "less_than_or_equal"
         pathogenic:
                 supporting: 0.5
@@ -87,3 +87,6 @@ annotation_files:
         root: "variant_classification/data/similarity_score"
         similarity_score_file: "blosum62_formatted.csv"
         similarity_score_direction: "less"
+    mane_transcripts:
+        root: "databases/MANE"
+        file: "MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"

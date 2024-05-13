@@ -6,6 +6,7 @@ from collections.abc import Callable
 from typing import Optional
 
 import pandas as pd
+
 from acmg_rules.utils import (
     RuleResult,
     evidence_strength,
@@ -25,18 +26,19 @@ logger = logging.getLogger("GenOtoScope_Classify.Check_exon_pm5")
 def annotate_exon_classification_pm5(
     variant: VariantInfo,
     annotated_transcripts: list[TranscriptInfo],
-    path_exon_pm5: pathlib.Path,
+    exon_pm5_path: pathlib.Path,
+    mane_path: pathlib.Path,
 ) -> Optional[RuleResult]:
     """
     Check if variant is listed in the preclassified splice sites by VCEP
     Here the PM5 classification is accessed
     """
-    results = []
+    results = {}
     for transcript in annotated_transcripts:
         if any(
             var_type in VARTYPE_GROUPS.EXONIC.value for var_type in transcript.var_type
         ):
-            exon_pm5 = pd.read_csv(path_exon_pm5, sep="\t")
+            exon_pm5 = pd.read_csv(exon_pm5_path, sep="\t")
             exon_table_entries = exon_pm5[
                 (exon_pm5.start <= transcript.ptc) & (exon_pm5.end >= transcript.ptc)
             ]
@@ -66,7 +68,7 @@ def annotate_exon_classification_pm5(
                     ),
                     strongest_evidence_entry.comment.values[0],
                 )
-            results.append(result)
+            results[transcript.transcript_id] = result
     if len(results) == 0:
         if not annotated_transcripts:
             comment = (
@@ -83,7 +85,7 @@ def annotate_exon_classification_pm5(
             comment,
         )
     else:
-        result = summarise_results_per_transcript(results)
+        result = summarise_results_per_transcript(results, mane_path)
     return result
 
 
@@ -99,6 +101,7 @@ def get_annotate_exon_classification_pm5(
             class_info.VARIANT,
             class_info.ANNOTATED_TRANSCRIPT_LIST,
             class_info.EXON_PM5_PATH,
+            class_info.MANE_TRANSCRIPT_LIST_PATH,
         ),
     )
 

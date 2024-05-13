@@ -23,6 +23,9 @@ from clinvar_annot import get_annotate_clinvar
 from check_splice_site_classification_table import (
     get_annotate_splice_site_classification,
 )
+from check_splice_site_classification_table_include_last_exon_pos import (
+    get_annotate_splice_site_classification_include_last_exon_pos,
+)
 from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
@@ -95,9 +98,11 @@ def get_annotations_needed_from_rules(
         "pm5_protein_tp53": Rules.Pm5_protein_tp53,
         "pp2": Rules.Pp2,
         "pp3_splicing": Rules.Pp3_splicing,
+        "pp3_splicing_enigma": Rules.Pp3_splicing_enigma,
         "pp3_splicing_mult_strength": Rules.Pp3_splicing_mult_strength,
         "pp3_splicing_cdh1": Rules.Pp3_splicing_cdh1,
         "pp3_protein": Rules.Pp3_protein,
+        "pp3_protein_enigma": Rules.Pp3_protein_enigma,
         "pp3_protein_mult_strength": Rules.Pp3_protein_mult_strength,
         "ba1": Rules.Ba1,
         "ba1_faf": Rules.Ba1_faf,
@@ -115,8 +120,10 @@ def get_annotations_needed_from_rules(
         "bp1_annotation_cold_spot_strong": Rules.Bp1_annotation_cold_spot_strong,
         "bp3": Rules.Bp3,
         "bp4_splicing": Rules.Bp4_splicing,
+        "bp4_splicing_enigma": Rules.Bp4_splicing_enigma,
         "bp4_splicing_mult_strength": Rules.Bp4_splicing_mult_strength,
         "bp4_protein": Rules.Bp4_protein,
+        "bp4_protein_enigma": Rules.Bp4_protein_enigma,
         "bp4_protein_mult_strength": Rules.Bp4_protein_mult_strength,
         "bp7": Rules.Bp7,
         "bp7_deep_intronic_atm": Rules.Bp7_deep_intronic_atm,
@@ -219,6 +226,12 @@ def get_annotation_functions(
         ),
         class_info.SPLICE_RESULT.name: lambda variant, config: get_annotation_function(
             get_annotate_splice_site_classification, variant, config, class_info
+        ),
+        class_info.SPLICE_RESULT_INCLUDE_LAST_EXON_POS.name: lambda variant, config: get_annotation_function(
+            get_annotate_splice_site_classification_include_last_exon_pos,
+            variant,
+            config,
+            class_info,
         ),
         class_info.VARIANT_HOTSPOT_ANNOTATION.name: lambda variant, config: get_annotation_function(
             get_check_hotspot, variant, config, class_info

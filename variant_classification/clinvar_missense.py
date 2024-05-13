@@ -74,14 +74,22 @@ def check_clinvar_missense(
     else:
         clinvar_same_codon_no_ter = clinvar_same_codon_aa
     if not clinvar_same_codon_no_ter.empty:
+        # Select all ClinVar entries affecting the same gene
         clinvar_same_codon_aa_filtered = filter_gene(
             clinvar_same_codon_no_ter, variant.gene_name
         )
-        clinvar_same_aa_df = clinvar_same_codon_aa_filtered[
-            clinvar_same_codon_aa_filtered.prot_alt == var_codon_info["prot_alt"]
+        # Filter out ClinVar vairants with the same nucleotide change
+        clinvar_not_same_nucleotide = clinvar_same_codon_aa_filtered[
+            ~(
+                (clinvar_same_codon_aa_filtered.alt == variant.var_obs)
+                & (clinvar_same_codon_aa_filtered.pos == str(variant.genomic_start))
+            )
         ]
-        clinvar_diff_aa = clinvar_same_codon_aa_filtered[
-            clinvar_same_codon_aa_filtered.prot_alt != var_codon_info["prot_alt"]
+        clinvar_same_aa_df = clinvar_not_same_nucleotide[
+            clinvar_not_same_nucleotide.prot_alt == var_codon_info["prot_alt"]
+        ]
+        clinvar_diff_aa = clinvar_not_same_nucleotide[
+            clinvar_not_same_nucleotide.prot_alt != var_codon_info["prot_alt"]
         ]
     else:
         clinvar_same_aa_df = pd.DataFrame()

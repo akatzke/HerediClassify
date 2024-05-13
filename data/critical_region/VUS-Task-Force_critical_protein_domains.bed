@@ -22,7 +22,7 @@ chr13	32363246	32363296	BRCA2	Nuclear export signal; masked by interaction with 
 chr13	32298300	32398506	BRCA2	C-terminal RAD51 binding domain (inkl. NLS1 und BRC-) 	+	3263	3331	BWRL/ENIGMA
 chr17	61686080	61861539	BRIP1	ATPase/Helicase domain	-	1	887	PMID: 33619228
 chr17	61683857	61686079	BRIP1	BRCA1 Interaction	-	888	1063	PMID: 33619228
-chr1	68737416	68833496	CDH1	Bisher bekannten pathogenen CDH1-Varianten sind über den gesamten Locus verteilt und es kann daher keine klinisch relevante funktionelle Proteindomäne definiert werden.	+	1	882	BWRL
+chr16	68737416	68833496	CDH1	Bisher bekannten pathogenen CDH1-Varianten sind über den gesamten Locus verteilt und es kann daher keine klinisch relevante funktionelle Proteindomäne definiert werden.	+	1	882	BWRL
 chr22	28734515	28734667	CHEK2	SQ/TQ-rich	-	19	69	BWRL
 chr22	28719463	28734448	CHEK2	FHA	-	92	205	BWRL
 chr22	28689174	28719444	CHEK2	Kinase	-	212	501	BWRL

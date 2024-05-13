@@ -10,7 +10,9 @@ from acmg_rules.utils import (
     rule_type,
 )
 from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
+from var_type import VARTYPE_GROUPS
 from information import Classification_Info, Info
+from variant import TranscriptInfo, VariantInfo
 
 
 class Pp3_protein_mult_strength(abstract_rule):
@@ -25,6 +27,8 @@ class Pp3_protein_mult_strength(abstract_rule):
         return (
             cls.assess_rule,
             (
+                class_info.TRANSCRIPT,
+                class_info.VARIANT,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_PATHOGENICITY_PREDICTION_PATHOGENIC,
             ),
@@ -33,12 +37,24 @@ class Pp3_protein_mult_strength(abstract_rule):
     @classmethod
     def assess_rule(
         cls,
+        transcripts: list[TranscriptInfo],
+        variant: VariantInfo,
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ) -> RuleResult:
+        if len(transcripts) == 1:
+            variant_types = transcripts[0].var_type
+        else:
+            variant_types = variant.var_type
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
-        if num_thresholds_met is None:
+        if any(
+            type in VARTYPE_GROUPS.PREDICTION_NO_PROTEIN.value for type in variant_types
+        ):
+            comment = f"PP3 does not apply to this variant, as PP3 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
+            strength = evidence_strength.SUPPORTING
+            result = False
+        elif num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}"
             strength = evidence_strength.SUPPORTING
             result = False

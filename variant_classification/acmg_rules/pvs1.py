@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import pathlib
+
 from typing import Callable, Optional
 
 from acmg_rules.utils import (
@@ -42,6 +44,7 @@ class Pvs1(abstract_rule):
                 class_info.SPLICING_ASSAY,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -54,14 +57,15 @@ class Pvs1(abstract_rule):
         splice_assay: Optional[list[RNAData]],
         prediction_dict: dict[str, float],
         threshold: Threshold,
+        mane_path: pathlib.Path,
     ) -> RuleResult:
-        results = []
+        results = {}
         for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_exonic):
                 result_frameshift = Pvs1.assess_pvs1_frameshift_PTC(
                     transcript, threshold_diff_len_prot_percent
                 )
-                results.append(result_frameshift)
+                results[transcript.transcript_id] = result_frameshift
             elif isinstance(transcript, TranscriptInfo_intronic):
                 result_splice = Pvs1.assess_pvs1_splice(
                     transcript,
@@ -73,10 +77,10 @@ class Pvs1(abstract_rule):
                     result_splice = adjust_strength_according_to_rna_data_pvs1(
                         splice_assay, result_splice
                     )
-                results.append(result_splice)
+                results[transcript.transcript_id] = result_splice
             elif isinstance(transcript, TranscriptInfo_start_loss):
                 result_start_loss = Pvs1.assess_pvs1_start_loss(transcript)
-                results.append(result_start_loss)
+                results[transcript.transcript_id] = result_start_loss
         if len(results) == 0:
             result = RuleResult(
                 "PVS1",
@@ -87,7 +91,7 @@ class Pvs1(abstract_rule):
                 comment=f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}.",
             )
         else:
-            result = summarise_results_per_transcript(results)
+            result = summarise_results_per_transcript(results, mane_path)
         return result
 
     @classmethod
@@ -102,7 +106,7 @@ class Pvs1(abstract_rule):
             result = True
             strength = evidence_strength.MODERATE
         else:
-            comment = f"Alternative start codon observed."
+            comment = f"Alternative start codon observed in transcript {transcript.transcript_id}."
             if transcript.is_truncated_region_disease_relevant:
                 comment = (
                     comment
@@ -165,7 +169,7 @@ class Pvs1(abstract_rule):
             if transcript.is_truncated_region_disease_relevant:
                 comment = (
                     comment
-                    + f"Skipped exon is disease relevant. "
+                    + f" Skipped exon is disease relevant. "
                     + transcript.comment_truncated_region
                 )
                 result = True

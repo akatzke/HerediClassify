@@ -347,6 +347,7 @@ def parse_variant_intron_pos(var_coding: hgvs.posedit.PosEdit) -> tuple[str, int
     if "_" in var_coding_str:
         # for duplication, insertion and deletion
         # split on '_' character before finding direction
+        offset_pos_list = []
         for edit_part in var_coding_str.split(var_edit)[0].split("_"):
             if "+" in edit_part:  # after exon in start of the intron
                 split_symbol = "+"
@@ -358,6 +359,8 @@ def parse_variant_intron_pos(var_coding: hgvs.posedit.PosEdit) -> tuple[str, int
                 continue
             # get position of edit part inside the exon
             intron_offset_pos = int(edit_part.split(split_symbol)[1])
+            offset_pos_list.append(intron_offset_pos)
+        intron_offset_pos = min(offset_pos_list)
     else:
         # for SNP find direction symbol
         if "+" in var_coding_str:  # after exon in start of the intron

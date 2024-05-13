@@ -74,7 +74,7 @@ def test_acmg_PMS2_splice_donor():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["PVS1_splicing", "PP3_splicing", "PS1_splicing"]
+    rules_apply = ["PVS1_splicing"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]

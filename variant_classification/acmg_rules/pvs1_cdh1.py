@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import pathlib
 
 from typing import Callable, Optional
 
@@ -18,7 +19,7 @@ from transcript_annotated import (
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
 )
-from acmg_rules.computation_evidence_utils import Threshold
+from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 from acmg_rules.functional_splicing_assay_utils import (
     adjust_strength_according_to_rna_data_pvs1,
 )
@@ -40,11 +41,12 @@ class Pvs1_cdh1(Pvs1):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
-                class_info.SPLICE_RESULT,
+                class_info.SPLICE_RESULT_INCLUDE_LAST_EXON_POS,
                 class_info.SPLICING_ASSAY,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -58,15 +60,16 @@ class Pvs1_cdh1(Pvs1):
         threshold_diff_len_prot_percent: float,
         prediction_dict: dict[str, float],
         threshold: Threshold,
+        mane_path: pathlib.Path,
     ):
-        results = []
+        results = {}
         for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_exonic):
                 result = cls.assess_pvs1_frameshift_PTC_cdh1(transcript)
-                results.append(result)
+                results[transcript.transcript_id] = result
             elif isinstance(transcript, TranscriptInfo_intronic):
                 if splice_result is None:
-                    splice_result = cls.assess_pvs1_splice(
+                    splice_result = cls.assess_pvs1_splice_cdh1(
                         transcript,
                         prediction_dict,
                         threshold,
@@ -76,10 +79,12 @@ class Pvs1_cdh1(Pvs1):
                     splice_result = adjust_strength_according_to_rna_data_pvs1(
                         splice_assay, splice_result
                     )
-                results.append(splice_result)
+                results[transcript.transcript_id] = splice_result
             elif isinstance(transcript, TranscriptInfo_start_loss):
-                result = cls.assess_pvs1_start_loss(transcript)
-                results.append(result)
+                result = cls.assess_pvs1_start_loss_pathogenic_very_strong()
+                results[transcript.transcript_id] = result
+        if len(results) == 0 and splice_result is not None:
+            return splice_result
         if len(results) == 0:
             result = RuleResult(
                 "PVS1",
@@ -90,7 +95,7 @@ class Pvs1_cdh1(Pvs1):
                 comment=f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}.",
             )
         else:
-            result = summarise_results_per_transcript(results)
+            result = summarise_results_per_transcript(results, mane_path)
         return result
 
     @classmethod
@@ -155,6 +160,114 @@ class Pvs1_cdh1(Pvs1):
         return RuleResult(
             "PVS1",
             rule_type.PROTEIN,
+            evidence_type.PATHOGENIC,
+            result,
+            strength,
+            comment,
+        )
+
+    @classmethod
+    def assess_pvs1_splice_cdh1(
+        cls,
+        transcript: TranscriptInfo_intronic,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
+        threshold_diff_len_prot_percent: float,
+    ) -> RuleResult:
+        """
+        Assess PVS1 for splice variants
+        """
+        prediction_value = prediction_dict.get(threshold.name, None)
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        if not transcript.are_exons_skipped or not num_thresholds_met:
+            result = False
+            strength = evidence_strength.VERY_STRONG
+            comment = (
+                f"No splicing alteration predicted for {transcript.transcript_id}."
+            )
+        elif transcript.is_NMD:
+            comment = f"Transcript {transcript.transcript_id} undergoes NMD."
+            if transcript.is_truncated_region_disease_relevant:
+                comment = (
+                    comment
+                    + f" Skipped exon is disease relevant. "
+                    + transcript.comment_truncated_region
+                )
+                result = True
+                strength = evidence_strength.STRONG
+            else:
+                comment = (
+                    comment + " Skipped exon is not considered to be disease relevant."
+                )
+                result = False
+                strength = evidence_strength.VERY_STRONG
+        elif (
+            transcript.are_exons_skipped
+            and not transcript.is_NMD
+            and not transcript.is_reading_frame_preserved
+        ):
+            comment = f"Transcript {transcript.transcript_id} does not undergo NMD and reading frame is not preserved."
+            if transcript.is_truncated_region_disease_relevant:
+                comment = (
+                    comment
+                    + f" Skipped exon is considered disease relevant. "
+                    + transcript.comment_truncated_region
+                )
+                result = True
+                strength = evidence_strength.STRONG
+            else:
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                ):
+                    comment = (
+                        comment
+                        + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                    )
+                    result = True
+                    strength = evidence_strength.STRONG
+                else:
+                    comment = (
+                        comment
+                        + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                    )
+                    result = True
+                    strength = evidence_strength.MODERATE
+        elif transcript.are_exons_skipped and transcript.is_reading_frame_preserved:
+            comment = f"Transcript {transcript.transcript_id} does not undergo NMD and reading frame is preserved."
+            if transcript.is_truncated_region_disease_relevant:
+                comment = (
+                    comment
+                    + f" Skipped exon is considered disease relevant region."
+                    + transcript.comment_truncated_region
+                )
+                result = True
+                strength = evidence_strength.STRONG
+            else:
+                if (
+                    transcript.diff_len_protein_percent
+                    > threshold_diff_len_prot_percent
+                ):
+                    comment = (
+                        comment
+                        + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                    )
+                    result = True
+                    strength = evidence_strength.STRONG
+                else:
+                    comment = (
+                        comment
+                        + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                    )
+                    result = True
+                    strength = evidence_strength.MODERATE
+        else:
+            comment = f"Transcript {transcript.transcript_id} does not fulfill any PVS1 splicing."
+            result = False
+            strength = evidence_strength.VERY_STRONG
+        return RuleResult(
+            "PVS1",
+            rule_type.SPLICING,
             evidence_type.PATHOGENIC,
             result,
             strength,

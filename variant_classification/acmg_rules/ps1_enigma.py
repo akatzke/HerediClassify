@@ -60,15 +60,15 @@ class Ps1_protein_enigma(abstract_rule):
             and clinvar_same_aa.highest_classification
             == ClinVar_Status.LIKELY_PATHOGENIC
         ):
-            comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
+            comment = f"The following ClinVar entries show the same amino acid change as likely pathogenic: {clinvar_same_aa.ids}."
             strength = evidence_strength.MODERATE
             result = True
         elif num_thresholds_met > 0:
-            comment = f"Variant is predicted to affect splicing"
+            comment = f"Variant is predicted to affect splicing."
             strength = evidence_strength.STRONG
             result = False
         else:
-            comment = "No ClinVar entries found that show the same amino acid change as pathogneic."
+            comment = "No ClinVar entries found that show the same amino acid change as pathogenic."
             strength = evidence_strength.STRONG
             result = False
         return RuleResult(

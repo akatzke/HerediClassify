@@ -66,7 +66,15 @@ def check_clinvar_splicing(
         f"{variant.chr}:{variant.genomic_start}-{variant.genomic_end}"
     )
     clinvar_same_pos_df = convert_vcf_gen_to_df(clinvar_same_pos)
-    ClinVar_same_pos = create_ClinVar(clinvar_same_pos_df, ClinVar_Type.SAME_NUCLEOTIDE)
+    clinvar_not_same_nucleotide = clinvar_same_pos_df[
+        ~(
+            (clinvar_same_pos_df.alt == variant.var_obs)
+            & (clinvar_same_pos_df.pos == str(variant.genomic_start))
+        )
+    ]
+    ClinVar_same_pos = create_ClinVar(
+        clinvar_not_same_nucleotide, ClinVar_Type.SAME_NUCLEOTIDE
+    )
     ### Check ClinVar for pathogenic variant in same / closest splice site
     (start_splice_site, end_splice_site) = find_corresponding_splice_site(
         affected_transcript, ref_transcript, variant
@@ -75,8 +83,14 @@ def check_clinvar_splicing(
         f"{variant.chr}:{start_splice_site}-{end_splice_site}"
     )
     clinvar_splice_site_df = convert_vcf_gen_to_df(clinvar_splice_site)
+    clinvar_not_same_nucleotide = clinvar_splice_site_df[
+        ~(
+            (clinvar_splice_site_df.alt == variant.var_obs)
+            & (clinvar_splice_site_df.pos == str(variant.genomic_start))
+        )
+    ]
     ClinVar_splice_site = create_ClinVar(
-        clinvar_splice_site_df, ClinVar_Type.SAME_SPLICE_SITE
+        clinvar_not_same_nucleotide, ClinVar_Type.SAME_SPLICE_SITE
     )
     return (ClinVar_same_pos, ClinVar_splice_site)
 

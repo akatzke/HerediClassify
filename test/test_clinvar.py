@@ -34,8 +34,7 @@ def test_missense_2():
         else:
             continue
     assert (
-        clinvar_same_aa_change.pathogenic == True
-        and clinvar_same_aa_change.ids == ["55147"]
+        clinvar_same_aa_change.pathogenic == False
         and clinvar_diff_aa_change.pathogenic == False
         and clinvar_same_nucleotide.pathogenic == False
         and clinvar_same_splice_site.pathogenic == False
@@ -69,7 +68,7 @@ def test_splicing():
         clinvar_same_aa_change.pathogenic == False
         and clinvar_diff_aa_change.pathogenic == False
         and clinvar_same_nucleotide.pathogenic == True
-        and clinvar_same_nucleotide.ids == ["55502", "55501", "55500"]
+        and clinvar_same_nucleotide.ids == ["55502", "55501"]
         and clinvar_same_splice_site.pathogenic == True
-        and clinvar_same_splice_site.ids == ["55502", "55501", "55500"]
+        and clinvar_same_splice_site.ids == ["55502", "55501"]
     )

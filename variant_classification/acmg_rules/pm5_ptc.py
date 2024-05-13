@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import pathlib
+
 from typing import Callable
 
 from acmg_rules.utils import (
@@ -31,6 +33,7 @@ class Pm5_protein_ptc(abstract_rule):
                 class_info.VARIANT,
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -40,8 +43,9 @@ class Pm5_protein_ptc(abstract_rule):
         variant: VariantInfo,
         annotated_transcript: list[TranscriptInfo],
         pos_last_known_patho_ptc_dict: dict[str, int],
+        mane_path: pathlib.Path,
     ) -> RuleResult:
-        results = []
+        results = {}
         for transcript in annotated_transcript:
             if isinstance(transcript, TranscriptInfo_exonic):
                 try:
@@ -52,7 +56,7 @@ class Pm5_protein_ptc(abstract_rule):
                     raise KeyError(
                         f"Transcript {transcript.transcript_id} not in disease relevant transcripts: {pos_last_known_patho_ptc_dict.keys()}. Transcript should have been filtered out earlier."
                     )
-                if transcript.ptc <= pos_last_known_patho_ptc:
+                if transcript.ptc < pos_last_known_patho_ptc:
                     status = True
                     comment = f"PTC ({transcript.ptc}) caused by variant is located upstream of last known pathogenic PTC {pos_last_known_patho_ptc}."
                 else:
@@ -66,7 +70,7 @@ class Pm5_protein_ptc(abstract_rule):
                     evidence_strength.SUPPORTING,
                     comment,
                 )
-                results.append(result)
+                results[transcript.transcript_id] = result
         if len(results) == 0:
             comment = f"PM5 does not apply to this variant, as PM5 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             final_result = RuleResult(
@@ -78,7 +82,7 @@ class Pm5_protein_ptc(abstract_rule):
                 comment,
             )
         else:
-            final_result = summarise_results_per_transcript(results)
+            final_result = summarise_results_per_transcript(results, mane_path)
         return final_result
 
 
@@ -98,6 +102,7 @@ class Pm5_splicing_ptc(abstract_rule):
                 class_info.VARIANT,
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -107,8 +112,9 @@ class Pm5_splicing_ptc(abstract_rule):
         variant: VariantInfo,
         annotated_transcripts: list[TranscriptInfo],
         pos_last_known_patho_ptc_dict: dict[str, int],
+        mane_path: pathlib.Path,
     ) -> RuleResult:
-        results = []
+        results = {}
         for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_intronic):
                 try:
@@ -119,7 +125,7 @@ class Pm5_splicing_ptc(abstract_rule):
                     raise KeyError(
                         f"Transcript {transcript.transcript_id} not in disease relevant transcripts: {pos_last_known_patho_ptc_dict.keys()}. Transcript should have been filtered out earlier."
                     )
-                if transcript.ptc <= pos_last_known_patho_ptc:
+                if transcript.ptc < pos_last_known_patho_ptc:
                     status = True
                     comment = f"PTC ({transcript.ptc}) caused by variant is located upstream of last known pathogenic PTC {pos_last_known_patho_ptc}."
                 else:
@@ -133,7 +139,7 @@ class Pm5_splicing_ptc(abstract_rule):
                     evidence_strength.SUPPORTING,
                     comment,
                 )
-                results.append(result)
+                results[transcript.transcript_id] = result
         if len(results) == 0:
             if not annotated_transcripts:
                 comment = "No annotated transcripts provided, PM5 can not be applied."
@@ -148,5 +154,5 @@ class Pm5_splicing_ptc(abstract_rule):
                 comment,
             )
         else:
-            final_result = summarise_results_per_transcript(results)
+            final_result = summarise_results_per_transcript(results, mane_path)
         return final_result

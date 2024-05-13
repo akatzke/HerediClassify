@@ -1,6 +1,6 @@
 ### Configuration name ###
 name: "ACMG PALB2"
-version: "1.0.0"
+version: "1.1.0"
 
 ### Rules ###
 rules:
@@ -9,19 +9,17 @@ rules:
     - pm2_supporting_faf
     - pm5_protein_ptc
     - pm5_splicing_ptc
-    - pp3_protein
     - pp3_splicing
     - ba1_faf
     - bs1_faf
     - bp1
-    - bp4_protein
     - bp4_splicing
     - bp7_deep_intronic_enigma
 
 ### Disease relevant transcript ###
 disease_relevant_transcripts:
     - name: "ENST00000261584"
-      nmd_threshold: 3300
+      nmd_threshold: 3299
       pos_last_known_patho_ptc: 1183
 
 ### Thresholds splicing and pathogenicity prediction tools ###
@@ -70,3 +68,6 @@ annotation_files:
     splice_site_table:
         root: "variant_classification/data/splice_site_classification"
         file: "PALB2_splice_table_reformatted.csv"
+    mane_transcripts:
+        root: "databases/MANE"
+        file: "MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"
