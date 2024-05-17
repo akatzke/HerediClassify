@@ -73,6 +73,8 @@ class Bp7(abstract_rule):
         # Otherwise use all variant types defined for variant
         if len(transcripts) == 1:
             variant_types = transcripts[0].var_type
+        elif len(transcripts) == 0:
+            variant_types = variant.var_type
         else:
             transcript = select_mane_transcript(transcripts, mane_path)
             variant_types = transcript.var_type
