@@ -30,7 +30,7 @@ def classify(config_path: pathlib.Path, variant_str: str) -> tuple[str, str]:
     """
     config = load_config(config_path)
     variant = load_variant(variant_str)
-    configuration_name, final_config = get_gene_specific_config(
+    final_config = get_gene_specific_config(
         config, variant.variant_info.gene_name
     )
     variant_disease_relevant = check_disease_relevant_transcript(variant, final_config)
@@ -49,11 +49,11 @@ def classify(config_path: pathlib.Path, variant_str: str) -> tuple[str, str]:
     rule_results = apply_rules(annotations_needed_by_rules_filtered)
     rule_dict = create_rules_dict(rule_results)
     rule_results_checked = check_incompatible_rules(
-        rule_dict, configuration_name, final_config["rules"]
+        rule_dict, final_config["name"], final_config["rules"]
     )
     out_result = create_output(rule_results_checked)
     ensembl.clear_cache()
-    return configuration_name, out_result
+    return final_config, out_result
 
 
 if __name__ == "__main__":
@@ -93,7 +93,7 @@ if __name__ == "__main__":
         with open(input) as infile:
             input = infile.read()
 
-    config_name, result = classify(path_config, input)
+    final_config, result = classify(path_config, input)
 
     # write classification to sout or to file
     if args.output != "":

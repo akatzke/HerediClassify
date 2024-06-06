@@ -45,8 +45,8 @@ def get_gene_specific_config(config: dict, gene_name: str) -> tuple[str, dict]:
             file_gene_config = config["gene_specific_configs"][gene_name.lower()]
             path_gene_config = dir_gene_config / file_gene_config
             gene_config = load_config(path_gene_config)
-            return gene_config["name"], gene_config
+            return gene_config
         else:
-            return config["name"], config
+            return config
     else:
-        return config["name"], config
+        return config
