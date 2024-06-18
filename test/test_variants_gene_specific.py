@@ -474,7 +474,7 @@ def test_gene_specific_palb2_missense():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["BA1", "BP1", "BP4_splicing", "BP4_protein"]
+    rules_apply = ["BA1", "BP1", "BP4_splicing"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
