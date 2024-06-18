@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 import pathlib
-import math
 import json
 
 import pandas as pd
 
 from cyvcf2 import VCF
+from typing import Optional
 
 from variant_classification.clinvar_utils import convert_vcf_gen_to_df
 
@@ -88,7 +88,10 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
             gnomad_scores["subpopulation"] = data.gnomad_popmax
             gnomad_scores["popmax_AC"] = int(data.gnomad_popmax_AC)
             gnomad_scores["popmax_AF"] = float(data.gnomad_popmax_AF)
-            gnomad_scores["faf_popmax_AF"] = float(data.faf95_popmax)
+            try:
+                gnomad_scores["faf_popmax_AF"] = float(data.faf95_popmax)
+            except AttributeError:
+                gnomad_scores["faf_popmax_AF"] = 0
         else:  # if the data is missing popmax values simply use the standard af and ac
             gnomad_scores["subpopulation"] = "ALL"
             gnomad_scores["popmax_AC"] = int(data.gnomad_ac)
@@ -124,6 +127,18 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
 
     # Cold spot
     json_dict["cold_spot"] = False
+
+    # Functional and splice assay data
+    try:
+        if type(data.assays) is str:
+            functional_assay, splice_assay = get_assay_data(data.assays)
+            if functional_assay:
+                json_dict["functional_data"] = functional_assay
+            if splice_assay:
+                json_dict["mRNA_analysis"] = splice_assay
+    except AttributeError:
+        return json_dict
+
     return json_dict
 
 
@@ -174,7 +189,10 @@ def process_consequence(cons: str) -> tuple[list[dict], str, list]:
         "APC",
         "RAD51B",
     ]
-    gene = [gene for gene in GOI if gene in affected_genes][0]
+    try:
+        gene = [gene for gene in GOI if gene in affected_genes][0]
+    except IndexError:
+        gene = max(affected_genes, key=affected_genes.count)
     gene_transcript_list = []
     selected_keys = [
         "transcript",
@@ -285,4 +303,78 @@ def select_relevant_var_type(var_types: list[str]) -> str:
     if not rel_var_type_bk:
         print("This is the original var_type")
         print(var_types)
+        return var_types[0]
     return rel_var_type_bk[0]
+
+
+def get_assay_data(assay: str) -> Optional[tuple[list[dict], list[dict]]]:
+    """
+    Get assay data
+    """
+    if assay is None:
+        return None
+    if "&" in assay:
+        assays = assay.split("&")
+    else:
+        assays = [assay]
+    func_assay = []
+    splice_assay = []
+    for n in assays:
+        assay_parts = n.split("|")
+        if assay_parts[0] == "splicing":
+            splice_dict = create_splice_dict(assay_parts[-1])
+            splice_assay.append(splice_dict)
+        elif assay_parts[0] == "functional":
+            func_dict = create_func_dict(assay_parts[-1])
+            func_assay.append(func_dict)
+        else:
+            raise ValueError
+    return func_assay, splice_assay
+
+
+def create_splice_dict(assay_info: str) -> dict:
+    """
+    From entry in form create results splicing assay
+    """
+    assay_info_dict = create_assay_info_dict(assay_info)
+    out_dict = {}
+    out_dict["minigene"] = assay_info_dict.get("Patient_RNA", False)
+    out_dict["patient_rna"] = assay_info_dict.get("Minigene", False)
+    out_dict["allelic"] = assay_info_dict.get("Allele-Specific", "False")
+    out_dict["quantification"] = assay_info_dict.get(
+        "Percent_aberrant_transcript", None
+    )
+    return out_dict
+
+
+def create_func_dict(assay_info: str) -> dict:
+    """
+    From entry in form create results functional assay
+    """
+    assay_info_dict = create_assay_info_dict(assay_info)
+    result_assay = assay_info_dict.get("Functional_category", None)
+    if result_assay is None:
+        print(
+            f"There is an issue with the functional assay. The following results is given: {result_assay}."
+        )
+        out_dict = {"benign": False, "pathogenic": False}
+    elif result_assay == "benign":
+        out_dict = {"benign": True, "pathogenic": False}
+    elif result_assay == "pathogenic":
+        out_dict = {"benign": False, "pathogenic": True}
+    elif result_assay == "ambigous":
+        out_dict = {"benign": False, "pathogenic": False}
+    else:
+        print(
+            f"There is an issue with the functional assay. The following results is given: {result_assay}."
+        )
+        out_dict = {"benign": False, "pathogenic": False}
+    return out_dict
+
+
+def create_assay_info_dict(assay_info: str) -> dict:
+    assay_infos = assay_info.split("$")
+    assay_info_dict = {
+        entry.split("+")[0]: entry.split("+")[1] for entry in assay_infos
+    }
+    return assay_info_dict
