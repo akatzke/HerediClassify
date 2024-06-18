@@ -104,21 +104,29 @@ def create_variantInfo(variant_json: dict) -> VariantInfo:
     elif len(ref) > 1 and len(alt) > 1:
         # Create genomic position for indels
         genomic_start = variant_json["pos"] + 1
-        del_length = len(ref) - 1
+        if alt == "-":
+            del_length = len(ref)
+        else:
+            del_length = len(ref) - 1
         genomic_end = genomic_start + del_length - 1
     elif len(ref) > 1 and len(alt) == 1:
         # Create genomic position for deletions
         genomic_start = variant_json["pos"] + 1
-        del_length = len(ref) - 1
+        if alt == "-":
+            del_length = len(ref)
+        else:
+            del_length = len(ref) - 1
         genomic_end = genomic_start + del_length - 1
+        if not alt == "-":
+            ref = ref[1:]
         alt = ""
-        ref = ref[1:]
     elif len(ref) == 1 and len(alt) > 1:
         # Create genomic position for insertions
         genomic_start = variant_json["pos"]
         genomic_end = variant_json["pos"]
+        if not ref == "-":
+            alt = alt[1:]
         ref = ""
-        alt = alt[1:]
     else:
         # All other cases
         genomic_start = variant_json["pos"]
@@ -324,11 +332,17 @@ def create_rna_data(key: str, variant_json: dict) -> Optional[list[RNAData]]:
         patient_rna = entry["patient_rna"]
         allelic = ALLELIC(entry["allelic"].lower().strip())
         quantification = entry["quantification"]
+        if quantification is None:
+            quant_decimal = None
+        elif float(quantification) > 1:
+            quant_decimal = float(quantification) / 100
+        else:
+            quant_decimal = float(quantification)
         func = RNAData(
             minigene=minigene,
             patient_rna=patient_rna,
             allelic=allelic,
-            quantification=quantification,
+            quantification=quant_decimal,
         )
         func_list.append(func)
     return func_list
