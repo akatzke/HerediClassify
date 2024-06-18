@@ -7,6 +7,7 @@ rules:
     - pvs1_pten
     - ps1_protein_spliceai
     - ps1_splicing_pten
+    - ps3
     - pm1
     - pm2_supporting_less_faf
     - pm4_pten
@@ -16,6 +17,7 @@ rules:
     - pp3_splicing
     - ba1_faf
     - bs1_supporting_faf
+    - bs3
     - bp4_protein
     - bp4_splicing
     - bp7_deep_intronic_enigma

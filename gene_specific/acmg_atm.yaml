@@ -7,6 +7,7 @@ rules:
     - pvs1_atm
     - ps1_protein_spliceai
     - ps1_splicing_clingen
+    - ps3
     - pm2_supporting_faf
     - pm4_stoploss
     - pm5_protein_ptc
@@ -15,6 +16,7 @@ rules:
     - pp3_splicing
     - ba1_faf
     - bs1_faf
+    - bs3
     - bp4_protein
     - bp4_splicing
     - bp7_deep_intronic_atm
