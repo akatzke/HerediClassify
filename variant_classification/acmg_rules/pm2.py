@@ -276,3 +276,50 @@ class Pm2_supporting_no_ins_del_indel_faf(abstract_rule):
                 class_info.THRESHOLD_PM2,
             ),
         )
+
+
+class PM2_supporting_no_hom(abstract_rule):
+    """
+    PM2: Varinat is absent from control population
+    In case of recessive disorders: Variant occurres less than expected carrier rate
+    Default strength of PM2 is set to supporting following SVI recommendations
+    Implementation of PM2 for application in PCD
+    Variant can not occur homozygous in control population, as PCD is recessive disease
+    """
+
+    @classmethod
+    def get_assess_rule(
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
+        return (
+            cls.assess_rule,
+            (
+                class_info.VARIANT_GNOMAD_POPMAX,
+                class_info.THRESHOLD_PM2,
+            ),
+        )
+
+    @classmethod
+    def assess_rule(
+        cls, gnomad: PopulationDatabases_gnomAD, threshold_pm2: float
+    ) -> RuleResult:
+        if gnomad.count_hom is None:
+            raise ValueError(
+                f"The gnomAD homozygous allele count is None. Please check variant import."
+            )
+        elif gnomad.count_hom > threshold_pm2:
+            comment = (
+                f"Variant occures {gnomad.count_hom} times as homozygous in gnomAD."
+            )
+            result = False
+        else:
+            comment = f"Variant occures does not occur as homozygous in gnomAD."
+            result = True
+        return RuleResult(
+            "PM2",
+            rule_type.GENERAL,
+            evidence_type.PATHOGENIC,
+            result,
+            evidence_strength.SUPPORTING,
+            comment,
+        )

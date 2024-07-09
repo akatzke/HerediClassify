@@ -85,6 +85,7 @@ def get_annotations_needed_from_rules(
         "pm2_supporting_less_faf": Rules.Pm2_supporting_less_faf,
         "pm2_supporting_no_indel": Rules.Pm2_supporting_no_ins_del_indel,
         "pm2_supporting_no_indel_faf": Rules.Pm2_supporting_no_ins_del_indel_faf,
+        "pm2_supporting_no_hom": Rules.PM2_supporting_no_hom,
         "pm4": Rules.Pm4,
         "pm4_pten": Rules.Pm4_pten,
         "pm4_stoploss": Rules.Pm4_stoploss,
