@@ -97,7 +97,7 @@ class Ps1_protein_spliceai(abstract_rule):
                 if clinvar_same_aa.associated_ids:
                     comment = (
                         comment
-                        + f" The following ClinVar entreis show the same amino acid exchange as likely pathogenic: {clinvar_same_aa.associated_ids}."
+                        + f" The following ClinVar entries show the same amino acid exchange as likely pathogenic: {clinvar_same_aa.associated_ids}."
                     )
             else:
                 comment = f"Variant is not predicted to not affect splicing. PS1_protein is therefore not applicable."
@@ -207,7 +207,7 @@ class Ps1_splicing_clingen(abstract_rule):
                 if clinvar_same_nucleotide.associated_ids:
                     comment = (
                         comment
-                        + f" The following ClinVar entreis show splice variants at the same nucleotide position as likely pathogenic: {clinvar_same_nucleotide.associated_ids}."
+                        + f" The following ClinVar entries show splice variants at the same nucleotide position as likely pathogenic: {clinvar_same_nucleotide.associated_ids}."
                     )
             else:
                 if (
@@ -217,7 +217,7 @@ class Ps1_splicing_clingen(abstract_rule):
                     abs(affected_transcript.var_hgvs.pos.end.offset) > 2
                     or abs(affected_transcript.var_hgvs.pos.end.offset == 0)
                 ):
-                    # In case the canonical dinucleotide is not affected, PS1 supporting applies
+                    # In case the canonical dinucleotide is not affected, PS1 moderate applies
                     comment = f"The following ClinVar entries show splice variants at the same nucleotide position to be likely pathogenic: {clinvar_same_nucleotide.ids}."
                     strength = evidence_strength.MODERATE
                 else:
@@ -231,8 +231,20 @@ class Ps1_splicing_clingen(abstract_rule):
                 clinvar_same_splice_site.highest_classification
                 == ClinVar_Status.PATHOGENIC
             ):
-                comment = f"The following ClinVar entries show splice variants at the same splice site to be pathogenic: {clinvar_same_splice_site.ids}."
-                strength = evidence_strength.MODERATE
+                if (
+                    abs(affected_transcript.var_hgvs.pos.start.offset) > 2
+                    or abs(affected_transcript.var_hgvs.pos.start.offset) == 0
+                ) and (
+                    abs(affected_transcript.var_hgvs.pos.end.offset) > 2
+                    or abs(affected_transcript.var_hgvs.pos.end.offset == 0)
+                ):
+                    # In case the canonical dinucleotide is not affected by VUA, PS1 moderate applies
+                    comment = f"The following ClinVar entries show splice variants at the same splice site to be pathogenic: {clinvar_same_splice_site.ids}."
+                    strength = evidence_strength.MODERATE
+                else:
+                    # In case the canonical dinucleotide is affected by VUA, PS1 strong applies
+                    strength = evidence_strength.STRONG
+                    comment = f"The following ClinVar entries show splice variants at the same splice site to be pathogenic: {clinvar_same_splice_site.ids}."
                 if clinvar_same_splice_site.associated_ids:
                     comment = (
                         comment
@@ -240,7 +252,21 @@ class Ps1_splicing_clingen(abstract_rule):
                     )
             else:
                 comment = f"The following ClinVar entries show splice variants at the same splice site to be likely pathogenic: {clinvar_same_splice_site.ids}."
-                strength = evidence_strength.SUPPORTING
+                if (
+                    abs(affected_transcript.var_hgvs.pos.start.offset) > 2
+                    or abs(affected_transcript.var_hgvs.pos.start.offset) == 0
+                ) and (
+                    abs(affected_transcript.var_hgvs.pos.end.offset) > 2
+                    or abs(affected_transcript.var_hgvs.pos.end.offset == 0)
+                ):
+                    # In case the canonical dinucleotide is not affected by VUA, PS1 supporting applies
+                    comment = f"The following ClinVar entries show splice variants at the same splice site to be pathogenic: {clinvar_same_splice_site.ids}."
+                    strength = evidence_strength.SUPPORTING
+                else:
+                    # In case the canonical dinucleotide is affected by VUA, PS1 strong applies
+                    result = False
+                    strength = evidence_strength.STRONG
+                    comment = f"The variant is located in the canonical dinucleotide and a likely pathogenic variant was found in ClinVar affecting the same splice site. PS1 is not applicable in this case."
         else:
             result = False
             strength = evidence_strength.STRONG
