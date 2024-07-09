@@ -100,6 +100,10 @@
           "type": "integer",
           "minimum" : 0
         },
+        "AC_hom": {
+          "type": "integer",
+          "minimum" : 0
+        },
         "subpopulation": {
           "type": "string",
           "pattern" : "[A-Z]{3}"

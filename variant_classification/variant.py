@@ -44,6 +44,7 @@ class PopulationDatabases_gnomAD(PopulationDatabases):
     subpopulation: str
     subpopulation_frequency: float
     subpopulation_allele_count: int
+    count_hom: Optional[int]
 
 
 @dataclass
