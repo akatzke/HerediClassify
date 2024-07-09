@@ -48,7 +48,7 @@ def check_intersection_with_bed(
         from_string=True,
     )[0]
     bed = BedTool(path_bed).sort()
-    annotation_hits = bed.all_hits(variant_interval, same_strand=True)
+    annotation_hits = bed.all_hits(variant_interval, same_strand=False)
     if len(annotation_hits) > 0:
         comment = create_comment_from_bed_file(annotation_hits, path_bed)
         return True, comment
