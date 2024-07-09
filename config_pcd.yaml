@@ -1,0 +1,79 @@
+### Configuration name ###
+name: "ACMG standard + SVI"
+version: "1.0.0"
+
+### Rules ###
+rules:
+    - pvs1
+    - ps1_protein_spliceai
+    - ps1_splicing_clingen
+    - pm1_supporting
+    - pm2_supporting_no_hom
+    - pm4
+    - pm5_protein
+    - pp3_protein_mult_strength
+    - pp3_splicing_mult_strength
+    - ba1
+    - bs1
+    - bs2
+    - bp3
+    - bp4_protein_mult_strength
+    - bp4_splicing_mult_strength
+    - bp7
+
+### Thresholds splicing and pathogenicity prediction tools ###
+prediction_tool_thresholds:
+    pathogenicity_prediction:
+        name: "REVEL"
+        benign:
+              supporting: 0.290
+              moderate: 0.183
+              strong: 0.016
+              very_strong: 0.003
+              direction: "less_than_or_equal"
+        pathogenic:
+              supporting: 0.644
+              moderate: 0.773
+              strong: 0.932
+              direction: "greater_than_or_equal"
+    splicing_prediction:
+        name: "SpliceAI"
+        benign:
+            supporting: 0.1
+            direction: "less_than_or_equal"
+        pathogenic:
+            supporting: 0.2
+            direction: "greater_than_or_equal"
+
+### Allelee frequency threshold for each gene ###
+allele_frequency_thresholds:
+    threshold_ba1: 0.01
+    threshold_bs1: 0.001
+    threshold_bs2: 5
+    threshold_pm2: 0
+
+### Functional thresholds
+functional_thresholds:
+    threshold_diff_len_prot_percent: 0.1
+
+
+### Annotation filesitems
+annotation_files:
+    root: "/home/katzkean/"
+    clinvar:
+        root: "databases/Clinvar"
+        clinvar_snv: "clinvar_snv_two_star.vcf.gz"
+        clinvar_snv_spliceai: "clinvar_spliceai_all_sorted_snv_two_star.vcf.gz"
+        clinvar_indel: "clinvar_small_indel_two_star.vcf.gz"
+    uniprot:
+        root: "databases/Uniprot"
+        rep: "repeats_hg38_uniprot.bed"
+    critical_regions:
+        root: "databases/Uniprot"
+        critical_region: "domain_hg38_uniprot_manually_reviewed.bed"
+    mane_transcripts:
+        root: "databases/MANE"
+        file: "MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"
+    hotspot_region:
+        root: "databases/Uniprot"
+        hotspot_region: "domain_hg38_uniprot_hotspot_region.bed"
