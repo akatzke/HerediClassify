@@ -54,6 +54,11 @@ class Ps1_protein_enigma(abstract_rule):
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
             strength = evidence_strength.STRONG
             result = True
+            if clinvar_same_aa.associated_ids:
+                comment = (
+                    comment
+                    + f" The following ClinVar entries show the same amino acid change as likely pathogenic: {clinvar_same_aa.associated_ids}."
+                )
         elif (
             clinvar_same_aa.pathogenic
             and num_thresholds_met == 0

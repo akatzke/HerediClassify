@@ -40,7 +40,7 @@ class Ps1_protein(abstract_rule):
             if clinvar_same_aa.associated_ids:
                 comment = (
                     comment
-                    + f" The following ClinVar entries show  same amino acid change as likely pathogenic: {clinvar_same_aa.associated_ids}."
+                    + f" The following ClinVar entries show the same amino acid change as likely pathogenic: {clinvar_same_aa.associated_ids}."
                 )
         else:
             comment = "No ClinVar entries found that show the same amino acid change as pathogenic."
@@ -100,7 +100,7 @@ class Ps1_protein_spliceai(abstract_rule):
                         + f" The following ClinVar entreis show the same amino acid exchange as likely pathogenic: {clinvar_same_aa.associated_ids}."
                     )
             else:
-                comment = f"Variant is not predicted to not affect splicing. PS1_protein is therehfore not applicable."
+                comment = f"Variant is not predicted to not affect splicing. PS1_protein is therefore not applicable."
                 result = False
         else:
             comment = "No ClinVar entries found that show the same amino acid change as pathogneic."
@@ -138,7 +138,7 @@ class Ps1_splicing(abstract_rule):
             if clinvar_same_nucleotide.associated_ids:
                 comment = (
                     comment
-                    + f" The following ClinVar entreis show splice variants at the same nucleotide position as likely pathogenic: {clinvar_same_nucleotide.associated_ids}."
+                    + f" The following ClinVar entries show splice variants at the same nucleotide position as likely pathogenic: {clinvar_same_nucleotide.associated_ids}."
                 )
         else:
             comment = "No ClinVar entries found that show splice variants at the same nucleotide position as pathogenic."
@@ -236,7 +236,7 @@ class Ps1_splicing_clingen(abstract_rule):
                 if clinvar_same_splice_site.associated_ids:
                     comment = (
                         comment
-                        + f" The following ClinVar entreis show splice variants at the same splice site as likely pathogenic: {clinvar_same_splice_site.associated_ids}."
+                        + f" The following ClinVar entries show splice variants at the same splice site as likely pathogenic: {clinvar_same_splice_site.associated_ids}."
                     )
             else:
                 comment = f"The following ClinVar entries show splice variants at the same splice site to be likely pathogenic: {clinvar_same_splice_site.ids}."

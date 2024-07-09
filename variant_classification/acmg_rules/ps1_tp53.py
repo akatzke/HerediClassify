@@ -64,6 +64,11 @@ class Ps1_protein_tp53(abstract_rule):
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}. A splice assays shows that the variant does not affect splicing."
             strength = evidence_strength.STRONG
             result = True
+            if clinvar_same_aa.associated_ids:
+                comment = (
+                    comment
+                    + f" The following ClinVar entries show the same amino acid change as likely pathogenic: {clinvar_same_aa.associated_ids}."
+                )
         elif (
             clinvar_same_aa.pathogenic
             and performed
@@ -76,7 +81,7 @@ class Ps1_protein_tp53(abstract_rule):
         elif num_thresholds_met is None:
             result = False
             strength = evidence_strength.STRONG
-            comment = "No splicing prediction is available. Therefore PS1_protein can not be evaluated."
+            comment = "No splicing prediction is available. Therefore, PS1_protein can not be evaluated."
         elif (
             clinvar_same_aa.pathogenic
             and num_thresholds_met == 0
@@ -86,11 +91,11 @@ class Ps1_protein_tp53(abstract_rule):
             strength = evidence_strength.MODERATE
             result = True
         elif num_thresholds_met > 0:
-            comment = f"Variant is predicted to affect splicing"
+            comment = f"Variant is predicted to affect splicing."
             strength = evidence_strength.STRONG
             result = False
         else:
-            comment = "No ClinVar entries found that show the same amino acid change as pathogneic."
+            comment = "No ClinVar entries found that show the same amino acid change as pathogenic."
             strength = evidence_strength.STRONG
             result = False
         return RuleResult(
