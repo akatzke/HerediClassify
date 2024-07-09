@@ -218,6 +218,7 @@ def create_gnomad(variant_json: dict, type: str) -> PopulationDatabases_gnomAD:
     name = "gnomAD"
     frequency = gnomad_dict.get("AF", 0)
     allele_count = gnomad_dict.get("AC", 0)
+    count_hom = gnomad_dict.get("AC_hom", 0)
     subpopulation = gnomad_dict.get("subpopulation", "None")
     subpopulation_AF = gnomad_dict.get(f"{type}_AF", 0)
     subpopulation_AC = gnomad_dict.get(f"popmax_AC", 0)
@@ -225,6 +226,7 @@ def create_gnomad(variant_json: dict, type: str) -> PopulationDatabases_gnomAD:
         name=name,
         frequency=frequency,
         count=allele_count,
+        count_hom=count_hom,
         subpopulation=subpopulation,
         subpopulation_frequency=subpopulation_AF,
         subpopulation_allele_count=subpopulation_AC,

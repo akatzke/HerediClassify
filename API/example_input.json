@@ -27,6 +27,7 @@
     "gnomAD":
         {"AF": 0.007,
          "AC" : 12,
+         "AC_hom" : 1,
          "subpopulation": "EAS",
          "popmax_AF" : 0.009,
          "popmax_AC" : 5,
