@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import pathlib
+
 from typing import Callable
 
 from acmg_rules.utils import (
@@ -13,6 +15,8 @@ from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 from information import Classification_Info, Info
 from var_type import VARTYPE_GROUPS
 from variant import TranscriptInfo, VariantInfo
+from utils import check_intersection_with_bed
+from ensembl import ensembl
 
 
 class Pp3_protein(abstract_rule):
@@ -84,6 +88,7 @@ class Pp3_protein_enigma(abstract_rule):
             (
                 class_info.TRANSCRIPT,
                 class_info.VARIANT,
+                class_info.CRITICAL_REGION_PATH,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_PATHOGENICITY_PREDICTION_PATHOGENIC,
             ),
@@ -94,6 +99,7 @@ class Pp3_protein_enigma(abstract_rule):
         cls,
         transcripts: list[TranscriptInfo],
         variant: VariantInfo,
+        path_critical_region: pathlib.Path,
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ) -> RuleResult:
@@ -103,11 +109,22 @@ class Pp3_protein_enigma(abstract_rule):
             variant_types = variant.var_type
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        ref_transcript = ensembl.transcript_by_id(transcripts[0].transcript_id)
+        in_critical_region, _ = check_intersection_with_bed(
+            variant,
+            variant.genomic_start,
+            variant.genomic_end,
+            ref_transcript,
+            path_critical_region,
+        )
         if not any(
             type in VARTYPE_GROUPS.PREDICTION_PROTEIN.value for type in variant_types
         ):
             result = False
             comment = f"PP3 does not apply to this variant, as PP3 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
+        elif not in_critical_region:
+            result = False
+            comment = f"PP3 does not apply to this variant, as the variant is located outside of the disease relevant region defined by the VCEP."
         elif num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}."
             result = False
@@ -189,6 +206,7 @@ class Pp3_splicing_enigma(abstract_rule):
             (
                 class_info.TRANSCRIPT,
                 class_info.VARIANT,
+                class_info.CRITICAL_REGION_PATH,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
             ),
@@ -199,6 +217,7 @@ class Pp3_splicing_enigma(abstract_rule):
         cls,
         transcripts: list[TranscriptInfo],
         variant: VariantInfo,
+        path_critical_region: pathlib.Path,
         prediction_dict: dict[str, float],
         threshold: Threshold,
     ) -> RuleResult:
@@ -208,11 +227,22 @@ class Pp3_splicing_enigma(abstract_rule):
             variant_types = variant.var_type
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        ref_transcript = ensembl.transcript_by_id(transcripts[0].transcript_id)
+        in_critical_region, _ = check_intersection_with_bed(
+            variant,
+            variant.genomic_start,
+            variant.genomic_end,
+            ref_transcript,
+            path_critical_region,
+        )
         if not any(
             type in VARTYPE_GROUPS.PREDICTION_SPLICING.value for type in variant_types
         ):
             result = False
             comment = f"PP3 does not apply to this variant, as PP3 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
+        elif not in_critical_region:
+            result = False
+            comment = f"PP3 does not apply to this variant, as the variant is located outside of the disease relevant region defined by the VCEP."
         elif num_thresholds_met is None:
             comment = f"No score was provided for {threshold.name}."
             result = False
