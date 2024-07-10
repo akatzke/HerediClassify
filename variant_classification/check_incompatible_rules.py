@@ -103,6 +103,18 @@ def check_incompatible_rules(
             )
             rules["BP1"]["comment"] = new_comment
 
+    ## For TP53
+    if name_config == "ACMG TP53":
+        if rules.get("PM5_protein", {}).get("status", False) and rules.get(
+            "PM1", {}
+        ).get("status", False):
+            rules["PM5_protein"]["status"] = False
+            new_comment = (
+                rules["PM5_protein"]["comment"]
+                + " As variant is located in a mutational hotspot, PM5 does not apply and is set to False."
+            )
+            rules["PM5_protein"]["comment"] = new_comment
+
     ## For BRCA1 and BRCA2
     if name_config == "ACMG BRCA1" or name_config == "ACMG BRCA2":
         ## Incomatibility of PVS1 and PM5
