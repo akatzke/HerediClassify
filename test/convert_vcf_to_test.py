@@ -72,31 +72,34 @@ def create_json_dict_from_vcf(data: pd.Series) -> dict:
 
     # gnomAD
     gnomad_scores = {}
-    if all([type(x) is str for x in [data.gnomad_af, data.gnomad_ac]]):
-        gnomad_scores["AF"] = float(data.gnomad_af)
-        gnomad_scores["AC"] = int(data.gnomad_ac)
-        if all(
-            [
-                type(x) is str
-                for x in [
-                    data.gnomad_popmax,
-                    data.gnomad_popmax_AC,
-                    data.gnomad_popmax_AF,
+    try:
+        if all([type(x) is str for x in [data.gnomad_af, data.gnomad_ac]]):
+            gnomad_scores["AF"] = float(data.gnomad_af)
+            gnomad_scores["AC"] = int(data.gnomad_ac)
+            if all(
+                [
+                    type(x) is str
+                    for x in [
+                        data.gnomad_popmax,
+                        data.gnomad_popmax_AC,
+                        data.gnomad_popmax_AF,
+                    ]
                 ]
-            ]
-        ):
-            gnomad_scores["subpopulation"] = data.gnomad_popmax
-            gnomad_scores["popmax_AC"] = int(data.gnomad_popmax_AC)
-            gnomad_scores["popmax_AF"] = float(data.gnomad_popmax_AF)
-            try:
-                gnomad_scores["faf_popmax_AF"] = float(data.faf95_popmax)
-            except AttributeError:
-                gnomad_scores["faf_popmax_AF"] = 0
-        else:  # if the data is missing popmax values simply use the standard af and ac
-            gnomad_scores["subpopulation"] = "ALL"
-            gnomad_scores["popmax_AC"] = int(data.gnomad_ac)
-            gnomad_scores["popmax_AF"] = float(data.gnomad_af)
-            gnomad_scores["faf_popmax_AF"] = float(data.gnomad_af)
+            ):
+                gnomad_scores["subpopulation"] = data.gnomad_popmax
+                gnomad_scores["popmax_AC"] = int(data.gnomad_popmax_AC)
+                gnomad_scores["popmax_AF"] = float(data.gnomad_popmax_AF)
+                try:
+                    gnomad_scores["faf_popmax_AF"] = float(data.faf95_popmax)
+                except AttributeError:
+                    gnomad_scores["faf_popmax_AF"] = 0
+            else:  # if the data is missing popmax values simply use the standard af and ac
+                gnomad_scores["subpopulation"] = "ALL"
+                gnomad_scores["popmax_AC"] = int(data.gnomad_ac)
+                gnomad_scores["popmax_AF"] = float(data.gnomad_af)
+                gnomad_scores["faf_popmax_AF"] = float(data.gnomad_af)
+    except AttributeError:
+        gnomad_scores = {}
     if len(gnomad_scores) > 0:
         json_dict["gnomAD"] = gnomad_scores
 
