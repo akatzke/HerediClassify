@@ -52,7 +52,7 @@ class Bp4_protein_mult_strength(abstract_rule):
         else:
             result = True
             strength = threshold.strengths[num_thresholds_met - 1]
-            comment = f"Variant is predicted to be benign by {threshold.name} with evidence strength {strength.value}."
+            comment = f"Variant is predicted to be benign by {threshold.name} with evidence strength {strength.value} meeting a threshold of {threshold.thresholds[num_thresholds_met -1]}."
         return RuleResult(
             "BP4",
             rule_type.PROTEIN,
@@ -99,7 +99,7 @@ class Bp4_splicing_mult_strength(abstract_rule):
         else:
             result = False
             strength = threshold.strengths[num_thresholds_met - 1]
-            comment = f"Variant is predicted to have no splicing effect by {threshold.name} with evidence strength {strength.value}."
+            comment = f"Variant is predicted to have no splicing effect by {threshold.name} with evidence strength {strength.value} meeting a threshold of {threshold.thresholds[num_thresholds_met -1]}."
         return RuleResult(
             "BP4",
             rule_type.SPLICING,

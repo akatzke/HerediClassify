@@ -65,7 +65,7 @@ class Pp3_protein_mult_strength(abstract_rule):
         else:
             result = True
             strength = threshold.strengths[num_thresholds_met - 1]
-            comment = f"Variant is predicted to be pathogenic by {threshold.name} with evidence strength {strength.value}."
+            comment = f"Variant is predicted to be pathogenic by {threshold.name} with evidence strength {strength.value} meeting a threshold of {threshold.thresholds[num_thresholds_met -1]}."
         return RuleResult(
             "PP3",
             rule_type.PROTEIN,
@@ -114,7 +114,7 @@ class Pp3_splicing_mult_strength(abstract_rule):
         else:
             result = True
             strength = threshold.strengths[num_thresholds_met - 1]
-            comment = f"Variant is predicted to have a splice effect by {threshold.name} with evidence strength {strength.value}."
+            comment = f"Variant is predicted to have a splice effect by {threshold.name} with evidence strength {strength.value} meeting a threshold of {threshold.thresholds[num_thresholds_met -1]}."
         return RuleResult(
             "PP3",
             rule_type.SPLICING,
