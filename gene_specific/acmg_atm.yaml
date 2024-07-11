@@ -50,7 +50,6 @@ prediction_tool_thresholds:
 allele_frequency_thresholds:
     threshold_ba1: 0.005
     threshold_bs1: 0.0005
-    threshold_bs2: 5
     threshold_pm2: 0.00001
 
 ### Functional thresholds

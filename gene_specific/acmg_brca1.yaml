@@ -14,6 +14,7 @@ rules:
     - pp3_splicing_enigma
     - ba1_faf
     - bs1_supporting_faf
+    - bs3
     - bp1_annotation_cold_spot_strong
     - bp4_protein_enigma
     - bp4_splicing_enigma
