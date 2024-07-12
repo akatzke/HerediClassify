@@ -28,7 +28,7 @@ class Ps1_protein_enigma(abstract_rule):
             (
                 class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN,
                 class_info.VARIANT_PREDICTION,
-                class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
+                class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
             ),
         )
 
@@ -48,7 +48,7 @@ class Ps1_protein_enigma(abstract_rule):
             comment = "No splicing prediction is available. Therefore PS1_protein can not be evaluated."
         elif (
             clinvar_same_aa.pathogenic
-            and num_thresholds_met == 0
+            and num_thresholds_met > 0
             and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
         ):
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}."
@@ -61,15 +61,15 @@ class Ps1_protein_enigma(abstract_rule):
                 )
         elif (
             clinvar_same_aa.pathogenic
-            and num_thresholds_met == 0
+            and num_thresholds_met > 0
             and clinvar_same_aa.highest_classification
             == ClinVar_Status.LIKELY_PATHOGENIC
         ):
             comment = f"The following ClinVar entries show the same amino acid change as likely pathogenic: {clinvar_same_aa.ids}."
             strength = evidence_strength.MODERATE
             result = True
-        elif num_thresholds_met > 0:
-            comment = f"Variant is predicted to affect splicing."
+        elif num_thresholds_met == 0:
+            comment = f"Variant is not predicted to not affect splicing."
             strength = evidence_strength.STRONG
             result = False
         else:
