@@ -191,19 +191,11 @@ class Pm4_pten(abstract_rule):
     ) -> RuleResult:
         results = {}
         for transcript in annotated_transcript_list:
+            # All extensions of the protein can be seen as pathogenic
             if any(var_type is VARTYPE.STOP_LOST for var_type in transcript.var_type):
-                if (
-                    transcript.is_truncated_region_disease_relevant
-                    and not transcript.len_change_in_repetitive_region
-                ):
+                if not transcript.len_change_in_repetitive_region:
                     comment = f"Length of disease relevant transcript {transcript.transcript_id} is increased by {abs(transcript.diff_len_protein_percent)}. Deleted region does not overlap repetitive region."
                     result = True
-                elif (
-                    transcript.is_truncated_region_disease_relevant
-                    and transcript.len_change_in_repetitive_region
-                ):
-                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is increased by {abs(transcript.diff_len_protein_percent)}. Deleted region overlaps repetitive region."
-                    result = False
                 else:
                     comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}"
                     result = False
@@ -226,7 +218,7 @@ class Pm4_pten(abstract_rule):
                 ):
                     comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region is overlaps mutational hotspot."
                     result = True
-                elif variant_in_hotspot and transcript.len_change_in_repetitive_region:
+                elif transcript.len_change_in_repetitive_region:
                     comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
                     result = False
                 else:
@@ -247,16 +239,10 @@ class Pm4_pten(abstract_rule):
             ):
                 if transcript.diff_len_protein_percent > 0:
                     result = False
-                    comment = f"Frameshift variant decreases the length of the transcript, PM4 only applyes to extensions of the protein."
-                elif (
-                    not transcript.len_change_in_repetitive_region
-                    and transcript.is_truncated_region_disease_relevant
-                ):
+                    comment = f"Frameshift variant decreases the length of the transcript, PM4 only applies to extensions of the protein."
+                elif not transcript.len_change_in_repetitive_region:
                     comment = f"Length of disease relevant transcript {transcript.transcript_id} is increased by {abs(transcript.diff_len_protein_percent)}."
                     result = True
-                elif transcript.len_change_in_repetitive_region:
-                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is increased by {abs(transcript.diff_len_protein_percent)}. Deleted region overlaps repetitive region."
-                    result = False
                 else:
                     comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}"
                     result = False
