@@ -102,19 +102,14 @@ class Pvs1_pten(Pvs1):
             comment = f"Transcript {transcript.transcript_id} is predicted to undergo NMD and in a disease relevant transcript."
             result = True
             strength = evidence_strength.VERY_STRONG
-        elif (
-            transcript.is_truncated_region_disease_relevant
-            and transcript.is_reading_frame_preserved
-            and (transcript.diff_len_protein_percent > threshold_diff_len_prot_percent)
+        elif transcript.is_reading_frame_preserved and (
+            transcript.diff_len_protein_percent > threshold_diff_len_prot_percent
         ):
-            comment = (
-                f"Transcript {transcript.transcript_id} is not predict to undergo NMD. Truncated region is disease relevant. "
-                + transcript.comment_truncated_region
-            )
+            comment = f"Transcript {transcript.transcript_id} is not predict to undergo NMD. Roile of truncated region is unknown. "
             result = True
             strength = evidence_strength.MODERATE
         else:
-            comment = f"Variant in transcript {transcript.transcript_id} does not meet any of the specified criteria for PTEN."
+            comment = f"Variant in transcript {transcript.transcript_id} does not meet any of the specified criteria for PVS1 PTEN."
             result = False
             strength = evidence_strength.VERY_STRONG
         return RuleResult(
