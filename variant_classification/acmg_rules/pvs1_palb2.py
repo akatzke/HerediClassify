@@ -127,7 +127,7 @@ class Pvs1_palb2(Pvs1):
             else:
                 comment = (
                     comment
-                    + f" Truncated region not located in disease relevant region."
+                    + f" Role of truncated region in protein function is unknown."
                 )
                 result = True
                 strength = evidence_strength.MODERATE
@@ -229,14 +229,14 @@ class Pvs1_palb2(Pvs1):
                 ):
                     # In case of an increase in protein lenght, the diff_len_protein_percent is negative
                     result = True
-                    strength = evidence_strength.MODERATE
+                    strength = evidence_strength.SUPPORTING
                     comment = (
                         comment
                         + f" Splicing alteration inserts more than {threshold_diff_len_prot_percent} of coding sequence."
                     )
                 else:
                     result = True
-                    strength = evidence_strength.SUPPORTING
+                    strength = evidence_strength.MODERATE
                     comment = (
                         comment
                         + f" Splicing alteration removes less then {threshold_diff_len_prot_percent} of coding sequence."
