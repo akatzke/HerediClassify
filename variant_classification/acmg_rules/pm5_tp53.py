@@ -11,6 +11,7 @@ from acmg_rules.utils import (
 )
 from information import Info, Classification_Info
 from clinvar_utils import ClinVar, ClinVar_Status
+from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 
 
 class Pm5_protein_tp53(abstract_rule):
@@ -28,6 +29,8 @@ class Pm5_protein_tp53(abstract_rule):
             (
                 class_info.VARIANT_CLINVAR_SPLICEAI_PROTEIN_SIMILARITY,
                 class_info.VARIANT_HOTSPOT_ANNOTATION,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
             ),
         )
 
@@ -36,7 +39,11 @@ class Pm5_protein_tp53(abstract_rule):
         cls,
         clinvar_diff_aa: ClinVar,
         variant_in_hotspot: bool,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
     ) -> RuleResult:
+        prediction_value = prediction_dict.get(threshold.name, None)
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if variant_in_hotspot:
             return RuleResult(
                 "PM5",
@@ -61,6 +68,14 @@ class Pm5_protein_tp53(abstract_rule):
             else:
                 strength = evidence_strength.MODERATE
                 result = True
+            if num_thresholds_met is None:
+                comment = (
+                    f"ATTENTION: No splicing prediction is available for the variant under assessment. "
+                    + comment
+                )
+            if num_thresholds_met == 0:
+                result = False
+                comment = f"Variant is not predicted to not affect splicing. PM5_protein is therefore not applicable."
         else:
             comment = "No ClinVar entries found that show an amino acid change in the same position as pathogenic."
             strength = evidence_strength.MODERATE

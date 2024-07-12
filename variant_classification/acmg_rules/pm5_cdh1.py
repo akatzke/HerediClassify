@@ -15,6 +15,7 @@ from acmg_rules.utils import (
 from information import Info, Classification_Info
 from variant import TranscriptInfo, VariantInfo
 from transcript_annotated import TranscriptInfo_exonic
+from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 
 
 class Pm5_protein_cdh1(abstract_rule):
@@ -34,6 +35,8 @@ class Pm5_protein_cdh1(abstract_rule):
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.POS_LAST_KNOWN_PATHO_PTC,
                 class_info.MANE_TRANSCRIPT_LIST_PATH,
+                class_info.VARIANT_PREDICTION,
+                class_info.THRESHOLD_SPLICING_PREDICTION_BENIGN,
             ),
         )
 
@@ -44,6 +47,8 @@ class Pm5_protein_cdh1(abstract_rule):
         annotated_transcripts: list[TranscriptInfo],
         pos_last_known_patho_ptc_dict: dict[str, int],
         mane_path: pathlib.Path,
+        prediction_dict: dict[str, float],
+        threshold: Threshold,
     ) -> RuleResult:
         results = {}
         for transcript in annotated_transcripts:
@@ -66,6 +71,8 @@ class Pm5_protein_cdh1(abstract_rule):
                         comment=f"PTC ({transcript.ptc}) caused by variant is located upstream of last known pathogenic PTC {pos_last_known_patho_ptc}.",
                     )
                     results[transcript.transcript_id] = result
+        prediction_value = prediction_dict.get(threshold.name, None)
+        num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if len(results) == 0:
             if not annotated_transcripts:
                 comment = "No annotated transcripts provided, PM5 can not be applied."
@@ -81,7 +88,19 @@ class Pm5_protein_cdh1(abstract_rule):
             )
         else:
             final_result = summarise_results_per_transcript(results, mane_path)
-        return final_result
+        if num_thresholds_met is None:
+            new_comment = (
+                f"ATTENTION: No splicing prediction is available for variant under assessment. "
+                + final_result.comment
+            )
+            final_result.comment = new_comment
+            return final_result
+        elif num_thresholds_met > 0:
+            return final_result
+        else:
+            final_result.status = False
+            final_result.comment = f"Variant is not predicted to not affect splicing. PS1_protein is therefore not applicable."
+            return final_result
 
 
 class Pm5_splicing_cdh1(abstract_rule):
