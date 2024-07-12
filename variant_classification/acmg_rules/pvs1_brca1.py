@@ -129,7 +129,7 @@ class Pvs1_brca1(Pvs1):
             else:
                 comment = (
                     comment
-                    + " Variant is not present inbiologically relevant transcript."
+                    + " Variant is not present in biologically relevant transcript."
                 )
                 result = False
             strength = evidence_strength.VERY_STRONG
@@ -175,11 +175,11 @@ class Pvs1_brca1(Pvs1):
         elif not transcript.coding_exon_skipped:
             result = False
             strength = evidence_strength.VERY_STRONG
-            comment = f"Predicted alteration does not affect coding sequence {transcript.transcript_id}."
+            comment = f"Predicted alteration does not affect coding sequence in transcript {transcript.transcript_id}."
         elif transcript.start_codon_exon_skipped:
             result = True
             strength = evidence_strength.VERY_STRONG
-            comment = f"Predicted alteration is non-coding (initation codon skipped) {transcript.transcript_id}."
+            comment = f"Predicted alteration is non-coding (initation codon skipped) in transcript {transcript.transcript_id}."
         elif transcript.is_NMD:
             comment = (
                 f"Transcript {transcript.transcript_id} is predicted to undergo NMD."
@@ -204,11 +204,23 @@ class Pvs1_brca1(Pvs1):
                 strength = evidence_strength.VERY_STRONG
                 comment = (
                     comment
-                    + f" Target region is critical to protein function. "
+                    + f" Target region is critical to protein function (BRCT domain). "
                     + transcript.comment_truncated_region
                 )
             else:
-                comment = comment + " Role of target region is unknown."
+                comment = (
+                    comment + " Exon is absent from biologically relevant transcript."
+                )
+                result = False
+                strength = evidence_strength.VERY_STRONG
+        elif transcript.is_reading_frame_preserved:
+            comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is preserved."
+            if transcript.is_truncated_region_disease_relevant:
+                result = True
+                strength = evidence_strength.VERY_STRONG
+                comment = comment + f" Target region is critical to protein function."
+            else:
+                comment = comment + f" Role of target region is unkown."
                 if (
                     transcript.diff_len_protein_percent
                     > threshold_diff_len_prot_percent
