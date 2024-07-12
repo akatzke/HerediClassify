@@ -42,8 +42,8 @@ prediction_tool_thresholds:
 
 ### Allelee frequency threshold for each gene ###
 allele_frequency_thresholds:
-    threshold_ba1: 0.001
-    threshold_bs1: 0.0001
+    threshold_ba1: 0.01
+    threshold_bs1: 0.001
     threshold_bs2: 5
     threshold_pm2: 0
 
