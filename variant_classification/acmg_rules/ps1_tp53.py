@@ -49,9 +49,7 @@ class Ps1_protein_tp53(abstract_rule):
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         clinvar_same_aa = clinvar_result[ClinVar_Type.SAME_AA_CHANGE]
         if splicing_assay:
-            performed, result_assay, comment_assay = assess_splicing_data_bp7(
-                splicing_assay
-            )
+            performed, result_assay, _ = assess_splicing_data_bp7(splicing_assay)
         else:
             performed = False
             result_assay = False
@@ -81,15 +79,20 @@ class Ps1_protein_tp53(abstract_rule):
         elif num_thresholds_met is None:
             result = False
             strength = evidence_strength.STRONG
-            comment = "No splicing prediction is available. Therefore, PS1_protein can not be evaluated."
+            comment = "No splicing prediction and no splicing assay is available. Therefore, PS1_protein can not be evaluated."
         elif (
             clinvar_same_aa.pathogenic
-            and num_thresholds_met >= 1
+            and num_thresholds_met > 0
             and clinvar_same_aa.highest_classification == ClinVar_Status.PATHOGENIC
         ):
             comment = f"The following ClinVar entries show the same amino acid change as pathogenic: {clinvar_same_aa.ids}. SpliceAI does not predict an effect on splicing for this variant."
             strength = evidence_strength.MODERATE
             result = True
+            if clinvar_same_aa.associated_ids:
+                comment = (
+                    comment
+                    + f" The following ClinVar entries show the same amino acid change as likely pathogenic: {clinvar_same_aa.associated_ids}."
+                )
         elif num_thresholds_met == 0:
             comment = f"Variant is not predicted to not affect splicing."
             strength = evidence_strength.STRONG
