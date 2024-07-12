@@ -14,7 +14,7 @@ rules:
     - bs1_faf
     - bp1
     - bp4_splicing
-    - bp7_deep_intronic_enigma
+    - bp7_deep_intronic_palb2
 
 ### Disease relevant transcript ###
 disease_relevant_transcripts:

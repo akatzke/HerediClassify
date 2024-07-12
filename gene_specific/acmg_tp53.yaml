@@ -6,7 +6,7 @@ version: "1.4.0"
 rules:
     - pvs1
     - ps1_protein_tp53
-    - ps1_splicing_tp53
+    - ps3
     - pm1_tp53
     - pm2_supporting
     - pm5_protein_tp53
@@ -15,6 +15,7 @@ rules:
     - ba1_with_absolute
     - bs1_with_absolute
     - bs2_supporting
+    - bs3
     - bp4_protein
     - bp4_splicing
     - bp7
