@@ -111,13 +111,13 @@ class Bs1_with_absolute(abstract_rule):
         ):
             comment = f"Variant occures with a frequeny of {gnomad.subpopulation_frequency} and a total of {gnomad.subpopulation_allele_count} times in gnomAD subpopulation {gnomad.subpopulation}."
             result = True
-            if gnomad.subpopulation == "None":
-                comment = f"Variant does not occur in gnomAD, allele frequency in gnomAD is assumed to be 0."
-            if gnomad.subpopulation == "ALL":
-                comment = f"Variant has no entry for subopulation. Variant occurs with {gnomad.subpopulation_frequency} and a total of {gnomad.subpopulation_allele_count} times in gnomAD."
         else:
             comment = f"Variant occures with {gnomad.subpopulation_frequency} and a total of {gnomad.subpopulation_allele_count} times in gnomAD subpopulation {gnomad.subpopulation}."
             result = False
+        if gnomad.subpopulation == "None":
+            comment = f"Variant does not occur in gnomAD, allele frequency in gnomAD is assumed to be 0."
+        if gnomad.subpopulation == "ALL":
+            comment = f"Variant has no entry for subopulation. Variant occurs with {gnomad.subpopulation_frequency} and a total of {gnomad.subpopulation_allele_count} times in gnomAD."
         return RuleResult(
             "BS1",
             rule_type.GENERAL,

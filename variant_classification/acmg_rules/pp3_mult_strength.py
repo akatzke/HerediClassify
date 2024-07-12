@@ -55,7 +55,7 @@ class Pp3_protein_mult_strength(abstract_rule):
             strength = evidence_strength.SUPPORTING
             result = False
         elif num_thresholds_met is None:
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
             strength = evidence_strength.SUPPORTING
             result = False
         elif num_thresholds_met == 0:
@@ -65,7 +65,7 @@ class Pp3_protein_mult_strength(abstract_rule):
         else:
             result = True
             strength = threshold.strengths[num_thresholds_met - 1]
-            comment = f"Variant is predicted to be pathogenic by {threshold.name} with evidence strength {strength.value} meeting a threshold of {threshold.thresholds[num_thresholds_met -1]}."
+            comment = f"Variant is predicted to be pathogenic by {threshold.name} with evidence strength {strength.value} meeting a threshold of {threshold.thresholds[num_thresholds_met -1]} (value: {prediction_value})."
         return RuleResult(
             "PP3",
             rule_type.PROTEIN,
@@ -102,7 +102,7 @@ class Pp3_splicing_mult_strength(abstract_rule):
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if num_thresholds_met is None:
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
             result = False
             strength = evidence_strength.SUPPORTING
         elif num_thresholds_met == 0:
@@ -114,7 +114,7 @@ class Pp3_splicing_mult_strength(abstract_rule):
         else:
             result = True
             strength = threshold.strengths[num_thresholds_met - 1]
-            comment = f"Variant is predicted to have a splice effect by {threshold.name} with evidence strength {strength.value} meeting a threshold of {threshold.thresholds[num_thresholds_met -1]}."
+            comment = f"Variant is predicted to have a splice effect by {threshold.name} with evidence strength {strength.value} meeting a threshold of {threshold.thresholds[num_thresholds_met -1]} (value: {prediction_value})."
         return RuleResult(
             "PP3",
             rule_type.SPLICING,

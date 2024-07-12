@@ -87,7 +87,7 @@ class Bp7_deep_intronic_enigma(abstract_rule):
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if num_thresholds_met is None:
             result = False
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
         elif num_thresholds_met > 0:
             """
             Variant is predicted to have splicing effect
@@ -141,7 +141,7 @@ class Bp7_deep_intronic_enigma(abstract_rule):
                 comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         else:
             result = False
-            comment = f"The variant is not predicted to not affect splicing by {threshold.name}."
+            comment = f"The variant is not predicted to not affect splicing by {threshold.name} (threshold: {threshold.thresholds[0]}, value: {prediction_value})."
 
         return RuleResult(
             "BP7",
@@ -216,7 +216,7 @@ class Bp7_deep_intronic_atm(abstract_rule):
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if num_thresholds_met is None:
             result = False
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
         elif num_thresholds_met > 0:
             """
             Variant is predicted to have splicing effect
@@ -270,7 +270,7 @@ class Bp7_deep_intronic_atm(abstract_rule):
                 comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         else:
             result = False
-            comment = f"The variant is not predicted to not affect splicing by {threshold.name}."
+            comment = f"The variant is not predicted to not affect splicing by {threshold.name} (threshold: {threshold.thresholds[0]}, value: {prediction_value})."
 
         return RuleResult(
             "BP7",
@@ -345,7 +345,7 @@ class Bp7_deep_intronic_palb2(abstract_rule):
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if num_thresholds_met is None:
             result = False
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
         elif num_thresholds_met > 0:
             """
             Variant is predicted to have splicing effect
@@ -399,7 +399,7 @@ class Bp7_deep_intronic_palb2(abstract_rule):
                 comment = f"BP7 does not apply to this variant, as BP7 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
         else:
             result = False
-            comment = f"The variant is not predicted to not affect splicing by {threshold.name}."
+            comment = f"The variant is not predicted to not affect splicing by {threshold.name} (threshold: {threshold.thresholds[0]}, value: {prediction_value})."
 
         return RuleResult(
             "BP7",

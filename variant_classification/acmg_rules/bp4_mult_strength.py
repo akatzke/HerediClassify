@@ -42,7 +42,7 @@ class Bp4_protein_mult_strength(abstract_rule):
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if num_thresholds_met is None:
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
             result = False
             strength = evidence_strength.SUPPORTING
         elif num_thresholds_met == 0:
@@ -52,7 +52,7 @@ class Bp4_protein_mult_strength(abstract_rule):
         else:
             result = True
             strength = threshold.strengths[num_thresholds_met - 1]
-            comment = f"Variant is predicted to be benign by {threshold.name} with evidence strength {strength.value} meeting a threshold of {threshold.thresholds[num_thresholds_met -1]}."
+            comment = f"Variant is predicted to be benign by {threshold.name} with evidence strength {strength.value} meeting a threshold of {threshold.thresholds[num_thresholds_met -1]} (value: {prediction_value})."
         return RuleResult(
             "BP4",
             rule_type.PROTEIN,
@@ -89,7 +89,7 @@ class Bp4_splicing_mult_strength(abstract_rule):
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if num_thresholds_met is None:
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
             result = False
             strength = evidence_strength.SUPPORTING
         elif num_thresholds_met == 0:
@@ -99,7 +99,7 @@ class Bp4_splicing_mult_strength(abstract_rule):
         else:
             result = False
             strength = threshold.strengths[num_thresholds_met - 1]
-            comment = f"Variant is predicted to have no splicing effect by {threshold.name} with evidence strength {strength.value} meeting a threshold of {threshold.thresholds[num_thresholds_met -1]}."
+            comment = f"Variant is predicted to have no splicing effect by {threshold.name} with evidence strength {strength.value} meeting a threshold of {threshold.thresholds[num_thresholds_met -1]} (value: {prediction_value})."
         return RuleResult(
             "BP4",
             rule_type.SPLICING,

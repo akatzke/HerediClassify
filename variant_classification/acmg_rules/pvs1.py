@@ -118,7 +118,7 @@ class Pvs1(abstract_rule):
             else:
                 comment = (
                     comment
-                    + f"No pathogenic variant detected between start codon and alternative start codon."
+                    + f" No pathogenic variant detected between start codon and alternative start codon."
                 )
                 result = True
                 strength = evidence_strength.SUPPORTING
@@ -134,7 +134,7 @@ class Pvs1(abstract_rule):
     @classmethod
     def assess_pvs1_start_loss_pathogenic_very_strong(cls) -> RuleResult:
         """
-        Assess PVS1 for start loss variants, that are automatically classified as pathogenic
+        Assess PVS1 for start loss variants, that are always PVS1 very strong
         """
         return RuleResult(
             "PVS1",
@@ -142,7 +142,7 @@ class Pvs1(abstract_rule):
             evidence_type.PATHOGENIC,
             True,
             evidence_strength.VERY_STRONG,
-            "For this gene, start loss variants automatically give PVS1 with very strong evidence strength.",
+            "For this gene, start loss variants always give PVS1 with very strong evidence strength.",
         )
 
     @classmethod
@@ -161,9 +161,7 @@ class Pvs1(abstract_rule):
         if not transcript.are_exons_skipped or not num_thresholds_met:
             result = False
             strength = evidence_strength.VERY_STRONG
-            comment = (
-                f"No splicing alteration predicted for {transcript.transcript_id}."
-            )
+            comment = f"No splicing alteration predicted for transcript {transcript.transcript_id}."
         elif transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} undergoes NMD."
             if transcript.is_truncated_region_disease_relevant:
@@ -240,7 +238,7 @@ class Pvs1(abstract_rule):
                     result = True
                     strength = evidence_strength.MODERATE
         else:
-            comment = f"Transcript {transcript.transcript_id} does not fulfill any PVS1 splicing."
+            comment = f"Transcript {transcript.transcript_id} does not fulfill any PVS1 splicing criteria."
             result = False
             strength = evidence_strength.VERY_STRONG
         return RuleResult(

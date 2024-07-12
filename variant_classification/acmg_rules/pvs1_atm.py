@@ -165,7 +165,7 @@ class Pvs1_atm(Pvs1):
             else:
                 result = True
                 strength = evidence_strength.STRONG
-                comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and ."
+                comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and truncated region is disease relevant (HEAT repeats)."
         elif (
             transcript.affected_exon["exon_no"] >= 39
             and transcript.affected_exon["exon_no"] <= 63
@@ -177,11 +177,11 @@ class Pvs1_atm(Pvs1):
             elif not transcript.is_reading_frame_preserved and not transcript.is_NMD:
                 result = True
                 strength = evidence_strength.VERY_STRONG
-                comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is not preserved. Truncated region is disease relevant."
+                comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is not preserved. Truncated region is disease relevant (FATKIN domain)."
             elif transcript.is_reading_frame_preserved:
                 result = True
                 strength = evidence_strength.VERY_STRONG
-                comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is preserved. Truncated region is disease relevant."
+                comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD and reading frame is preserved. Truncated region is disease relevant (FATKIN domain)."
             else:
                 result = False
                 strength = evidence_strength.VERY_STRONG

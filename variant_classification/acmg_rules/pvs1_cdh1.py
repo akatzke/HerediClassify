@@ -154,7 +154,7 @@ class Pvs1_cdh1(Pvs1):
                     f"The start position of the variant {transcript.var_start} in transcript {transcript.transcript_id} lies outside the range for nonsense and framshift variants of c.4-c.2646."
                 )
         else:
-            comment = f"Variant in transcript {transcript.transcript_id} does not meet any of the specified criteria for PALB2."
+            comment = f"Variant in transcript {transcript.transcript_id} does not meet any of the specified criteria for CDH1."
             result = False
             strength = evidence_strength.VERY_STRONG
         return RuleResult(
@@ -182,9 +182,7 @@ class Pvs1_cdh1(Pvs1):
         if not transcript.are_exons_skipped or not num_thresholds_met:
             result = False
             strength = evidence_strength.VERY_STRONG
-            comment = (
-                f"No splicing alteration predicted for {transcript.transcript_id}."
-            )
+            comment = f"No splicing alteration predicted for transcript {transcript.transcript_id}."
         elif transcript.is_NMD:
             comment = f"Transcript {transcript.transcript_id} undergoes NMD."
             if transcript.is_truncated_region_disease_relevant:
@@ -262,7 +260,7 @@ class Pvs1_cdh1(Pvs1):
                     result = True
                     strength = evidence_strength.MODERATE
         else:
-            comment = f"Transcript {transcript.transcript_id} does not fulfill any PVS1 splicing."
+            comment = f"Transcript {transcript.transcript_id} does not fulfill any PVS1 splicing criteria."
             result = False
             strength = evidence_strength.VERY_STRONG
         return RuleResult(

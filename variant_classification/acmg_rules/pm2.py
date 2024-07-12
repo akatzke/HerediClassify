@@ -15,7 +15,7 @@ from variant import PopulationDatabases_gnomAD, VariantInfo
 
 class Pm2(abstract_rule):
     """
-    PM2: Varinat is absent from control population
+    PM2: Variant is absent from control population
     In case of recessive disorders: Variant occurres less than expected carrier rate
     """
 
@@ -42,18 +42,13 @@ class Pm2(abstract_rule):
         elif gnomad.subpopulation_frequency <= threshold_pm2:
             comment = f"Variant occures with {gnomad.subpopulation_frequency} in gnomAD subpopulation {gnomad.subpopulation}."
             result = False
-            if gnomad.subpopulation == "None":
-                comment = f"Variant is absent from gnomAD."
-            if gnomad.subpopulation == "ALL":
-                comment = f"Variant has no popmax. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
         else:
             comment = f"Variant occures with {gnomad.subpopulation_frequency} in gnomAD subpopulation {gnomad.subpopulation}."
             result = True
-            if gnomad.subpopulation == "None":
-                comment = f"Variant is absent from gnomAD."
-                result = False
-            if gnomad.subpopulation == "ALL":
-                comment = f"Variant has no entry for subpopulation. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
+        if gnomad.subpopulation == "None":
+            comment = f"Variant does not occur in gnomAD, allele frequency in gnomAD is assumed to be 0."
+        if gnomad.subpopulation == "ALL":
+            comment = f"Variant has no entry for subpopulation. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
         return RuleResult(
             "PM2",
             rule_type.GENERAL,
@@ -66,7 +61,7 @@ class Pm2(abstract_rule):
 
 class Pm2_supporting(abstract_rule):
     """
-    PM2: Varinat is absent from control population
+    PM2: Variant is absent from control population
     In case of recessive disorders: Variant occurres less than expected carrier rate
     Default strength of PM2 is set to supporting following SVI recommendations
     """
@@ -94,17 +89,13 @@ class Pm2_supporting(abstract_rule):
         elif gnomad.subpopulation_frequency <= threshold_pm2:
             comment = f"Variant occures with {gnomad.subpopulation_frequency} in gnomAD subpopulation {gnomad.subpopulation}."
             result = True
-            if gnomad.subpopulation == "None":
-                comment = f"Variant is absent from gnomAD."
-            if gnomad.subpopulation == "ALL":
-                comment = f"Variant has no popmax. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
         else:
             comment = f"Variant occures with {gnomad.subpopulation_frequency} in gnomAD subpopulation {gnomad.subpopulation}."
             result = False
-            if gnomad.subpopulation == "None":
-                comment = f"Variant is absent from gnomAD."
-            if gnomad.subpopulation == "ALL":
-                comment = f"Variant has no entry for subpopulation. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
+        if gnomad.subpopulation == "None":
+            comment = f"Variant does not occur in gnomAD, allele frequency in gnomAD is assumed to be 0."
+        if gnomad.subpopulation == "ALL":
+            comment = f"Variant has no entry for subpopulation. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
         return RuleResult(
             "PM2",
             rule_type.GENERAL,
@@ -117,7 +108,7 @@ class Pm2_supporting(abstract_rule):
 
 class Pm2_supporting_faf(abstract_rule):
     """
-    PM2: Varinat is absent from control population
+    PM2: Variant is absent from control population
     In case of recessive disorders: Variant occurres less than expected carrier rate
     Default strength of PM2 is set to supporting following SVI recommendations
     """
@@ -165,17 +156,13 @@ class Pm2_supporting_less(abstract_rule):
         elif gnomad.subpopulation_frequency < threshold_pm2:
             comment = f"Variant occures with {gnomad.subpopulation_frequency} in gnomAD subpopulation {gnomad.subpopulation}."
             result = True
-            if gnomad.subpopulation == "None":
-                comment = f"Variant is absent from gnomAD."
-            if gnomad.subpopulation == "ALL":
-                comment = f"Variant has no popmax. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
         else:
             comment = f"Variant occures with {gnomad.subpopulation_frequency} in gnomAD subpopulation {gnomad.subpopulation}."
             result = False
-            if gnomad.subpopulation == "None":
-                comment = f"Variant is absent from gnomAD."
-            if gnomad.subpopulation == "ALL":
-                comment = f"Variant has no entry in subpopulation. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
+        if gnomad.subpopulation == "None":
+            comment = f"Variant does not occur in gnomAD, allele frequency in gnomAD is assumed to be 0."
+        if gnomad.subpopulation == "ALL":
+            comment = f"Variant has no entry for subpopulation. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
         return RuleResult(
             "PM2",
             rule_type.GENERAL,
@@ -244,17 +231,13 @@ class Pm2_supporting_no_ins_del_indel(abstract_rule):
         elif gnomad.subpopulation_frequency <= threshold_pm2:
             comment = f"Variant occures with {gnomad.subpopulation_frequency} in gnomAD subpopulation {gnomad.subpopulation}."
             result = True
-            if gnomad.subpopulation == "None":
-                comment = f"Variant is absent from gnomAD."
-            if gnomad.subpopulation == "ALL":
-                comment = f"Variant has no popmax. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
         else:
             comment = f"Variant occures with {gnomad.subpopulation_frequency} in gnomAD subpopulation {gnomad.subpopulation}."
             result = False
-            if gnomad.subpopulation == "None":
-                comment = f"Variant is absent from gnomAD."
-            if gnomad.subpopulation == "ALL":
-                comment = f"Variant has no entry in subpopulation. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
+        if gnomad.subpopulation == "None":
+            comment = f"Variant does not occur in gnomAD, allele frequency in gnomAD is assumed to be 0."
+        if gnomad.subpopulation == "ALL":
+            comment = f"Variant has no entry for subpopulation. Variant occurs with {gnomad.subpopulation_frequency} in gnomAD."
         return RuleResult(
             "PM2",
             rule_type.GENERAL,

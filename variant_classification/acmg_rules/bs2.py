@@ -39,10 +39,10 @@ class Bs2(abstract_rule):
                 f"The FLOSSIES allele count is None. Please check variant import."
             )
         if flossies.count > threshold_bs2:
-            comment = f"The variant occures {flossies.count} in FLOSSIES."
+            comment = f"The variant occures {flossies.count} in FLOSSIES (threshold: {threshold_bs2})."
             result = True
         else:
-            comment = f"The variant occures {flossies.count} in FLOSSIES."
+            comment = f"The variant occures {flossies.count} in FLOSSIES (threshold: {threshold_bs2})."
             result = False
         return RuleResult(
             "BS2",
@@ -84,11 +84,11 @@ class Bs2_with_supporting(abstract_rule):
                 f"The FLOSSIES allele count is None. Please check variant import."
             )
         if flossies.count >= threshold_bs2:
-            comment = f"The variant occures {flossies.count} in FLOSSIES."
+            comment = f"The variant occures {flossies.count} in FLOSSIES (threshold: {threshold_bs2})."
             strength = evidence_strength.STRONG
             result = True
         elif flossies.count >= threshold_bs2_supporting:
-            comment = f"The variant occures {flossies.count} in FLOSSIES."
+            comment = f"The variant occures {flossies.count} in FLOSSIES meeting threshold for supporting evidence strength (threshold: {threshold_bs2_supporting})."
             strength = evidence_strength.SUPPORTING
             result = True
         else:

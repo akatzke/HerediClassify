@@ -47,7 +47,7 @@ class Ps3(abstract_rule):
             comment = f"{pathogenic_count} of the {len(func_data)} perforemd assays indicate that the variant is pathogenic and {benign_count} of the {len(func_data)} indicate that the variant is benign. Due to this conflicting evidenced PS3 can not be applied."
         elif pathogenic_count > 0:
             result = True
-            comment = f"{benign_count} of the {len(func_data)} performed assays indicate that the variant is pathogenic."
+            comment = f"{pathogenic_count} of the {len(func_data)} performed assays indicate that the variant is pathogenic."
             if uncertain_count != 0:
                 comment = (
                     comment

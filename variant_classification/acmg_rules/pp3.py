@@ -129,10 +129,10 @@ class Pp3_protein_enigma(abstract_rule):
             comment = f"No score was provided for {threshold.name}."
             result = False
         elif num_thresholds_met > 0:
-            comment = f"Variant is predicted to be pathogenic by {threshold.name}."
+            comment = f"Variant is predicted to be pathogenic by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met -1]}, value: {prediction_value})."
             result = True
         else:
-            comment = f"Variant is not predicted to be pathogenic by {threshold.name}."
+            comment = f"Variant is not predicted to be pathogenic by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met -1]}, value: {prediction_value})."
             result = False
         return RuleResult(
             "PP3",
@@ -170,17 +170,13 @@ class Pp3_splicing(abstract_rule):
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
         if num_thresholds_met is None:
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
             result = False
         elif num_thresholds_met > 0:
-            comment = (
-                f"Variant is predicted to have a splice effect by {threshold.name}."
-            )
+            comment = f"Variant is predicted to have a splice effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met -1]}, value: {prediction_value})."
             result = True
         else:
-            comment = (
-                f"Variant is not predicted to have a splice effect by {threshold.name}."
-            )
+            comment = f"Variant is not predicted to have a splice effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met -1]}, value: {prediction_value})."
             result = False
         return RuleResult(
             "PP3",
@@ -301,7 +297,7 @@ class Pp3_splicing_cdh1(abstract_rule):
             else:
                 transcript = transcripts[0]
         if num_thresholds_met is None:
-            comment = f"No score was provided for {threshold.name}"
+            comment = f"No score was provided for {threshold.name}."
             result = False
         elif transcript is not None and (
             any(var_type in VARTYPE_GROUPS.INTRONIC.value for var_type in variant_types)
@@ -314,14 +310,10 @@ class Pp3_splicing_cdh1(abstract_rule):
             comment = f"Variant is located within cannonical splice site. PP3 does not apply here."
             result = False
         elif num_thresholds_met > 0:
-            comment = (
-                f"Variant is predicted to have a splice effect by {threshold.name}."
-            )
+            comment = f"Variant is predicted to have a splice effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met -1]}, value: {prediction_value})."
             result = True
         else:
-            comment = (
-                f"Variant is not predicted to have a splice effect by {threshold.name}."
-            )
+            comment = f"Variant is not predicted to have a splice effect by {threshold.name} (threshold: {threshold.thresholds[num_thresholds_met -1]}, value: {prediction_value})."
             result = False
         return RuleResult(
             "PP3",

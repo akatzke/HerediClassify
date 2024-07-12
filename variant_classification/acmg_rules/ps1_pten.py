@@ -44,7 +44,7 @@ class Ps1_splicing_pten(abstract_rule):
             and clinvar_same_splice_site.highest_classification
             == ClinVar_Status.PATHOGENIC
         ):
-            comment = f"The following ClinVar entries show splice variants at the same splice site to be pathogenic: {clinvar_same_nucleotide.ids}."
+            comment = f"The following ClinVar entries show splice variants at the same splice site to be pathogenic: {clinvar_same_nucleotide.ids}, {clinvar_same_splice_site.ids}."
             result = True
         else:
             comment = "No ClinVar entries found that show splice variants at the same nucleotide position as pathogenic."
