@@ -515,7 +515,7 @@ def get_thresholds_likelihood(
     del threshold_dict["direction"]
     thresholds = list(threshold_dict.values())
     assert all(
-        isinstance(threshold, float) for threshold in thresholds
+        isinstance(threshold, (int, float)) for threshold in thresholds
     ), f"Not all thresholds defined for {config_location[0]} are of type float. Please check."
     if "greater" in dir.value:
         keys_sorted = sorted(threshold_dict, key=threshold_dict.get, reverse=False)
