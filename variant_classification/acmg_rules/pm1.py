@@ -113,7 +113,7 @@ class Pm1_tp53(abstract_rule):
             comment = f"Variant in defined mutational hotspot."
             result = True
         elif cancerhotspots.count is None:
-            comment = "Variant not located in defined mutational hotspot and no Cancer Hotspots entry database for the variant."
+            comment = f"Variant not located in defined mutational hotspot and no Cancer Hotspots entry database for the variant."
             result = False
         elif cancerhotspots.count >= threshold_cancerhotspots_ac:
             comment = f"Variant occurs in Cancer Hotspots {cancerhotspots.count} times."
@@ -127,12 +127,12 @@ class Pm1_tp53(abstract_rule):
                 + comment
             )
         elif num_thresholds_met == 0:
-            comment = "Variant is not predicted to not affect splicing, therefore PM1 does not apply."
+            comment = f"Variant is not predicted to not affect splicing, therefore PM1 does not apply."
             result = False
         else:
             comment = (
                 comment
-                + " {threshold.name} predicts no effect on splicing for the variant (threshold: {threshold.thresholds[num_thresholds_met -1]}, value: {prediction_value})."
+                + f" {threshold.name} predicts no effect on splicing for the variant (threshold: {threshold.thresholds[num_thresholds_met -1]}, value: {prediction_value})."
             )
         return RuleResult(
             "PM1",
