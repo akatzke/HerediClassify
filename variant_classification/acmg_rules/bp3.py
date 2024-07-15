@@ -33,7 +33,6 @@ class Bp3(abstract_rule):
             cls.assess_rule,
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
-                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.VARIANT,
                 class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
@@ -43,7 +42,6 @@ class Bp3(abstract_rule):
     def assess_rule(
         cls,
         annotated_transcripts: list[TranscriptInfo],
-        threshold_diff_len_prot_percent: float,
         variant: VariantInfo,
         mane_path: pathlib.Path,
     ) -> RuleResult:
@@ -55,10 +53,7 @@ class Bp3(abstract_rule):
             ):
                 comment = f"Transcript {transcript.transcript_id} does not carry variant of exonic or intronic variant type."
                 result = False
-            elif (
-                transcript.diff_len_protein_percent <= threshold_diff_len_prot_percent
-                and transcript.len_change_in_repetitive_region
-            ):
+            elif transcript.len_change_in_repetitive_region:
                 comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
                 result = True
             else:
@@ -75,7 +70,7 @@ class Bp3(abstract_rule):
             results[transcript.transcript_id] = rule_result
         if len(results) == 0:
             if not annotated_transcripts:
-                comment = "No annotated transcripts provided, BP3 an not be applied."
+                comment = "No annotated transcripts provided, BP3 can not be assessed."
             else:
                 comment = f"BP3 does not apply to this variant, as BP3 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
             final_result = RuleResult(
