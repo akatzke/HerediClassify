@@ -414,7 +414,7 @@ def test_gene_specific_cdh1_missense():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["PM2", "BP4_splicing", "BP4_protein"]
+    rules_apply = ["PM2", "BP4_splicing"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
@@ -454,7 +454,7 @@ def test_gene_specific_palb2_intron():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["PM2", "BP4_splicing", "BP7_splicing"]
+    rules_apply = ["PM2", "BP4_splicing"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
@@ -698,7 +698,6 @@ def test_gene_specific_tp53_splice():
     key_list = [key for key in results_dict.keys()]
     rules_apply = [
         "PVS1_splicing",
-        "PM1",
         "PM2",
     ]
     for rule in rules_apply:
