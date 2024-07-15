@@ -18,6 +18,7 @@ from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 class Bp1_annotation_cold_spot_strong(abstract_rule):
     """
     BP1: Missense variant in a gene that has a low rate of benign missense variation and where missense variants are a common mechanism of disease.
+    Here implementation based on defined cold spots (bed file) and increased evidence strength to strong
     """
 
     @classmethod
@@ -62,6 +63,9 @@ class Bp1_annotation_cold_spot_strong(abstract_rule):
         if num_thresholds_met is None:
             result = False
             comment = f"No splicing prediction is available for variant. Therefore, BP1 does not apply."
+        elif num_thresholds_met == 0:
+            result = False
+            comment = f"Variant is not predicted to not affect splicing. Therefore, BP1 does not apply."
         elif (
             coldspot
             and num_thresholds_met > 0
@@ -74,9 +78,6 @@ class Bp1_annotation_cold_spot_strong(abstract_rule):
         elif not coldspot:
             result = False
             comment = f"Variant is not located in coldspot region as defined in annotation file."
-        elif num_thresholds_met == 0:
-            result = False
-            comment = f"Variant is not predicted to not affect splicing. Therefore, BP1 does not apply."
         elif not any(var_type in variant_types_bp1 for var_type in variant_types):
             result = False
             comment = f"BP1 does not apply to this variant, as BP1 does not apply to variant types {', '.join([var_type.value for var_type in variant_types])}."
