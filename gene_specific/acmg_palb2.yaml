@@ -41,6 +41,19 @@ prediction_tool_thresholds:
                 supporting: 0.2
                 direction: "greater_than_or_equal"
 
+### Thresholds loglikelihood ###
+likelihood_thresholds:
+    benign:
+        direction: "less"
+        supporting: 0.48
+        moderate: 0.23
+        strong: 0.053
+    pathogenic:
+        direction: "greater"
+        supporting: 2
+        moderate: 4
+        strong: 18
+
 ### Allelee frequency threshold for each gene ###
 allele_frequency_thresholds:
     threshold_ba1: 0.001
