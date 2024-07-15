@@ -9,9 +9,11 @@ rules:
     - pm2_supporting_faf
     - pm5_protein_ptc
     - pm5_splicing_ptc
+    - pp1
     - pp3_splicing
     - ba1_faf
     - bs1_faf
+    - bs4
     - bp1
     - bp4_splicing
     - bp7_deep_intronic_palb2

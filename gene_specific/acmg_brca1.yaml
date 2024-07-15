@@ -10,14 +10,18 @@ rules:
     - ps3
     - pm2_supporting_no_indel_faf
     - pm5_enigma
+    - pp1
     - pp3_protein_enigma
     - pp3_splicing_enigma
+    - pp4_enigma
     - ba1_faf
     - bs1_supporting_faf
     - bs3
+    - bs4
     - bp1_annotation_cold_spot_strong
     - bp4_protein_enigma
     - bp4_splicing_enigma
+    - bp5_enigma
     - bp7_deep_intronic_enigma
 
 ### Disease relevant transcript ###
