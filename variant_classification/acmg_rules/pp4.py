@@ -36,7 +36,7 @@ class Pp4(abstract_rule):
     def assess_rule(
         cls,
         multifactorial_likelihood: MultifactorialLikelihood,
-        thresholds: Threshold,
+        threshold: Threshold,
     ) -> RuleResult:
         if multifactorial_likelihood.multifactorial_likelihood is None:
             result = False
@@ -44,7 +44,7 @@ class Pp4(abstract_rule):
             strength = evidence_strength.SUPPORTING
 
         num_thresholds_met = assess_thresholds(
-            thresholds, multifactorial_likelihood.co_segregation
+            threshold, multifactorial_likelihood.co_segregation
         )
         if num_thresholds_met is None:
             result = False
@@ -57,8 +57,8 @@ class Pp4(abstract_rule):
             comment = f"Multifactorial likelihood of {multifactorial_likelihood.multifactorial_likelihood} given for the variant meets no threshold for pathogenic evidence."
         else:
             result = True
-            strength = thresholds.strengths[num_thresholds_met - 1]
-            comment = f"Multifactorial likelihood of {multifactorial_likelihood.multifactorial_likelihood} given for variant meets threshold for {strength.value} pathogenic evidence."
+            strength = threshold.strengths[num_thresholds_met - 1]
+            comment = f"Multifactorial likelihood of {multifactorial_likelihood.multifactorial_likelihood} given for variant meets threshold for {strength.value} pathogenic evidence ({threshold.thresholds[num_thresholds_met -1]})."
 
         return RuleResult(
             "PP4",

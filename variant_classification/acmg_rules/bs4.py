@@ -48,7 +48,7 @@ class Bs4(abstract_rule):
                 evidence_type.BENIGN,
                 False,
                 evidence_strength.STRONG,
-                "No Co-segregation or multifactorial likelihood given for variant.",
+                "No co-segregation or multifactorial likelihood given for variant.",
             )
         elif multifactorial_likelihood.multifactorial_likelihood is not None:
             likelihood = multifactorial_likelihood.multifactorial_likelihood
@@ -63,7 +63,7 @@ class Bs4(abstract_rule):
                 evidence_type.BENIGN,
                 False,
                 evidence_strength.STRONG,
-                "No Co-segregation or multifactorial likelihood given for variant.",
+                "No co-segregation or multifactorial likelihood given for variant.",
             )
         num_thresholds_met = assess_thresholds(threshold, likelihood)
         if num_thresholds_met is None:
@@ -77,7 +77,7 @@ class Bs4(abstract_rule):
         else:
             result = True
             strength = threshold.strengths[num_thresholds_met - 1]
-            comment = f"{name} of {likelihood} given for variant meets threshold for {strength.value} benign evidence."
+            comment = f"{name} of {likelihood} given for variant meets threshold for {strength.value} benign evidence ({threshold.thresholds[num_thresholds_met -1]})."
         return RuleResult(
             "BS4",
             rule_type.GENERAL,
