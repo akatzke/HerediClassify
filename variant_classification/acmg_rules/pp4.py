@@ -14,7 +14,7 @@ from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 from variant import MultifactorialLikelihood
 
 
-class Pp4(abstract_rule):
+class Pp4_enigma(abstract_rule):
     """
     PP4: Patient’s phenotype or family history is highly specific for a disease with a single genetic etiology.
     Here used for multifactorial likelihood
