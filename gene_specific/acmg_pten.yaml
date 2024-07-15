@@ -9,7 +9,7 @@ rules:
     - ps1_splicing_pten
     - ps3
     - pm1
-    - pm2_supporting_less_faf
+    - pm2_supporting_faf
     - pm4_pten
     - pm5_protein_pten
     - pp2
