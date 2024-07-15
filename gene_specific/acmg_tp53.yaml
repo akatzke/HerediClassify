@@ -6,7 +6,6 @@ version: "1.4.0"
 rules:
     - pvs1
     - ps1_protein_tp53
-    - ps1_splicing_tp53
     - ps3
     - pm1_tp53
     - pm2_supporting
