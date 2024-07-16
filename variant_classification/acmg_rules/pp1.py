@@ -43,7 +43,7 @@ class Pp1(abstract_rule):
         )
         if num_thresholds_met is None:
             result = False
-            comment = "No Co-segregation given for variant."
+            comment = "No co-segregation data available for variant."
             strength = evidence_strength.SUPPORTING
 
         elif num_thresholds_met == 0:
@@ -53,7 +53,7 @@ class Pp1(abstract_rule):
         else:
             result = True
             strength = thresholds.strengths[num_thresholds_met - 1]
-            comment = f"Co-segregation of {multifactorial_likelihood.co_segregation} given for variant meets threshold for {strength.value} pathogenic evidence."
+            comment = f"Co-segregation of {multifactorial_likelihood.co_segregation} given for variant meets threshold for {strength.value} pathogenic evidence ({thresholds.thresholds[num_thresholds_met -1]})."
         return RuleResult(
             "PP1",
             rule_type.GENERAL,

@@ -96,6 +96,7 @@ def get_annotations_needed_from_rules(
         "pm5_enigma": Rules.Pm5_ptc_enigma,
         "pm5_protein_pten": Rules.Pm5_protein_pten,
         "pm5_protein_tp53": Rules.Pm5_protein_tp53,
+        "pp1": Rules.Pp1,
         "pp2": Rules.Pp2,
         "pp3_splicing": Rules.Pp3_splicing,
         "pp3_splicing_enigma": Rules.Pp3_splicing_enigma,
@@ -104,6 +105,7 @@ def get_annotations_needed_from_rules(
         "pp3_protein": Rules.Pp3_protein,
         "pp3_protein_enigma": Rules.Pp3_protein_enigma,
         "pp3_protein_mult_strength": Rules.Pp3_protein_mult_strength,
+        "pp4_enigma": Rules.Pp4_enigma,
         "ba1": Rules.Ba1,
         "ba1_faf": Rules.Ba1_faf,
         "ba1_with_absolute": Rules.Ba1_with_absolute,
@@ -116,6 +118,7 @@ def get_annotations_needed_from_rules(
         "bs2": Rules.Bs2,
         "bs2_supporting": Rules.Bs2_with_supporting,
         "bs3": Rules.Bs3,
+        "bs4": Rules.Bs4,
         "bp1": Rules.Bp1,
         "bp1_annotation_cold_spot_strong": Rules.Bp1_annotation_cold_spot_strong,
         "bp3": Rules.Bp3,
@@ -125,6 +128,7 @@ def get_annotations_needed_from_rules(
         "bp4_protein": Rules.Bp4_protein,
         "bp4_protein_enigma": Rules.Bp4_protein_enigma,
         "bp4_protein_mult_strength": Rules.Bp4_protein_mult_strength,
+        "bp5_enigma": Rules.Bp5_enigma,
         "bp7": Rules.Bp7,
         "bp7_deep_intronic_atm": Rules.Bp7_deep_intronic_atm,
         "bp7_deep_intronic_enigma": Rules.Bp7_deep_intronic_enigma,
@@ -511,7 +515,7 @@ def get_thresholds_likelihood(
     del threshold_dict["direction"]
     thresholds = list(threshold_dict.values())
     assert all(
-        isinstance(threshold, float) for threshold in thresholds
+        isinstance(threshold, (int, float)) for threshold in thresholds
     ), f"Not all thresholds defined for {config_location[0]} are of type float. Please check."
     if "greater" in dir.value:
         keys_sorted = sorted(threshold_dict, key=threshold_dict.get, reverse=False)

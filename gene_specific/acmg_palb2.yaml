@@ -9,12 +9,14 @@ rules:
     - pm2_supporting_faf
     - pm5_protein_ptc
     - pm5_splicing_ptc
+    - pp1
     - pp3_splicing
     - ba1_faf
     - bs1_faf
+    - bs4
     - bp1
     - bp4_splicing
-    - bp7_deep_intronic_enigma
+    - bp7_deep_intronic_palb2
 
 ### Disease relevant transcript ###
 disease_relevant_transcripts:
@@ -40,6 +42,19 @@ prediction_tool_thresholds:
         pathogenic:
                 supporting: 0.2
                 direction: "greater_than_or_equal"
+
+### Thresholds loglikelihood ###
+likelihood_thresholds:
+    benign:
+        direction: "less"
+        supporting: 0.48
+        moderate: 0.23
+        strong: 0.053
+    pathogenic:
+        direction: "greater"
+        supporting: 2
+        moderate: 4
+        strong: 18
 
 ### Allelee frequency threshold for each gene ###
 allele_frequency_thresholds:

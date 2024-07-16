@@ -36,50 +36,26 @@ class Bs4(abstract_rule):
     def assess_rule(
         cls,
         multifactorial_likelihood: MultifactorialLikelihood,
-        threshold: Threshold,
+        thresholds: Threshold,
     ) -> RuleResult:
-        if (
-            multifactorial_likelihood.co_segregation is None
-            and multifactorial_likelihood.multifactorial_likelihood is None
-        ):
-            return RuleResult(
-                "BS4",
-                rule_type.GENERAL,
-                evidence_type.BENIGN,
-                False,
-                evidence_strength.STRONG,
-                "No Co-segregation or multifactorial likelihood given for variant.",
-            )
-        elif multifactorial_likelihood.multifactorial_likelihood is not None:
-            likelihood = multifactorial_likelihood.multifactorial_likelihood
-            name = "Multifactorial likelihood"
-        elif multifactorial_likelihood.co_segregation is not None:
-            likelihood = multifactorial_likelihood.co_segregation
-            name = "Co-segregation"
-        else:
-            return RuleResult(
-                "BS4",
-                rule_type.GENERAL,
-                evidence_type.BENIGN,
-                False,
-                evidence_strength.STRONG,
-                "No Co-segregation or multifactorial likelihood given for variant.",
-            )
-        num_thresholds_met = assess_thresholds(threshold, likelihood)
+        num_thresholds_met = assess_thresholds(
+            thresholds, multifactorial_likelihood.co_segregation
+        )
         if num_thresholds_met is None:
             result = False
-            strength = evidence_strength.STRONG
-            comment = f"No {name} was provided. BS4 could not be evaluated."
+            comment = "No co-segregation data available for variant."
+            strength = evidence_strength.SUPPORTING
+
         elif num_thresholds_met == 0:
             result = False
-            strength = evidence_strength.STRONG
-            comment = f"{name} of {likelihood} given for variant does not meet any threshold for benign evidence."
+            strength = evidence_strength.SUPPORTING
+            comment = f"Co-segregation of {multifactorial_likelihood.co_segregation} given for the variant meets no threshold for benign evidence."
         else:
             result = True
-            strength = threshold.strengths[num_thresholds_met - 1]
-            comment = f"{name} of {likelihood} given for variant meets threshold for {strength.value} benign evidence."
+            strength = thresholds.strengths[num_thresholds_met - 1]
+            comment = f"Co-segregation of {multifactorial_likelihood.co_segregation} given for variant meets threshold for {strength.value} benign evidence ({thresholds.thresholds[num_thresholds_met -1]})."
         return RuleResult(
-            "BS4",
+            "PP1",
             rule_type.GENERAL,
             evidence_type.BENIGN,
             result,

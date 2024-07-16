@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from typing import Callable
 
@@ -14,10 +14,10 @@ from acmg_rules.computation_evidence_utils import Threshold, assess_thresholds
 from variant import MultifactorialLikelihood
 
 
-class Pp4_enigma(abstract_rule):
+class Bp5_enigma(abstract_rule):
     """
-    PP4: Patient’s phenotype or family history is highly specific for a disease with a single genetic etiology.
-    Here used for multifactorial likelihood
+    BP5: Variant found in a case with an alternative molecular basis for disease
+    Modified for multifactorial likelihood data by ENIGMA Consortium
     """
 
     @classmethod
@@ -28,7 +28,7 @@ class Pp4_enigma(abstract_rule):
             cls.assess_rule,
             (
                 class_info.VARIANT_MULTIFACTORIAL_LIKELIHOOD,
-                class_info.THRESHOLD_LIKELIHOOD_PATHOGENIC,
+                class_info.THRESHOLD_LIKELIHOOD_BENIGN,
             ),
         )
 
@@ -54,16 +54,16 @@ class Pp4_enigma(abstract_rule):
         elif num_thresholds_met == 0:
             result = False
             strength = evidence_strength.SUPPORTING
-            comment = f"Multifactorial likelihood of {multifactorial_likelihood.multifactorial_likelihood} given for the variant meets no threshold for pathogenic evidence."
+            comment = f"Multifactorial likelihood of {multifactorial_likelihood.multifactorial_likelihood} given for the variant meets no threshold for benign evidence."
         else:
             result = True
             strength = threshold.strengths[num_thresholds_met - 1]
-            comment = f"Multifactorial likelihood of {multifactorial_likelihood.multifactorial_likelihood} given for variant meets threshold for {strength.value} pathogenic evidence ({threshold.thresholds[num_thresholds_met -1]})."
+            comment = f"Multifactorial likelihood of {multifactorial_likelihood.multifactorial_likelihood} given for variant meets threshold for {strength.value} beningn evidence ({threshold.thresholds[num_thresholds_met -1]})."
 
         return RuleResult(
-            "PP4",
+            "BP5",
             rule_type.GENERAL,
-            evidence_type.PATHOGENIC,
+            evidence_type.BENIGN,
             result,
             strength,
             comment,
