@@ -34,17 +34,12 @@ class Ps1_splicing_pten(abstract_rule):
         clinvar_result: dict[ClinVar_Type, ClinVar],
     ) -> RuleResult:
         clinvar_same_nucleotide = clinvar_result[ClinVar_Type.SAME_NUCLEOTIDE]
-        clinvar_same_splice_site = clinvar_result[ClinVar_Type.SAME_SPLICE_SITE]
         if (
             clinvar_same_nucleotide.pathogenic
             and clinvar_same_nucleotide.highest_classification
             == ClinVar_Status.PATHOGENIC
-        ) or (
-            clinvar_same_splice_site.pathogenic
-            and clinvar_same_splice_site.highest_classification
-            == ClinVar_Status.PATHOGENIC
         ):
-            comment = f"The following ClinVar entries show splice variants at the same splice site to be pathogenic: {clinvar_same_nucleotide.ids}, {clinvar_same_splice_site.ids}."
+            comment = f"The following ClinVar entries show splice variants at the same splice site to be pathogenic: {clinvar_same_nucleotide.ids}."
             result = True
         else:
             comment = "No ClinVar entries found that show splice variants at the same nucleotide position as pathogenic."
