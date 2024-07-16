@@ -1,0 +1,83 @@
+### Configuration name ###
+name: "ACMG ATM Pejaver"
+version: "1.3.0"
+
+### Rules ###
+rules:
+    - pvs1_atm
+    - ps1_protein_spliceai
+    - ps1_splicing_clingen
+    - ps3
+    - pm2_supporting_faf
+    - pm4_stoploss
+    - pm5_protein_ptc
+    - pm5_splicing_ptc
+    - pp3_protein_mult_strength
+    - pp3_splicing_mult_strength
+    - ba1_faf
+    - bs1_faf
+    - bs3
+    - bp4_protein_mult_strength
+    - bp4_splicing_mult_strength
+    - bp7_deep_intronic_atm
+
+### Disease relevant transcript ###
+disease_relevant_transcripts:
+    - name: "ENST00000675843"
+      nmd_threshold: 8940
+      pos_last_known_patho_ptc: 3047
+
+### Thresholds splicing and pathogenicity prediction tools ###
+prediction_tool_thresholds:
+    pathogenicity_prediction:
+        name: "REVEL"
+        benign:
+              supporting: 0.290
+              moderate: 0.183
+              strong: 0.016
+              very_strong: 0.003
+              direction: "less_than_or_equal"
+        pathogenic:
+              supporting: 0.644
+              moderate: 0.773
+              strong: 0.932
+              direction: "greater_than_or_equal"
+    splicing_prediction:
+        name: "SpliceAI"
+        benign:
+                supporting: 0.1
+                direction: "less_than_or_equal"
+        pathogenic:
+                supporting: 0.2
+                direction: "greater_than_or_equal"
+
+### Allelee frequency threshold for each gene ###
+allele_frequency_thresholds:
+    threshold_ba1: 0.005
+    threshold_bs1: 0.0005
+    threshold_pm2: 0.00001
+
+### Functional thresholds
+functional_thresholds:
+    threshold_diff_len_prot_percent: 0.1
+
+### Annotation filesitems
+annotation_files:
+    root: "/home/katzkean/"
+    clinvar:
+        root: "databases/Clinvar"
+        clinvar_snv: "clinvar_snv_two_star.vcf.gz"
+        clinvar_snv_spliceai: "clinvar_spliceai_all_sorted_snv_two_star.vcf.gz"
+        clinvar_indel: "clinvar_small_indel_two_star.vcf.gz"
+    uniprot:
+        root: "databases/Uniprot"
+        rep: "repeats_hg38_uniprot.bed"
+    critical_regions:
+        root: "variant_classification/data/critical_region"
+        critical_region: "VCEP_defined_critical_regions.bed"
+    splice_site_table:
+        root: "variant_classification/data/splice_site_classification"
+        file: "ATM_splice_table_reformatted.csv"
+    mane_transcripts:
+        root: "databases/MANE"
+        file: "MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"

@@ -1,0 +1,104 @@
+### Configuration name ###
+name: "ACMG BRCA2 Pejaver"
+version: "1.1.0"
+
+### Rules ###
+rules:
+    - pvs1_brca2
+    - ps1_protein_enigma
+    - ps1_splicing_clingen
+    - ps3
+    - pm2_supporting_no_indel_faf
+    - pm5_enigma
+    - pp1
+    - pp3_protein_enigma_mult_strength
+    - pp3_splicing_enigma_mult_strength
+    - pp4_enigma
+    - ba1_faf
+    - bs1_supporting_faf
+    - bs3
+    - bs4
+    - bp1_annotation_cold_spot_strong
+    - bp4_protein_enigma_mult_strength
+    - bp4_splicing_enigma_mult_strength
+    - bp5_enigma
+    - bp7_deep_intronic_enigma
+
+### Disease relevant transcript ###
+disease_relevant_transcripts:
+    - name: "ENST00000380152"
+      nmd_threshold: 9599
+      pos_last_known_patho_ptc: 3308
+
+### Thresholds splicing and pathogenicity prediction tools ###
+prediction_tool_thresholds:
+    pathogenicity_prediction:
+        name: "BayesDel"
+        benign:
+              supporting: -0.18
+              moderate: -0.36
+              direction: "less_than_or_equal"
+        pathogenic:
+              supporting: 0.13
+              moderate: 0.27
+              strong: 0.5
+              direction: "greater_than_or_equal"
+    splicing_prediction:
+        name: "SpliceAI"
+        benign:
+                supporting: 0.1
+                direction: "less_than_or_equal"
+        pathogenic:
+                supporting: 0.2
+                direction: "greater_than_or_equal"
+
+### Thresholds loglikelihood ###
+likelihood_thresholds:
+    benign:
+        direction: "less"
+        supporting: 0.48
+        moderate: 0.23
+        strong: 0.05
+        very_strong: 0.00285
+    pathogenic:
+        direction: "greater"
+        supporting: 2.08
+        moderate: 4.3
+        strong: 18.7
+        very_strong: 350
+
+### Allelee frequency threshold for each gene ###
+allele_frequency_thresholds:
+    threshold_ba1: 0.001
+    threshold_bs1: 0.0001
+    threshold_bs1_supporting: 0.00002
+    threshold_pm2: 0
+
+### Functional thresholds
+functional_thresholds:
+    threshold_diff_len_prot_percent: 0.1
+
+### Annotation filesitems
+annotation_files:
+    root: "/home/katzkean/"
+    clinvar:
+        root: "databases/Clinvar"
+        clinvar_snv: "clinvar_snv_two_star.vcf.gz"
+        clinvar_snv_spliceai: "clinvar_spliceai_all_sorted_snv_two_star.vcf.gz"
+        clinvar_indel: "clinvar_small_indel_two_star.vcf.gz"
+    uniprot:
+        root: "databases/Uniprot"
+        rep: "repeats_hg38_uniprot.bed"
+    critical_regions:
+        root: "variant_classification/data/critical_region"
+        critical_region: "VCEP_defined_critical_regions.bed"
+        coldspot_region: "VCEP_coldspot.bed"
+    splice_site_table:
+        root: "variant_classification/data/splice_site_classification"
+        file: "BRCA2_splice_table_reformatted.csv"
+    exon_pm5:
+        root: "variant_classification/data/PM5_annotations"
+        file: "PM5_PTC_BRCA2.csv"
+    mane_transcripts:
+        root: "databases/MANE"
+        file: "MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"

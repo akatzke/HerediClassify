@@ -1,0 +1,83 @@
+### Configuration name ###
+name: "ACMG TP53 Pejaver"
+version: "1.4.0"
+
+### Rules ###
+rules:
+    - pvs1
+    - ps1_protein_tp53
+    - ps3
+    - pm1_tp53
+    - pm2_supporting
+    - pm5_protein_tp53
+    - pp3_protein_mult_strength
+    - pp3_splicing_mult_strength
+    - ba1_with_absolute
+    - bs1_with_absolute
+    - bs2_supporting
+    - bs3
+    - bp4_protein_mult_strength
+    - bp4_splicing_mult_strength
+    - bp7
+
+### Thresholds splicing and pathogenicity prediction tools ###
+prediction_tool_thresholds:
+    pathogenicity_prediction:
+        name: "BayesDel"
+        benign:
+              supporting: -0.18
+              moderate: -0.36
+              direction: "less_than_or_equal"
+        pathogenic:
+              supporting: 0.13
+              moderate: 0.27
+              strong: 0.5
+              direction: "greater_than_or_equal"
+    splicing_prediction:
+        name: "SpliceAI"
+        benign:
+                supporting: 0.1
+                direction: "less_than_or_equal"
+        pathogenic:
+                supporting: 0.2
+                direction: "greater_than_or_equal"
+
+### Allelee frequency threshold for each gene ###
+allele_frequency_thresholds:
+    threshold_ba1: 0.001
+    threshold_ba1_absolute: 5
+    threshold_bs1: 0.0003
+    threshold_bs1_absolute: 5
+    threshold_bs2: 8
+    threshold_bs2_supporting: 2
+    threshold_pm2: 0
+    threshold_cancerhotspots_ac: 10
+
+### Functional thresholds
+functional_thresholds:
+    threshold_diff_len_prot_percent: 0.1
+
+### Annotation filesitems
+annotation_files:
+    root: "/home/katzkean/"
+    clinvar:
+        root: "databases/Clinvar"
+        clinvar_snv: "clinvar_snv_three_star.vcf.gz"
+        clinvar_snv_spliceai: "clinvar_spliceai_all_sorted_snv_three_star.vcf.gz"
+        clinvar_indel: "clinvar_small_indel_three_star.vcf.gz"
+    uniprot:
+        root: "databases/Uniprot"
+        rep: "repeats_hg38_uniprot.bed"
+    critical_regions:
+        root: "variant_classification/data/critical_region"
+        critical_region: "VUS-Task-Force_critical_protein_domains.bed"
+    hotspot_region:
+        root: "variant_classification/data/critical_region"
+        hotspot_region: "VCEP_mutational_hotspots.bed"
+    similarity_score:
+        root: "variant_classification/data/similarity_score"
+        similarity_score_file: "grantham_score_formatted.csv"
+        similarity_score_direction: "greater"
+    mane_transcripts:
+        root: "databases/MANE"
+        file: "MANE.GRCh38.v1.3.ensembl_genomic.gtf_transcript_list.csv"
