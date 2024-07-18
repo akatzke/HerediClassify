@@ -15,6 +15,8 @@ from fastapi import Request, status
 from fastapi.responses import JSONResponse
 import traceback
 
+import pybedtools
+
 app = FastAPI()
 @app.exception_handler(Exception)
 async def my_exception_handler(request: Request, exc: Exception):
@@ -31,9 +33,10 @@ class Input(BaseModel):
 class Result(BaseModel):
     result: str
     config_file: str
-    config_name: str
+    scheme_name: str
+    scheme_version: str
     date: str
-    version: str
+    tool_version: str
 
 
 class Variant(BaseModel):
@@ -86,14 +89,16 @@ async def classify_variant(input: Input) -> Result:
             status_code=404,
             detail=f"The config path {input.config_path} does not exist.",
         )
-    configuration_name, classification_result = classify(config_path, variant_str)
+    final_config, classification_result = classify(config_path, variant_str)
     date = datetime.date.today().isoformat()
+    pybedtools.cleanup()
     return Result(
         result=classification_result,
         config_file=config_path.name,
-        config_name=configuration_name,
+        scheme_name=final_config["name"],
+        scheme_version=final_config["version"],
         date=date,
-        version=__version__,
+        tool_version=__version__
     )
 
 

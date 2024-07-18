@@ -1,3 +1,6 @@
 genotoscope/__pycache__/
 genotoscope/*.ini
 *.pyc
+Python-*
+databases/
+tools/
