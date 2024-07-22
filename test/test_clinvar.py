@@ -70,5 +70,5 @@ def test_splicing():
         and clinvar_same_nucleotide.pathogenic == True
         and clinvar_same_nucleotide.ids == ["55502", "55501"]
         and clinvar_same_splice_site.pathogenic == True
-        and clinvar_same_splice_site.ids == ["55502", "55501"]
+        and clinvar_same_splice_site.ids == ["55502", "55501", "267593"]
     )

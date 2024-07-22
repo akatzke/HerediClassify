@@ -205,6 +205,7 @@ def test_gene_specific_brca1_splicing():
     key_list = [key for key in results_dict.keys()]
     rules_apply = [
         "PVS1_splicing",
+        "PS1_splicing",
         "PM2",
     ]
     for rule in rules_apply:
