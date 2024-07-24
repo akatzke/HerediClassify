@@ -500,7 +500,7 @@ class TranscriptInfo_start_loss(TranscriptInfo_annot):
         diff_len_protein_percent = calculate_prot_len_diff_start_loss(
             ref_transcript, position_alternative_start_codon_cDNA
         )
-        if diff_len != 0:
+        if diff_len != 0 and exists_alternative_start_codon:
             len_change_in_repetitive_region, _ = check_bed_intersect_start_loss(
                 variant,
                 ref_transcript,

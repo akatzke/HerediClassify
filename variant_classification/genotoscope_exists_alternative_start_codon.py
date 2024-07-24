@@ -24,6 +24,8 @@ def assess_alternative_start_codon(
     ) = find_alternative_start_codons(variant, ref_transcript, var_coding_seq)
     if alternative_start_codons_genomic == [0, 0, 0]:
         return False, [0, 0, 0], [0, 0, 0]
+    elif alternative_start_codons_cDNA == [0, 1, 2]:
+        return False, [0, 0, 0], [0, 0, 0]
     else:
         alternative_start_codons_genomic.sort()
         return True, alternative_start_codons_genomic, alternative_start_codons_cDNA
