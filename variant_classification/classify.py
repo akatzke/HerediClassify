@@ -24,15 +24,13 @@ import json
 import sys
 
 
-def classify(config_path: pathlib.Path, variant_str: str) -> tuple[str, str]:
+def classify(config_path: pathlib.Path, variant_str: str) -> tuple[dict, str]:
     """
     Perform classification
     """
     config = load_config(config_path)
     variant = load_variant(variant_str)
-    final_config = get_gene_specific_config(
-        config, variant.variant_info.gene_name
-    )
+    final_config = get_gene_specific_config(config, variant.variant_info.gene_name)
     variant_disease_relevant = check_disease_relevant_transcript(variant, final_config)
     class_info = Classification_Info()
     annotations_needed_by_rules = get_annotations_needed_from_rules(

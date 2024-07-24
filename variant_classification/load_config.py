@@ -34,7 +34,7 @@ def validate_config(config: dict) -> bool:
     return True
 
 
-def get_gene_specific_config(config: dict, gene_name: str) -> tuple[str, dict]:
+def get_gene_specific_config(config: dict, gene_name: str) -> dict:
     """
     Check if gene_specific_configs are available for gene_name
     If available return gene specific configuration otherwise return standard configuration
