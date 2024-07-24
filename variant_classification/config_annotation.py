@@ -136,6 +136,7 @@ def get_annotations_needed_from_rules(
         "bp7": Rules.Bp7,
         "bp7_deep_intronic_atm": Rules.Bp7_deep_intronic_atm,
         "bp7_deep_intronic_enigma": Rules.Bp7_deep_intronic_enigma,
+        "bp7_deep_intronic_enigma_check_disease_region": Rules.Bp7_deep_intronic_enigma_check_disease_region,
         "bp7_deep_intronic_palb2": Rules.Bp7_deep_intronic_palb2,
     }
     rule_info_dict = {}
