@@ -109,6 +109,15 @@ class Pp3_protein_enigma(abstract_rule):
             variant_types = variant.var_type
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        if not transcripts:
+            return RuleResult(
+                "PP3",
+                rule_type.PROTEIN,
+                evidence_type.PATHOGENIC,
+                False,
+                evidence_strength.SUPPORTING,
+                f"Variant is not coding in disease relevant transcript and is therfore located outside of the disease relevant region defined by the VCEP.",
+            )
         ref_transcript = ensembl.transcript_by_id(transcripts[0].transcript_id)
         in_critical_region, _ = check_intersection_with_bed(
             variant,
@@ -223,6 +232,15 @@ class Pp3_splicing_enigma(abstract_rule):
             variant_types = variant.var_type
         prediction_value = prediction_dict.get(threshold.name, None)
         num_thresholds_met = assess_thresholds(threshold, prediction_value)
+        if not transcripts:
+            return RuleResult(
+                "PP3",
+                rule_type.SPLICING,
+                evidence_type.PATHOGENIC,
+                False,
+                evidence_strength.SUPPORTING,
+                f"Variant is not coding in disease relevant transcript and is therfore located outside of the disease relevant region defined by the VCEP.",
+            )
         ref_transcript = ensembl.transcript_by_id(transcripts[0].transcript_id)
         in_critical_region, _ = check_intersection_with_bed(
             variant,
