@@ -265,6 +265,6 @@ def get_disease_relevant_variant(type: str) -> Variant:
     path_config = paths.ROOT / "gene_specific" / "acmg_atm.yaml"
     variant = load_variant(var_str)
     config = load_config(path_config)
-    _, final_config = get_gene_specific_config(config, variant.variant_info.gene_name)
+    final_config = get_gene_specific_config(config, variant.variant_info.gene_name)
     variant_disease_relevant = check_disease_relevant_transcript(variant, final_config)
     return variant_disease_relevant

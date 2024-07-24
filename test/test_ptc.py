@@ -27,7 +27,7 @@ def test_ptc_brca1():
     path_config = paths.ROOT / "gene_specific" / "acmg_brca1.yaml"
     config = load_config(path_config)
     variant = load_variant(var_str)
-    _, final_config = get_gene_specific_config(config, variant.variant_info.gene_name)
+    final_config = get_gene_specific_config(config, variant.variant_info.gene_name)
     variant_disease_relevant = check_disease_relevant_transcript(variant, final_config)
     transcript = variant_disease_relevant.transcript_info[0]
     ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
@@ -49,7 +49,7 @@ def test_ptc_brca2():
     path_config = paths.ROOT / "gene_specific" / "acmg_brca2.yaml"
     config = load_config(path_config)
     variant = load_variant(var_str)
-    _, final_config = get_gene_specific_config(config, variant.variant_info.gene_name)
+    final_config = get_gene_specific_config(config, variant.variant_info.gene_name)
     variant_disease_relevant = check_disease_relevant_transcript(variant, final_config)
     transcript = variant_disease_relevant.transcript_info[0]
     ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
@@ -71,7 +71,7 @@ def test_ptc_brca2_2():
     path_config = paths.ROOT / "gene_specific" / "acmg_brca2.yaml"
     config = load_config(path_config)
     variant = load_variant(var_str)
-    _, final_config = get_gene_specific_config(config, variant.variant_info.gene_name)
+    final_config = get_gene_specific_config(config, variant.variant_info.gene_name)
     variant_disease_relevant = check_disease_relevant_transcript(variant, final_config)
     transcript = variant_disease_relevant.transcript_info[0]
     ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
