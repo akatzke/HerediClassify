@@ -55,7 +55,7 @@ class Pm5_protein(abstract_rule):
             if clinvar_diff_aa.associated_ids and result:
                 comment = (
                     comment
-                    + f" The following ClinVar entries show the same amino acid exchange as likely pathogenic: {clinvar_same_aa.associated_ids}."
+                    + f" The following ClinVar entries show the same amino acid exchange as likely pathogenic: {clinvar_diff_aa.associated_ids}."
                 )
         else:
             result = False
@@ -115,7 +115,7 @@ class Pm5_protein_pathogenic(abstract_rule):
             if clinvar_diff_aa.associated_ids and result:
                 comment = (
                     comment
-                    + f" The following ClinVar entries show the same amino acid exchange as likely pathogenic: {clinvar_same_aa.associated_ids}."
+                    + f" The following ClinVar entries show the same amino acid exchange as likely pathogenic: {clinvar_diff_aa.associated_ids}."
                 )
         else:
             comment = "No ClinVar entries found that show an amino acid change in the same position as pathogenic."
