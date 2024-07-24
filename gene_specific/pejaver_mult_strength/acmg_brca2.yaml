@@ -22,7 +22,7 @@ rules:
     - bp4_protein_enigma_mult_strength
     - bp4_splicing_enigma_mult_strength
     - bp5_enigma
-    - bp7_deep_intronic_enigma
+    - bp7_deep_intronic_enigma_check_disease_region
 
 ### Disease relevant transcript ###
 disease_relevant_transcripts:
