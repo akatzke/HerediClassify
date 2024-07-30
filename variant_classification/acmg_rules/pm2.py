@@ -224,6 +224,14 @@ class Pm2_supporting_no_ins_del_indel(abstract_rule):
         if len(variant.var_ref) != 1 or len(variant.var_obs) != 1:
             comment = f"PM2 does not apply to insertions, deletions or delins."
             result = False
+            return RuleResult(
+                "PM2",
+                rule_type.GENERAL,
+                evidence_type.PATHOGENIC,
+                result,
+                evidence_strength.SUPPORTING,
+                comment,
+            )
         elif gnomad.subpopulation_frequency is None:
             raise ValueError(
                 f"The gnomAD allele frequency is None. Please check variant import."
