@@ -38,7 +38,7 @@ class Bs2(abstract_rule):
             raise ValueError(
                 f"The FLOSSIES allele count is None. Please check variant import."
             )
-        if flossies.count > threshold_bs2:
+        if flossies.count >= threshold_bs2:
             comment = f"The variant occures {flossies.count} in FLOSSIES (threshold: {threshold_bs2})."
             result = True
         else:
