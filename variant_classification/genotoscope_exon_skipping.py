@@ -352,15 +352,30 @@ def parse_variant_intron_pos(var_coding: hgvs.posedit.PosEdit) -> tuple[str, int
             if "+" in edit_part:  # after exon in start of the intron
                 split_symbol = "+"
                 direction2closest_exon = -1
+                intron_offset_pos = int(edit_part.split(split_symbol)[1])
+                offset_pos_list.append(intron_offset_pos)
             elif "-" in edit_part:  # before exon in the end of the intron
                 split_symbol = "-"
                 direction2closest_exon = +1
+                intron_offset_pos = int(edit_part.split(split_symbol)[1])
+                offset_pos_list.append(intron_offset_pos)
             else:
+                offset_pos_list.append(0)
                 continue
             # get position of edit part inside the exon
             intron_offset_pos = int(edit_part.split(split_symbol)[1])
             offset_pos_list.append(intron_offset_pos)
-        intron_offset_pos = min(offset_pos_list)
+        if 0 in offset_pos_list:
+            offset_pos_list_no_0 = [i for i in offset_pos_list if i != 0]
+            if not offset_pos_list_no_0:
+                offset_pos_list = [0]
+            else:
+                max_offset = max(offset_pos_list, key=abs)
+                if max_offset > 0:
+                    offset_pos_list = list(range(1, max_offset + 1))
+                else:
+                    offset_pos_list = list(range(max_offset, 0))
+        intron_offset_pos = min(offset_pos_list, key=abs)
     else:
         # for SNP find direction symbol
         if "+" in var_coding_str:  # after exon in start of the intron
