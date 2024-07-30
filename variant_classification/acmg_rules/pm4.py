@@ -53,7 +53,7 @@ class Pm4(abstract_rule):
                 evidence_type.PATHOGENIC,
                 False,
                 evidence_strength.MODERATE,
-                f"No annotated transcripts provided, PM4 can not be applied",
+                f"No annotated transcripts provided, PM4 can not be applied.",
             )
         if len(annotated_transcript_list):
             transcript = annotated_transcript_list[0]
