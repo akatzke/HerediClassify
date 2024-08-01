@@ -30,6 +30,7 @@ from transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
+    TranscriptInfo_exonic_inframe,
     annotate_transcripts,
 )
 from check_coldspot_hotspot import (
@@ -334,6 +335,7 @@ def get_annotation_function_annotated_transcript(
         VARTYPE_GROUPS.EXONIC: TranscriptInfo_exonic,
         VARTYPE_GROUPS.INTRONIC: TranscriptInfo_intronic,
         VARTYPE_GROUPS.START_LOST: TranscriptInfo_start_loss,
+        VARTYPE_GROUPS.EXONIC_INFRAME: TranscriptInfo_exonic_inframe,
     }
     fun_dict = {}
     for name, entry in relevant_classes.items():
