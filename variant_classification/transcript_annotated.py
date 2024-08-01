@@ -38,6 +38,7 @@ from variant_in_critical_region import (
 )
 from clinvar_region import (
     check_clinvar_NMD_exon,
+    check_clinvar_inframe_variant,
     check_clinvar_start_alt_start,
     check_clinvar_truncated_region,
 )
@@ -93,6 +94,11 @@ def annotate_transcripts(
             for var_type in transcript.var_type
         ):
             annot_fun = fun_dict[VARTYPE_GROUPS.START_LOST]
+        elif any(
+            var_type in VARTYPE_GROUPS.EXONIC_INFRAME.value
+            for var_type in transcript.var_type
+        ):
+            annot_fun = fun_dict[VARTYPE_GROUPS.EXONIC_INFRAME]
         else:
             continue
         try:
@@ -266,6 +272,104 @@ class TranscriptInfo_exonic(TranscriptInfo_annot):
             is_affected_exon_disease_relevant=is_affected_exon_disease_relevant,
             comment_truncated_region=comment_truncated_exon_relevant,
             ptc=ptc,
+        )
+
+
+@dataclass
+class TranscriptInfo_exonic_inframe(TranscriptInfo_annot):
+    """
+    Class containing exonic inframe variant specific annotation
+    """
+
+    @classmethod
+    def get_annotate(
+        cls, class_info: Classification_Info
+    ) -> tuple[Callable, tuple[Info, ...]]:
+        return (
+            cls.annotate,
+            (
+                class_info.VARIANT,
+                class_info.CLINVAR_PATH,
+                class_info.CLINVAR_PATH_INDEL,
+                class_info.UNIPROT_REP_REGION_PATH,
+                class_info.CRITICAL_REGION_PATH,
+            ),
+        )
+
+    @classmethod
+    def annotate(
+        cls,
+        variant: VariantInfo,
+        path_clinvar_snv: pathlib.Path,
+        path_clinvar_indel: pathlib.Path,
+        path_uniprot_rep: pathlib.Path,
+        path_critical_region: Optional[pathlib.Path],
+        transcript: TranscriptInfo,
+    ) -> TranscriptInfo_exonic_inframe:
+        """
+        Perform annotation for exonic inframe variants
+        """
+        try:
+            ref_transcript = ensembl.transcript_by_id(transcript.transcript_id)
+        except ValueError:
+            raise Pyensembl_transcript_not_found
+        try:
+            ref_transcript.coding_sequence
+        except ValueError or AttributeError:
+            raise Pyensembl_no_coding_sequence
+        var_seq, diff_len = construct_variant_coding_seq_exonic_variant(
+            transcript, variant, ref_transcript
+        )
+        diff_len_protein_percent, _ = calculate_prot_len_diff(
+            ref_transcript, var_seq, diff_len
+        )
+        if diff_len_protein_percent != 0:
+            len_change_in_repetitive_region, _ = check_intersection_with_bed(
+                variant,
+                variant.genomic_start,
+                variant.genomic_end,
+                ref_transcript,
+                path_uniprot_rep,
+            )
+        else:
+            len_change_in_repetitive_region = False
+        if path_critical_region is not None:
+            # Check if variant is located in defined functionally relevant region from ACMG guidelines
+            is_truncated_exon_relevant, comment = check_intersection_with_bed(
+                variant,
+                variant.genomic_start,
+                variant.genomic_end,
+                ref_transcript,
+                path_critical_region,
+            )
+            if is_truncated_exon_relevant:
+                comment_truncated_exon_relevant = f"Truncated region overlaps the following clinically significant domains: {comment}."
+            else:
+                comment_truncated_exon_relevant = (
+                    "Truncated exon not located in critical region."
+                )
+        else:
+            truncated_exon_ClinVar = check_clinvar_inframe_variant(
+                variant,
+                path_clinvar_snv,
+                path_clinvar_indel,
+            )
+            is_truncated_exon_relevant = truncated_exon_ClinVar.pathogenic
+            comment_truncated_exon_relevant = f"The following relevant ClinVar are (likely) pathogenic: {truncated_exon_ClinVar.ids}"
+        return TranscriptInfo_exonic_inframe(
+            transcript_id=transcript.transcript_id,
+            var_type=transcript.var_type,
+            var_hgvs=transcript.var_hgvs,
+            var_start=transcript.var_start,
+            var_stop=transcript.var_stop,
+            var_protein=transcript.var_protein,
+            exon=transcript.exon,
+            intron=transcript.intron,
+            ref_transcript=ref_transcript,
+            diff_len_protein_percent=diff_len_protein_percent,
+            len_change_in_repetitive_region=len_change_in_repetitive_region,
+            is_truncated_region_disease_relevant=is_truncated_exon_relevant,
+            comment_truncated_region=comment_truncated_exon_relevant,
         )
 
 
