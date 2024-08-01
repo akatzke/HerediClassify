@@ -13,10 +13,9 @@ from acmg_rules.utils import (
     summarise_results_per_transcript,
 )
 from information import Info, Classification_Info
-from transcript_annotated import TranscriptInfo_annot
+from transcript_annotated import TranscriptInfo_annot, TranscriptInfo_exonic_inframe
 from variant import VariantInfo
 from var_type import VARTYPE
-from utils import select_mane_transcript
 
 
 class Pm4(abstract_rule):
@@ -33,8 +32,8 @@ class Pm4(abstract_rule):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
-                class_info.MANE_TRANSCRIPT_LIST_PATH,
                 class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
+                class_info.MANE_TRANSCRIPT_LIST_PATH,
             ),
         )
 
@@ -43,48 +42,113 @@ class Pm4(abstract_rule):
         cls,
         annotated_transcript_list: list[TranscriptInfo_annot],
         variant: VariantInfo,
-        mane_path: pathlib.Path,
         threshold_diff_len_prot_percent: float,
+        mane_path: pathlib.Path,
     ) -> RuleResult:
-        if not annotated_transcript_list:
-            return RuleResult(
+        results = {}
+        for transcript in annotated_transcript_list:
+            # Assess PM4 for inframe variants
+            if isinstance(transcript, TranscriptInfo_exonic_inframe):
+                if transcript.is_truncated_region_disease_relevant:
+                    result = True
+                    comment = (
+                        "Variant affected region is located in disease relevant protein region. "
+                        + transcript.comment_truncated_region
+                    )
+                    if (
+                        abs(transcript.diff_len_protein_percent)
+                        > threshold_diff_len_prot_percent
+                    ):
+                        comment = (
+                            comment
+                            + f" Inframe variants changes protein length >{threshold_diff_len_prot_percent} of coding sequence."
+                        )
+                elif (
+                    abs(transcript.diff_len_protein_percent)
+                    > threshold_diff_len_prot_percent
+                ) and not transcript.len_change_in_repetitive_region:
+                    result = True
+                    comment = f"Inframe variants changes protein length >{threshold_diff_len_prot_percent} of coding sequence and is not located in repetitive region."
+                else:
+                    result = False
+                    comment = f"Inframe variant is not located in disease variant protein region and does change protein length >{threshold_diff_len_prot_percent} of coding sequence."
+                    if transcript.len_change_in_repetitive_region:
+                        comment = (
+                            comment
+                            + " Inframe variant is located in repetitive region."
+                        )
+                rule_result = RuleResult(
+                    "PM4",
+                    rule_type.GENERAL,
+                    evidence_type.PATHOGENIC,
+                    result,
+                    evidence_strength.MODERATE,
+                    comment,
+                )
+                results[transcript.transcript_id] = rule_result
+            # All extensions of the protein can be seen as pathogenic
+            elif any(var_type is VARTYPE.STOP_LOST for var_type in transcript.var_type):
+                if not transcript.len_change_in_repetitive_region and (
+                    abs(transcript.diff_len_protein_percent)
+                    > threshold_diff_len_prot_percent
+                ):
+                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is increased by {abs(transcript.diff_len_protein_percent)}. Deleted region does not overlap repetitive region."
+                    result = True
+                else:
+                    comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}."
+                    result = False
+                    if transcript.len_change_in_repetitive_region:
+                        comment = (
+                            comment + " Length change located in repetitive region."
+                        )
+                rule_result = RuleResult(
+                    "PM4",
+                    rule_type.GENERAL,
+                    evidence_type.PATHOGENIC,
+                    result,
+                    evidence_strength.MODERATE,
+                    comment,
+                )
+                results[transcript.transcript_id] = rule_result
+            elif any(
+                var_type is VARTYPE.FRAMESHIFT_VARIANT
+                for var_type in transcript.var_type
+            ):
+                if transcript.diff_len_protein_percent > 0:
+                    result = False
+                    comment = f"Frameshift variant decreases the length of the transcript, PM4 only applies to extensions of the protein."
+                elif not transcript.len_change_in_repetitive_region and (
+                    abs(transcript.diff_len_protein_percent)
+                    > threshold_diff_len_prot_percent
+                ):
+                    comment = f"Length of disease relevant transcript {transcript.transcript_id} is increased by {abs(transcript.diff_len_protein_percent)}."
+                    result = True
+                else:
+                    comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}."
+                    result = False
+                rule_result = RuleResult(
+                    "PM4",
+                    rule_type.GENERAL,
+                    evidence_type.PATHOGENIC,
+                    result,
+                    evidence_strength.MODERATE,
+                    comment,
+                )
+                results[transcript.transcript_id] = rule_result
+
+        if len(results) == 0:
+            comment = f"PM4 does not apply to this variant, as PM4 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
+            final_result = RuleResult(
                 "PM4",
                 rule_type.GENERAL,
                 evidence_type.PATHOGENIC,
                 False,
                 evidence_strength.MODERATE,
-                f"No annotated transcripts provided, PM4 can not be applied.",
+                comment,
             )
-        if len(annotated_transcript_list):
-            transcript = annotated_transcript_list[0]
         else:
-            transcript = select_mane_transcript(annotated_transcript_list, mane_path)
-        if transcript is None:
-            comment = f"PM4 does not apply to this variant, as PM4 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}."
-            result = False
-        elif (
-            transcript.diff_len_protein_percent > threshold_diff_len_prot_percent
-            and not transcript.len_change_in_repetitive_region
-        ):
-            comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. A repetitive region is not affected."
-            result = True
-        elif (
-            transcript.diff_len_protein_percent > threshold_diff_len_prot_percent
-            and transcript.len_change_in_repetitive_region
-        ):
-            comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
-            result = False
-        else:
-            comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}."
-            result = False
-        return RuleResult(
-            "PM4",
-            rule_type.GENERAL,
-            evidence_type.PATHOGENIC,
-            result,
-            evidence_strength.MODERATE,
-            comment,
-        )
+            final_result = summarise_results_per_transcript(results, mane_path)
+        return final_result
 
 
 class Pm4_stoploss(abstract_rule):
@@ -135,7 +199,7 @@ class Pm4_stoploss(abstract_rule):
                     comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
                     result = False
                 else:
-                    comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}"
+                    comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}."
                     result = False
                 rule_result = RuleResult(
                     "PM4",
@@ -222,7 +286,7 @@ class Pm4_pten(abstract_rule):
                     comment = f"Length of disease relevant transcript {transcript.transcript_id} is reduced by {transcript.diff_len_protein_percent}. Deleted region overlaps repetitive region."
                     result = False
                 else:
-                    comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}"
+                    comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}."
                     result = False
                 rule_result = RuleResult(
                     "PM4",
@@ -244,7 +308,7 @@ class Pm4_pten(abstract_rule):
                     comment = f"Length of disease relevant transcript {transcript.transcript_id} is increased by {abs(transcript.diff_len_protein_percent)}."
                     result = True
                 else:
-                    comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}"
+                    comment = f"Length of transcript {transcript.transcript_id} altered by {transcript.diff_len_protein_percent}."
                     result = False
                 rule_result = RuleResult(
                     "PM4",
