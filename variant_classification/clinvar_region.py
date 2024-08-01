@@ -39,6 +39,33 @@ def check_clinvar_start_alt_start(
     return ClinVar_start_alt_start
 
 
+def check_clinvar_inframe_variant(
+    variant: VariantInfo,
+    path_clinvar_snv: pathlib.Path,
+    path_clinvar_indel: pathlib.Path,
+) -> ClinVar:
+    start = variant.genomic_start
+    stop = variant.genomic_end
+    if start == stop:
+        ClinVar_empty = create_ClinVar(pd.DataFrame(), ClinVar_Type.REGION)
+        return ClinVar_empty
+    clinvar_region_snv_df = get_clinvar_region_df(
+        variant, start, stop, path_clinvar_snv
+    )
+    clinvar_region_indel_df = get_clinvar_region_df(
+        variant, start, stop, path_clinvar_indel
+    )
+    clinvar_region_df = pd.concat([clinvar_region_snv_df, clinvar_region_indel_df])
+    if not clinvar_region_df.empty:
+        clinvar_region_df_lof = filter_lof_variants(clinvar_region_df)
+        ClinVar_truncated_region = create_ClinVar(
+            clinvar_region_df_lof, ClinVar_Type.REGION
+        )
+    else:
+        ClinVar_truncated_region = create_ClinVar(pd.DataFrame(), ClinVar_Type.REGION)
+    return ClinVar_truncated_region
+
+
 def check_clinvar_truncated_region(
     variant: VariantInfo,
     ref_transcript: pyensembl.transcript.Transcript,
