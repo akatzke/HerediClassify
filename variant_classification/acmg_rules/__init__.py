@@ -13,6 +13,7 @@ from acmg_rules.bp5 import *
 from acmg_rules.bp7 import *
 from acmg_rules.bp7_deep_intronic import *
 from acmg_rules.pvs1 import *
+from acmg_rules.pvs1_nocrit import *
 from acmg_rules.pvs1_atm import *
 from acmg_rules.pvs1_brca1 import *
 from acmg_rules.pvs1_brca2 import *
