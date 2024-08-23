@@ -232,7 +232,6 @@
     "ref",
     "alt",
     "variant_type",
-    "variant_effect",
-    "cold_spot"
+    "variant_effect"
   ]
 }
