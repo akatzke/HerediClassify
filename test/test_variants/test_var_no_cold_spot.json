@@ -1,0 +1,42 @@
+{
+	"chr": "chr13",
+    "pos" : 12596,
+    "gene":  "BRCA1",
+    "ref" : "A",
+    "alt" : "T",
+    "variant_type" : ["missense_variant", "splice_donor"],
+    "variant_effect" : [
+        {"transcript" : "ENST000001",
+         "hgvs_c" : "c.1972C>T",
+         "hgvs_p" : "p.Trp23Cys",
+         "variant_type" : ["missense_variant"],
+         "exon" : 10
+         },
+        {"transcript" : "ENST000002",
+         "hgvs_c" : "c.1969-1C>T",
+         "hgvs_p" : "",
+         "variant_type" : ["missense_variant", "splice_donor"],
+         "intron" : 10
+        }
+    ],
+    "splicing_prediction_tools":
+        {"SpliceAI": 0.5},
+    "pathogenicity_prediction_tools":
+        {"REVEL" : 0.5,
+         "BayesDel" : 0.5},
+    "gnomAD":
+        {"AF": 0.007,
+         "AC" : 12,
+        "subpopulation": "EAS",
+        "popmax_AF": 0.009,
+        "popmax_AC": 5,
+        "faf_popmax_AF" : 0.005
+    },
+    "FLOSSIES":
+        {"AFR" : 9,
+         "EUR" : 130},
+    "prior": 0.25,
+    "co-occurrence" : 0.56,
+    "segregation" : 0.56,
+    "multifactorial_log-likelihood": 0.56
+}
