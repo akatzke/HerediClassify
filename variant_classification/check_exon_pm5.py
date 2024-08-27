@@ -85,7 +85,7 @@ def annotate_exon_classification_pm5(
             comment,
         )
     else:
-        result = summarise_results_per_transcript(results, mane_path)
+        result = summarise_results_per_transcript(results, "PM5", mane_path)
     return result
 
 

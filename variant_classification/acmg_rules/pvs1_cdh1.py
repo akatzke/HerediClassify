@@ -95,7 +95,7 @@ class Pvs1_cdh1(Pvs1):
                 comment=f"PVS1 does not apply to this variant, as PVS1 does not apply to variant types {', '.join([var_type.value for var_type in variant.var_type])}.",
             )
         else:
-            result = summarise_results_per_transcript(results, mane_path)
+            result = summarise_results_per_transcript(results, "PVS1", mane_path)
         return result
 
     @classmethod

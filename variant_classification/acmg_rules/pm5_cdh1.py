@@ -80,7 +80,7 @@ class Pm5_protein_cdh1(abstract_rule):
                 comment,
             )
         else:
-            final_result = summarise_results_per_transcript(results, mane_path)
+            final_result = summarise_results_per_transcript(results, "PM5", mane_path)
         return final_result
 
 

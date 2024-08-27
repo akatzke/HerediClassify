@@ -147,7 +147,7 @@ class Pm4(abstract_rule):
                 comment,
             )
         else:
-            final_result = summarise_results_per_transcript(results, mane_path)
+            final_result = summarise_results_per_transcript(results, "PM4", mane_path)
         return final_result
 
 
@@ -221,7 +221,7 @@ class Pm4_stoploss(abstract_rule):
                 comment,
             )
         else:
-            final_result = summarise_results_per_transcript(results, mane_path)
+            final_result = summarise_results_per_transcript(results, "PM4", mane_path)
         return final_result
 
 
@@ -331,5 +331,5 @@ class Pm4_pten(abstract_rule):
                 comment,
             )
         else:
-            final_result = summarise_results_per_transcript(results, mane_path)
+            final_result = summarise_results_per_transcript(results, "PM4", mane_path)
         return final_result

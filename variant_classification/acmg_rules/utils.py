@@ -77,12 +77,8 @@ class abstract_rule(ABC):
 
 
 def summarise_results_per_transcript(
-    results: dict[str, RuleResult], mane_path: pathlib.Path
+    results: dict[str, RuleResult], rule_name: str, mane_path: pathlib.Path
 ) -> RuleResult:
-    # If dict has only one entry, return that entry as final result
-    if len(results) == 1:
-        return list(results.values())[0]
-    # When there is mor
     mane_transcript_id = get_mane_transcript_id(list(results.keys()), mane_path)
     try:
         final_result = results[mane_transcript_id]
@@ -96,12 +92,12 @@ def summarise_results_per_transcript(
             results
         )
         final_result = RuleResult(
-            "PVS1",
+            rule_name,
             rule_type.GENERAL,
             evidence_type.PATHOGENIC,
             False,
             evidence_strength.VERY_STRONG,
-            comment=f"No MANE transcript has been classified for this variant. Therefore PVS1 is set to False. Other transcripts that were classified give the following assessments: "
+            comment=f"No MANE transcript has been classified for this variant. Therefore {rule_name} is set to False. Other transcripts that were classified give the following assessments: "
             + compound_comment,
         )
     return final_result
