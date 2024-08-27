@@ -20,7 +20,6 @@ from variant import (
     TranscriptInfo,
     PopulationDatabases_gnomAD,
     PopulationDatabases,
-    AffectedRegion,
 )
 from os import path
 
@@ -68,7 +67,6 @@ def create_variant(variant_json: dict) -> Variant:
     gnomad_faf = create_gnomad(variant_json, "faf_popmax")
     flossies = create_flossies(variant_json)
     cancer_hotspots = create_cancer_hotspots(variant_json)
-    affected_region = create_affected_region(variant_json)
     mRNA_result = create_rna_data("mRNA_analysis", variant_json)
     functional_data = create_functional_data("functional_data", variant_json)
     variant = Variant(
@@ -79,7 +77,6 @@ def create_variant(variant_json: dict) -> Variant:
         gnomad_faf=gnomad_faf,
         flossies=flossies,
         cancerhotspots=cancer_hotspots,
-        affected_region=affected_region,
         functional_assay=functional_data,
         splicing_assay=mRNA_result,
     )
@@ -266,16 +263,6 @@ def create_cancer_hotspots(variant_json: dict) -> Optional[PopulationDatabases]:
         count=count,
         frequency=frequency,
     )
-
-
-def create_affected_region(variant_json: dict) -> AffectedRegion:
-    """
-    Create AffectedRegion object from variant_json
-    """
-    crit_region = variant_json.get("VUS_task_force_domain", False)
-    cold_spot = variant_json.get("cold_spot", False)
-    aff_reg = AffectedRegion(critical_region=crit_region, cold_spot=cold_spot)
-    return aff_reg
 
 
 def get_mutlifactorial_likelihood(

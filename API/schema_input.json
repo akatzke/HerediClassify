@@ -217,12 +217,6 @@
     },
     "multifactorial_log-likelihood": {
       "type": "number"
-    },
-    "VUS_task_force_domain": {
-      "type": "boolean"
-    },
-    "cold_spot" :{
-      "type" : "boolean"
     }
   },
   "required": [

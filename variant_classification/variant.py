@@ -47,12 +47,6 @@ class PopulationDatabases_gnomAD(PopulationDatabases):
 
 
 @dataclass
-class AffectedRegion:
-    critical_region: Optional[bool] = None
-    cold_spot: Optional[bool] = None
-
-
-@dataclass
 class VariantInfo:
     chr: str
     genomic_start: int
@@ -101,7 +95,6 @@ class Variant:
     gnomad_popmax: PopulationDatabases_gnomAD
     gnomad_faf: PopulationDatabases_gnomAD
     prediction_tools: dict[str, float]
-    affected_region: AffectedRegion
     flossies: Optional[PopulationDatabases] = None
     cancerhotspots: Optional[PopulationDatabases] = None
     multifactorial_likelihood: Optional[MultifactorialLikelihood] = None
