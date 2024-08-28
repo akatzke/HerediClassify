@@ -118,7 +118,28 @@ position	alternative_allele	rule_status	evidence_strength	comment
 49-1	A	True	moderate	In-frame splicing alteration predicted. Role of target region unknown. Alteration removes <10% of coding sequence.
 49-1	C	True	moderate	In-frame splicing alteration predicted. Role of target region unknown. Alteration removes <10% of coding sequence.
 49-1	T	True	moderate	In-frame splicing alteration predicted. Role of target region unknown. Alteration removes <10% of coding sequence.
+211+1	A	True	supporting	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts <10% of coding sequence.
 211+1	C	True	supporting	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts <10% of coding sequence.
-211+2	T	True	supporting	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts <10% of coding sequence.
+211+1	T	True	supporting	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts <10% of coding sequence.
+211+2	A	True	supporting	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts <10% of coding sequence.
+211+2	C	True	supporting	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts <10% of coding sequence.
+211+2	G	True	supporting	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts <10% of coding sequence.
 108+2	C	False	very_strong	No splicing alteration predicted. Variant creates a GC predicted functional.
 3350+2	T	False	very_strong	No splicing alteration predicted. Non-canonical GC improved to GT.
+1685-1	C	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+1685-1	T	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+1685-2	C	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+1685-2	G	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+1685-2	T	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+212-2	C	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+212-2	G	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+212-2	T	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+212-1	A	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+212-1	C	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+212-1	T	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+1684+1	A	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+1684+1	C	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+1684+1	T	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+1684+2	A	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+1684+2	C	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.
+1684+2	G	True	strong	In-frame splicing alteration predicted. Role of target region unknown. Alteration inserts >10% of coding sequence.

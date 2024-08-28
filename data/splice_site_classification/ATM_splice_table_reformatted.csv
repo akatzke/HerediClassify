@@ -591,8 +591,8 @@ position	alternative_allele	rule_status	evidence_strength	comment
 4437-2	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
 4437-1	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
 4437-1	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
-5675-	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
-5675-	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+5675-2	C	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
+5675-2	T	True	supporting	Special case: use of cryptic splice site preserving reading frame + very small indel alteration + in silico supporting pathogenic (PROVEAN)
 8268+1	A	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
 8268+1	C	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
 8268+1	T	True	very_strong	Exon skipping or cryptic splice site disrupts reading frame in FATKIN domain and not predicted to undergo NMD. OR Exon skipping or use of cryptic splice site presrving reading frame in FATKIN region.
@@ -753,4 +753,4 @@ position	alternative_allele	rule_status	evidence_strength	comment
 7629+2	C	False	very_strong	No splicing alteration predicted.
 8786+2	C	False	very_strong	No splicing alteration predicted.
 8987+2	C	False	very_strong	No splicing alteration predicted.
-7515+2	T	False	very_strong	Variant imporoves donor splice site.
+7515+2	T	False	very_strong	Variant improves donor splice site.
