@@ -175,7 +175,7 @@ class Pvs1_no_crit(abstract_rule):
             comment = (
                 f"Transcript {transcript.transcript_id} is predicted to undergo NMD."
             )
-            result = False
+            result = True
             strength = evidence_strength.VERY_STRONG
         else:
             comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD. Protein length change of {transcript.diff_len_protein_percent} observed."
