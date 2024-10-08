@@ -105,8 +105,8 @@ def get_clinvar_entries(clinvar: cyvcf2.cyvcf2.VCF, domain: pd.Series) -> pd.Dat
         f"{domain.chrom.split('chr')[1]}:{domain.chromStart}-{domain.chromEnd}"
     )
     clinvar_region_df = convert_vcf_gen_to_df(clinvar_region)
-    if clinvar_region_df.empty:
-        return clinvar_region_df
+    if clinvar_region_df.empty or not ("CLNREVSTAT" in list(clinvar_region_df.columns)):
+        return pd.DataFrame()
     quality_two_star = [
         "reviewed_by_expert_panel",
         "criteria_provided,_multiple_submitters,_no_conflicts",
