@@ -38,6 +38,7 @@ cd $basedir
 wget -q https://github.com/samtools/htslib/releases/download/$version/htslib-$version.tar.bz2
 tar -vxjf htslib-$version.tar.bz2
 cd htslib-$version
+configure
 make
 rm -f htslib-$version.tar.bz2
 cd ..
