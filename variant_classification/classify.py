@@ -18,7 +18,6 @@ from config_annotation import (
 )
 from create_output import create_output, create_rules_dict
 from check_incompatible_rules import check_incompatible_rules
-from final_classification.final_class import get_final_classifications
 
 from os import path
 import json
@@ -47,11 +46,10 @@ def classify(config_path: pathlib.Path, variant_str: str) -> tuple[dict, str]:
     )
     rule_results = apply_rules(annotations_needed_by_rules_filtered)
     rule_dict = create_rules_dict(rule_results)
-    rule_dict_checked = check_incompatible_rules(
+    rule_results_checked = check_incompatible_rules(
         rule_dict, final_config["name"], final_config["rules"]
     )
-    rule_final_class = get_final_classifications(rule_dict_checked, final_config)
-    out_result = create_output(rule_final_class)
+    out_result = create_output(rule_results_checked)
     ensembl.clear_cache()
     return final_config, out_result
 
