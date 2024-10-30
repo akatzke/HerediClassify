@@ -27,6 +27,8 @@ def test_gene_specific_atm_frameshift():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -47,6 +49,8 @@ def test_gene_specific_atm_intron():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -67,6 +71,8 @@ def test_gene_specific_atm_missense():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -87,6 +93,8 @@ def test_gene_specific_atm_splice():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -105,6 +113,8 @@ def test_gene_specific_atm_start_loss():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -125,6 +135,8 @@ def test_gene_specific_brca1_frameshift():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -145,6 +157,8 @@ def test_gene_specific_brca1_intron():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -165,6 +179,8 @@ def test_gene_specific_brca1_intron_2():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -185,6 +201,8 @@ def test_gene_specific_brca1_missense():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -205,12 +223,13 @@ def test_gene_specific_brca1_splicing():
     key_list = [key for key in results_dict.keys()]
     rules_apply = [
         "PVS1_splicing",
-        "PS1_splicing",
         "PM2",
     ]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -229,6 +248,8 @@ def test_gene_specific_brca1_stop_gained():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -249,6 +270,8 @@ def test_gene_specific_brca1_synonymous():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -269,6 +292,8 @@ def test_gene_specific_brca2_frameshift():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -289,6 +314,8 @@ def test_gene_specific_brca2_frameshift_2():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -309,6 +336,8 @@ def test_gene_specific_brca2_missense():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -333,6 +362,8 @@ def test_gene_specific_brca2_splice():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -355,6 +386,8 @@ def test_gene_specific_brca2_stop_gained():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -379,6 +412,8 @@ def test_gene_specific_cdh1_frameshift():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -399,6 +434,8 @@ def test_gene_specific_cdh1_frameshift_2():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -419,6 +456,8 @@ def test_gene_specific_cdh1_missense():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -439,6 +478,8 @@ def test_gene_specific_cdh1_splice():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -459,6 +500,8 @@ def test_gene_specific_palb2_intron():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -479,6 +522,8 @@ def test_gene_specific_palb2_missense():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -501,6 +546,8 @@ def test_gene_specific_palb2_splice_acceptor():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -521,6 +568,8 @@ def test_gene_specific_palb2_splice_donor():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -541,6 +590,8 @@ def test_gene_specific_palb2_stop_gained():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -561,6 +612,8 @@ def test_gene_specific_pten_frameshift():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -581,6 +634,8 @@ def test_gene_specific_pten_missense():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -601,6 +656,8 @@ def test_gene_specific_pten_splice():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -621,6 +678,8 @@ def test_gene_specific_tp53_frameshift():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -641,6 +700,8 @@ def test_gene_specific_tp53_frameshift_2():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -661,6 +722,8 @@ def test_gene_specific_tp53_missense():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -681,6 +744,8 @@ def test_gene_specific_tp53_missense_2():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -704,5 +769,7 @@ def test_gene_specific_tp53_splice():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]

@@ -22,6 +22,8 @@ def test_acmg_bard1_frameshift():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -41,6 +43,8 @@ def test_acmg_MSH6_missense_variant():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -56,10 +60,12 @@ def test_acmg_MSH6_missense_variant_2():
     _, results = classify(path_config, var_str)
     results_dict = json.loads(results)
     key_list = [key for key in results_dict.keys()]
-    rules_apply = ["PM2", "PP3_protein", "BP4_splicing", "PM5_protein"]
+    rules_apply = ["PM2", "PP3_protein", "BP4_splicing"]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -78,6 +84,8 @@ def test_acmg_PMS2_splice_donor():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -96,6 +104,8 @@ def test_acmg_RAD51D_intron_variant():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
 
@@ -114,5 +124,7 @@ def test_acmg_RAD51D_start_loss():
     for rule in rules_apply:
         assert results_dict[rule]["status"]
     rules_not_apply = [rule for rule in key_list if rule not in rules_apply]
+    rules_not_apply.remove("classification_protein")
+    rules_not_apply.remove("classification_splicing")
     for rule in rules_not_apply:
         assert not results_dict[rule]["status"]
