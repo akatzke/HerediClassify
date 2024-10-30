@@ -28,7 +28,7 @@ def get_final_classifications(rules: dict, config: dict) -> dict:
     ]
     class_protein = get_classification(rules_protein, config["name"], config["version"])
     # Add results to dictionary
-    rules["classification protein"] = class_protein
+    rules["classification_protein"] = class_protein
     rules["classification_splicing"] = class_splicing
     return rules
 
