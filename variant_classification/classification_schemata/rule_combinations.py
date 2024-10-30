@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from utils import generate_count_rule
+from classification_schemata.utils import generate_count_rule
 
 # Define all combination of rules for a benign classification
 benign_1 = generate_count_rule(min_benign_stand_alone=1)
@@ -15,6 +15,7 @@ benign_brca1_3 = generate_count_rule(min_benign_strong=1, min_benign_supporting=
 # Define all combination of rules for a likely benign classification
 likely_benign_1 = generate_count_rule(min_benign_strong=1, min_benign_supporting=1)
 likely_benign_2 = generate_count_rule(min_benign_supporting=2)
+likely_benign_atm_1 = generate_count_rule(min_benign_strong=1)
 likely_benign_brca1_1 = generate_count_rule(min_benign_strong=1, min_benign_moderate=1)
 likely_benign_brca1_2 = generate_count_rule(
     min_benign_moderate=1, min_benign_supporting=1

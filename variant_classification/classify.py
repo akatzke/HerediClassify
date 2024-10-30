@@ -18,7 +18,7 @@ from config_annotation import (
 )
 from create_output import create_output, create_rules_dict
 from check_incompatible_rules import check_incompatible_rules
-from final_classification.final_class import get_final_classifications
+from final_classification import get_final_classifications
 
 from os import path
 import json

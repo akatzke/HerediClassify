@@ -12,16 +12,17 @@ def get_final_classification_from_possible_classes(possible_class: list[int]) ->
     classes_set = set(possible_class)
     if not classes_set:
         return 3
-    elif len(classes_set) == 1:
+    if len(classes_set) == 1:
         return classes_set.pop()
-    elif (1 in classes_set or 2 in classes_set) and (
+    if (1 in classes_set or 2 in classes_set) and (
         4 in classes_set or 5 in classes_set
     ):
         return 3
-    elif 1 in classes_set and 2 in classes_set:
+    if 1 in classes_set and 2 in classes_set:
         return 1
-    elif 5 in classes_set and 4 in classes_set:
+    if 5 in classes_set and 4 in classes_set:
         return 5
+    return 3
 
 
 def get_classifications_from_rule_combinations(

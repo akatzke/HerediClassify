@@ -2,8 +2,8 @@
 
 import pandas as pd
 
-import final_classification.schemata as Class_schema
-from final_classification.utils import (
+import classification_schemata.schemata as Class_schema
+from classification_schemata.utils import (
     get_classifications_from_rule_combinations,
     get_final_classification_from_possible_classes,
 )
