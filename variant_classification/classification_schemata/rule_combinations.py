@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
-from classification_schemata.utils import generate_count_rule
+from classification_schemata.utils import (
+    generate_check_specific_rule,
+    generate_count_rule,
+)
 
 # Define all combination of rules for a benign classification
 benign_1 = generate_count_rule(min_benign_stand_alone=1)
@@ -20,6 +23,7 @@ likely_benign_brca1_1 = generate_count_rule(min_benign_strong=1, min_benign_mode
 likely_benign_brca1_2 = generate_count_rule(
     min_benign_moderate=1, min_benign_supporting=1
 )
+likely_benign_brca1_3 = generate_check_specific_rule("BP1")
 
 
 # Define all combination of rules for a pathogenic classification

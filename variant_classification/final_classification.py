@@ -14,13 +14,18 @@ def get_final_classifications(rules: dict, config: dict) -> dict:
     Get final classification for variants
     """
     rules_df = pd.DataFrame(rules).transpose()
+    applicable_rules = rules_df[rules_df.status == True]
     # Get final classification splice evidence
-    rules_splicing = rules_df[rules_df.rule_type.isin(["splicing", "general"])]
+    rules_splicing = applicable_rules[
+        applicable_rules.rule_type.isin(["splicing", "general"])
+    ]
     class_splicing = get_classification(
         rules_splicing, config["name"], config["version"]
     )
     # Get final classification protein evidence
-    rules_protein = rules_df[rules_df.rule_type.isin(["protein", "general"])]
+    rules_protein = applicable_rules[
+        applicable_rules.rule_type.isin(["protein", "general"])
+    ]
     class_protein = get_classification(rules_protein, config["name"], config["version"])
     # Add results to dictionary
     rules["classification protein"] = class_protein
@@ -32,14 +37,27 @@ def get_classification(rule_results: pd.DataFrame, config: str, version: str) ->
     """
     Execute final classification
     """
-    schema = VERSION_CLASS_SCHEMATA.get(config, None).get(version, None)
+    schema = VERSION_CLASS_SCHEMATA.get(config, {}).get(version, None)
     if schema is None:
         raise ValueError(
             f"No final classification schemata defined for configuration {config} version {version}. Please check."
         )
-    possible_classes = get_classifications_from_rule_combinations(schema, rule_results)
+    abs_rule_results = create_evidence_strength_count(rule_results)
+    abs_rule_results["applicable_rules"] = rule_results.index
+    possible_classes = get_classifications_from_rule_combinations(
+        schema, abs_rule_results
+    )
     final_class = get_final_classification_from_possible_classes(possible_classes)
     return final_class
+
+
+def create_evidence_strength_count(rules: pd.DataFrame) -> dict:
+    """
+    From rules table create dictionary counting how often each evidence strenght is applicable
+    """
+    rules["evidence"] = rules.evidence_type + "_" + rules.strength
+    counts = rules.groupby("evidence").count()
+    return counts.rule_type.to_dict()
 
 
 VERSION_CLASS_SCHEMATA = {

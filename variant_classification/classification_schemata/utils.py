@@ -2,7 +2,6 @@
 
 from typing import Callable
 import pandas as pd
-from functools import lru_cache
 
 
 def get_final_classification_from_possible_classes(possible_class: list[int]) -> int:
@@ -26,7 +25,8 @@ def get_final_classification_from_possible_classes(possible_class: list[int]) ->
 
 
 def get_classifications_from_rule_combinations(
-    rule_combinations_dict: dict[int, list[Callable]], rule_results: pd.DataFrame
+    rule_combinations_dict: dict[int, list[Callable]],
+    counts_evidence_strength: dict[str, int],
 ) -> list[int]:
     """
     For every rule recommendation in dictionary check if rule combination applies and add class to output list
@@ -34,16 +34,21 @@ def get_classifications_from_rule_combinations(
     possible_classes = []
     for classification, class_rule_combinations in rule_combinations_dict.items():
         for check_rule_combination in class_rule_combinations:
-            if check_rule_combination(rule_results):
+            if check_rule_combination(counts_evidence_strength):
                 possible_classes.append(classification)
     return possible_classes
 
 
-@lru_cache
-def get_counts(rules: dict[str, int]) -> dict[str, int]:
-    df = pd.DataFrame(rules)
-    counts = df.groupby("evidence-strength").count()
-    return counts.to_dict()
+def generate_check_specific_rule(rule_name: str) -> Callable[[list], bool]:
+    """
+    Create function that checks if specific rule applies
+    """
+
+    def fun(dict) -> bool:
+        applicable_rules = dict.get("applicable_rules", [])
+        return rule_name in applicable_rules
+
+    return fun
 
 
 def generate_count_rule(
@@ -56,32 +61,41 @@ def generate_count_rule(
     min_pathogenic_moderate: int | None = None,
     min_pathogenic_supporting: int | None = None,
 ) -> Callable[[dict[str, int]], int | None]:
-    def fun(rules: dict[str, int]) -> bool:
-        counts = get_counts(rules)
+    """
+    Create function that counts how often rules of a given evidence strength apply
+    """
+
+    def fun(counts: dict[str, int]) -> bool:
         prelim_results = []
         if min_benign_stand_alone is not None:
             prelim_results.append(
-                counts["benign_stand_alone"] >= min_benign_stand_alone
+                counts.get("benign_stand_alone", 0) >= min_benign_stand_alone
             )
         if min_benign_strong is not None:
-            prelim_results.append(counts["benign_strong"] >= min_benign_strong)
+            prelim_results.append(counts.get("benign_strong", 0) >= min_benign_strong)
         if min_benign_moderate is not None:
-            prelim_results.append(counts["benign_moderate"] >= min_benign_moderate)
+            prelim_results.append(
+                counts.get("benign_moderate", 0) >= min_benign_moderate
+            )
         if min_benign_supporting is not None:
-            prelim_results.append(counts["benign_supporting"] >= min_benign_supporting)
+            prelim_results.append(
+                counts.get("benign_supporting", 0) >= min_benign_supporting
+            )
         if min_pathogenic_very_strong is not None:
             prelim_results.append(
-                counts["pathogenic_very_strong"] >= min_pathogenic_very_strong
+                counts.get("pathogenic_very_strong", 0) >= min_pathogenic_very_strong
             )
         if min_pathogenic_strong is not None:
-            prelim_results.append(counts["pathogenic_strong"] >= min_pathogenic_strong)
+            prelim_results.append(
+                counts.get("pathogenic_strong", 0) >= min_pathogenic_strong
+            )
         if min_pathogenic_moderate is not None:
             prelim_results.append(
-                counts["pathogenic_moderate"] >= min_pathogenic_moderate
+                counts.get("pathogenic_moderate", 0) >= min_pathogenic_moderate
             )
         if min_pathogenic_supporting is not None:
             prelim_results.append(
-                counts["pathogenic_supporting"] >= min_pathogenic_supporting
+                counts.get("pathogenic_supporting", 0) >= min_pathogenic_supporting
             )
         return all(prelim_results)
 

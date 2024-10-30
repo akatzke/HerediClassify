@@ -43,6 +43,7 @@ schema_brca1 = {
         rc.likely_benign_2,
         rc.likely_benign_brca1_1,
         rc.likely_benign_brca1_2,
+        rc.likely_benign_brca1_3,
     ],
     4: [
         rc.pathogenic_6,
