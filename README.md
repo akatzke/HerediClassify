@@ -38,11 +38,36 @@ The scripts expects the python dependencies installed above to be available.
 bash install_dependencies/download_data.sh -p PATH
 ```
 
+## ClinVar annotation with SpliceAI
+A ClinVar file annotated with SpliceAI scores is needed for the application of PS1 and PM5.
+In order to obtain this file manual steps and additional dependencies need to be resolved.
+
+1. Download SpliceAI scores from Illumina
+The SpliceAI scores can be found [here](https://basespace.illumina.com/analyses/194103939/files?projectId=66029966).
+Please download the masked indel ans snv file for GRCh38:
+- spliceai_scores.masked.indel.hg38.vcf.gz
+- spliceai_scores.masked.indel.hg38.vcf.gz.tbi
+- spliceai_scores.masked.snv.hg38.vcf.gz
+- spliceai_scores.masked.snv.hg38.vcf.gz.tbi
+
+2. Install ngs-bits
+See the ngs-bits [github](https://github.com/imgag/ngs-bits) for install instructions.
+
+3. Perform annotation
+Use the merge_clinvar_spliceai.sh script to annotate the ClinVar download with the SpliceAI annotations. Make sure to change the paths at the top of the script to match paths on your system.
+
+4. Filtering
+Filter the ClinVar file annotated with SpliceAI by using the data_filter_clinvar.py script.
+```sh
+python ../HerediClassify/install_dependencies/data_filter_clinvar.py -i path_to/clinvar_spliceai_all_sorted.vcf.gz
+```
+
 ## Configuration
 The file paths in the configuration file (config.yaml) need to be changed. Changing the root directory under annotation_files should suffice.
+This change needs to be done in all configuration files, including the gene-specific annotation files in the gene_specific folder.
 
 ## Testing
-Tests are implemented using pytest. To test general functionality execute pytest.
+Tests are implemented using pytest. To test general functionality execute pytest \test.
 
 ## Execution
 ```sh
