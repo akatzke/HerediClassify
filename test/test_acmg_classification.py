@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import pathlib
+import pandas as pd
 
 from variant_classification.classification_schemata.utils import (
     get_final_classification_from_possible_classes,
@@ -27,8 +27,12 @@ def test_bp1_BRCA():
             "comment": "Test",
         },
     }
+    rules_df = pd.DataFrame(test_results).transpose()
+    applicable_rules = rules_df[rules_df.status == True]
     config_name = "ACMG BRCA1"
     version = "1.1.0"
+    class_result = get_classification(applicable_rules, config_name, version)
+    assert class_result == 2
 
 
 def test_bp1_non_BRCA():
@@ -48,8 +52,12 @@ def test_bp1_non_BRCA():
             "comment": "Test",
         },
     }
-    config_name = "ACMg PALB2"
+    rules_df = pd.DataFrame(test_results).transpose()
+    applicable_rules = rules_df[rules_df.status == True]
+    config_name = "ACMG PALB2"
     version = "1.1.0"
+    class_result = get_classification(applicable_rules, config_name, version)
+    assert class_result == 3
 
 
 def test_lb_and_b_to_b():
