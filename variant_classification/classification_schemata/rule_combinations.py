@@ -85,5 +85,5 @@ likely_pathogenic_brca1_1 = generate_count_rule(
     min_pathogenic_strong=1, min_pathogenic_moderate=1
 )
 likely_pathogenic_brca1_2 = generate_count_rule(
-    min_pathogenic_very_strong=1, min_pathogenic_supporting=2
+    min_pathogenic_strong=1, min_pathogenic_supporting=2
 )

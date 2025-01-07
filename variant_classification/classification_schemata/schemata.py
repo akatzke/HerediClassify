@@ -82,12 +82,8 @@ schema_brca2.update(
 
 schema_cdh1 = schema_acmg.copy()
 
-schema_palb2 = schema_acmg.copy()
-schema_palb2.update(
-    {2: [rc.likely_benign_atm_1, rc.likely_benign_1, rc.likely_benign_2]}
-)
+schema_palb2 = schema_atm.copy()
 
-schema_pten = schema_palb2.copy()
-schema_pten.update({4: [rc.likely_pathogenic_1, rc.likely_pathogenic_2]})
+schema_pten = schema_atm.copy()
 
 schema_tp53 = schema_acmg.copy()
