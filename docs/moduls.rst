@@ -82,7 +82,7 @@ Variant absent from healthy population.
 - PM2
   Applies PM2 with moderate evidence strength.
   PM2 will be using the popmax allele frequency and fall back on general allele frequency should popmax not be available.
-  Allele frequency has to be less than or equal to threshold set here.
+  Allele frequency has to be less than or equal to threshold set for PM2.
 - PM2_supporting_faf
   Uses filtered allele frequency instead of popmax allele frequeny.
 - PM2_supporting_less
@@ -101,7 +101,7 @@ PM4
 Length change of protein larger than 10% and located in disease relevant region.
 
 - PM4
-  PM4 might apply to inframe insertions or deletions, stop loss variants, and frameshift variants.
+  PM4 applies to inframe insertions or deletions, stop loss variants, and frameshift variants.
   For inframe variants, deletion/insertion has to be either located in a disease relevant region, or the change in protein length must be greater than 10%.
   PM4 is applied to all stop loss variants that extend the protein by more than 10%. In case a repetitive region is affected PM4 does not apply.
   PM4 applies to frameshift variants in case protein length is changed by more than 10% and no repetitive region is affected.
@@ -116,17 +116,50 @@ PM5
 ~~~
 ClinVar entry for same amino acid position with different amino acid exchange has been shown to be pathogenic.
 
-- PM5
-
 - PM5_protein
+  PM5 applies if a variant with different amino acid exchange at same position has been classifed as pathogenic, pathogenic/likely pathogenic or likely pathogenic in ClinVar.
+
 - PM5_protein_pathogenic
+  PM5 applies if a variant with different amino acid exchange at same position has been classifed as pathogenic or likely pathogenic/ pathogenic in ClinVar.
+  A likely pathogenic classification on ClinVar is not sufficient.
+
 - PM5_protein_ptc
+  PM5 is applicable if the premature termination codon (PTC) caused by the variant is located upstream of the last known pathogenic PTC.
+  This applies to variant types: frameshift, stop gained and stop loss.
+  The last known PTC has to be provided in the configuration file under disease_relevant_transcripts under pos_last_known_patho_ptc (int). Please also specify which transcript (Ensemble) the PTC is located in.
+  The last kown PTC can be defined for multiple transcripts.
+
 - PM5_splicing_ptc
+  PM5 is applicable if the premature termination codon (PTC) caused by the variant is located upstream of the last known pathogenic PTC.
+  This applies to variant types: splice acceptor variant and splice donor variant.
+  The last known PTC has to be provided in the configuration file under disease_relevant_transcripts under pos_last_known_patho_ptc (int). Please also specify which transcript (Ensemble) the PTC is located in.
+  The last kown PTC can be defined for multiple transcripts.
+
 - PM5_protein_CDH1
+  PM5 is applicable if the premature termination codon (PTC) caused by the variant is located upstream of the last known pathogenic PTC.
+  Alternatively, PM5 applies when a variant is predicted to cause nonsense mediated decay.
+  This applies to variant types: frameshift, stop gained and stop loss.
+  The last known PTC has to be provided in the configuration file under disease_relevant_transcripts under pos_last_known_patho_ptc (int). Please also specify which transcript (Ensemble) the PTC is located in.
+
 - PM5_splicing_CDH1
+  PM5 is applicable if the premature termination codon (PTC) caused by the variant is located upstream of the last known pathogenic PTC.
+  Alternatively, PM5 applies when a variant is predicted to cause nonsense mediated decay.
+  This applies to variant types: splice acceptor variant and splice donor variant.
+  The last known PTC has to be provided in the configuration file under disease_relevant_transcripts under pos_last_known_patho_ptc (int). Please also specify which transcript (Ensemble) the PTC is located in.
+
 - PM5_enigma
+  PM5 applies based on the exon the premature termination codon is located in.
+  A table with the necessary data is provided under data/PM5_annotations/PM5_PTC_BRCA1.csv
+
 - PM5_protein_PTEN
+  PM5 applies if a variant with different amino acid exchange at same position has been classified as pathogenic, pathogenic/likely pathogenic or likely pathogenic in ClinVar.
+  A splicing effect has to be excluded for the variant under assessment as well as for the variants in ClinVar.
+  Additionally, the blosum62 score of the variant under assessments needs to be smaller than that of the ClinVar variants.
+
 - PM5_protein_TP53
+  PM5 applies if a variant with different amino acid exchange at same position has been classified as pathogenic, pathogenic/likely pathogenic or likely pathogenic in ClinVar.
+  A splicing effect has to be excluded for the variant under assessment as well as for the variants in ClinVar.
+  Additionally, the Grantham score of the variant under assessments needs to be greater than that of the ClinVar variants.
 
 PP1
 ~~~
@@ -166,7 +199,9 @@ Computational evidence for pathogenicity of variant.
 
 
 - PP3_splicing_CDH1
-
+  PP3 only applies to intronic variants located outside of the canonical splice site.
+  Checks if variant is predicted to be pathogenic by prediction tool.
+  Threshold can be set under prediction_tool_thresholds/splicing_prediction/pathogenic/supporting (type:float).
 
 - PP3_protein
   Checks if variant is predicted to be pathogenic by prediction tool.
@@ -310,7 +345,7 @@ Computational evidence for benignity of variant.
 
 BP5
 ~~~
-Attention: BP5 in it's original ACMG definition is not implemented.
+Attention: BP5 in its original ACMG definition is not implemented.
 Only the adaptation made in the gene-specific recommendations for BRCA1 and BRCA2 is implemented.
 
 - BP5_enigma
