@@ -1,5 +1,6 @@
 ### Configuration name ###
-name: "Test_config"
+name: "ACMG standard + SVI"
+version: "1.0.0"
 
 ### Rules ###
 rules:
