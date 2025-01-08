@@ -18,7 +18,7 @@ jobs:
 
       - name: Add safe directory
         run: |
-          git config --global --add safe.directory docs
+          git config --global --add safe.directory *
 
       - name: Set up Python
         uses: actions/setup-python@v2.2.1
