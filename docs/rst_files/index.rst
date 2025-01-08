@@ -24,8 +24,8 @@ For some example data of variants classified by HerediClassify please see the do
 
 .. toctree::
    :maxdepth: 2
-   :caption: Content:
+   :caption: Contents:
 
-    installation
-    execution
-    moduls
+   installation
+   execution
+   moduls
