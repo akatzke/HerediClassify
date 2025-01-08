@@ -34,13 +34,10 @@ jobs:
           # sphinx-apidoc -f -o docs/source . -H Test -e -t docs/source/_templates
           make -C docs html
 
-      - name: Change Owner of Container Working Directory
-        run: chown root:root .
-
-
       - name: Init new repo in dist folder and commit generated files
         run: |
           cd docs/_build/html/
+          chown root:root .
           git init
           touch .nojekyll
           git add -A
