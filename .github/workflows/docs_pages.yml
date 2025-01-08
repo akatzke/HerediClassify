@@ -16,10 +16,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
 
-      - name: Add safe directory
-        run: |
-          git config --global --add safe.directory *
-
       - name: Set up Python
         uses: actions/setup-python@v2.2.1
         with:
