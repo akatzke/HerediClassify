@@ -16,6 +16,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
 
+      - name: Add safe directory
+        run: |
+          git config --global --add safe.directory docs
+
       - name: Set up Python
         uses: actions/setup-python@v2.2.1
         with:
@@ -37,13 +41,11 @@ jobs:
       - name: Init new repo in dist folder and commit generated files
         run: |
           cd docs/_build/html/
-          chown root:root .
           git init
           touch .nojekyll
           git add -A
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git config --global --add safe.directory /github/workspace/docs/_build/html
           git commit -m 'deploy'
 
       - name: Force push to destination branch
