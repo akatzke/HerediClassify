@@ -6,7 +6,8 @@ HerediClassify can either be run in the command line, alternatively a FastAPI is
 Execution in the command line
 ==============================
 
-.. code:: text
+.. code:: bash
+
     python variant_classification/classify.py -c config.yaml -p json_string
 
 
@@ -16,13 +17,17 @@ Execution via FastAPI
 **1. Start the FastAPI server**
 
 This will start a uvicorn server running on http://0.0.0.0:8080
-.. code:: text
+
+.. code:: bash
+
     python webservice.py
 
 **2. Execute classify on server**
 
 Send a curl request using the following command to the server
-.. code:: text
+
+.. code:: bash
+
     curl -X 'POST' \
     'http://0.0.0.0:8080/classify_variant' \
     -H 'accept: application/json' \
@@ -33,7 +38,8 @@ Send a curl request using the following command to the server
     }'
 This will create the following output, with metadata included at the end
 
-.. code:: text
+.. code:: bash
+
     {"result":"{\"PVS1\": {\"rule_type\": \"general\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"very_strong\", \"comment\": \"PVS1 does not apply to this variant, as PVS1 does not apply to variant types missense_variant.\"}, \"PS1_protein\": {\"rule_type\": \"protein\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"strong\", \"comment\": \"No ClinVar entries found that show the same amino acid change as pathogneic.\"}, \"PS1_splicing\": {\"rule_type\": \"splicing\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"strong\", \"comment\": \"No ClinVar entries found that show splice variants at the same nucleotide position as pathogenic..\"}, \"PM1\": {\"rule_type\": \"general\", \"evidence_type\": \"pathogenic\", \"status\": true, \"strength\": \"moderate\", \"comment\": \"Variant in mutational hotspot.\"}, \"PM2\": {\"rule_type\": \"general\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"moderate\", \"comment\": \"Variant occures with 0.009 in GnomAD subpopulation EAS.\"}, \"PM4\": {\"rule_type\": \"general\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"moderate\", \"comment\": \"PM4 does not apply to this variant, as PVS1 does not apply to variant types missense_variant.\"}, \"PM5_protein\": {\"rule_type\": \"protein\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"moderate\", \"comment\": \"No ClinVar entries found that show an amino acid change in the same position as pathogenic.\"}, \"PM5_splicing\": {\"rule_type\": \"splicing\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"moderate\", \"comment\": \"No ClinVar entries found that show variant in the same splice site as pathogenic.\"}, \"PP3_protein\": {\"rule_type\": \"protein\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"supporting\", \"comment\": \"Variant is not predicted to be pathogenic by REVEL.\"}, \"PP3_splicing\": {\"rule_type\": \"splicing\", \"evidence_type\": \"pathogenic\", \"status\": true, \"strength\": \"supporting\", \"comment\": \"Variant is predicted to have a splice effect by SpliceAI.\"}, \"BA1\": {\"rule_type\": \"general\", \"evidence_type\": \"benign\", \"status\": false, \"strength\": \"stand_alone\", \"comment\": \"Variant occures with 0.009 in GnomAD subpopulation EAS.\"}, \"BS1\": {\"rule_type\": \"general\", \"evidence_type\": \"benign\", \"status\": false, \"strength\": \"strong\", \"comment\": \"Variant occures with 0.009 in GnomAD subpopulation EAS.\"}, \"BS2\": {\"rule_type\": \"general\", \"evidence_type\": \"benign\", \"status\": true, \"strength\": \"strong\", \"comment\": \"The variant occures 130 in FLOSSIES.\"}, \"BP3\": {\"rule_type\": \"general\", \"evidence_type\": \"benign\", \"status\": false, \"strength\": \"supporting\", \"comment\": \"BP3 does not apply to this variant, as BP3 does not apply to variant types missense_variant.\"}, \"BP4_protein\": {\"rule_type\": \"protein\", \"evidence_type\": \"benign\", \"status\": false, \"strength\": \"supporting\", \"comment\": \"Variant is not predicted to be benign REVEL.\"}, \"BP4_splicing\": {\"rule_type\": \"splicing\", \"evidence_type\": \"benign\", \"status\": false, \"strength\": \"supporting\", \"comment\": \"Variant is not predicted to have no splicing effect by SpliceAI.\"}, \"BP7_splicing\": {\"rule_type\": \"splicing\", \"evidence_type\": \"benign\", \"status\": false, \"strength\": \"supporting\", \"comment\": \"Variant is not predicted to have no splicing effect by SpliceAI.\"}}",
     "config_file":"config.yaml",
     "config_name":"acmg brca2",

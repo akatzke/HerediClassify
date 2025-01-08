@@ -10,27 +10,30 @@ Install HerediClassify
 1. Install general dependencies:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: text
+.. code:: bash
 
     sudo apt install libpg-dev
 
 2. Install python packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: text
+.. code:: bash
+
     pip install -r requirements.txt
 
 3. Install pyensembl database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: text
+.. code:: bash
+
    bash install_dependencies/install_pyensembl.sh
 
 4. Install non-python dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The versions indicated have been tested with the tool
 
-.. code:: text
+.. code:: bash
+
     bash install_dependencies/install_bedtools.sh -p PATH -v 2.29.1
     bash install_dependencies/install_htslib.sh -p PATH -v 1.18
     bash install_dependencies/install_samtools.sh -p PATH -v 1.11
@@ -43,7 +46,8 @@ Download additional data
 The script will create a database folder with different subfolders per database.
 The scripts expects the python dependencies installed above to be available.
 
-.. code:: text
+.. code:: bash
+
     bash install_dependencies/download_data.sh -p PATH
 
 2. Annotate ClinVar with SpliceAI
@@ -68,12 +72,14 @@ Use the merge_clinvar_spliceai.sh script to annotate the ClinVar download with t
 **4. Filtering**
 Filter the ClinVar file annotated with SpliceAI by using the data_filter_clinvar.py script.
 
-.. code:: text
+.. code:: bash
+
     python ../HerediClassify/install_dependencies/data_filter_clinvar.py -i path_to/clinvar_spliceai_all_sorted.vcf.gz
 
 Testing
 ========
 Tests are implemented using pytest. To test general functionality execute:
 
-.. code:: text
-    pytest /test
+.. code:: bash
+
+    pytest test/
