@@ -4,14 +4,14 @@ Execution
 HerediClassify can either be run in the command line, alternatively a FastAPI is implemented
 
 Execution in the command line
-====================
+==============================
 
 .. code:: text
     python variant_classification/classify.py -c config.yaml -p json_string
 
 
 Execution via FastAPI
-=============
+======================
 
 **1. Start the FastAPI server**
 

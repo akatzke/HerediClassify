@@ -26,7 +26,6 @@ For some example data of variants classified by HerediClassify please see the do
    :maxdepth: 2
    :caption: Content:
 
-             installation.rst
-             execution.rst
-             moduls.rst
-             criteria_design.rst
+             installation
+             execution
+             moduls

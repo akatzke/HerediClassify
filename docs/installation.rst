@@ -5,29 +5,29 @@ Installation process has been tested for python 3.9 and 3.10.
 Python dev version is needed.
 
 Install HerediClassify
-=====================
+========================
 
 1. Install general dependencies:
-~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: text
 
     sudo apt install libpg-dev
 
 2. Install python packages
-~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: text
     pip install -r requirements.txt
 
 3. Install pyensembl database
-~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: text
    bash install_dependencies/install_pyensembl.sh
 
-4. Install non-python dependencie
-~~~~~~~~
+4. Install non-python dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The versions indicated have been tested with the tool
 
 .. code:: text
@@ -39,7 +39,7 @@ Download additional data
 ========================
 
 1. Download and format databases
-~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The script will create a database folder with different subfolders per database.
 The scripts expects the python dependencies installed above to be available.
 
@@ -47,7 +47,7 @@ The scripts expects the python dependencies installed above to be available.
     bash install_dependencies/download_data.sh -p PATH
 
 2. Annotate ClinVar with SpliceAI
-~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A ClinVar file annotated with SpliceAI scores is needed for the application of PS1 and PM5.
 In order to obtain this file manual steps and additional dependencies need to be resolved.
 
