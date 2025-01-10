@@ -23,7 +23,7 @@ For some example data of variants classified by HerediClassify please see the do
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
    installation
