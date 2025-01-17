@@ -3,25 +3,35 @@
 import pathlib
 
 import test.paths as paths
-from test.example_variant_missense_GRCh38 import create_example_mis_BRCA1_2
-from test.example_variant_splicing_GRCh38 import create_example_splice_acceptor_BRCA1
+from test.test_import_variant import create_json_string_from_variant
+
 from variant_classification.clinvar_annot import annotate_clinvar
 from variant_classification.clinvar_utils import ClinVar_Type
 from variant_classification.load_config import load_config
+from variant_classification.load_variant import load_variant
 
 
 def test_missense_2():
     """
     Test ClinVar annotation for missense variant
     """
-    test_trans, test_var = create_example_mis_BRCA1_2()
+    # Load configuration
+    path_config = paths.ROOT / "config.yaml"
+    config = load_config(path_config)
+    # Load transcript
+    path_variant = paths.TEST / "test_variants" / "BRCA1_missense_variant.json"
+    variant_str = create_json_string_from_variant(path_variant)
+    variant = load_variant(variant_str)
+    # Create needed paths
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
     dir_files = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_files / file_name
-    clinvar_dict = annotate_clinvar(test_var, [test_trans], path_clinvar)
+    clinvar_dict = annotate_clinvar(
+        variant.variant_info, variant.transcript_info, path_clinvar
+    )
     for clinvar_type, clinvar_object in clinvar_dict.items():
         if clinvar_type.value == ClinVar_Type.SAME_AA_CHANGE.value:
             clinvar_same_aa_change = clinvar_object
@@ -45,14 +55,20 @@ def test_splicing():
     """
     Test ClinVar annotation for splicing varaints
     """
-    test_trans, test_var = create_example_splice_acceptor_BRCA1()
+    # Load configuration
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
+    # Load transcript
+    path_variant = paths.TEST / "test_variants" / "test_var_splice_acceptor.json"
+    variant_str = create_json_string_from_variant(path_variant)
+    variant = load_variant(variant_str)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
     dir_files = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_files / file_name
-    clinvar_dict = annotate_clinvar(test_var, [test_trans], path_clinvar)
+    clinvar_dict = annotate_clinvar(
+        variant.variant_info, variant.transcript_info, path_clinvar
+    )
     for clinvar_type, clinvar_object in clinvar_dict.items():
         if clinvar_type.value == ClinVar_Type.SAME_AA_CHANGE.value:
             clinvar_same_aa_change = clinvar_object

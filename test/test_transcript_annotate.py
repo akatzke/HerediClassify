@@ -2,31 +2,35 @@
 
 import pathlib
 
-from test.example_variant_indel_GRCh38 import (
-    create_example_del_frameshift,
-    create_example_dup,
-    create_example_del,
-    create_example_ins,
-)
-from test.example_variant_splicing_GRCh38 import create_example_splice_acceptor_BRCA1
-from test.example_variant_various_GRCh38 import create_start_lost
-from test.example_variant_missense_GRCh38 import create_example_ter
 from variant_classification.transcript_annotated import (
     TranscriptInfo_exonic,
     TranscriptInfo_intronic,
     TranscriptInfo_start_loss,
 )
+from variant_classification.load_variant import load_variant
+from variant_classification.check_disease_relevant_transcript import (
+    check_disease_relevant_transcript,
+)
 from variant_classification.load_config import load_config
 import test.paths as paths
+
+from test.test_import_variant import create_json_string_from_variant
 
 
 def test_splicing():
     """
     Test annotation for a splice variant
     """
-    test_trans, test_var = create_example_splice_acceptor_BRCA1()
+    # Load configuration
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
+    # Load transcript
+    path_variant = paths.TEST / "test_variants" / "test_var_splice_acceptor.json"
+    variant_str = create_json_string_from_variant(path_variant)
+    variant = load_variant(variant_str)
+    variant_disease_relevant = check_disease_relevant_transcript(variant, config)
+    transcript = variant_disease_relevant.transcript_info[0]
+    # Create relevant paths
     root_dir = pathlib.Path(config["annotation_files"]["root"])
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
@@ -42,14 +46,15 @@ def test_splicing():
         dir_critical_region
         / config["annotation_files"]["critical_regions"]["critical_region"]
     )
+    # Execute transcript annotation
     annot_trans = TranscriptInfo_intronic.annotate(
-        test_var,
+        variant.variant_info,
         path_clinvar,
         path_clinvar_indel,
         path_uniprot,
         None,
         path_critical_region,
-        test_trans,
+        transcript,
     )
     assert (
         annot_trans.are_exons_skipped == True
@@ -64,9 +69,16 @@ def test_indel():
     """
     Test annotation for duplication
     """
-    test_trans, test_var = create_example_dup()
+    # Load configuration
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
+    # Load transcript
+    path_variant = paths.TEST / "test_variants" / "test_var_frameshift.json"
+    variant_str = create_json_string_from_variant(path_variant)
+    variant = load_variant(variant_str)
+    variant_disease_relevant = check_disease_relevant_transcript(variant, config)
+    transcript = variant_disease_relevant.transcript_info[0]
+    # Create relevant paths
     root_dir = pathlib.Path(config["annotation_files"]["root"])
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
@@ -83,14 +95,14 @@ def test_indel():
         / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var,
+        variant.variant_info,
         path_clinvar,
         path_clinvar_indel,
         path_uniprot,
         path_critical_region,
         None,
         None,
-        test_trans,
+        transcript,
     )
     assert (
         annot_trans.is_NMD == True
@@ -107,9 +119,16 @@ def test_ter():
     """
     Test annotation for termination codon
     """
-    test_trans, test_var = create_example_ter()
+    # Load configuration
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
+    # Load transcript
+    path_variant = paths.TEST / "test_variants" / "test_var_stop_gained_pms2.json"
+    variant_str = create_json_string_from_variant(path_variant)
+    variant = load_variant(variant_str)
+    variant_disease_relevant = check_disease_relevant_transcript(variant, config)
+    transcript = variant_disease_relevant.transcript_info[0]
+    # Create relevant paths
     root_dir = pathlib.Path(config["annotation_files"]["root"])
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
@@ -126,14 +145,14 @@ def test_ter():
         / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var,
+        variant.variant_info,
         path_clinvar,
         path_clinvar_indel,
         path_uniprot,
         path_critical_region,
         None,
         None,
-        test_trans[0],
+        transcript,
     )
     assert (
         annot_trans.is_NMD == True
@@ -150,7 +169,16 @@ def test_del_inframe():
     """
     Test annotation for deletion
     """
-    test_trans, test_var = create_example_del()
+    # Load configuration
+    path_config = paths.ROOT / "config.yaml"
+    config = load_config(path_config)
+    # Load transcript
+    path_variant = paths.TEST / "test_variants" / "test_var_inframe_deletion.json"
+    variant_str = create_json_string_from_variant(path_variant)
+    variant = load_variant(variant_str)
+    variant_disease_relevant = check_disease_relevant_transcript(variant, config)
+    transcript = variant_disease_relevant.transcript_info[0]
+    # Create relevant paths
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
@@ -169,14 +197,14 @@ def test_del_inframe():
         / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var,
+        variant.variant_info,
         path_clinvar,
         path_clinvar_indel,
         path_uniprot,
         path_critical_region,
         None,
         None,
-        test_trans,
+        transcript,
     )
     assert (
         round(annot_trans.diff_len_protein_percent, 2) == 0.0
@@ -193,7 +221,17 @@ def test_del_frameshift():
     """
     Test annotation for deletion
     """
-    test_trans, test_var = create_example_del_frameshift()
+    # Load configuration
+    path_config = paths.ROOT / "config.yaml"
+    config = load_config(path_config)
+    # Load transcript
+    path_variant = paths.TEST / "test_variants" / "CHEK2_stop_gained.json"
+    variant_str = create_json_string_from_variant(path_variant)
+    variant = load_variant(variant_str)
+    variant_disease_relevant = check_disease_relevant_transcript(variant, config)
+    transcript = variant_disease_relevant.transcript_info[0]
+    # test_trans, test_var = create_example_del_frameshift()
+    # Create relevant paths
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
@@ -212,14 +250,14 @@ def test_del_frameshift():
         / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var,
+        variant.variant_info,
         path_clinvar,
         path_clinvar_indel,
         path_uniprot,
         path_critical_region,
         None,
         None,
-        test_trans,
+        transcript,
     )
     assert (
         round(annot_trans.diff_len_protein_percent, 2) == -0.04
@@ -236,7 +274,17 @@ def test_ins():
     """
     Test annotation for insertion
     """
-    test_trans, test_var = create_example_ins()
+    # Load configuration
+    path_config = paths.ROOT / "config.yaml"
+    config = load_config(path_config)
+    # Load transcript
+    path_variant = paths.TEST / "test_variants" / "BRCA1_frameshift_variant.json"
+    variant_str = create_json_string_from_variant(path_variant)
+    variant = load_variant(variant_str)
+    variant_disease_relevant = check_disease_relevant_transcript(variant, config)
+    transcript = variant_disease_relevant.transcript_info[0]
+    # test_trans, test_var = create_example_ins()
+    # Create relevant paths
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
@@ -255,14 +303,14 @@ def test_ins():
         / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_exonic.annotate(
-        test_var,
+        variant.variant_info,
         path_clinvar,
         path_clinvar_indel,
         path_uniprot,
         path_critical_region,
         None,
         None,
-        test_trans,
+        transcript,
     )
     assert (
         round(annot_trans.diff_len_protein_percent, 2) == 0.94
@@ -279,9 +327,16 @@ def test_start_loss():
     """
     Test annotation for a start loss variant
     """
-    test_trans, test_var = create_start_lost()
+    # Load configuration
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
+    # Load transcript
+    path_variant = paths.TEST / "test_variants" / "RAD51D_start_lost.json"
+    variant_str = create_json_string_from_variant(path_variant)
+    variant = load_variant(variant_str)
+    variant_disease_relevant = check_disease_relevant_transcript(variant, config)
+    transcript = variant_disease_relevant.transcript_info[0]
+    # Create relevant paths
     root_dir = pathlib.Path(config["annotation_files"]["root"])
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
@@ -296,10 +351,14 @@ def test_start_loss():
         / config["annotation_files"]["critical_regions"]["critical_region"]
     )
     annot_trans = TranscriptInfo_start_loss.annotate(
-        test_var, path_clinvar, path_uniprot, path_critical_region, test_trans
+        variant.variant_info,
+        path_clinvar,
+        path_uniprot,
+        path_critical_region,
+        transcript,
     )
     assert (
-        round(annot_trans.diff_len_protein_percent, 2) == 0.05
+        round(annot_trans.diff_len_protein_percent, 2) == 0.07
         and annot_trans.len_change_in_repetitive_region == False
         and annot_trans.is_truncated_region_disease_relevant == True
         and annot_trans.exists_alternative_start_codon == True
