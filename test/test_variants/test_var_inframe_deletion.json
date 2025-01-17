@@ -27,8 +27,9 @@
     "gnomAD":
         {"AF": 0.007,
          "AC" : 12,
-         "popmax": "EAS",
+         "subpopulation": "EAS",
          "popmax_AF" : 0.009,
+         "faf_popmax_AF" : 0.009,
          "popmax_AC" : 5},
     "FLOSSIES":
         {"AFR" : 9,
