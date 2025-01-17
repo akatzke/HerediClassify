@@ -1,0 +1,10 @@
+{"chr": "chr17",
+	"pos": 43104232,
+	"gene": "BRCA1",
+	"ref": "A",
+	"alt":"AT",
+	"variant_type": ["frameshift_variant"],
+	"variant_effect": [{"transcript": "ENST00000357654", "hgvs_c": "c.330_331insA", "variant_type": ["frameshift_variant"], "exon": 6}],
+	"splicing_prediction_tools": {"SpliceAI": 0.0},
+       	"gnomAD": {"AF": 0.000624179, "AC": 95, "subpopulation": "AMR", "popmax_AC": 12, "popmax_AF": 0.000785649, "faf_popmax_AF": 0.000785649},
+	"cold_spot": false}

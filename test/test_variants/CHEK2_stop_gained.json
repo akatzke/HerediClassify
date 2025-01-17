@@ -1,0 +1,13 @@
+{"chr": "chr22",
+ "pos": 28687961,
+ "gene": "CHEK2",
+ "ref": "CG",
+ "alt": "C",
+ "variant_type": ["NMD_transcript_variant", "non_coding_transcript_exon_variant", "stop_gained", "frameshift_variant", "3_prime_UTR_variant"],
+ "variant_effect":
+ [{"transcript": "ENST00000404276", "hgvs_c": "c.1567del", "variant_type": ["frameshift_variant"], "exon": 10}],
+ "splicing_prediction_tools": {"SpliceAI": 0.0},
+ "pathogenicity_prediction_tools": {},
+ "gnomAD": {"AF": 1.97182e-05, "AC": 3, "subpopulation": "EAS", "popmax_AC": 1, "popmax_AF": 0.000192604, "faf_popmax_AF": 0.0},
+ "cancer_hotspots": {},
+ "cold_spot": false}
