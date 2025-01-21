@@ -32,6 +32,7 @@ def test_splicing():
     transcript = variant_disease_relevant.transcript_info[0]
     # Create relevant paths
     root_dir = pathlib.Path(config["annotation_files"]["root"])
+    root_dir = root_dir.expanduser()
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
@@ -80,6 +81,7 @@ def test_indel():
     transcript = variant_disease_relevant.transcript_info[0]
     # Create relevant paths
     root_dir = pathlib.Path(config["annotation_files"]["root"])
+    root_dir = root_dir.expanduser()
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
@@ -130,6 +132,7 @@ def test_ter():
     transcript = variant_disease_relevant.transcript_info[0]
     # Create relevant paths
     root_dir = pathlib.Path(config["annotation_files"]["root"])
+    root_dir = root_dir.expanduser()
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
@@ -182,6 +185,7 @@ def test_del_inframe():
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
+    root_dir = root_dir.expanduser()
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
@@ -235,6 +239,7 @@ def test_del_frameshift():
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
+    root_dir = root_dir.expanduser()
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
@@ -288,6 +293,7 @@ def test_ins():
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
+    root_dir = root_dir.expanduser()
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name
@@ -338,6 +344,7 @@ def test_start_loss():
     transcript = variant_disease_relevant.transcript_info[0]
     # Create relevant paths
     root_dir = pathlib.Path(config["annotation_files"]["root"])
+    root_dir = root_dir.expanduser()
     dir_clinvar = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_clinvar / file_name

@@ -59,7 +59,7 @@ functional_thresholds:
 
 ### Annotation filesitems
 annotation_files:
-    root: "/home/katzkean/"
+    root: "~/"
     clinvar:
         root: "databases/Clinvar"
         clinvar_snv: "clinvar_snv_two_star.vcf.gz"
@@ -82,7 +82,7 @@ annotation_files:
 ### Variant specific annotations
 ### Define respective gene specific configuration in the given location
 gene_specific_configs:
-    root: "/home/katzkean/variant_classification/gene_specific/pejaver_mult_strength"
+    root: "~/variant_classification/gene_specific/pejaver_mult_strength"
     atm: "acmg_atm.yaml"
     brca1: "acmg_brca1.yaml"
     brca2: "acmg_brca2.yaml"

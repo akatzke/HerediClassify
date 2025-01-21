@@ -26,6 +26,7 @@ def test_missense_2():
     path_config = paths.ROOT / "config.yaml"
     config = load_config(path_config)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
+    root_dir = root_dir.expanduser()
     dir_files = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_files / file_name
@@ -63,6 +64,7 @@ def test_splicing():
     variant_str = create_json_string_from_variant(path_variant)
     variant = load_variant(variant_str)
     root_dir = pathlib.Path(config["annotation_files"]["root"])
+    root_dir = root_dir.expanduser()
     dir_files = root_dir / pathlib.Path(config["annotation_files"]["clinvar"]["root"])
     file_name = "clinvar_snv.vcf.gz"
     path_clinvar = dir_files / file_name

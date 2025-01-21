@@ -53,7 +53,7 @@ functional_thresholds:
 
 ### Annotation filesitems
 annotation_files:
-    root: "/home/katzkean/databases"
+    root: "~/databases"
     clinvar:
         root: "Clinvar"
         clinvar_snv: "clinvar_snv.vcf.gz"

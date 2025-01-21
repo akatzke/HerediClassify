@@ -1,6 +1,6 @@
 ## From HerediVar see /data/script/merge_clinvar_spliceai.sh
 
-basedir=/home/katzkean
+basedir=$HOME
 
 root=$basedir
 data=$root/databases/Clinvar

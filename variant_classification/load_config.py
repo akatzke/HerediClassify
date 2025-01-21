@@ -44,6 +44,7 @@ def get_gene_specific_config(config: dict, gene_name: str) -> dict:
             dir_gene_config = pathlib.Path(config["gene_specific_configs"]["root"])
             file_gene_config = config["gene_specific_configs"][gene_name.lower()]
             path_gene_config = dir_gene_config / file_gene_config
+            path_gene_config = path_gene_config.expanduser()
             gene_config = load_config(path_gene_config)
             return gene_config
         else:

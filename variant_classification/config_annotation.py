@@ -450,6 +450,7 @@ def get_path_from_config(
         file_path = dir_files / pathlib.Path(
             config[config_location[0]][config_location[1]][config_location[2]]
         )
+        file_path = file_path.expanduser()
     except KeyError:
         logger.warning(
             f"The location {config_location} could not be found in the configuration file."

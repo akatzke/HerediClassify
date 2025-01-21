@@ -25,8 +25,6 @@ from custom_exceptions import No_transcript_with_var_type_found
 
 logger = logging.getLogger("GenOtoScope_Classify.clinvar.splicing")
 
-# path_clinvar = pathlib.Path("/home/katzkean/clinvar/clinvar_20230730.vcf.gz")
-
 
 def check_clinvar_splicing(
     variant: VariantInfo,
