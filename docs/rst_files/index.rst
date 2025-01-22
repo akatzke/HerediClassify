@@ -28,4 +28,5 @@ For some example data of variants classified by HerediClassify please see the do
 
    installation
    execution
+   configuration
    moduls

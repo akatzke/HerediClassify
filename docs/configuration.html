@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Configuration &#8212; HerediClassify 1.0.6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=e2a723ec"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h1>
+<p>A number of different thresholds and paths can be defined in the configuration file.
+An example configuration ~config.yaml~ is provided in the repository.
+Additionally, configuration files for the gene specific recommendations for the hereditary breast and ovarian cancer risk genes ATM (v.1.3.0), BRCA1 (v.1.1.0), BRCA2 (v.1.1.0), CDH1 (v.3.1.0), PALB2 (v.1.1.0), PTEN (v.3.1.0) and TP53 (v.1.4.0) are provided (see ~gene_specific~ folder).</p>
+<section id="configuration-name">
+<h2>Configuration name<a class="headerlink" href="#configuration-name" title="Link to this heading">¶</a></h2>
+<p>At the top at each configuration file a name and a version can be defined.
+Version and name of the configuration together with the final classification result.</p>
+</section>
+<section id="rules">
+<h2>Rules<a class="headerlink" href="#rules" title="Link to this heading">¶</a></h2>
+<p>In the rules section of the configuration file, a list of rules from the implemented rules can be defined in a list.
+The processing of the rules is not case sensitive.</p>
+</section>
+<section id="disease-relevant-transcript">
+<h2>Disease relevant transcript<a class="headerlink" href="#disease-relevant-transcript" title="Link to this heading">¶</a></h2>
+<p>In this section of the configuration file a disease relevant transcript or list of disease relevant transcripts can be defined.
+The ~name~ needs to be the Ensembl transcript ID without version extension.
+Under ~nmd_threshold~ the last nucleotide position that may cause nonsense mediated decay can be documented.
+~pos_last_known_patho_ptc~ allows for the definition of the last known pathogenic premature termination codon.
+These transcript specific information are often needed for the application of PVS1.</p>
+</section>
+<section id="thresholds-prediction-tools">
+<h2>Thresholds prediction tools<a class="headerlink" href="#thresholds-prediction-tools" title="Link to this heading">¶</a></h2>
+<p>In this section thresholds for pathogenicitiy prediction tools can be defined.
+HerediClassify is only designed to use on prediction tool for pathogenicity prediction and one prediction tool for splicing prediction.
+For pathogenicity prediction the thresholds can be defined under ~pathogenicity_prediction~ and thresholds for splicing prediction tools can be defined under ~splicing prediction~.
+Both thresholds have the same structure.
+Under ~name~ the name of the prediction tool can be set.
+The prediction tool should be the same as the one specific in the variant import json.
+Under ~benign~ and ~pathogenic~ the thresholds for pathogenic and benign evidence can be set.
+Using ~direction~ the direction of the comparison between the threshold and the prediction value is defined.
+The following directions are possible:
+- ~less~
+- ~less_than_or_equal~
+- ~greater~
+- ~greater_than_or_equal~
+To define the thresholds use evidence strength: threshold e.g. ~supporting:0.1~.</p>
+<p>The thresholds for splicing and pathogenicity predictions at least at supporting level are required for all implementations of BP4 and PP3.
+Furthermore, the threshold for splicing prediction is required for the application of PVS1 and BP7.
+Additional, the threshold for splicing prediction is required for PM5, PM5_pten, PM5_tp53, BP1_annotation_cold_spot_strong, PM1_tp53, PS1_protein_spliceai, PS1_protein_enigma, PS1_splicing, PS1_splicing_clingen, PS1_protein_tp53, PS1_splicing_tp53, PS1_splicing_pten.</p>
+<p>When using the rules ~PP3_protein_mult_strength~ or ~BP4_protein_mult_strength~ thresholds for higher evidence strengths can be defined using ~moderate~, ~strong~ and ~very_strong~.
+For example see example configuration files under ~gene_sepcific/pejaver_mult_strength~.
+When another implementation of PP3 or BP4 is used that does not apply an evidence strength higher than supporting, thresholds for higher evidence strengths will be ignored during the assessment of the criterion.</p>
+</section>
+<section id="likelihood-thresholds">
+<h2>Likelihood thresholds<a class="headerlink" href="#likelihood-thresholds" title="Link to this heading">¶</a></h2>
+<p>Under likelihood thresholds the threshold for all likelihoods can be set.
+These can be accessed by different criteria including BS4, PP1, PP4_engima, and BP5_engima.</p>
+</section>
+<section id="allele-frequency-thresholds">
+<h2>Allele frequency thresholds<a class="headerlink" href="#allele-frequency-thresholds" title="Link to this heading">¶</a></h2>
+<p>Here allele frequency thresholds can be defined as decimal figures.
+CAVE no conversion into percentage is implemented.</p>
+<ul class="simple">
+<li><p><strong>threshold_ba1</strong>
+Threshold for BA1, required for all BA1 implementations.</p></li>
+<li><p><strong>threshold_ba1_absolute</strong>
+Threshold for minimum absolute allele count in subpopulation for BA1 to apply, required for BA1_with_absolute.</p></li>
+<li><p><strong>threshold_bs1</strong>
+Threshold for BS1, required for all BS1 implementations.</p></li>
+<li><p><strong>threshold_bs1_supporting</strong>
+Threshold for BS1 with supporting evidence, required for rule BS1_supporting</p></li>
+<li><p><strong>threshold_bs1_absolute</strong>
+Threshold for minimum absolute allele count in subpopulation for BS1 to apply, required for BS1_with_absolute.</p></li>
+<li><p><strong>threshold_bs2</strong>
+Threshold for BS2, required for all BS2 implementations.</p></li>
+<li><p><strong>threshold_bs2_supporting</strong>
+Threshold for BS2 with supporting evidence, required for rule BS2_supporting</p></li>
+<li><p><strong>threshold_pm2</strong>
+Threshold for PM2, required for all PM2 implementations.</p></li>
+<li><p><strong>threshold_cancerhotspots_ac</strong>
+Threshold for the application of mutational hotspot criterion, required for PM1_TP53.</p></li>
+</ul>
+</section>
+<section id="functional-thresholds">
+<h2>Functional thresholds<a class="headerlink" href="#functional-thresholds" title="Link to this heading">¶</a></h2>
+<p>Under functional thresholds the threshold for difference in length of protein in percent can be defined. This us ed for the implementation of PVS1 and PM4. Please use a decimal point. So for a threshold of 10% ~threshold_diff_len_prot_percent~ should be set to 0.1.</p>
+</section>
+<section id="annotation-files">
+<h2>Annotation files<a class="headerlink" href="#annotation-files" title="Link to this heading">¶</a></h2>
+<p>All the annotation files needed can be downloaded using the Download scripts provided and explained under installation instructions.</p>
+</section>
+<section id="gene-specific-configurations">
+<h2>Gene-specific configurations<a class="headerlink" href="#gene-specific-configurations" title="Link to this heading">¶</a></h2>
+<p>Under this header the location of the gene-specific configuration is defined.
+Under root the folder where the gene-specific configuration are located is defined.
+Underneath, every gene name can be mapped to a specific file in which the gene-specific configuration is housed.
+After loading the variant and the configuration, HerediClassify checks if there is a gene-specific configuration available and uses that.
+When no gene-specific configuration are defined, HerediClassify will use the parameters of the general configuration file for all variants.
+The definition of the gene-specific configuration is only needed in the general configuration file.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">HerediClassify</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="execution.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="moduls.html">Implemented rules</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Anna-Lena Katzke.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/configuration.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
