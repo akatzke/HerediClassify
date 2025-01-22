@@ -1,107 +1,12 @@
-# Automated variant classification
+# HerediClassify
 
-## Installation
-Installation process has been tested for python 3.9 and 3.10.
-Python dev version is needed.
+## About
+HerediClassify is a modular algorithm for variant classification, designed for the application in hereditary breast and ovarian cancer.
+Gene-specific classification recommendations for ATM, BRCA1, BRCA2, CDH1, PALB2, PTEN, and TP53 have been implemented, with plans to extend the number of genes provided.
 
-1. Install general dependencies:
-```sh
-sudo apt install libpq-dev
-```
 
-2. Install python packages
-```sh
-pip install -r requirements.txt
-```
+## Documentation
+For the documentation of HerediClassify please see [here](https://akatzke.github.io/HerediClassify/)
 
-3. Install pyensembl database
-```sh
-bash install_dependencies/install_pyensembl.sh
-```
-
-4. Install non-python dependencies
-The versions indicated have been tested with the tool
-```sh
-bash install_dependencies/install_bedtools.sh -p PATH -v 2.29.1
-```
-```sh
-bash install_dependencies/install_htslib.sh -p PATH -v 1.18
-```
-```sh
-bash install_dependencies/install_samtools.sh -p PATH -v 1.11
-```
-
-5. Download and format databases
-The script will create a database folder with different subfolders per database.
-The scripts expects the python dependencies installed above to be available.
-```sh
-bash install_dependencies/download_data.sh -p PATH
-```
-
-## ClinVar annotation with SpliceAI
-A ClinVar file annotated with SpliceAI scores is needed for the application of PS1 and PM5.
-In order to obtain this file manual steps and additional dependencies need to be resolved.
-
-1. Download SpliceAI scores from Illumina
-The SpliceAI scores can be found [here](https://basespace.illumina.com/analyses/194103939/files?projectId=66029966).
-Please download the masked indel ans snv file for GRCh38:
-- spliceai_scores.masked.indel.hg38.vcf.gz
-- spliceai_scores.masked.indel.hg38.vcf.gz.tbi
-- spliceai_scores.masked.snv.hg38.vcf.gz
-- spliceai_scores.masked.snv.hg38.vcf.gz.tbi
-
-2. Install ngs-bits
-See the ngs-bits [github](https://github.com/imgag/ngs-bits) for install instructions.
-
-3. Perform annotation
-Use the merge_clinvar_spliceai.sh script to annotate the ClinVar download with the SpliceAI annotations. Make sure to change the paths at the top of the script to match paths on your system.
-
-4. Filtering
-Filter the ClinVar file annotated with SpliceAI by using the data_filter_clinvar.py script.
-```sh
-python ../HerediClassify/install_dependencies/data_filter_clinvar.py -i path_to/clinvar_spliceai_all_sorted.vcf.gz
-```
-
-## Configuration
-The file paths in the configuration file (config.yaml) need to be changed. Changing the root directory under annotation_files should suffice.
-This change needs to be done in all configuration files, including the gene-specific annotation files in the gene_specific folder.
-
-## Testing
-Tests are implemented using pytest. To test general functionality execute pytest \test.
-
-## Execution
-```sh
-python variant_classification/classify.py -c config.yaml -p json_string
-```
-
-## Execution via FastAPI
-1. Start the FastAPI server
-```sh
-python webservice.py
-```
-This will start a uvicorn server running on http://0.0.0.0:8080
-
-2. Execute classify on server
-
-Send a curl request using the following command to the server
-```sh
-curl -X 'POST' \
-  'http://0.0.0.0:8080/classify_variant' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "config_path": "/home/katzkean/variant_classification/config.yaml",
-  "variant_json": "{\"chr\": \"17\", \"pos\": 43057110, \"gene\": \"BRCA1\", \"ref\": \"A\", \"alt\": \"C\", \"variant_type\": [\"missense_variant\"], \"variant_effect\": [{\"transcript\": \"ENST00000357654\", \"hgvs_c\": \"c.5219T>G\", \"hgvs_p\": \"p.Val1740Gly\", \"variant_type\": [\"missense_variant\"], \"exon\": 19}, {\"transcript\": \"ENST00000471181\", \"hgvs_c\": \"c.5282T>G\", \"hgvs_p\": \"p.Val1761Gly\", \"variant_type\": [\"missense_variant\"], \"exon\": 20}], \"splicing_prediction_tools\": {\"SpliceAI\": 0.5}, \"pathogenicity_prediction_tools\": {\"REVEL\": 0.5, \"BayesDel\": 0.5}, \"gnomAD\": {\"AF\": 0.007, \"AC\": 12, \"popmax\": \"EAS\", \"popmax_AF\": 0.009, \"popmax_AC\": 5}, \"FLOSSIES\": {\"AFR\": 9, \"EUR\": 130}, \"mRNA_analysis\": {\"performed\": true, \"pathogenic\": true, \"benign\": true}, \"functional_data\": {\"performed\": true, \"pathogenic\": true, \"benign\": true}, \"prior\": 0.25, \"co-occurrence\": 0.56, \"segregation\": 0.56, \"multifactorial_log-likelihood\": 0.56, \"VUS_task_force_domain\": true, \"cancer_hotspot\": true, \"cold_spot\": true}"
-}'
-```
-This will create the following output, with metadata included at the end
-
-```sh
-{"result":"{\"PVS1\": {\"rule_type\": \"general\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"very_strong\", \"comment\": \"PVS1 does not apply to this variant, as PVS1 does not apply to variant types missense_variant.\"}, \"PS1_protein\": {\"rule_type\": \"protein\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"strong\", \"comment\": \"No ClinVar entries found that show the same amino acid change as pathogneic.\"}, \"PS1_splicing\": {\"rule_type\": \"splicing\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"strong\", \"comment\": \"No ClinVar entries found that show splice variants at the same nucleotide position as pathogenic..\"}, \"PM1\": {\"rule_type\": \"general\", \"evidence_type\": \"pathogenic\", \"status\": true, \"strength\": \"moderate\", \"comment\": \"Variant in mutational hotspot.\"}, \"PM2\": {\"rule_type\": \"general\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"moderate\", \"comment\": \"Variant occures with 0.009 in GnomAD subpopulation EAS.\"}, \"PM4\": {\"rule_type\": \"general\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"moderate\", \"comment\": \"PM4 does not apply to this variant, as PVS1 does not apply to variant types missense_variant.\"}, \"PM5_protein\": {\"rule_type\": \"protein\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"moderate\", \"comment\": \"No ClinVar entries found that show an amino acid change in the same position as pathogenic.\"}, \"PM5_splicing\": {\"rule_type\": \"splicing\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"moderate\", \"comment\": \"No ClinVar entries found that show variant in the same splice site as pathogenic.\"}, \"PP3_protein\": {\"rule_type\": \"protein\", \"evidence_type\": \"pathogenic\", \"status\": false, \"strength\": \"supporting\", \"comment\": \"Variant is not predicted to be pathogenic by REVEL.\"}, \"PP3_splicing\": {\"rule_type\": \"splicing\", \"evidence_type\": \"pathogenic\", \"status\": true, \"strength\": \"supporting\", \"comment\": \"Variant is predicted to have a splice effect by SpliceAI.\"}, \"BA1\": {\"rule_type\": \"general\", \"evidence_type\": \"benign\", \"status\": false, \"strength\": \"stand_alone\", \"comment\": \"Variant occures with 0.009 in GnomAD subpopulation EAS.\"}, \"BS1\": {\"rule_type\": \"general\", \"evidence_type\": \"benign\", \"status\": false, \"strength\": \"strong\", \"comment\": \"Variant occures with 0.009 in GnomAD subpopulation EAS.\"}, \"BS2\": {\"rule_type\": \"general\", \"evidence_type\": \"benign\", \"status\": true, \"strength\": \"strong\", \"comment\": \"The variant occures 130 in FLOSSIES.\"}, \"BP3\": {\"rule_type\": \"general\", \"evidence_type\": \"benign\", \"status\": false, \"strength\": \"supporting\", \"comment\": \"BP3 does not apply to this variant, as BP3 does not apply to variant types missense_variant.\"}, \"BP4_protein\": {\"rule_type\": \"protein\", \"evidence_type\": \"benign\", \"status\": false, \"strength\": \"supporting\", \"comment\": \"Variant is not predicted to be benign REVEL.\"}, \"BP4_splicing\": {\"rule_type\": \"splicing\", \"evidence_type\": \"benign\", \"status\": false, \"strength\": \"supporting\", \"comment\": \"Variant is not predicted to have no splicing effect by SpliceAI.\"}, \"BP7_splicing\": {\"rule_type\": \"splicing\", \"evidence_type\": \"benign\", \"status\": false, \"strength\": \"supporting\", \"comment\": \"Variant is not predicted to have no splicing effect by SpliceAI.\"}}",
-"config_file":"config.yaml",
-"config_name":"ACMG BRCA2",
-"date":"2023-12-04",
-"version":"0.1.0"}
-```
-
-`
+## Copyright
+HerediClassify is licensed under the [GNU Affero General Public License](http://www.gnu.org/licenses/agpl-3.0.html).
