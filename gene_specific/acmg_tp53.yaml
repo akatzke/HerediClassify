@@ -66,13 +66,13 @@ annotation_files:
         root: "databases/Uniprot"
         rep: "repeats_hg38_uniprot.bed"
     critical_regions:
-        root: "variant_classification/data/critical_region"
+        root: "HerediClassify/data/critical_region"
         critical_region: "VUS-Task-Force_critical_protein_domains.bed"
     hotspot_region:
-        root: "variant_classification/data/critical_region"
+        root: "HerediClassify/data/critical_region"
         hotspot_region: "VCEP_mutational_hotspots.bed"
     similarity_score:
-        root: "variant_classification/data/similarity_score"
+        root: "HerediClassify/data/similarity_score"
         similarity_score_file: "grantham_score_formatted.csv"
         similarity_score_direction: "greater"
     mane_transcripts:

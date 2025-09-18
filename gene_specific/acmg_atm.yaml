@@ -68,10 +68,10 @@ annotation_files:
         root: "databases/Uniprot"
         rep: "repeats_hg38_uniprot.bed"
     critical_regions:
-        root: "variant_classification/data/critical_region"
+        root: "HerediClassify/data/critical_region"
         critical_region: "VCEP_defined_critical_regions.bed"
     splice_site_table:
-        root: "variant_classification/data/splice_site_classification"
+        root: "HerediClassify/data/splice_site_classification"
         file: "ATM_splice_table_reformatted.csv"
     mane_transcripts:
         root: "databases/MANE"

@@ -12,7 +12,7 @@ charset-normalizer==3.3.2
 click==8.1.7
 coloredlogs==15.0.1
 configparser==6.0.1
-cyvcf2==0.30.22
+cyvcf2==0.31.1
 datacache==1.4.1
 decorator==5.1.1
 dill==0.3.8
@@ -47,7 +47,7 @@ platformdirs==4.2.0
 pluggy==1.4.0
 progressbar33==2.4
 prompt-toolkit==3.0.43
-psycopg2==2.9.9
+#psycopg2-binary==2.9.10
 ptyprocess==0.7.0
 pure-eval==0.2.2
 pybedtools==0.9.1

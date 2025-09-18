@@ -64,7 +64,7 @@ annotation_files:
         root: "databases/Uniprot"
         rep: "repeats_hg38_uniprot.bed"
     critical_regions:
-        root: "variant_classification/data/critical_region"
+        root: "HerediClassify/data/critical_region"
         critical_region: "VUS-Task-Force_critical_protein_domains.bed"
     mane_transcripts:
         root: "databases/MANE"
@@ -77,7 +77,7 @@ annotation_files:
 ### Variant specific annotations
 ### Define respective gene specific configuration in the given location
 gene_specific_configs:
-    root: "~/variant_classification/gene_specific/"
+    root: "~/HerediClassify/gene_specific/"
     atm: "acmg_atm.yaml"
     brca1: "acmg_brca1.yaml"
     brca2: "acmg_brca2.yaml"
