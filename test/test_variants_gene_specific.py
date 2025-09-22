@@ -224,6 +224,7 @@ def test_gene_specific_brca1_splicing():
     rules_apply = [
         "PVS1_splicing",
         "PM2",
+        "PS1_splicing",
     ]
     for rule in rules_apply:
         assert results_dict[rule]["status"]
