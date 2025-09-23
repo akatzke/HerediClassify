@@ -2,4 +2,4 @@
 
 import pyensembl
 
-ensembl = pyensembl.EnsemblRelease(107)
+ensembl = pyensembl.EnsemblRelease(110)
