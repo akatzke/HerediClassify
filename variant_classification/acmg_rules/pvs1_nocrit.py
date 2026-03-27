@@ -40,6 +40,7 @@ class Pvs1_no_crit(abstract_rule):
             (
                 class_info.ANNOTATED_TRANSCRIPT_LIST,
                 class_info.VARIANT,
+                class_info.THRESHOLD_DIFF_LEN_PROT_PERCENT,
                 class_info.SPLICING_ASSAY,
                 class_info.VARIANT_PREDICTION,
                 class_info.THRESHOLD_SPLICING_PREDICTION_PATHOGENIC,
@@ -52,6 +53,7 @@ class Pvs1_no_crit(abstract_rule):
         cls,
         annotated_transcripts: list[TranscriptInfo],
         variant: VariantInfo,
+        threshold_diff_len_prot_percent: float,
         splice_assay: Optional[list[RNAData]],
         prediction_dict: dict[str, float],
         threshold: Threshold,
@@ -61,7 +63,7 @@ class Pvs1_no_crit(abstract_rule):
         for transcript in annotated_transcripts:
             if isinstance(transcript, TranscriptInfo_exonic):
                 result_frameshift = Pvs1_no_crit.assess_pvs1_frameshift_PTC_no_crit(
-                    transcript
+                    transcript, threshold_diff_len_prot_percent
                 )
                 results[transcript.transcript_id] = result_frameshift
             elif isinstance(transcript, TranscriptInfo_intronic):
@@ -69,6 +71,7 @@ class Pvs1_no_crit(abstract_rule):
                     transcript,
                     prediction_dict,
                     threshold,
+                    threshold_diff_len_prot_percent,
                 )
                 if splice_assay:
                     result_splice = adjust_strength_according_to_rna_data_pvs1(
@@ -123,6 +126,7 @@ class Pvs1_no_crit(abstract_rule):
         transcript: TranscriptInfo_intronic,
         prediction_dict: dict[str, float],
         threshold: Threshold,
+        threshold_diff_len_prot_percent: float,
     ) -> RuleResult:
         """
         Assess PVS1 for splice variants
@@ -148,9 +152,24 @@ class Pvs1_no_crit(abstract_rule):
             result = True
             strength = evidence_strength.STRONG
         elif transcript.are_exons_skipped and transcript.is_reading_frame_preserved:
-            comment = f"Transcript {transcript.transcript_id} does not undergo NMD and reading frame is preserved. Protein length change of {transcript.diff_len_protein_percent} observed."
-            result = True
-            strength = evidence_strength.STRONG
+            comment = f"Transcript {transcript.transcript_id} does not undergo NMD and reading frame is preserved."
+            if (
+                transcript.diff_len_protein_percent
+                > threshold_diff_len_prot_percent
+            ):
+                comment = (
+                    comment
+                    + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                )
+                result = True
+                strength = evidence_strength.STRONG
+            else:
+                comment = (
+                    comment
+                    + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                )
+                result = True
+                strength = evidence_strength.MODERATE
         else:
             comment = f"Transcript {transcript.transcript_id} does not fulfill any PVS1 splicing."
             result = False
@@ -166,7 +185,7 @@ class Pvs1_no_crit(abstract_rule):
 
     @classmethod
     def assess_pvs1_frameshift_PTC_no_crit(
-        cls, transcript: TranscriptInfo_exonic
+            cls, transcript: TranscriptInfo_exonic, threshold_diff_len_prot_percent: float
     ) -> RuleResult:
         """
         Assess PVS1 for frameshift variants
@@ -178,9 +197,24 @@ class Pvs1_no_crit(abstract_rule):
             result = True
             strength = evidence_strength.VERY_STRONG
         else:
-            comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD. Protein length change of {transcript.diff_len_protein_percent} observed."
-            result = True
-            strength = evidence_strength.STRONG
+            comment = f"Transcript {transcript.transcript_id} is not predicted to undergo NMD."
+            if (
+                transcript.diff_len_protein_percent
+                > threshold_diff_len_prot_percent
+            ):
+                comment = (
+                    comment
+                    + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                )
+                result = True
+                strength = evidence_strength.STRONG
+            else:
+                comment = (
+                    comment
+                    + f" Protein length change of {transcript.diff_len_protein_percent} observed."
+                )
+                result = True
+                strength = evidence_strength.MODERATE
         return RuleResult(
             "PVS1",
             rule_type.PROTEIN,
