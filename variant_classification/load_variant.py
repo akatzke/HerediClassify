@@ -69,6 +69,8 @@ def create_variant(variant_json: dict) -> Variant:
     cancer_hotspots = create_cancer_hotspots(variant_json)
     mRNA_result = create_rna_data("mRNA_analysis", variant_json)
     functional_data = create_functional_data("functional_data", variant_json)
+    picadar_score = create_integer_value("picadar_score", variant_json)
+    modified_picadar_score = create_integer_value("modified_picadar_score", variant_json)
     variant = Variant(
         variant_info=var_info,
         transcript_info=trans_info_list,
@@ -79,6 +81,8 @@ def create_variant(variant_json: dict) -> Variant:
         cancerhotspots=cancer_hotspots,
         functional_assay=functional_data,
         splicing_assay=mRNA_result,
+        picadar_score=picadar_score,
+        modified_picadar_score=modified_picadar_score,
     )
     return variant
 
@@ -335,3 +339,13 @@ def create_rna_data(key: str, variant_json: dict) -> Optional[list[RNAData]]:
         )
         func_list.append(func)
     return func_list
+
+def create_integer_value(key: str, variant_json: dict) -> Optional[int]:
+    """
+    Get single integer value from variant_json
+    """
+    try:
+        value = variant_json[key]
+        return int(value)
+    except KeyError:
+        return None

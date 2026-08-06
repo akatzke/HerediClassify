@@ -101,3 +101,5 @@ class Variant:
     multifactorial_likelihood: Optional[MultifactorialLikelihood] = None
     functional_assay: Optional[list[FunctionalData]] = None
     splicing_assay: Optional[list[RNAData]] = None
+    picadar_score: Optional[int] = None
+    modified_picadar_score: Optional[int] = None

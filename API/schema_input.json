@@ -221,6 +221,12 @@
     },
     "multifactorial_log-likelihood": {
       "type": "number"
+    },
+    "picadar_score" : {
+      "type" : "integer"
+    },
+    "modified_picadar_score" : {
+      "type" : "integer"
     }
   },
   "required": [

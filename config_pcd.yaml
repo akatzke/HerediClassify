@@ -13,6 +13,7 @@ rules:
     - pm5_protein
     - pp3_protein_mult_strength
     - pp3_splicing_mult_strength
+    - pp4_pcd
     - ba1
     - bs1
     - bs2
@@ -56,6 +57,16 @@ allele_frequency_thresholds:
 functional_thresholds:
     threshold_diff_len_prot_percent: 0.1
 
+### Phenotype score thresholds
+phenotype_score_thresholds:
+    picadar_score:
+        direction: "greater_than_or_equal"
+        supporting: 5
+        moderate: 6
+    picadar_modified_score:
+        direction: "greater_than_or_equal"
+        supporting: 2
+        moderate: 6
 
 ### Annotation filesitems
 annotation_files:

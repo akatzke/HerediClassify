@@ -39,3 +39,4 @@ from acmg_rules.pp2 import *
 from acmg_rules.pp3 import *
 from acmg_rules.pp3_mult_strength import *
 from acmg_rules.pp4 import *
+from acmg_rules.pp4_pcd import *

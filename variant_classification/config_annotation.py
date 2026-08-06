@@ -111,6 +111,7 @@ def get_annotations_needed_from_rules(
         "pp3_protein_enigma_mult_strength": Rules.Pp3_protein_enigma_mult_strength,
         "pp3_protein_mult_strength": Rules.Pp3_protein_mult_strength,
         "pp4_enigma": Rules.Pp4_enigma,
+        "pp4_pcd" : Rules.Pp4_pcd,
         "ba1": Rules.Ba1,
         "ba1_faf": Rules.Ba1_faf,
         "ba1_with_absolute": Rules.Ba1_with_absolute,
@@ -217,6 +218,12 @@ def get_annotation_functions(
             "Multifactorial likelihood",
             variant.multifactorial_likelihood,
         ),
+        class_info.VARIANT_PICADAR_SCORE.name: lambda variant: partial(
+            return_information, "PICADAR score", variant.picadar_score
+            ),
+        class_info.VARIANT_MODIFIED_PICADAR_SCORE.name: lambda variant: partial(
+            return_information, "Modified PICADAR Score", variant.modified_picadar_score
+        )
     }
 
     ### Dictionary for all Classification_Info objects that have a get_annotation_function
@@ -526,7 +533,7 @@ def get_thresholds_likelihood(
     thresholds = list(threshold_dict.values())
     assert all(
         isinstance(threshold, (int, float)) for threshold in thresholds
-    ), f"Not all thresholds defined for {config_location[0]} are of type float. Please check."
+    ), f"Not all thresholds defined for {config_location[0]} are of type float or int. Please check."
     if "greater" in dir.value:
         keys_sorted = sorted(threshold_dict, key=threshold_dict.get, reverse=False)
     else:
