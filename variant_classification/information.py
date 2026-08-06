@@ -65,6 +65,10 @@ class Classification_Info:
     THRESHOLD_BS2_SUPPORTING: Info
     THRESHOLD_DIFF_LEN_PROT_PERCENT: Info
     THRESHOLD_NMD: Info
+    VARIANT_PICADAR_SCORE: Info
+    VARIANT_MODIFIED_PICADAR_SCORE: Info
+    THRESHOLD_PICADAR_SCORE: Info
+    THRESHOLD_MODIFIED_PICADAR_SCORE: Info
     POS_LAST_KNOWN_PATHO_PTC: Info
     VARIANT: Info
     TRANSCRIPT: Info
@@ -127,6 +131,8 @@ class Classification_Info:
         self.VARIANT_MULTIFACTORIAL_LIKELIHOOD = Info(
             "variant_multifactorial_likelihood"
         )
+        self.VARIANT_PICADAR_SCORE = Info("variant_picadar_score")
+        self.VARIANT_MODIFIED_PICADAR_SCORE = Info("variant_modified_picadar_score")
         self.THRESHOLD_PATHOGENICITY_PREDICTION_BENIGN = Info(
             "prediction_pathogenicity_benign",
             config_location=(
@@ -173,6 +179,16 @@ class Classification_Info:
             config_location=("likelihood_thresholds", "benign"),
             group=Classification_Info_Groups.THRESHOLDS_LIKELIHOOD,
         )
+        self.THRESHOLD_PICADAR_SCORE = Info(
+            "threshold_picadar_score",
+            config_location=("phenotype_score_thresholds", "picadar_score"),
+            group=Classification_Info_Groups.THRESHOLDS_LIKELIHOOD,
+        )
+        self.THRESHOLD_MODIFIED_PICADAR_SCORE = Info(
+            "threshold_modified_picadar_score",
+            config_location=("phenotype_score_thresholds", "picadar_modified_score"),
+            group=Classification_Info_Groups.THRESHOLDS_LIKELIHOOD,
+            )
         self.THRESHOLD_PM2 = Info(
             "threshold_pm2",
             config_location=("allele_frequency_thresholds", "threshold_pm2"),

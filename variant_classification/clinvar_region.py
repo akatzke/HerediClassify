@@ -152,6 +152,8 @@ def get_clinvar_region_df(
     clinvar = VCF(path_clinvar)
     clinvar_region = clinvar(f"{variant_info.chr}:{start}-{end}")
     clinvar_region_df = convert_vcf_gen_to_df(clinvar_region)
+    if clinvar_region_df.empty:
+        return pd.DataFrame()
     clinvar_region_filter = filter_gene(clinvar_region_df, variant_info.gene_name)
     return clinvar_region_filter
 
