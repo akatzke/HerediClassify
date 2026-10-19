@@ -64,6 +64,11 @@ def check_incompatible_rules(
         rules["BS1"]["status"] = False
         new_comment = rules["BS1"]["comment"] + " BS1 does not apply when BA1 applies."
         rules["BS1"]["comment"] = new_comment
+    ## Incompatibility BS1 and PM2
+    if rules.get("PM2", {}).get("status", False) and rules.get("BS1", {}).get("status", False):
+        rules["PM2"]["status"] = False
+        new_comment = rules["PM2"]["comment"] + " PM2 does not apply when BS1 applies."
+        rules["PM2"]["comment"] = new_comment
 
     ## ---- Start gene specific incompatibilities ----
 
