@@ -23,7 +23,7 @@ from clinvar_utils import (
     convert_vcf_gen_to_df,
     get_affected_transcript,
 )
-from custom_exceptions import No_transcript_with_var_type_found
+from custom_exceptions import No_transcript_with_var_type_found, Pyensembl_no_coding_sequence
 
 logger = logging.getLogger("GenOtoScope_Classify.clinvar.missense")
 
@@ -158,6 +158,15 @@ def extract_var_codon_info(
         logger.debug(
             f"Use sequence attribute instead of coding_sequence for transcript id: {transcript.transcript_id}"
         )
+    except TypeError:
+        codon_seq_ref = ref_transcript.sequence[
+            codon_coding_pos[0] - 1 : codon_coding_pos[-1]
+        ]
+        logger.debug(
+            f"Use sequence attribute instead of coding_sequence for transcript id: {transcript.transcript_id}"
+        )
+
+
 
     codon_seq_obs = construct_obs_codon_seq(
         codon_seq_ref, var_pos_in_codon, variant_info.var_obs, var_strand
