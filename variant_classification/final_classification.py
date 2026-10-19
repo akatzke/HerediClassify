@@ -37,11 +37,14 @@ def get_classification(rule_results: pd.DataFrame, config: str, version: str) ->
     """
     Execute final classification
     """
+    # In case no schema for classification is defined, default to the standard ACMG schema
     schema = VERSION_CLASS_SCHEMATA.get(config, {}).get(version, None)
+    # When no schema was defined default to ACMG schema
     if schema is None:
-        raise ValueError(
+        print(
             f"No final classification schemata defined for configuration {config} version {version}. Please check."
         )
+        schema = Class_schema.schema_acmg
     abs_rule_results = create_evidence_strength_count(rule_results)
     abs_rule_results["applicable_rules"] = rule_results.index
     possible_classes = get_classifications_from_rule_combinations(
