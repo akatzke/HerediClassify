@@ -52,7 +52,7 @@ def format_spliceai_multiple(df: pd.DataFrame) -> pd.DataFrame:
     """
     Format SpliceAI entry for multiple splice site observation
     """
-    df["SpliceAI_max"] = 0
+    df["SpliceAI_max"] = 0.0
     for i, entry in df.iterrows():
         spliceai_list = entry.SpliceAI.split(",")
         local_max = []
