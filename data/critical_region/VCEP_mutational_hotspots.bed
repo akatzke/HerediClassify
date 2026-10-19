@@ -7,3 +7,5 @@ chr17	7673774	7673776	TP53	Variant in mutational hot spot defined by VCEP.	-	282
 chr10	87933027	87933041	PTEN	Variant in mutational hot spot defined by VCEP in  WPD loop of PTEN.	+	90	94	VCEP
 chr10	87933126	87933149	PTEN	Variant in mutational hot spot defined by VCEP in P-loop phosphatase core in PTEN.	+	123	130	VCEP
 chr10	87952121	87952129	PTEN	Variant in mutational hot spot defined by VCEP in TI-loop in PTEN.	+	166	168	VCEP
+chr1	40819449	40819472	KCNQ4	Variant in mutational hot spot defined by VCEP in pore-forming intramembrane region.	+	271	292	VCEP
+chr1	40819875	40819916	KCNQ4	Variatn in mutational hot spot defiend by VCEP in pore-forming intramembrane region.	+	271	292	VCEP
