@@ -313,7 +313,7 @@ class PM2_supporting_no_hom(abstract_rule):
             )
             result = False
         else:
-            comment = f"Variant occures does not occur as homozygous in gnomAD."
+            comment = f"Variant does not occur as homozygous in gnomAD."
             result = True
         return RuleResult(
             "PM2",
